@@ -1,5 +1,7 @@
 name: github pages
 
+on: workflow_dispatch
+
 jobs:
   deploy:
     runs-on: ubuntu-18.04
