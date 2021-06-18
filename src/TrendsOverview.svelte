@@ -16,7 +16,8 @@
    */
   import AutoComplete from "simple-svelte-autocomplete";
   import type {Region, RegionalTrends, RegionalTrendLine, RegionalTrendAggregate} from "./data";
-  import {fetchRegionData, fetchRegionalTrendsData, fetchRegionalTrendLines, getLatestRegionData} from "./data";
+  import {fetchRegionData, fetchRegionalTrendsData, fetchRegionalTrendLines, getLatestRegionData, 
+    selectRegionOneTrends, selectRegionTwoTrends, subRegionOneCode, subRegionTwoCode} from "./data";
   import { onMount } from 'svelte';
   import {params} from "./stores";
   import * as d3 from "d3";
@@ -31,7 +32,10 @@
   let selectedMapTrendId:string = "vaccination";
 
   const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
-  const latestRegionData: Promise<Map<string, RegionalTrendAggregate>> = mapData.then((rtls) => getLatestRegionData(rtls));
+  const latestRegionOneData: Promise<Map<string, RegionalTrendAggregate>> = 
+    mapData.then((rtls) => getLatestRegionData(selectRegionOneTrends(rtls), subRegionOneCode));
+  const latestRegionTwoData: Promise<Map<string, RegionalTrendAggregate>> = 
+    mapData.then((rtls) => getLatestRegionData(selectRegionTwoTrends(rtls), subRegionTwoCode));
 
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
@@ -471,7 +475,7 @@
   }
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
-    latestRegionData.then(() => setMapTrend(selectedMapTrendId));
+    latestRegionTwoData.then(() => setMapTrend(selectedMapTrendId));
   }
 
  onMount(async () => {
@@ -499,10 +503,10 @@
     })
 
     drawMap();
-    latestRegionData.then((latestCountyData) => {
-	setMapData(latestCountyData);
-	setMapTrend(selectedMapTrendId);
-	});
+    latestRegionTwoData.then((latestCountyData) => {
+	    setMapData(latestCountyData);
+	    setMapTrend(selectedMapTrendId);
+	  });
   });
 
   function onChangeHandler(selectedRegion: Region):void {
