@@ -107,10 +107,6 @@ export function fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
               `Load regional trend data with ${results.data.length} rows`
             );
             results.data.map((d) => {
-              // temporary work around for
-              if (d.sub_region_2_code.length == 4) {
-                d.sub_region_2_code = "0" + d.sub_region_2_code;
-              }
               const parsedRow: RegionalTrendLine = {
                 date: d.date,
                 country_region: d.country_region,
