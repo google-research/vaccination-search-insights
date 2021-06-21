@@ -95,15 +95,6 @@ function initializeMap() {
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
 
-  svg
-    .append("g")
-    .append("text")
-    .attr("x", 0)
-    .attr("y", height + margin + margin - 10)
-    .attr("alignment-baseline", "central")
-    .attr("class", "mapTrendRange")
-    .text("Interest");
-
   d3.select("#county")
     .selectAll("path")
     .data(feature(us, us.objects.counties).features)
