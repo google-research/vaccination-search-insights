@@ -208,6 +208,10 @@ footer {
   border: 1px solid #e6f0ff !important;
 }
 
+.map-trend-selector-active {
+  vertical-align: bottom;
+}
+
 .mapTrendRange {
   font-family: Roboto;
   font-weight: 500;
@@ -343,7 +347,7 @@ footer {
 }
 
 .trendChartVerticalLine {
-  stroke:black;
+  stroke: black;
   stroke-width: 1px;
   stroke-dasharray: 1, 5;
 }
@@ -358,8 +362,7 @@ footer {
   border-radius: 4px;
   background: white;
   border: 1px solid g.$grey-300;
-  box-shadow: 0px 2px 8px 0px #0000001F;
-
+  box-shadow: 0px 2px 8px 0px #0000001f;
 }
 
 .hoverCard.inactive {
