@@ -60,7 +60,7 @@ export interface TrendValue {
 export interface RegionalTrends {
   place_id: string;
   trends: {
-    covid19_vaccination: TrendValue[]
+    covid19_vaccination: TrendValue[];
     vaccination_intent: TrendValue[];
     safety_side_effects: TrendValue[];
   };
@@ -150,14 +150,24 @@ export function fetchRegionalTrendsData(): Promise<RegionalTrends[]> {
           let vaccination_intent = [];
           let safety_side_effects = [];
           leaves.map((leaf) => {
-            covid19_vaccination.push({ date: leaf.date, value: parseFloat(leaf.snf_covid19_vaccination) });
-            vaccination_intent.push({ date: leaf.date, value: parseFloat(leaf.snf_vaccination_intent) });
+            covid19_vaccination.push({
+              date: leaf.date,
+              value: parseFloat(leaf.snf_covid19_vaccination),
+            });
+            vaccination_intent.push({
+              date: leaf.date,
+              value: parseFloat(leaf.snf_vaccination_intent),
+            });
             safety_side_effects.push({
               date: leaf.date,
               value: parseFloat(leaf.snf_safety_side_effects),
             });
           });
-          return { covid19_vaccination, vaccination_intent, safety_side_effects };
+          return {
+            covid19_vaccination,
+            vaccination_intent,
+            safety_side_effects,
+          };
         })
         .entries(rtls);
       return nestedTrends;
@@ -165,14 +175,35 @@ export function fetchRegionalTrendsData(): Promise<RegionalTrends[]> {
   }
 }
 
-export function getLatestRegionData(
+export function selectRegionOneTrends(
   rtls: RegionalTrendLine[]
+): RegionalTrendLine[] {
+  return rtls.filter((region) => subRegionTwoCode(region) == "");
+}
+
+export function selectRegionTwoTrends(
+  rtls: RegionalTrendLine[]
+): RegionalTrendLine[] {
+  return rtls.filter((region) => subRegionTwoCode(region) != "");
+}
+
+export function subRegionOneCode(region: RegionalTrendLine): string {
+  return region.sub_region_1_code;
+}
+
+export function subRegionTwoCode(region: RegionalTrendLine): string {
+  return region.sub_region_2_code;
+}
+
+export function getLatestRegionData(
+  rtls: RegionalTrendLine[],
+  aggKeyFn: (RegionalTrendLine) => string
 ): Map<string, RegionalTrendAggregate> {
   const latestDate = d3.max(rtls.map((rtl) => rtl.date));
   const dataMap = rtls
     .filter((rtl) => rtl.date == latestDate)
     .reduce((acc, region) => {
-      acc.set(region.sub_region_2_code, {
+      acc.set(aggKeyFn(region), {
         snf_covid19_vaccination: +region.snf_covid19_vaccination,
         snf_vaccination_intent: +region.snf_vaccination_intent,
         snf_safety_side_effects: +region.snf_safety_side_effects,
