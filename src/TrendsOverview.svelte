@@ -579,17 +579,25 @@
       <!-- Empty -->
       {:then trends}
       <div>
-        <!-- TODO(tague): Is there a better way to do this? -->
         <div class="mapTrendSelectorGroup">
           <button id="vaccination"
-                  class="{(selectedMapTrendId === 'vaccination' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
-                  on:click={onChangeMapTrend}>Covid-19 vaccination searches</button>
+                  class="{(selectedMapTrendId == 'vaccination' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
+                  on:click={onChangeMapTrend}>
+                  {@html (selectedMapTrendId == 'vaccination') ? '<span class="material-icons map-trend-selector-active">done</span>' : '' }
+                  Covid-19 vaccination searches
+          </button>
           <button id="intent"
-                  class="{(selectedMapTrendId === 'intent' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
-                  on:click={onChangeMapTrend}>Vaccination intent searches</button>
+                  class="{(selectedMapTrendId == 'intent' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
+                  on:click={onChangeMapTrend}>
+                  {@html (selectedMapTrendId == 'intent') ? '<span class="material-icons map-trend-selector-active">done</span>' : '' }
+                  Vaccination intent searches
+          </button>
           <button id="safety"
-                  class="{(selectedMapTrendId === 'safety' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
-                  on:click={onChangeMapTrend}>Safety and Side-effect searches</button>
+                  class="{(selectedMapTrendId == 'safety' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
+                  on:click={onChangeMapTrend}>
+                  {@html (selectedMapTrendId == 'safety') ? '<span class="material-icons map-trend-selector-active">done</span>' : '' }
+                  Safety and Side-effect searches
+          </button>
         </div>
         <!-- map header/legend -->
 	<div id="map-callout" class="map-callout">
