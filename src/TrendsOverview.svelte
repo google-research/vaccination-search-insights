@@ -589,7 +589,7 @@
                   on:click={onChangeMapTrend}>Vaccination intent searches</button>
           <button id="safety"
                   class="{(selectedMapTrendId === 'safety' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
-                  on:click={onChangeMapTrend}>Safety and Side-effect searches</button>
+                  on:click={onChangeMapTrend}>Safety and side effect searches</button>
         </div>
         <!-- map header/legend -->
 	<div id="map-callout" class="map-callout">
