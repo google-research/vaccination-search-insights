@@ -15,78 +15,189 @@
  */
 
 import { mesh, feature } from "topojson-client";
+import {
+  fipsCodeFromElementId,
+  regionOneToFipsCode,
+  stateFipsCodeFromCounty,
+} from "./geo-utils";
 import * as d3 from "d3";
 import * as d3g from "d3-geo";
 import * as us from "us-atlas/counties-albers-10m.json";
 
-export const mapBounds = {
-  width: 975,
-  height: 610,
-  margin: 30,
-};
-
 const path = d3.geoPath();
-
 const colorScaleVaccine = buildVaccineColorScale();
 const colorScaleIntent = buildIntentColorScale();
 const colorScaleSafety = buildSafetyColorScale();
 
 let mapSvg;
 let mapZoom;
+
+let latestStateData;
 let latestCountyData;
+let selectedTrend;
 
-function buildVaccineColorScale() {
-  return d3
-    .scaleThreshold()
-    .domain([7, 14, 21, 28, 35, 42])
-    .range([
-      "#f7fbff",
-      "#dae8f6",
-      "#b9d5ea",
-      "#85bcdc",
-      "#509bcb",
-      "#2676b8",
-      "#084594",
-    ]);
+//
+// Exports for clients
+//
+export const mapBounds = {
+  width: 975,
+  height: 610,
+  margin: 30,
+};
+
+export function createMap(stateData, countyData, trend) {
+  latestCountyData = countyData;
+  selectedTrend = trend;
+
+  // US gemoetry files are keyed off of fips code, so for now
+  // re-key the state data by fips code to make it easier to
+  // work with
+  latestStateData = new Map();
+  stateData.forEach((value, key) => {
+    latestStateData.set(regionOneToFipsCode.get(key), value);
+  });
+
+  initializeMap();
+  colorizeMap(trend);
 }
 
-function buildIntentColorScale() {
-  return d3
-    .scaleThreshold()
-    .domain([3, 6, 9, 12, 15, 18])
-    .range([
-      "#fff5eb",
-      "#fee2c7",
-      "#fdc590",
-      "#fd9e53",
-      "#f57521",
-      "#dd4d04",
-      "#8c2d04",
-    ]);
+export function setSelectedState(fipsCode) {
+  activateSelectedState(fipsCode, true);
 }
 
-function buildSafetyColorScale() {
-  return d3
-    .scaleThreshold()
-    .domain([1.5, 2.8, 4.1, 5.4, 6.7, 8])
-    .range([
-      "#fff7f3",
-      "#fddcd8",
-      "#fbb8bc",
-      "#f984ab",
-      "#e6459a",
-      "#b60982",
-      "#7a0177",
-    ]);
+export function setSelectedCounty(fipsCode) {
+  activateSelectedState(stateFipsCodeFromCounty(fipsCode), false);
+  activateSelectedCounty(fipsCode, true);
 }
 
-function isInMapCallout(event) {
-  let elem = document.elementFromPoint(event.clientX, event.clientY);
-  if (elem && elem.id == "map-callout") {
-    return true;
-  } else {
-    return false;
+export function setMapTrend(trend) {
+  selectedTrend = trend;
+  colorizeMap(trend);
+}
+
+//
+// Map drawing routines
+//
+function initializeMap() {
+  mapSvg = d3
+    .select(".map")
+    .append("svg")
+    .attr("viewBox", [
+      -mapBounds.margin,
+      0,
+      mapBounds.width + mapBounds.margin,
+      mapBounds.height + mapBounds.margin,
+    ])
+    .style("margin-top", "15px");
+
+  const g = mapSvg.append("g").attr("id", "transformer");
+  // keep in inverse order
+  g.append("g").attr("id", "county");
+  g.append("g").attr("id", "state");
+
+  d3.select("#county")
+    .selectAll("path")
+    .data(feature(us, us.objects.counties).features)
+    .join("path")
+    .attr("id", (d) => `fips-${d.id}`)
+    .attr("class", (d) => `state-${stateFipsCodeFromCounty(d.id)}`)
+    .attr("d", path)
+    .attr("fill", "none")
+    .attr("stroke", "white")
+    .attr("stroke-width", 0)
+    .attr("vector-effect", "non-scaling-stroke");
+
+  d3.select("#state")
+    .selectAll("path")
+    .data(feature(us, us.objects.states).features)
+    .join("path")
+    .attr("id", (d) => `fips-${d.id}`)
+    .attr("class", "state")
+    .attr("d", path)
+    .attr("fill", "transparent")
+    .attr("stroke", "white")
+    .attr("stroke-width", 1)
+    .attr("vector-effect", "non-scaling-stroke")
+    .on("mouseenter", enterStateBoundsHandler)
+    .on("mouseleave", leaveStateBoundsHandler)
+    .on("mousemove", moveMapCallout)
+    .on("click", stateSelectionOnClickHandler);
+
+  mapZoom = d3.zoom().scaleExtent([1, 100]).on("zoom", zoomHandler);
+  mapSvg.call(mapZoom);
+}
+
+function colorizeMap(trend) {
+  let accessor;
+  let colorScale;
+
+  switch (trend) {
+    case "vaccination":
+      accessor = (d) => (d ? d.snf_covid19_vaccination : 0);
+      colorScale = colorScaleVaccine;
+      break;
+    case "intent":
+      accessor = (d) => (d ? d.snf_vaccination_intent : 0);
+      colorScale = colorScaleIntent;
+      break;
+    case "safety":
+      accessor = (d) => (d ? d.snf_safety_side_effects : 0);
+      colorScale = colorScaleSafety;
+      break;
+    default:
+      console.log(`Unknown trend: ${trend} set on map`);
+      return;
   }
+
+  d3.select("#county")
+    .selectAll("path")
+    .join("path")
+    .attr("fill", function (d) {
+      let id = fipsCodeFromElementId(this.id);
+      let data = latestCountyData.get(id);
+      if (data) {
+        if (accessor(data) === 0) {
+          return "transparent";
+        } else {
+          return colorScale(accessor(data));
+        }
+      } else {
+        return "transparent";
+      }
+    });
+  drawLegend(colorScale);
+}
+
+function zoomHandler({ transform }) {
+  d3.select("#transformer").attr("transform", transform);
+}
+
+function resetZoom() {
+  mapSvg.transition().duration(750).call(mapZoom.transform, d3.zoomIdentity);
+}
+
+function zoomToBounds(d) {
+  const [[x0, y0], [x1, y1]] = path.bounds(d);
+  mapSvg
+    .transition()
+    .duration(750)
+    .call(
+      mapZoom.transform,
+      d3.zoomIdentity
+        .translate(mapBounds.width / 2, mapBounds.height / 2)
+        .scale(
+          Math.min(
+            25,
+            0.95 /
+              Math.max(
+                (x1 - x0) / mapBounds.width,
+                (y1 - y0) / mapBounds.height
+              )
+          )
+        )
+        .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+      d3.pointer(event, mapSvg.node())
+    );
 }
 
 function drawLegend(color) {
@@ -150,141 +261,103 @@ function drawLegend(color) {
     .text("info_outline");
 }
 
-export function setMapData(countryData) {
-  latestCountyData = countryData;
+function buildVaccineColorScale() {
+  return d3
+    .scaleThreshold()
+    .domain([7, 14, 21, 28, 35, 42])
+    .range([
+      "#f7fbff",
+      "#dae8f6",
+      "#b9d5ea",
+      "#85bcdc",
+      "#509bcb",
+      "#2676b8",
+      "#084594",
+    ]);
 }
 
-export function setMapTrend(trend) {
-  let accessor;
-  let colorScale;
+function buildIntentColorScale() {
+  return d3
+    .scaleThreshold()
+    .domain([3, 6, 9, 12, 15, 18])
+    .range([
+      "#fff5eb",
+      "#fee2c7",
+      "#fdc590",
+      "#fd9e53",
+      "#f57521",
+      "#dd4d04",
+      "#8c2d04",
+    ]);
+}
 
-  switch (trend) {
-    case "vaccination":
-      accessor = (d) => (d ? d.snf_covid19_vaccination : 0);
-      colorScale = colorScaleVaccine;
-      break;
-    case "intent":
-      accessor = (d) => (d ? d.snf_vaccination_intent : 0);
-      colorScale = colorScaleIntent;
-      break;
-    case "safety":
-      accessor = (d) => (d ? d.snf_safety_side_effects : 0);
-      colorScale = colorScaleSafety;
-      break;
-    default:
-      console.log(`Unknown trend: ${trend} set on map`);
-      return;
-  }
+function buildSafetyColorScale() {
+  return d3
+    .scaleThreshold()
+    .domain([1.5, 2.8, 4.1, 5.4, 6.7, 8])
+    .range([
+      "#fff7f3",
+      "#fddcd8",
+      "#fbb8bc",
+      "#f984ab",
+      "#e6459a",
+      "#b60982",
+      "#7a0177",
+    ]);
+}
 
-  d3.select("#county")
+//
+// Map event handler state routines
+//
+function activateSelectedState(fipsCode, zoom = true) {
+  mapSvg
+    .select("#county")
     .selectAll("path")
-    .join("path")
-    .attr("fill", function (d) {
-      let id = this.id.slice(5, 10);
-      let data = latestCountyData.get(id);
-      if (data) {
-        if (accessor(data) === 0) {
-          return "transparent";
-        } else {
-          return colorScale(accessor(data));
-        }
-      } else {
-        return "transparent";
-      }
-    });
-  drawLegend(colorScale);
-}
-
-function resetZoom() {
-  mapSvg.transition().duration(750).call(mapZoom.transform, d3.zoomIdentity);
-}
-
-function resetOnClickHandlers() {
-  mapSvg
-    .select("#state")
-    .selectAll("path")
-    .join("path")
-    .attr("fill", "transparent");
-  mapSvg
-    .select("#county")
-    .on("mouseleave", null)
-    .on("mouseenter", null)
-    .on("mouseover", null);
-}
-
-function zoomToBounds(d) {
-  const [[x0, y0], [x1, y1]] = path.bounds(d);
-  mapSvg
-    .transition()
-    .duration(750)
-    .call(
-      mapZoom.transform,
-      d3.zoomIdentity
-        .translate(mapBounds.width / 2, mapBounds.height / 2)
-        .scale(
-          Math.min(
-            25,
-            0.95 /
-              Math.max(
-                (x1 - x0) / mapBounds.width,
-                (y1 - y0) / mapBounds.height
-              )
-          )
-        )
-        .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-      d3.pointer(event, mapSvg.node())
-    );
-}
-
-export function setSelectedCounty(fipsCode) {
-  const stateCode = fipsCode.slice(0, 2);
-  resetOnClickHandlers();
-  mapSvg.select("#state").select(`#fips-${stateCode}`).attr("fill", "none");
-
-  //TODO: navigate to next level of hierachy, for now reset
-  mapSvg
-    .select("#county")
-    .select(`#fips-${fipsCode}`)
-    .on("click", resetZoomOnClickHandler);
-
-  const d = mapSvg.select("#county").select(`#fips-${fipsCode}`).datum();
-
-  zoomToBounds(d);
-}
-
-export function setSelectedState(fipsCode) {
-  mapSvg
-    .select("#county")
-    .selectAll(`.state-${fipsCode}`)
-    .on("click", countySelectionOnClickHandler)
+    .attr("stroke-width", 0)
+    .on("click", null)
     .on("mouseenter", showMapCallout)
     .on("mouseleave", hideMapCallout)
     .on("mousemove", moveMapCallout);
-
-  const d = mapSvg
+  mapSvg
     .select("#state")
-    .select(`path#fips-${fipsCode}`)
-    .attr("fill", "none")
-    .datum();
-  zoomToBounds(d);
+    .selectAll("path")
+    .attr("fill", "transparent")
+    .attr("stroke-width", 2.0);
+
+  mapSvg
+    .select("#county")
+    .selectAll(`.state-${fipsCode}`)
+    .attr("stroke-width", 1)
+    .on("click", countySelectionOnClickHandler)
+    .on("mouseenter", enterCountyBoundsHandler)
+    .on("mouseleave", leaveCountyBoundsHandler)
+    .on("mousemove", inCountyMovementHandler);
+
+  mapSvg.select("#state").select(`path#fips-${fipsCode}`).attr("fill", "none");
+
+  if (zoom) {
+    zoomToBounds(
+      mapSvg.select("#state").select(`path#fips-${fipsCode}`).datum()
+    );
+  }
 }
 
-function stateSelectionOnClickHandler(event, d) {
-  const fipsCode = this.id.slice(5, 7);
-  setSelectedState(fipsCode);
+function activateSelectedCounty(fipsCode, zoom = true) {
+  mapSvg
+    .select("#county")
+    .select(`#fips-${fipsCode}`)
+    .on("click", selectedCountyOnClickHandler);
+
+  if (zoom) {
+    zoomToBounds(mapSvg.select("#county").select(`#fips-${fipsCode}`).datum());
+  }
 }
 
-function countySelectionOnClickHandler(event, d) {
-  const fipsCode = this.id.slice(5, 10);
-  setSelectedCounty(fipsCode);
-}
+//
+// Map callout routines
+//
 
-function resetZoomOnClickHandler(event, d) {
-  resetOnClickHandlers();
-  resetZoom();
-}
-
-function drawMapCalloutInfo(fipsCode) {
+function drawMapCalloutInfo(data, fipsCode) {
   const height = 20;
   const width = 20;
   const margin = 10;
@@ -294,7 +367,7 @@ function drawMapCalloutInfo(fipsCode) {
     "Vaccination intent",
     "Safety and Side-effects",
   ];
-  const trends = latestCountyData.get(fipsCode);
+  const trends = data.get(fipsCode);
   let values;
   let colors;
   if (trends) {
@@ -348,15 +421,24 @@ function drawMapCalloutInfo(fipsCode) {
   });
 }
 
+function isInMapCallout(event) {
+  let elem = document.elementFromPoint(event.clientX, event.clientY);
+  if (elem && elem.id == "map-callout") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function moveMapCallout(event, d) {
   if (isInMapCallout(event)) {
     return;
   }
-  let callout = d3.select("div#map-callout");
-  let left = parseInt(callout.style("left"), 10);
-  let top = parseInt(callout.style("top"), 10);
 
-  let dist = Math.sqrt(
+  const callout = d3.select("div#map-callout");
+  const left = parseInt(callout.style("left"), 10);
+  const top = parseInt(callout.style("top"), 10);
+  const dist = Math.sqrt(
     Math.pow(left - event.pageX, 2) + Math.pow(top - event.pageY, 2)
   );
   if (dist > 45.0) {
@@ -366,23 +448,26 @@ function moveMapCallout(event, d) {
   }
 }
 
-function showMapCallout(event, d) {
+function showMapCallout(trendData, zoomFn, event, d) {
   if (isInMapCallout(event)) {
     return;
   }
 
-  let callout = d3.select("div#map-callout");
-  if (event.target.id.length == 10) {
-    const fipsCode = event.target.id.slice(5, 11);
-    callout.select("#map-callout-title").text(d.properties.name);
-    drawMapCalloutInfo(fipsCode);
-    callout
-      .style("left", event.pageX + 5 + "px")
-      .style("top", event.pageY + 5 + "px")
-      .transition()
-      .duration(500)
-      .style("display", "block");
-  }
+  const elemFipsCode = fipsCodeFromElementId(event.target.id);
+  drawMapCalloutInfo(trendData, elemFipsCode);
+
+  const callout = d3.select("div#map-callout");
+  callout.select("#map-callout-title").text(d.properties.name);
+  callout
+    .style("left", event.pageX + 5 + "px")
+    .style("top", event.pageY + 5 + "px")
+    .transition()
+    .duration(500)
+    .style("display", "block");
+
+  callout.select("#map-callout-zoom").on("click", (e, d) => {
+    zoomFn(elemFipsCode);
+  });
 }
 
 function hideMapCallout(event, d) {
@@ -396,55 +481,58 @@ function hideMapCallout(event, d) {
     .style("display", "none");
 }
 
-export function drawMap() {
-  mapSvg = d3
-    .select(".map")
-    .append("svg")
-    .attr("viewBox", [
-      -mapBounds.margin,
-      0,
-      mapBounds.width + mapBounds.margin,
-      mapBounds.height + mapBounds.margin,
-    ])
-    .style("margin-top", "15px");
+//
+// State level event handlers
+//
 
-  const g = mapSvg.append("g").attr("id", "transformer");
-  // keep in inverse order
-  g.append("g").attr("id", "zip");
-  g.append("g").attr("id", "county");
-  g.append("g").attr("id", "state");
-
-  d3.select("#county")
-    .selectAll("path")
-    .data(feature(us, us.objects.counties).features)
-    .join("path")
-    .attr("id", (d) => `fips-${d.id}`)
-    .attr("class", (d) => `county state-${d.id.slice(0, 2)}`)
-    .attr("d", path)
-    .attr("fill", "transparent")
-    .attr("stroke", "white")
-    .attr("stroke-width", 1)
-    .attr("vector-effect", "non-scaling-stroke");
-
-  d3.select("#state")
-    .selectAll("path")
-    .data(feature(us, us.objects.states).features)
-    .join("path")
-    .attr("id", (d) => {
-      return `fips-${d.id}`;
-    })
-    .attr("class", "state")
-    .attr("d", path)
-    .attr("fill", "transparent")
-    .attr("stroke", "black")
-    .attr("stroke-width", 0.5)
-    .attr("vector-effect", "non-scaling-stroke")
-    .on("click", stateSelectionOnClickHandler);
-
-  mapZoom = d3.zoom().scaleExtent([1, 100]).on("zoom", zoomHandler);
-  mapSvg.call(mapZoom);
+function stateSelectionOnClickHandler(event, d) {
+  setSelectedState(fipsCodeFromElementId(this.id));
 }
 
-function zoomHandler({ transform }) {
-  d3.select("#transformer").attr("transform", transform);
+function enterStateBoundsHandler(event, d) {
+  showMapCallout(latestStateData, setSelectedState, event, d);
+}
+
+function leaveStateBoundsHandler(event, d) {
+  hideMapCallout(event, d);
+}
+
+function inStateMovementHandler(event, d) {
+  moveMapCallout(event, d);
+}
+
+//
+// County level event handlers
+//
+function countySelectionOnClickHandler(event, d) {
+  activateSelectedCounty(fipsCodeFromElementId(this.id));
+}
+
+function enterCountyBoundsHandler(event, d) {
+  showMapCallout(latestCountyData, setSelectedCounty, event, d);
+}
+
+function leaveCountyBoundsHandler(event, d) {
+  hideMapCallout(event, d);
+}
+
+function inCountyMovementHandler(event, d) {
+  moveMapCallout(event, d);
+}
+
+function selectedCountyOnClickHandler(event, d) {
+  mapSvg
+    .select("#county")
+    .selectAll("path")
+    .attr("stroke-width", 0)
+    .on("click", null)
+    .on("mouseenter", null)
+    .on("mouseleave", null)
+    .on("mousemove", null);
+  mapSvg
+    .select("#state")
+    .selectAll("path")
+    .attr("fill", "transparent")
+    .attr("stroke-width", 1.0);
+  resetZoom();
 }

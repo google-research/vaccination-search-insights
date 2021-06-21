@@ -21,7 +21,7 @@
   import { onMount } from 'svelte';
   import {params} from "./stores";
   import * as d3 from "d3";
-  import { drawMap, setMapData, setMapTrend, setSelectedCounty, setSelectedState } from "./choropleth.js";
+  import { createMap, setMapTrend, setSelectedCounty, setSelectedState } from "./choropleth.js";
 
   let region: Region;
   let regions: Region[];
@@ -473,9 +473,12 @@
         })
         .attr("d", d => lineFn(trendLine(d)));
   }
+
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
-    latestRegionTwoData.then(() => setMapTrend(selectedMapTrendId));
+    Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
+	    setMapTrend(selectedMapTrendId);
+	  });
   }
 
  onMount(async () => {
@@ -502,10 +505,8 @@
        }
     })
 
-    drawMap();
-    latestRegionTwoData.then((latestCountyData) => {
-	    setMapData(latestCountyData);
-	    setMapTrend(selectedMapTrendId);
+    Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
+	    createMap(values[0], values[1], selectedMapTrendId);
 	  });
   });
 
@@ -601,7 +602,7 @@
           <p class="map-callout-text">Interest</p>
           <svg id="map-callout-info" />
 	  <div class="map-callout-controls">
-	    <button id="map-callout-zoom" class="map-callout-button" disabled="true" >Zoom</button>
+	    <button id="map-callout-zoom" class="map-callout-button" >Zoom</button>
 	    <button id="map-callout-trends" class="map-callout-button" disabled="true" >Trends</button>
           </div>
 	</div>
