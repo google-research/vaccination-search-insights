@@ -1,6 +1,10 @@
 name: github pages
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -16,6 +20,6 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/gh-pages'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public

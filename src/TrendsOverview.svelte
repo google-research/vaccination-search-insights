@@ -16,11 +16,12 @@
    */
   import AutoComplete from "simple-svelte-autocomplete";
   import type {Region, RegionalTrends, RegionalTrendLine, RegionalTrendAggregate} from "./data";
-  import {fetchRegionData, fetchRegionalTrendsData, fetchRegionalTrendLines, getLatestRegionData} from "./data";
+  import {fetchRegionData, fetchRegionalTrendsData, fetchRegionalTrendLines, getLatestRegionData, 
+    selectRegionOneTrends, selectRegionTwoTrends, subRegionOneCode, subRegionTwoCode} from "./data";
   import { onMount } from 'svelte';
   import {params} from "./stores";
   import * as d3 from "d3";
-  import { drawMap, setMapData, setMapTrend, setSelectedCounty, setSelectedState } from "./choropleth.js";
+  import { createMap, setMapTrend, setSelectedCounty, setSelectedState } from "./choropleth.js";
 
   let region: Region;
   let regions: Region[];
@@ -31,7 +32,10 @@
   let selectedMapTrendId:string = "vaccination";
 
   const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
-  const latestRegionData: Promise<Map<string, RegionalTrendAggregate>> = mapData.then((rtls) => getLatestRegionData(rtls));
+  const latestRegionOneData: Promise<Map<string, RegionalTrendAggregate>> = 
+    mapData.then((rtls) => getLatestRegionData(selectRegionOneTrends(rtls), subRegionOneCode));
+  const latestRegionTwoData: Promise<Map<string, RegionalTrendAggregate>> = 
+    mapData.then((rtls) => getLatestRegionData(selectRegionTwoTrends(rtls), subRegionTwoCode));
 
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
@@ -469,9 +473,12 @@
         })
         .attr("d", d => lineFn(trendLine(d)));
   }
+
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
-    latestRegionData.then(() => setMapTrend(selectedMapTrendId));
+    Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
+	    setMapTrend(selectedMapTrendId);
+	  });
   }
 
  onMount(async () => {
@@ -498,11 +505,9 @@
        }
     })
 
-    drawMap();
-    latestRegionData.then((latestCountyData) => {
-	setMapData(latestCountyData);
-	setMapTrend(selectedMapTrendId);
-	});
+    Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
+	    createMap(values[0], values[1], selectedMapTrendId);
+	  });
   });
 
   function onChangeHandler(selectedRegion: Region):void {
@@ -597,7 +602,7 @@
           <p class="map-callout-text">Interest</p>
           <svg id="map-callout-info" />
 	  <div class="map-callout-controls">
-	    <button id="map-callout-zoom" class="map-callout-button" disabled="true" >Zoom</button>
+	    <button id="map-callout-zoom" class="map-callout-button" >Zoom</button>
 	    <button id="map-callout-trends" class="map-callout-button" disabled="true" >Trends</button>
           </div>
 	</div>
