@@ -204,7 +204,7 @@ function drawLegend(color) {
   const margin = 20;
   const height = 20;
   const blockWidth = 40;
-  const labelWidth = 140;
+  const labelWidth = 60;
   const width = blockWidth * color.range().length;
 
   d3.select(".mapLegend").selectAll("*").remove();
@@ -249,7 +249,7 @@ function drawLegend(color) {
     .attr("y", height + margin + margin - 10)
     .attr("alignment-baseline", "central")
     .attr("class", "mapTrendRange")
-    .text("Relative query volume");
+    .text("Interest");
 
   svg
     .append("g")

@@ -607,7 +607,7 @@
                   {#if selectedMapTrendId == 'safety'}
                     <span class="material-icons map-trend-selector-active" >done</span>
                   {/if}
-                  Safety and Side-effect searches
+                  Safety and side effect searches
           </button>
         </div>
         <!-- map header/legend -->
