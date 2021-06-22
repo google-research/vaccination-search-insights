@@ -23,7 +23,7 @@
   import * as d3 from "d3";
   import { createMap, setMapTrend, setSelectedCounty, setSelectedState } from "./choropleth.js";
 
-  let region: Region;
+  let selectedRegion: Region;
   let regions: Region[];
   let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   let placeId: string;
@@ -51,10 +51,26 @@
   const chartWidth: number = 800 - chartMargin.left - chartMargin.right;
   const chartHeight: number = 400 - chartMargin.top - chartMargin.bottom;
 
+  function getLegendComponentText(): string {
+    if (selectedRegion.sub_region_3) {
+      return "";
+    }
+    if (selectedRegion.sub_region_2) {
+      return "Zipcodes";
+    }
+    if (selectedRegion.sub_region_1) {
+      return "Counties";
+    }
+    if (selectedRegion.country_region) {
+      return "States";
+    }
+  }
+
   // TODO(patankar): Generalize this to allow for different selections.
   function generateTrendChartLegend(el: HTMLElement) {
 
     const legendContainerElement: HTMLElement = el.querySelector(".chartLegendContainer");
+    const legendComponentText: string = getLegendComponentText();
 
     d3.select(legendContainerElement)
       .selectAll("*")
@@ -77,22 +93,24 @@
         .attr("class", "trendChartLegendText")
         .text(selectedRegionName);
 
-    d3.select(legendContainerElement)
-      .append("div")
-        .attr("class", "trendChartLegendRectContainer")
-      .append("svg")
-      .append("g")
-	    .append("rect")
-        .attr("width", 16)
-        .attr("height", 4)
-        .attr("fill", "#BDC1C6");
+    if (legendComponentText) {
+      d3.select(legendContainerElement)
+        .append("div")
+          .attr("class", "trendChartLegendRectContainer")
+        .append("svg")
+        .append("g")
+        .append("rect")
+          .attr("width", 16)
+          .attr("height", 4)
+          .attr("fill", "#BDC1C6");
 
-    d3.select(legendContainerElement)
-      .append("div")
-        .attr("class", "trendChartLegendTextContainer")
-      .append("text")
-        .attr("class", "trendChartLegendText")
-        .text("Other Counties");
+      d3.select(legendContainerElement)
+        .append("div")
+          .attr("class", "trendChartLegendTextContainer")
+        .append("text")
+          .attr("class", "trendChartLegendText")
+          .text(legendComponentText);
+    }
   }
 
   function generateTrendChartHoverCard(el: HTMLElement, trendLine, data: RegionalTrends[], dates: Date[], xScale) {
@@ -132,7 +150,7 @@
       .append("td")
         .attr("id", "hoverCardSelectedName")
         .attr("class", "hoverCardName")
-        .text(region.sub_region_2);
+        .text(selectedRegionName);
 
     const hoverCardSelectedValue: Selection = hoverCardSelected
       .append("td")
@@ -246,21 +264,26 @@
         .text(formatDateForDisplay(closestDate));
 
       const selectedValue: number = selectedDataByDate.get(formatDateForStorage(closestDate));
-      const placeValues: { place_id: string, value: number }[] = dataByDate.get(formatDateForStorage(closestDate));
-      const { min, max } = findMinAndMax(placeValues);
-      const minPlaceId: string = min.place_id;
-      const minRegion: Region = regionsByPlaceId.get(minPlaceId);
-      const minValue: number = min.value;
-      const maxPlaceId: string = max.place_id;
-      const maxRegion: Region = regionsByPlaceId.get(maxPlaceId);
-      const maxValue: number = max.value;
-
-      // TODO(patankar): Generalize which field is used for country/state/county selections.
       hoverCardSelectedValue.text(Math.round(selectedValue));
-      hoverCardHighName.text(maxRegion.sub_region_2);
-      hoverCardHighValue.text(Math.round(maxValue));
-      hoverCardLowName.text(minRegion.sub_region_2);
-      hoverCardLowValue.text(Math.round(minValue));
+
+      if (dataByDate.size > 0) {
+        const placeValues: { place_id: string, value: number }[] = dataByDate.get(formatDateForStorage(closestDate));
+        const { min, max } = findMinAndMax(placeValues);
+        const minPlaceId: string = min.place_id;
+        const minRegion: Region = regionsByPlaceId.get(minPlaceId);
+        const minValue: number = min.value;
+        const maxPlaceId: string = max.place_id;
+        const maxRegion: Region = regionsByPlaceId.get(maxPlaceId);
+        const maxValue: number = max.value;
+
+        hoverCardHighName.text(getRegionName(maxRegion));
+        hoverCardHighValue.text(Math.round(maxValue));
+        hoverCardLowName.text(getRegionName(minRegion));
+        hoverCardLowValue.text(Math.round(minValue));
+      } else {
+        hoverCardHigh.attr("class", "hoverCard inactive");
+        hoverCardLow.attr("class", "hoverCard inactive");
+      }
 
       // Determine which side of the vertical line the hover card should be on and calculate the overall position.
       const hoverCardRect = hoverCardElement.getBoundingClientRect();
@@ -385,9 +408,22 @@
 
     let data:RegionalTrends[] = regionalTrends.filter((regionalTrend) => {
       const region = regionsByPlaceId.get(regionalTrend.key);
-      const selectedRegion = regionsByPlaceId.get(placeId);
+      let inSelectedRegion: boolean;
 
-      return region?.sub_region_1 === selectedRegion?.sub_region_1;
+      if (selectedRegion.sub_region_2) {
+        // County is selected, want component zipcodes.
+        inSelectedRegion = region.sub_region_2_code === selectedRegion.sub_region_2_code;
+      }
+      else if (selectedRegion.sub_region_1) {
+        // State is selected, want component counties.
+        inSelectedRegion = !region.sub_region_3 && region.sub_region_1_code === selectedRegion.sub_region_1_code;
+      }
+      else if (selectedRegion.country_region) {
+        // Country is selected, want component states.
+        inSelectedRegion = !region.sub_region_2 && region.country_region_code === selectedRegion.country_region_code;
+      }
+
+      return inSelectedRegion || region.place_id === selectedRegion.place_id;
     });
 
     const dates: Date[] = trendLine(regionalTrends[0]).map(trend => convertStorageDate(trend.date));
@@ -481,6 +517,37 @@
 	  });
   }
 
+  function getRegionName(region: Region): string {
+    let regionName: string;
+
+    if (region.sub_region_3) {
+      regionName = region.sub_region_3;
+
+      if (region.sub_region_2) {
+        regionName += `, ${region.sub_region_2}`;
+      }
+    }
+    else if (region.sub_region_2) {
+      regionName = region.sub_region_2;
+
+      if (region.sub_region_1) {
+        regionName += `, ${region.sub_region_1}`;
+      }
+    }
+    else if (region.sub_region_1) {
+      regionName = region.sub_region_1;
+
+      if (region.country_region) {
+        regionName += `, ${region.country_region}`;
+      }
+    }
+    else if (region.country_region) {
+      regionName = region.country_region;
+    }
+
+    return regionName;
+  }
+
  onMount(async () => {
               
     regions = await fetchRegionData();
@@ -492,13 +559,13 @@
     regionalTrends = await fetchRegionalTrendsData();
 
     if (placeId) {
-      region = regionsByPlaceId.get(placeId);
+      selectedRegion = regionsByPlaceId.get(placeId);
     }
     params.subscribe((param) => {
       placeId = param.placeId;
       if (placeId) {
-        region = regionsByPlaceId.get(placeId);
-        selectedRegionName = region.sub_region_2 + ", " + region.sub_region_1;
+        selectedRegion = regionsByPlaceId.get(placeId);
+        selectedRegionName = getRegionName(selectedRegion);
         generateTrendChart(covid19VaccinationChartContainer, (t) => {return t.value.covid19_vaccination;});
         generateTrendChart(vaccinationIntentChartContainer, (t) => {return t.value.vaccination_intent;});
         generateTrendChart(safetySideEffectsChartContainer, (t) => {return t.value.safety_side_effects;});
@@ -549,10 +616,10 @@
       <div class="header-search-container">
         <AutoComplete
           items={regions}
-          bind:selectedItem={region}
+          bind:selectedItem={selectedRegion}
           placeholder={'United States'}
           labelFunction={
-          region => region?region.sub_region_2 + ", " + region.sub_region_1 : null
+            region => getRegionName(region)
           }
           onChange={onChangeHandler}
           inputClassName={"header-search-box"}
