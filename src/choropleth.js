@@ -249,7 +249,11 @@ function drawLegend(color) {
     .attr("y", height + margin + margin - 10)
     .attr("alignment-baseline", "central")
     .attr("class", "mapTrendRange")
-    .text("Interest");
+    .text("Interest")
+    .append("title")
+    .text(
+      "A scaled value, showing relative interest, that you can compare across regions and times."
+    );
 
   svg
     .append("g")
