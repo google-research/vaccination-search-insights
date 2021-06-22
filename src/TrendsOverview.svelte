@@ -682,10 +682,6 @@
           <h3 id="map-callout-title" class="map-callout-title">Region Name</h3>
           <p class="map-callout-text">Interest</p>
           <svg id="map-callout-info" />
-	  <div class="map-callout-controls">
-	    <button id="map-callout-zoom" class="map-callout-button" >Zoom</button>
-	    <button id="map-callout-trends" class="map-callout-button" disabled="true" >Trends</button>
-          </div>
 	</div>
         <div class="mapLegendContainer">
           <div class="mapLegend" />

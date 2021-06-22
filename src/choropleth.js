@@ -464,10 +464,6 @@ function showMapCallout(trendData, zoomFn, event, d) {
     .transition()
     .duration(500)
     .style("display", "block");
-
-  callout.select("#map-callout-zoom").on("click", (e, d) => {
-    zoomFn(elemFipsCode);
-  });
 }
 
 function hideMapCallout(event, d) {
