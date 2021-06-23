@@ -74,7 +74,6 @@ let regionalTrendLines: RegionalTrendLine[];
 function serializePromises<T>(immediate: ()=>Promise<T>): ()=>Promise<T> {
   // This works as our promise queue
   let last: Promise<any> = Promise.resolve();
-  console.log("Creating a serialized function");
   return function () {
     // Catch is necessary here — otherwise a rejection in a promise will
     // break the serializer forever
