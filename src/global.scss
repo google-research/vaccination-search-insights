@@ -20,7 +20,10 @@
 
 body {
   font-family: g.$body-font;
+  font-weight: g.$body-weight;
   color: g.$body-text;
+  font-size: 16px;
+  line-height: 26px;
   margin-left: g.$minimum-body-margin;
   margin-right: g.$minimum-body-margin;
   background-color: g.$body-background-color;
@@ -44,6 +47,11 @@ h2 {
 h3 {
   @include header-font;
   font-size: 1.375rem;
+}
+
+a {
+  color: g.$link-blue;
+  text-decoration: none;
 }
 
 header {
@@ -163,11 +171,6 @@ footer {
 .link-item-anchor {
   color: inherit;
   text-decoration: none;
-}
-
-.overview-copy {
-  font-size: 0.8rem;
-  line-height: 1.5rem;
 }
 
 .content-area {
@@ -403,6 +406,22 @@ footer {
   font-family: g.$body-font;
   font-size: 14px;
   font-weight: g.$body-weight;
+}
+
+.next-steps-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.next-steps-item {
+  width: 50%;
+}
+
+.next-steps-icon-placeholder {
+  color: #f2f2f2;
+  background-color: #f2f2f2;
+  border: 1px dashed #828282;
 }
 
 .footer-referencebar {

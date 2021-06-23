@@ -649,19 +649,10 @@
       <h1>
         COVID-19 Vaccine Information Search Trends
       </h1>
-      <p class="overview-copy">
-        COVID-19 Vaccine Search Insights show aggregated, anonymized trends in Google searches for topics related
-        to vaccine access, side-effects and other questions about COVID-19 vaccines. The dataset provides a time
-        series for each region showing the relative volume of searches for the most popular topics. This data is
-        intended to provide insights into the public’s information needs and concerns about COVID-19 vaccinations.
-      </p>
-      <p class="overview-copy">
-        You can start working with the data by using the visualizations on this page or downloading the data. The
-        content on this page is preliminary and incomplete - additional data and exploration features are coming soon.
-        We hope you find this useful in the meantime - your feedback will help us extend and refine the tools.
-        For more information about the dataset, how we generate it and preserve privacy, read the data documentation.
-        We’re developing data pipelines and visualizations to help officials understand the public’s information needs
-        and concerns. This work is in progress. Learn more about VIIP.
+      <p>
+        Explore searches for COVID-19 vaccination topics by region. This aggregated and anonymized data helps you 
+        understand and compare communities' information needs. We’re releasing this data to inform public health 
+        vaccine-confidence efforts.
       </p>
       {#await regionalTrends}
       <!-- Empty -->
@@ -670,7 +661,8 @@
         <div class="mapTrendSelectorGroup">
           <button id="vaccination"
                   class="{(selectedMapTrendId == 'vaccination' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
-                  on:click={onChangeMapTrend}>
+                  on:click={onChangeMapTrend}
+                  title="Search interest in any aspect of COVID-19 vaccination. A scaled value that you can compare across regions and times." >
                   {#if selectedMapTrendId == 'vaccination'}
                     <span class="material-icons map-trend-selector-active" >done</span>
                   {/if}
@@ -678,7 +670,9 @@
           </button>
           <button id="intent"
                   class="{(selectedMapTrendId == 'intent' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
-                  on:click={onChangeMapTrend}>
+                  on:click={onChangeMapTrend}
+                  title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times.
+" >
                   {#if selectedMapTrendId == 'intent'}
                     <span class="material-icons map-trend-selector-active" >done</span>
                   {/if}
@@ -686,7 +680,8 @@
           </button>
           <button id="safety"
                   class="{(selectedMapTrendId == 'safety' ) ? 'mapTrendSelector selectedTrend' : 'mapTrendSelector'}"
-                  on:click={onChangeMapTrend}>
+                  on:click={onChangeMapTrend}
+                  title="Search interest in the safety and side effects of COVID-19 vaccines. A scaled value that you can compare across regions and times." >
                   {#if selectedMapTrendId == 'safety'}
                     <span class="material-icons map-trend-selector-active" >done</span>
                   {/if}
@@ -735,12 +730,76 @@
           width="{chartWidth + chartMargin.left + chartMargin.right}"
           height="{chartHeight + chartMargin.top + chartMargin.bottom}" />
       </div>
-      <h2>Next steps</h2>
-      <p class="overview-copy">
-        We’re developing other data pipelines to show what people are searching for in more detail such as specific side-effects,
-        vaccine sources, etc. Please email us at <a href="mailto:covid-19-search-trends-feedback@google.com">
-          covid-19-search-trends-feedback@google.com</a> with any feedback or problems you have.
+      <h2>About this data</h2>
+      <p>
+        You can use this data to compare search interest between topics related to COVID-19 vaccination. The value for 
+        search interest isn’t an absolute number of searches—it’s a value representing relative interest which we scale 
+        to make it easier to compare regions with one another, or the same region over time. If you’d like to know more 
+        about our calculation and process, visit <a href="http://todo">technical docs</a>.
       </p>
+      <h2>How to best use this data</h2>
+      <p>
+        We used the same normalization and scaling everywhere so that you can make these comparisons:
+      </p>
+      <ul>
+        <li>Compare a region with others to see where you might focus effort.</li>
+        <li>
+          Compare a region over time to see how your community’s information needs have 
+          changed or see the impact of your communication efforts and news events.
+        </li>
+      </ul>
+      <p>
+        Remember, the data shows people’s interest—not opinions or actual events. You can’t conclude that a community is 
+        suffering from many side effects because there’s increased interest in the safety and side effects category. 
+      </p>
+      <h2>Protecting privacy</h2>
+      <p>
+        We developed the Vaccine Search Insights to be helpful while adhering to our stringent privacy protocols and protecting 
+        people’s privacy. No individual search queries or other personally identifiable information are made available at any point. 
+        For this data, we use <a href="https://www.youtube.com/watch?v=FfAdemDkLsc&feature=youtu.be&hl=en">differential privacy, </a>
+        which adds artificial noise to our data while enabling high quality results without identifying any individual person.
+      </p>
+      <p>
+        To learn more about the privacy methods used to generate the data, read the
+        <a href="http://todo" >privacy paper</a>.
+      </p>
+      <h2>Availability and updates</h2>
+      <p>
+        To download or use the data or insights, you must agree to the 
+        <a href="https://policies.google.com/terms">Google Terms of Service</a>.
+      </p>
+      <p>
+        We’ll update the data each week. You can check the dates in the charts to see the most recent day in the data. If you 
+        download the CSV, remember to get an updated version each week.
+      </p>
+      <p>
+        We'll continue to update this product while public health experts find it useful in their COVID-19 vaccination efforts. 
+        Our published data will remain publicly available to support long-term research and evaluation.
+      </p>
+      <div id="next-steps" class="next-steps-container">
+        <div class="next-steps-item">
+          <!-- TODO(tague): replace the place holder svgs with actual icons when available -->
+          <h3>Query the dataset</h3>
+          <svg width="260" height="150" class="next-steps-icon-placeholder" />
+          <p>
+            Get real-time insights using Google Cloud’s BigQuery. Analyse with SQL or call APIs from your code.
+          <p>
+          <p>
+            <a href="http://todo">Bigquery public dataset</a>
+          </p>
+        </div>
+        <div class="next-steps-item" >
+          <h3>Tell us about your project</h3>
+          <svg width="260" height="150" class="next-steps-icon-placeholder" />
+          <p>
+            We’d love to hear more about how you’re using Vaccination Search Insights. If you’ve solved problems, 
+            we’d like to help you share your solutions.
+          </p>
+          <p>
+            <a href="http://todo">Submission page</a>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
   <footer>
