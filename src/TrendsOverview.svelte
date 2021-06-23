@@ -762,6 +762,7 @@
       </p>
       <div id="next-steps" class="next-steps-container">
         <div class="next-steps-item">
+          <!-- TODO(tague): replace the place holder svgs with actual icons when available -->
           <h3>Query the dataset</h3>
           <svg width="260" height="150" class="next-steps-icon-placeholder" />
           <p>
