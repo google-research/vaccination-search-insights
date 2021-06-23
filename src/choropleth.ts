@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { mesh, feature } from "topojson-client";
+import { feature } from "topojson-client";
+import type { GeometryCollection } from 'topojson-specification';
 import {
   fipsCodeFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
+  getUsAtlas
 } from "./geo-utils";
 import * as d3 from "d3";
-import * as d3g from "d3-geo";
-import * as us from "us-atlas/counties-albers-10m.json";
 
 const path = d3.geoPath();
 const colorScaleVaccine = buildVaccineColorScale();
 const colorScaleIntent = buildIntentColorScale();
 const colorScaleSafety = buildSafetyColorScale();
 
-let mapSvg;
+let mapSvg: d3.Selection<SVGGElement,any,any,any>;
 let mapZoom;
 
 let latestStateData;
@@ -87,7 +87,7 @@ function initializeMap() {
       0,
       mapBounds.width + mapBounds.margin,
       mapBounds.height + mapBounds.margin,
-    ])
+    ].join(" "))
     .style("margin-top", "15px");
 
   const g = mapSvg.append("g").attr("id", "transformer");
@@ -95,12 +95,17 @@ function initializeMap() {
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
 
+  const topology = getUsAtlas();
+  const countyFeatures = feature(topology, (topology.objects.counties as GeometryCollection));
+  const stateFeatures = feature(topology, (topology.objects.states as GeometryCollection));
+
+
   d3.select("#county")
     .selectAll("path")
-    .data(feature(us, us.objects.counties).features)
+    .data(countyFeatures.features)
     .join("path")
     .attr("id", (d) => `fips-${d.id}`)
-    .attr("class", (d) => `state-${stateFipsCodeFromCounty(d.id)}`)
+    .attr("class", (d) => `state-${stateFipsCodeFromCounty(d.id as string)}`)
     .attr("d", path)
     .attr("fill", "none")
     .attr("stroke", "white")
@@ -109,7 +114,7 @@ function initializeMap() {
 
   d3.select("#state")
     .selectAll("path")
-    .data(feature(us, us.objects.states).features)
+    .data(countyFeatures.features)
     .join("path")
     .attr("id", (d) => `fips-${d.id}`)
     .attr("class", "state")
@@ -153,7 +158,7 @@ function colorizeMap(trend) {
     .selectAll("path")
     .join("path")
     .attr("fill", function (d) {
-      let id = fipsCodeFromElementId(this.id);
+      let id = fipsCodeFromElementId((this as Element).id);
       let data = latestCountyData.get(id);
       if (data) {
         if (accessor(data) === 0) {
@@ -209,7 +214,7 @@ function drawLegend(color) {
 
   d3.select(".mapLegend").selectAll("*").remove();
 
-  const svg = d3
+  const svg: d3.Selection<SVGSVGElement,any,any,any> = d3
     .select(".mapLegend")
     .append("svg")
     .attr("width", width + margin + margin + labelWidth)
@@ -220,16 +225,17 @@ function drawLegend(color) {
     )
     .style("overflow", "visible");
 
+  let colorRange = color.range();
   svg
     .append("g")
     .selectAll("rect")
-    .data(color.range())
+    .data(colorRange)
     .join("rect")
     .attr("x", (d, i) => labelWidth + i * blockWidth)
     .attr("y", height + margin)
     .attr("width", 40)
     .attr("height", 20)
-    .attr("fill", (d, i) => d);
+    .attr("fill", (d:string) => d);
 
   svg
     .append("g")
@@ -240,7 +246,7 @@ function drawLegend(color) {
     .attr("y", height + margin - 5)
     .attr("text-anchor", "middle")
     .attr("class", "mapTrendRange")
-    .text((d, i) => Math.round(d));
+    .text((d:number, i) => Math.round(d));
 
   svg
     .append("g")
@@ -263,7 +269,7 @@ function drawLegend(color) {
 
 function buildVaccineColorScale() {
   return d3
-    .scaleThreshold()
+    .scaleThreshold<number, string>()
     .domain([7, 14, 21, 28, 35, 42])
     .range([
       "#f7fbff",
@@ -278,7 +284,7 @@ function buildVaccineColorScale() {
 
 function buildIntentColorScale() {
   return d3
-    .scaleThreshold()
+    .scaleThreshold<number, string>()
     .domain([3, 6, 9, 12, 15, 18])
     .range([
       "#fff5eb",
@@ -293,7 +299,7 @@ function buildIntentColorScale() {
 
 function buildSafetyColorScale() {
   return d3
-    .scaleThreshold()
+    .scaleThreshold<number, string>()
     .domain([1.5, 2.8, 4.1, 5.4, 6.7, 8])
     .range([
       "#fff7f3",
@@ -448,13 +454,13 @@ function moveMapCallout(event, d) {
   }
 }
 
-function showMapCallout(trendData, zoomFn, event, d) {
+function showMapCallout(event, d) {
   if (isInMapCallout(event)) {
     return;
   }
 
   const elemFipsCode = fipsCodeFromElementId(event.target.id);
-  drawMapCalloutInfo(trendData, elemFipsCode);
+  drawMapCalloutInfo(d.data, elemFipsCode);
 
   const callout = d3.select("div#map-callout");
   callout.select("#map-callout-title").text(d.properties.name);
@@ -486,7 +492,7 @@ function stateSelectionOnClickHandler(event, d) {
 }
 
 function enterStateBoundsHandler(event, d) {
-  showMapCallout(latestStateData, setSelectedState, event, d);
+  showMapCallout(event, d);
 }
 
 function leaveStateBoundsHandler(event, d) {
@@ -505,7 +511,7 @@ function countySelectionOnClickHandler(event, d) {
 }
 
 function enterCountyBoundsHandler(event, d) {
-  showMapCallout(latestCountyData, setSelectedCounty, event, d);
+  showMapCallout(event, d);
 }
 
 function leaveCountyBoundsHandler(event, d) {

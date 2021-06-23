@@ -15,6 +15,7 @@
  */
 
 import { feature } from "topojson-client";
+import type { UsAtlas } from 'topojson';
 import * as us from "us-atlas/counties-albers-10m.json";
 
 export const regionOneToFipsCode: Map<string, string> = new Map([
@@ -87,4 +88,8 @@ export function stateFipsCodeFromCounty(countyFipsCode: string): string {
 
 export function fipsCodeFromElementId(id: string): string {
   return id.slice(5);
+}
+
+export function getUsAtlas(): UsAtlas{
+    return (us as unknown) as UsAtlas;
 }
