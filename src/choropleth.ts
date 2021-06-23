@@ -114,7 +114,7 @@ function initializeMap() {
 
   d3.select("#state")
     .selectAll("path")
-    .data(countyFeatures.features)
+    .data(stateFeatures.features)
     .join("path")
     .attr("id", (d) => `fips-${d.id}`)
     .attr("class", "state")
