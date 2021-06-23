@@ -15,13 +15,13 @@
  */
 
 import { feature } from "topojson-client";
-import type { GeometryCollection } from 'topojson-specification';
+import type { GeometryCollection } from "topojson-specification";
 import {
   buildRegionCodeToPlaceIdMapping,
   fipsCodeFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
-  getUsAtlas
+  getUsAtlas,
 } from "./geo-utils";
 import * as d3 from "d3";
 
@@ -30,7 +30,7 @@ const colorScaleVaccine = buildVaccineColorScale();
 const colorScaleIntent = buildIntentColorScale();
 const colorScaleSafety = buildSafetyColorScale();
 
-let mapSvg: d3.Selection<SVGGElement,any,any,any>;
+let mapSvg: d3.Selection<SVGGElement, any, any, any>;
 let mapZoom;
 
 let latestStateData;
@@ -68,8 +68,8 @@ export function createMap(stateData, countyData, trend, regions, selectionFn) {
   colorizeMap(trend);
 }
 
-export function setSelectedState(fipsCode) {
-  activateSelectedState(fipsCode, true);
+export function setSelectedState(regionOneCode) {
+  setSelectedStateByFipsCode(regionOneToFipsCode.get(regionOneCode));
 }
 
 export function setSelectedCounty(fipsCode) {
@@ -82,6 +82,9 @@ export function setMapTrend(trend) {
   colorizeMap(trend);
 }
 
+function setSelectedStateByFipsCode(fipsCode) {
+  activateSelectedState(fipsCode, true);
+}
 //
 // Map drawing routines
 //
@@ -89,12 +92,15 @@ function initializeMap() {
   mapSvg = d3
     .select(".map")
     .append("svg")
-    .attr("viewBox", [
-      -mapBounds.margin,
-      0,
-      mapBounds.width + mapBounds.margin,
-      mapBounds.height + mapBounds.margin,
-    ].join(" "))
+    .attr(
+      "viewBox",
+      [
+        -mapBounds.margin,
+        0,
+        mapBounds.width + mapBounds.margin,
+        mapBounds.height + mapBounds.margin,
+      ].join(" ")
+    )
     .style("margin-top", "15px");
 
   const g = mapSvg.append("g").attr("id", "transformer");
@@ -103,9 +109,14 @@ function initializeMap() {
   g.append("g").attr("id", "state");
 
   const topology = getUsAtlas();
-  const countyFeatures = feature(topology, (topology.objects.counties as GeometryCollection));
-  const stateFeatures = feature(topology, (topology.objects.states as GeometryCollection));
-
+  const countyFeatures = feature(
+    topology,
+    topology.objects.counties as GeometryCollection
+  );
+  const stateFeatures = feature(
+    topology,
+    topology.objects.states as GeometryCollection
+  );
 
   d3.select("#county")
     .selectAll("path")
@@ -207,8 +218,7 @@ function zoomToBounds(d) {
               )
           )
         )
-        .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-      d3.pointer(event, mapSvg.node())
+        .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
     );
 }
 
@@ -221,7 +231,7 @@ function drawLegend(color) {
 
   d3.select(".mapLegend").selectAll("*").remove();
 
-  const svg: d3.Selection<SVGSVGElement,any,any,any> = d3
+  const svg: d3.Selection<SVGSVGElement, any, any, any> = d3
     .select(".mapLegend")
     .append("svg")
     .attr("width", width + margin + margin + labelWidth)
@@ -242,7 +252,7 @@ function drawLegend(color) {
     .attr("y", height + margin)
     .attr("width", 40)
     .attr("height", 20)
-    .attr("fill", (d:string) => d);
+    .attr("fill", (d: string) => d);
 
   svg
     .append("g")
@@ -253,7 +263,7 @@ function drawLegend(color) {
     .attr("y", height + margin - 5)
     .attr("text-anchor", "middle")
     .attr("class", "mapTrendRange")
-    .text((d:number, i) => Math.round(d));
+    .text((d: number, i) => Math.round(d));
 
   svg
     .append("g")
@@ -499,7 +509,7 @@ function hideMapCallout(event, d) {
 //
 
 function stateSelectionOnClickHandler(event, d) {
-  setSelectedState(fipsCodeFromElementId(this.id));
+  setSelectedStateByFipsCode(fipsCodeFromElementId(this.id));
   selectionCallback(regionCodesToPlaceId.get(fipsCodeFromElementId(this.id)));
 }
 

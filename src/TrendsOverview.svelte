@@ -36,6 +36,8 @@
     mapData.then((rtls) => getLatestRegionData(selectRegionOneTrends(rtls), subRegionOneCode));
   const latestRegionTwoData: Promise<Map<string, RegionalTrendAggregate>> = 
     mapData.then((rtls) => getLatestRegionData(selectRegionTwoTrends(rtls), subRegionTwoCode));
+    
+  let isMapInitialized: boolean = false;
 
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
@@ -585,6 +587,10 @@
 
     Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
 	    createMap(values[0], values[1], selectedMapTrendId, regions, onMapSelection);
+      isMapInitialized = true;
+      if (selectedRegion) {
+        setMapSelection(selectedRegion);
+      }
 	  });
   });
 
@@ -594,12 +600,19 @@
         p.placeId = selectedRegion.place_id;
         return p;
       });
-      if(selectedRegion.sub_region_2_code){
-        setSelectedCounty(selectedRegion.sub_region_2_code);
-      }else if(selectedRegion.sub_region_1_code){
-        setSelectedState(selectedRegion.sub_region_1_code);
+      
+      if (isMapInitialized) {
+        setMapSelection(selectedRegion);
       }
     }
+  }
+  
+  function setMapSelection(selectedRegion: Region):void {
+    if(selectedRegion.sub_region_2_code){
+      setSelectedCounty(selectedRegion.sub_region_2_code);
+    }else if(selectedRegion.sub_region_1_code){
+      setSelectedState(selectedRegion.sub_region_1_code);
+    }   
   }
   
   function onMapSelection(id: string): void {
