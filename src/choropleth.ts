@@ -328,9 +328,9 @@ function activateSelectedState(fipsCode, zoom = true) {
     .selectAll("path")
     .attr("stroke-width", 0)
     .on("click", null)
-    .on("mouseenter", showMapCallout)
-    .on("mouseleave", hideMapCallout)
-    .on("mousemove", moveMapCallout);
+    .on("mouseenter", enterCountyBoundsHandler)
+    .on("mouseleave", leaveCountyBoundsHandler)
+    .on("mousemove", inCountyMovementHandler);
   mapSvg
     .select("#state")
     .selectAll("path")
@@ -461,13 +461,13 @@ function moveMapCallout(event, d) {
   }
 }
 
-function showMapCallout(event, d) {
+function showMapCallout(data, event, d) {
   if (isInMapCallout(event)) {
     return;
   }
 
   const elemFipsCode = fipsCodeFromElementId(event.target.id);
-  drawMapCalloutInfo(d.data, elemFipsCode);
+  drawMapCalloutInfo(data, elemFipsCode);
 
   const callout = d3.select("div#map-callout");
   callout.select("#map-callout-title").text(d.properties.name);
@@ -500,7 +500,7 @@ function stateSelectionOnClickHandler(event, d) {
 }
 
 function enterStateBoundsHandler(event, d) {
-  showMapCallout(event, d);
+  showMapCallout(latestStateData, event, d);
 }
 
 function leaveStateBoundsHandler(event, d) {
@@ -520,7 +520,7 @@ function countySelectionOnClickHandler(event, d) {
 }
 
 function enterCountyBoundsHandler(event, d) {
-  showMapCallout(event, d);
+  showMapCallout(latestCountyData, event, d);
 }
 
 function leaveCountyBoundsHandler(event, d) {
