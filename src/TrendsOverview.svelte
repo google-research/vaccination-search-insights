@@ -15,7 +15,7 @@
    * limitations under the License.
    */
   import AutoComplete from "simple-svelte-autocomplete";
-  import type {Region, RegionalTrends, RegionalTrendLine, RegionalTrendAggregate} from "./data";
+  import type {Region, RegionalTrends, RegionalTrendLine, RegionalTrendAggregate, TrendValue} from "./data";
   import {fetchRegionData, fetchRegionalTrendsData, fetchRegionalTrendLines, getLatestRegionData, 
     selectRegionOneTrends, selectRegionTwoTrends, subRegionOneCode, subRegionTwoCode} from "./data";
   import { onMount } from 'svelte';
@@ -28,7 +28,7 @@
   let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   let placeId: string;
   let selectedRegionName: string;
-  let regionalTrends: RegionalTrends[];
+  let regionalTrends: Map<string,RegionalTrends>;
   let selectedMapTrendId:string = "vaccination";
 
   const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
@@ -113,104 +113,109 @@
     }
   }
 
-  function generateTrendChartHoverCard(el: HTMLElement, trendLine, data: RegionalTrends[], dates: Date[], xScale) {
+  function generateTrendChartHoverCard(
+    el: HTMLElement, 
+    trendLine: (RegionalTrends)=>TrendValue[], 
+    data: RegionalTrends[], 
+    dates: Date[], 
+    xScale) {
 
     const trendlineHoverCardMargin: number = 7;
 
-    const chartElement: HTMLElement = el.querySelector(".chart");
-    const verticalLineElement: HTMLElement = el.querySelector(".trendChartVerticalLine");
-    const hoverCardElement: HTMLElement = el.querySelector(".hoverCard");
-    const verticalLine: Selection = d3.select(verticalLineElement);
-    const hoverCard: Selection = d3.select(hoverCardElement);
+    const chartElement = el.querySelector(".chart");
+    const verticalLineElement = el.querySelector(".trendChartVerticalLine");
+    const hoverCardElement = el.querySelector(".hoverCard");
+    const verticalLine = d3.select(verticalLineElement);
+    const hoverCard = d3.select(hoverCardElement);
 
     hoverCard
       .selectAll("*")
       .remove();
 
-    const hoverCardDate: Selection = hoverCard
+    const hoverCardDate = hoverCard
       .append("text")
         .attr("class", "hoverCardDate");
 
-    const hoverCardTable: Selection = hoverCard
+    const hoverCardTable = hoverCard
       .append("table")
         .attr("class", "hoverCardTable");
 
     // Each of the hover card rows has three entities: the icon (rectangle or "High"/"Low"), the name of the selected region, and the value for the selected region on the selected date.
-    const hoverCardSelected: Selection = hoverCardTable
+    const hoverCardSelected = hoverCardTable
       .append("tr")
         .attr("id", "hoverCardSelected");
 
-    const hoverCardSelectedIcon: Selection = hoverCardSelected
+    const hoverCardSelectedIcon = hoverCardSelected
       .append("td")
       .append("div")
         .attr("id", "hoverCardSelectedIcon")
         .attr("class", `hoverCardSelectedIcon ${el.id}`);
 
-    const hoverCardSelectedName: Selection = hoverCardSelected
+    const hoverCardSelectedName = hoverCardSelected
       .append("td")
         .attr("id", "hoverCardSelectedName")
         .attr("class", "hoverCardName")
         .text(selectedRegionName);
 
-    const hoverCardSelectedValue: Selection = hoverCardSelected
+    const hoverCardSelectedValue = hoverCardSelected
       .append("td")
         .attr("id", "hoverCardSelectedValue")
         .attr("class", "hoverCardValue");
 
-    const hoverCardHigh: Selection = hoverCardTable
+    const hoverCardHigh = hoverCardTable
       .append("tr")
         .attr("id", "hoverCardHigh");
 
-    const hoverCardHighIcon: Selection = hoverCardHigh
+    const hoverCardHighIcon = hoverCardHigh
       .append("td")
         .attr("id", "hoverCardHighIcon")
         .attr("class", "hoverCardIconText")
         .text("High");
 
-    const hoverCardHighName: Selection = hoverCardHigh
+    const hoverCardHighName = hoverCardHigh
       .append("td")
         .attr("id", "hoverCardHighName")
         .attr("class", "hoverCardName");
 
-    const hoverCardHighValue: Selection = hoverCardHigh
+    const hoverCardHighValue = hoverCardHigh
       .append("td")
         .attr("id", "hoverCardHighValue")
         .attr("class", "hoverCardValue");
 
-    const hoverCardLow: Selection = hoverCardTable
+    const hoverCardLow = hoverCardTable
       .append("tr")
         .attr("id", "hoverCardLow");
 
-    const hoverCardLowIcon: Selection = hoverCardLow
+    const hoverCardLowIcon = hoverCardLow
       .append("td")
         .attr("id", "hoverCardLowIcon")
         .attr("class", "hoverCardIconText")
         .text("Low");
 
-    const hoverCardLowName: Selection = hoverCardLow
+    const hoverCardLowName = hoverCardLow
       .append("td")
         .attr("id", "hoverCardLowName")
         .attr("class", "hoverCardName");
 
-    const hoverCardLowValue: Selection = hoverCardLow
+    const hoverCardLowValue = hoverCardLow
       .append("td")
         .attr("id", "hoverCardLowValue")
         .attr("class", "hoverCardValue");
 
-    const dataByDate: Map<string, { place_id: string, value: number }[]> = new Map<string, { place_id: string, value: number }[]>();
-    const selectedDataByDate: Map<string, number> = new Map<string, number>();
+    const dataByDate = new Map<string, { place_id: string, value: number }[]>();
+    const selectedDataByDate = new Map<string, number>();
 
     data.forEach((regionalTrend) => {
       const trendValues = trendLine(regionalTrend);
 
       trendValues.forEach((trendValue) => {
-        if (regionalTrend.key === placeId) {
+        if (regionalTrend.place_id === placeId) {
           selectedDataByDate.set(trendValue.date, trendValue.value);
         } else {
           if (dataByDate.has(trendValue.date)) {
-            dataByDate.get(trendValue.date).push({ place_id: regionalTrend.key, value: trendValue.value });
+            dataByDate.get(trendValue.date).push({ place_id: regionalTrend.place_id, value: trendValue.value });
           } else {
-            dataByDate.set(trendValue.date, [{ place_id: regionalTrend.key, value: trendValue.value }]);
+            dataByDate.set(trendValue.date, [{ place_id: regionalTrend.place_id, value: trendValue.value }]);
           }
         }
       });
@@ -233,7 +238,7 @@
     }
 
     const chartMouseMove = function (d) {
-      dates.sort((a, b) => a - b);
+      dates.sort((a, b) => a.getTime() - b.getTime());
 
       const eventX: number = d3.pointer(event)[0];
       const eventY: number = d3.pointer(event)[1];
@@ -248,7 +253,7 @@
       let closestDateX: number;
       let hoverCardX: number;
 
-      if ((hoveredDate - earlierDate) < (laterDate - hoveredDate)) {
+      if ((hoveredDate.getTime() - earlierDate.getTime()) < (laterDate.getTime() - hoveredDate.getTime())) {
         closestDate = earlierDate;
       } else {
         closestDate = laterDate;
@@ -329,7 +334,7 @@
 
   function formatDateForDisplay(date: Date): string {
 
-    const options = { month: "short", day: "numeric", year: "numeric" };
+    const options: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", year: "numeric" };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   }
 
@@ -351,20 +356,24 @@
 
     return new Date(adjustedTime);
   }
+  
+  type HtmlSelection = d3.Selection<HTMLElement,any, any, any>;
+  type SvgSelection = d3.Selection<SVGGElement,any, any, any>;
+  type ElementSection = HtmlSelection | SvgSelection;
 
-  function generateTrendChart(el: HTMLElement, trendLine) { 
+  function generateTrendChart(el: HTMLElement, trendLine: (t:RegionalTrends)=>TrendValue[]) { 
 
     const chartElement: HTMLElement = el.querySelector(".chart");
-    const chartAreaElement: HTMLElement = chartElement.querySelector("g");
-    const xElement: HTMLElement = el.querySelector(".x.axis");
-    const yElement: HTMLElement = el.querySelector(".y.axis");
-    const pathsElement: HTMLElement = el.querySelector(".paths");
+    const chartAreaElement: SVGGElement = chartElement.querySelector("g");
+    const xElement: SVGGElement = el.querySelector(".x.axis");
+    const yElement: SVGGElement = el.querySelector(".y.axis");
+    const pathsElement: SVGGElement = el.querySelector(".paths");
     const verticalLineElement: HTMLElement = el.querySelector(".trendChartVerticalLine");
-    let chartArea: Selection;
-    let x: Selection;
-    let y: Selection;
-    let paths: Selection;
-    let verticalLine: Selection;
+    let chartArea: ElementSection;
+    let x: SvgSelection;
+    let y: SvgSelection;
+    let paths: SvgSelection;
+    let verticalLine: ElementSection;
 
     if (chartAreaElement) {
       chartArea = d3.select(chartAreaElement);
@@ -392,8 +401,7 @@
     if (pathsElement) {
       paths = d3.select(pathsElement);
     } else {
-      paths = chartArea.append("g")
-        .attr("class", "paths");
+      paths = chartArea.append("g").attr("class", "paths");
     }
 
     if (verticalLineElement) {
@@ -406,8 +414,8 @@
           .attr("y2", chartHeight);
     }
 
-    let data:RegionalTrends[] = regionalTrends.filter((regionalTrend) => {
-      const region = regionsByPlaceId.get(regionalTrend.key);
+    let data: RegionalTrends[] = Array.from(regionalTrends.values()).filter(t=>{
+      const region = regionsByPlaceId.get(t.place_id);
       let inSelectedRegion: boolean;
 
       if (selectedRegion.sub_region_2) {
@@ -426,19 +434,18 @@
       return inSelectedRegion || region.place_id === selectedRegion.place_id;
     });
 
-    const dates: Date[] = trendLine(regionalTrends[0]).map(trend => convertStorageDate(trend.date));
+    const dates: Date[] = trendLine(data[0]).map(trend => convertStorageDate(trend.date));
 
     let xScale = d3.scaleTime()
       .range([0, chartWidth])
       .domain(d3.extent(dates));
-    let xAxis = d3.axisBottom(xScale).ticks(5).tickSizeOuter(0);
+    let xAxis: d3.Axis<Date | d3.NumberValue> = d3.axisBottom(xScale).ticks(5).tickSizeOuter(0);
 
-    let max =
-      data.map((region) => d3.max(trendLine(region), (trendValue) => {return trendValue.value;}));
+    let max = d3.max(data.flatMap(region => trendLine(region).map(trend=>trend.value)));
 
     let yScale = d3.scaleLinear()
       .range([chartHeight, 0])
-      .domain([0, d3.max(max)]);
+      .domain([0, max]);
     let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartWidth);
 
     // TODO(patankar): Define constants for styling.
@@ -482,32 +489,30 @@
     generateTrendChartLegend(el);
     generateTrendChartHoverCard(el, trendLine, data, dates, xScale);
 
-    let lineFn = d3.line()
+    let lineFn = d3.line<TrendValue>()
           .defined((d) => !isNaN(d.value))
           .x((d) => xScale(new Date(d.date)))
           .y((d) => yScale(d.value))
           .curve(d3.curveLinear);
 
-    paths
-      .selectAll("path")
-      .data(data, d => d.key)
+    paths.selectAll("path")
+      .data(data, (d:RegionalTrends) => d.place_id)
       .join("path")
-        .sort((a, b) => {
-          if (a.key != placeId) {
-            return -1;
-          }
-
-          return 1;
-        })
-        .attr("id", d=> d.key)
-        .attr("class", (regionalTrend) => {
-          if (regionalTrend.key === placeId) {
-            return `trendline trendline-selected ${el.id}`;
-          } else {
-            return "trendline";
-          }
-        })
-        .attr("d", d => lineFn(trendLine(d)));
+      .sort((a, b) => {
+        if (a.place_id != placeId) {
+          return -1;
+        }
+        return 1;
+      })
+      .attr("id", d=> d.place_id)
+      .attr("class", (regionalTrend) => {
+        if (regionalTrend.place_id === placeId) {
+          return `trendline trendline-selected ${el.id}`;
+        } else {
+          return "trendline";
+        }
+      })
+      .attr("d", d => lineFn(trendLine(d)));
   }
 
   function onChangeMapTrend(): void {
@@ -519,7 +524,9 @@
 
   function getRegionName(region: Region): string {
     let regionName: string;
-
+    if(!region){
+      return "";
+    }
     if (region.sub_region_3) {
       regionName = region.sub_region_3;
 
@@ -550,25 +557,23 @@
 
  onMount(async () => {
               
-    regions = await fetchRegionData();
-    regions.forEach((region) => {
-      // TODO(patankar): Clean up after component refactor to avoid redundancies like this one.
-      regionsByPlaceId.set(region.place_id, region);
-      });
-
+    regionsByPlaceId = await fetchRegionData();
     regionalTrends = await fetchRegionalTrendsData();
 
     if (placeId) {
       selectedRegion = regionsByPlaceId.get(placeId);
     }
+
+    regions = Array.from(regionsByPlaceId.values());
     params.subscribe((param) => {
       placeId = param.placeId;
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
-        generateTrendChart(covid19VaccinationChartContainer, (t) => {return t.value.covid19_vaccination;});
-        generateTrendChart(vaccinationIntentChartContainer, (t) => {return t.value.vaccination_intent;});
-        generateTrendChart(safetySideEffectsChartContainer, (t) => {return t.value.safety_side_effects;});
+
+        generateTrendChart(covid19VaccinationChartContainer, (t: RegionalTrends) => {return t.trends.covid19_vaccination;});
+        generateTrendChart(vaccinationIntentChartContainer, (t: RegionalTrends) => {return t.trends.vaccination_intent;});
+        generateTrendChart(safetySideEffectsChartContainer, (t: RegionalTrends) => {return t.trends.safety_side_effects;});
        }
     })
 
@@ -618,9 +623,7 @@
           items={regions}
           bind:selectedItem={selectedRegion}
           placeholder={'United States'}
-          labelFunction={
-            region => getRegionName(region)
-          }
+          labelFunction={getRegionName}
           onChange={onChangeHandler}
           inputClassName={"header-search-box"}
           className={"header-search-container"} />
