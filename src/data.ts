@@ -70,6 +70,18 @@ let regions: Map<string,Region>;
 let regionalTrends: Map<string,RegionalTrends>;
 let regionalTrendLines: RegionalTrendLine[];
 
+//https://thoughtspile.github.io/2018/06/20/serialize-promises/
+function serializePromises<T>(immediate: ()=>Promise<T>): ()=>Promise<T> {
+  // This works as our promise queue
+  let last: Promise<any> = Promise.resolve();
+  return function () {
+    // Catch is necessary here — otherwise a rejection in a promise will
+    // break the serializer forever
+    last = last.catch(() => {}).then(() => immediate());
+    return last;
+  }
+};
+
 /**
  * Methods for getting all remote data, like regions and trends
  */
@@ -77,22 +89,23 @@ export function fetchRegionData(): Promise<Map<string,Region>> {
   if (regions) {
     return Promise.resolve(regions);
   } else {
-    let regions = new Promise<Map<string,Region>>((resolve, reject) => {
+    let regionPromise = new Promise<Map<string,Region>>((resolve, reject) => {
       parse("./data/regions.csv", {
         download: true,
         header: true,
         complete: function (results: ParseResult<Region>) {
-          console.log(`Received the data, with ${results.data.length} rows`);
+          console.log(`Received region data, with ${results.data.length} rows`);
           const regionMap = results.data.reduce((acc,region)=>{
             acc.set(region.place_id,region);
             return acc;
           },new Map<string,Region>());
+          regions = regionMap;
           resolve(regionMap);
         },
       });
     });
     
-    return regions;
+    return regionPromise;
   }
 }
 
@@ -104,7 +117,11 @@ function coerceNumber(u: unknown){
   }
 }
 
-export function fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
+//During initialization it's possible this is called twice in succession before we get a chance to cache the result.
+//So let's serialize access to make sure we don't do a double request
+export const fetchRegionalTrendLines:()=>Promise<RegionalTrendLine[]> = serializePromises(_fetchRegionalTrendLines);
+
+function _fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
   if (regionalTrendLines) {
     return Promise.resolve(regionalTrendLines);
   } else {
@@ -137,6 +154,7 @@ export function fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
               };
               return parsedRow;
             });
+            regionalTrendLines = mappedData;
             resolve(mappedData);
           },
         });
@@ -192,7 +210,7 @@ export function fetchRegionalTrendsData(): Promise<Map<string,RegionalTrends>> {
         acc.set(trend.key,trend.value);
         return acc;
       },new Map<string,RegionalTrends>());
-      
+      regionalTrends = trends;
       return trends;
     });
   }
