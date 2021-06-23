@@ -578,7 +578,7 @@
     })
 
     Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
-	    createMap(values[0], values[1], selectedMapTrendId);
+	    createMap(values[0], values[1], selectedMapTrendId, regions, onMapSelection);
 	  });
   });
 
@@ -594,6 +594,13 @@
         setSelectedState(selectedRegion.sub_region_1_code);
       }
     }
+  }
+  
+  function onMapSelection(id: string): void {
+    params.update((p) => {
+      p.placeId = id;
+      return p;
+    });
   }
 
 </script>

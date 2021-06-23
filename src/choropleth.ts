@@ -17,6 +17,7 @@
 import { feature } from "topojson-client";
 import type { GeometryCollection } from 'topojson-specification';
 import {
+  buildRegionCodeToPlaceIdMapping,
   fipsCodeFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
@@ -36,6 +37,9 @@ let latestStateData;
 let latestCountyData;
 let selectedTrend;
 
+let regionCodesToPlaceId;
+let selectionCallback;
+
 //
 // Exports for clients
 //
@@ -45,7 +49,7 @@ export const mapBounds = {
   margin: 30,
 };
 
-export function createMap(stateData, countyData, trend) {
+export function createMap(stateData, countyData, trend, regions, selectionFn) {
   latestCountyData = countyData;
   selectedTrend = trend;
 
@@ -56,6 +60,9 @@ export function createMap(stateData, countyData, trend) {
   stateData.forEach((value, key) => {
     latestStateData.set(regionOneToFipsCode.get(key), value);
   });
+
+  regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions);
+  selectionCallback = selectionFn;
 
   initializeMap();
   colorizeMap(trend);
@@ -489,6 +496,7 @@ function hideMapCallout(event, d) {
 
 function stateSelectionOnClickHandler(event, d) {
   setSelectedState(fipsCodeFromElementId(this.id));
+  selectionCallback(regionCodesToPlaceId.get(fipsCodeFromElementId(this.id)));
 }
 
 function enterStateBoundsHandler(event, d) {
@@ -508,6 +516,7 @@ function inStateMovementHandler(event, d) {
 //
 function countySelectionOnClickHandler(event, d) {
   activateSelectedCounty(fipsCodeFromElementId(this.id));
+  selectionCallback(regionCodesToPlaceId.get(fipsCodeFromElementId(this.id)));
 }
 
 function enterCountyBoundsHandler(event, d) {
