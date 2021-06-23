@@ -555,16 +555,16 @@
     return regionName;
   }
 
+  function isCountry(region: Region): boolean {
+    return !region.sub_region_3 && !region.sub_region_2 && !region.sub_region_1 && region.country_region;
+  }
+
  onMount(async () => {
               
     regionsByPlaceId = await fetchRegionData();
     regionalTrends = await fetchRegionalTrendsData();
-
-    if (placeId) {
-      selectedRegion = regionsByPlaceId.get(placeId);
-    }
-
     regions = Array.from(regionsByPlaceId.values());
+
     params.subscribe((param) => {
       placeId = param.placeId;
       if (placeId) {
@@ -576,6 +576,12 @@
         generateTrendChart(safetySideEffectsChartContainer, (t: RegionalTrends) => {return t.trends.safety_side_effects;});
        }
     })
+
+    if (placeId) {
+      selectedRegion = regionsByPlaceId.get(placeId);
+    } else {
+      selectedRegion = regions.find(region => isCountry(region));
+    }
 
     Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
 	    createMap(values[0], values[1], selectedMapTrendId, regions, onMapSelection);
