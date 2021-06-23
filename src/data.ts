@@ -66,29 +66,41 @@ export interface RegionalTrends {
   };
 }
 
-let regions: Region[];
-let regionalTrends: RegionalTrends[];
+let regions: Map<string,Region>;
+let regionalTrends: Map<string,RegionalTrends>;
 let regionalTrendLines: RegionalTrendLine[];
 
 /**
  * Methods for getting all remote data, like regions and trends
  */
-export function fetchRegionData(): Promise<Region[]> {
+export function fetchRegionData(): Promise<Map<string,Region>> {
   if (regions) {
     return Promise.resolve(regions);
   } else {
-    let results: Promise<Region[]> = new Promise((resolve, reject) => {
+    let regions = new Promise<Map<string,Region>>((resolve, reject) => {
       parse("./data/regions.csv", {
         download: true,
         header: true,
         complete: function (results: ParseResult<Region>) {
           console.log(`Received the data, with ${results.data.length} rows`);
-          regions = results.data;
-          resolve(results.data);
+          const regionMap = results.data.reduce((acc,region)=>{
+            acc.set(region.place_id,region);
+            return acc;
+          },new Map<string,Region>());
+          resolve(regionMap);
         },
       });
     });
-    return results;
+    
+    return regions;
+  }
+}
+
+function coerceNumber(u: unknown){
+  if(u===""){
+    return 0;
+  }else{
+    return Number.parseFloat(u as string);
   }
 }
 
@@ -106,7 +118,7 @@ export function fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
             console.log(
               `Load regional trend data with ${results.data.length} rows`
             );
-            results.data.map((d) => {
+            const mappedData = results.data.map((d) => {
               const parsedRow: RegionalTrendLine = {
                 date: d.date,
                 country_region: d.country_region,
@@ -118,13 +130,14 @@ export function fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
                 sub_region_3: d.sub_region_3,
                 sub_region_3_code: d.sub_region_3_code,
                 place_id: d.place_id,
-                snf_covid19_vaccination: +d.snf_covid19_vaccination,
-                snf_vaccination_intent: +d.snf_vaccination_intent,
-                snf_safety_side_effects: +d.snf_safety_side_effects,
+                //We need to coerce number parsing since papaparse only gives us strings
+                snf_covid19_vaccination: coerceNumber(d.snf_covid19_vaccination),
+                snf_vaccination_intent: coerceNumber(d.snf_vaccination_intent),
+                snf_safety_side_effects: coerceNumber(d.snf_safety_side_effects),
               };
               return parsedRow;
             });
-            resolve(results.data);
+            resolve(mappedData);
           },
         });
       }
@@ -133,14 +146,14 @@ export function fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
   }
 }
 
-export function fetchRegionalTrendsData(): Promise<RegionalTrends[]> {
+export function fetchRegionalTrendsData(): Promise<Map<string,RegionalTrends>> {
   if (regionalTrends) {
     return Promise.resolve(regionalTrends);
   } else {
     return fetchRegionalTrendLines().then((rtls) => {
       // Convert table data into per-trend time-series.
       let nestedTrends = d3Collection
-        .nest()
+        .nest<RegionalTrendLine,RegionalTrends>()
         .key((row: RegionalTrendLine) => {
           return row.place_id;
         })
@@ -152,25 +165,35 @@ export function fetchRegionalTrendsData(): Promise<RegionalTrends[]> {
           leaves.map((leaf) => {
             covid19_vaccination.push({
               date: leaf.date,
-              value: parseFloat(leaf.snf_covid19_vaccination),
+              value: leaf.snf_covid19_vaccination,
             });
             vaccination_intent.push({
               date: leaf.date,
-              value: parseFloat(leaf.snf_vaccination_intent),
+              value: leaf.snf_vaccination_intent,
             });
             safety_side_effects.push({
               date: leaf.date,
-              value: parseFloat(leaf.snf_safety_side_effects),
+              value: leaf.snf_safety_side_effects,
             });
           });
           return {
-            covid19_vaccination,
-            vaccination_intent,
-            safety_side_effects,
+            place_id: leaves[0].place_id,
+            trends: {
+              covid19_vaccination,
+              vaccination_intent,
+              safety_side_effects
+            }
           };
         })
         .entries(rtls);
-      return nestedTrends;
+      //d3Collection nest/rollup gives us an output that is just untyped Key-Value pairs
+      //so let's convert it into an actual map.
+      const trends = nestedTrends.reduce((acc,trend)=>{
+        acc.set(trend.key,trend.value);
+        return acc;
+      },new Map<string,RegionalTrends>());
+      
+      return trends;
     });
   }
 }
