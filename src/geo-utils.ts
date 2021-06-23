@@ -16,6 +16,9 @@
 
 import { feature } from "topojson-client";
 import * as us from "us-atlas/counties-albers-10m.json";
+import type { Region } from "./data";
+
+let regionCodesToPlaceId: Map<string, string>;
 
 export const regionOneToFipsCode: Map<string, string> = new Map([
   ["US-AL", "01"],
@@ -87,4 +90,20 @@ export function stateFipsCodeFromCounty(countyFipsCode: string): string {
 
 export function fipsCodeFromElementId(id: string): string {
   return id.slice(5);
+}
+
+export function buildRegionCodeToPlaceIdMapping(
+  regions: Region[]
+): Map<string, string> {
+  return regions.reduce((acc, region) => {
+    if (region.sub_region_2_code == "") {
+      acc.set(
+        regionOneToFipsCode.get(region.sub_region_1_code),
+        region.place_id
+      );
+    } else {
+      acc.set(region.sub_region_2_code, region.place_id);
+    }
+    return acc;
+  }, new Map<string, string>());
 }
