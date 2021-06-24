@@ -30,6 +30,8 @@ const colorScaleVaccine = buildVaccineColorScale();
 const colorScaleIntent = buildIntentColorScale();
 const colorScaleSafety = buildSafetyColorScale();
 
+const resetNavigationPlaceId: string = "ChIJCzYy5IS16lQRQrfeQ5K5Oxw";
+
 let mapSvg: d3.Selection<SVGGElement, any, any, any>;
 let mapZoom;
 
@@ -560,4 +562,5 @@ function selectedCountyOnClickHandler(event, d) {
     .attr("fill", "transparent")
     .attr("stroke-width", 1.0);
   resetZoom();
+  selectionCallback(resetNavigationPlaceId);
 }
