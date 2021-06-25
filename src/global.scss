@@ -235,8 +235,51 @@ footer {
 .mapLegendInfoContainer {
 }
 
-.mapLegendInfo {
-  color: #5f6368;
+.map-legend-info {
+  color: g.$grey-700;
+  cursor: pointer;
+}
+
+.map-legend-info-popup {
+  position: absolute;
+  width: 310px;
+  height: 152px;
+  top: 620px;
+  left: 690px;
+  border-radius: 8px;
+  background-color: g.$body-background-color;
+  opacity: 100%;
+  box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3),
+    0px 2px 6px 2px rgba(60, 64, 67, 0.15);
+  display: none;
+}
+
+.map-legend-info-header {
+  font-family: Roboto;
+  font-weight: 500;
+  font-size: 14px;
+  font-height: 20px;
+  letter-spacing: 0.25px;
+  margin: 13px 16px 4px 16px;
+}
+.map-legend-info-text {
+  font-family: g.$body-font;
+  font-weight: g.$body-weight;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+  color: g.$grey-800;
+  margin: 0px 16px 4px 16px;
+}
+
+.map-legend-info-link {
+  text-decoration: none;
+  font-family: Google Sans;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  color: g.$link-blue;
+  margin: 20px 16px 20px 16px;
 }
 
 .map-callout {

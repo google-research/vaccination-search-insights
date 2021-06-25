@@ -287,8 +287,22 @@ function drawLegend(color) {
     .attr("x", width + labelWidth)
     .attr("y", height + margin + margin - 10)
     .attr("alignment-baseline", "central")
-    .attr("class", "mapLegendInfo material-icons")
-    .text("info_outline");
+    .attr("class", "map-legend-info material-icons")
+    .text("info_outline")
+    .on("click", handleLegendInfoPopup);
+}
+
+function handleLegendInfoPopup(event, d): void {
+  const infoRect: DOMRect = event.target.getBoundingClientRect();
+  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(
+    "#map-legend-info-popup"
+  );
+  const hidden: boolean = popup.style("display") == "none";
+
+  popup
+    .style("display", hidden ? "block" : "none") // we need to swap states here
+    .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
+    .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
 }
 
 function buildVaccineColorScale() {
