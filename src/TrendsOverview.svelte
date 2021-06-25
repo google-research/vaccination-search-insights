@@ -825,6 +825,16 @@
           <div class="mapLegendContainer">
             <div class="mapLegend" />
           </div>
+          <div id="map-legend-info-popup" class="map-legend-info-popup">
+            <h3 class="map-legend-info-header">Interest</h3>
+            <p class="map-legend-info-text">
+              A scaled value, showing relative interest, that you can compare
+              across regions and times.
+            </p>
+            <p>
+              <a href="http://TODO" class="map-legend-info-link">Learn more</a>
+            </p>
+          </div>
           <div class="map" />
         </div>
       {/await}
