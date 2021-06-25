@@ -22,8 +22,8 @@ body {
   font-family: g.$body-font;
   font-weight: g.$body-weight;
   color: g.$body-text;
-  font-size: 16px;
-  line-height: 26px;
+  font-size: 1rem;
+  line-height: 1.625em;
   margin-left: g.$minimum-body-margin;
   margin-right: g.$minimum-body-margin;
   background-color: g.$body-background-color;
@@ -121,7 +121,7 @@ footer {
 
 .header-search-container {
   height: 56px;
-  min-width: g.$content-min-width;
+  
   max-width: g.$content-max-width;
   width: 100%;
 }
@@ -180,7 +180,7 @@ footer {
 }
 
 .content-body {
-  min-width: g.$content-min-width;
+  
   max-width: g.$content-max-width;
   width: 100%;
 }
@@ -425,7 +425,6 @@ footer {
 }
 
 .footer-referencebar {
-  min-width: g.$content-min-width;
   max-width: g.$content-max-width;
   width: 100%;
 

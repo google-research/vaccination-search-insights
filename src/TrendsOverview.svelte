@@ -50,6 +50,12 @@
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
+  const chartBounds = {
+    width: 975,
+    height: 610,
+    margin: 30,
+  };
+
   const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
   const latestRegionOneData: Promise<Map<string, RegionalTrendAggregate>> =
     mapData.then((rtls) =>
@@ -66,15 +72,6 @@
   let covid19VaccinationChartContainer: HTMLElement;
   let vaccinationIntentChartContainer: HTMLElement;
   let safetySideEffectsChartContainer: HTMLElement;
-
-  const chartMargin = {
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  };
-  const chartWidth: number = 800 - chartMargin.left - chartMargin.right;
-  const chartHeight: number = 400 - chartMargin.top - chartMargin.bottom;
 
   function getLegendComponentText(): string {
     if (selectedRegion.sub_region_3) {
@@ -324,7 +321,7 @@
       const chartX = chartRect.x;
       const chartY = chartRect.y;
 
-      if (closestDateX < chartWidth / 2) {
+      if (closestDateX < chartBounds.width / 2) {
         hoverCardX = closestDateX + trendlineHoverCardMargin;
       } else {
         hoverCardX = closestDateX - trendlineHoverCardMargin - hoverCardWidth;
@@ -334,7 +331,7 @@
         .style("left", `${chartX + window.scrollX + hoverCardX}px`)
         .style(
           "top",
-          `${chartY + window.scrollY + (chartHeight - hoverCardHeight) / 2}px`
+          `${chartY + window.scrollY + (chartBounds.height - hoverCardHeight) / 2}px`
         );
     };
 
@@ -417,12 +414,22 @@
     if (chartAreaElement) {
       chartArea = d3.select(chartAreaElement);
     } else {
+      
       chartArea = d3
         .select(chartElement)
+        .attr(
+          "viewBox",
+          [
+            -chartBounds.margin,
+            0,
+            chartBounds.width + chartBounds.margin,
+            chartBounds.height + chartBounds.margin,
+          ].join(" ")
+        )
         .append("g")
         .attr(
           "transform",
-          "translate(" + chartMargin.left + "," + chartMargin.top + ")"
+          "translate(0,0)"
         );
     }
 
@@ -432,7 +439,7 @@
       x = chartArea
         .append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0, " + chartHeight + ")");
+        .attr("transform", "translate(0, " + chartBounds.height + ")");
     }
 
     if (yElement) {
@@ -455,7 +462,7 @@
         .append("line")
         .attr("class", "trendChartVerticalLine inactive")
         .attr("y1", 0)
-        .attr("y2", chartHeight);
+        .attr("y2", chartBounds.height);
     }
 
     let data: RegionalTrends[] = Array.from(regionalTrends.values()).filter(
@@ -487,7 +494,7 @@
       convertStorageDate(trend.date)
     );
 
-    let xScale = d3.scaleTime().range([0, chartWidth]).domain(d3.extent(dates));
+    let xScale = d3.scaleTime().range([0, chartBounds.width]).domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
       .axisBottom(xScale)
       .ticks(5)
@@ -497,8 +504,8 @@
       data.flatMap((region) => trendLine(region).map((trend) => trend.value))
     );
 
-    let yScale = d3.scaleLinear().range([chartHeight, 0]).domain([0, max]);
-    let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartWidth);
+    let yScale = d3.scaleLinear().range([chartBounds.height, 0]).domain([0, max]);
+    let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartBounds.width);
 
     // TODO(patankar): Define constants for styling.
     x.call(xAxis)
@@ -546,7 +553,7 @@
         g
           .append("text")
           .attr("class", "yLabel")
-          .attr("x", chartWidth - 120)
+          .attr("x", chartBounds.width - 120)
           .attr("y", -10)
           .attr("fill", "#5F6368")
           .attr("font-family", "Roboto")
@@ -624,10 +631,10 @@
 
   function isCountry(region: Region): boolean {
     return (
-      !region.sub_region_3 &&
-      !region.sub_region_2 &&
-      !region.sub_region_1 &&
-      region.country_region
+      region.sub_region_3 === "" &&
+      region.sub_region_2 === "" &&
+      region.sub_region_1 === "" &&
+      region.country_region !== ""
     );
   }
 
@@ -834,31 +841,19 @@
         <h3>Covid-19 vaccination searches</h3>
         <div class="chartLegendContainer" />
         <div class="hoverCard inactive" />
-        <svg
-          class="chart"
-          width={chartWidth + chartMargin.left + chartMargin.right}
-          height={chartHeight + chartMargin.top + chartMargin.bottom}
-        />
+        <svg class="chart"/>
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
         <h3>Vaccination intent searches</h3>
         <div class="chartLegendContainer" />
         <div class="hoverCard inactive" />
-        <svg
-          class="chart"
-          width={chartWidth + chartMargin.left + chartMargin.right}
-          height={chartHeight + chartMargin.top + chartMargin.bottom}
-        />
+        <svg class="chart"/>
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
         <h3>Safety and Side-effect searches</h3>
         <div class="chartLegendContainer" />
         <div class="hoverCard inactive" />
-        <svg
-          class="chart"
-          width={chartWidth + chartMargin.left + chartMargin.right}
-          height={chartHeight + chartMargin.top + chartMargin.bottom}
-        />
+        <svg class="chart"/>
       </div>
       <h2>About this data</h2>
       <p>
