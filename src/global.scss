@@ -197,18 +197,18 @@ footer {
   @include header-font;
   font-size: 14px;
   line-height: 20px;
-  color: #5f6368;
+  color: g.$grey-700;
   background: white;
   border-radius: 8px;
-  border: 1px solid #dadce0;
+  border: 1px solid g.$grey-300;
   margin-right: 8px;
   padding: 6px 16px;
 }
 
 .selectedTrend {
-  background: #e6f0ff;
-  color: #1967d2;
-  border: 1px solid #e6f0ff !important;
+  background: g.$chip-background;
+  color: g.$chip-text;
+  border: 1px solid g.$chip-background !important;
 }
 
 .map-trend-selector-active {
@@ -313,7 +313,7 @@ footer {
 }
 
 .trendline {
-  stroke: #bdc1c6;
+  stroke: g.$grey-400;
   stroke-width: 0.6;
   fill: none;
 }
@@ -324,15 +324,15 @@ footer {
 }
 
 .trendline-selected.covid19Vaccination {
-  stroke: #1a73e8;
+  stroke: g.$blue-600;
 }
 
 .trendline-selected.vaccinationIntent {
-  stroke: #e8710a;
+  stroke: g.$orange-600;
 }
 
 .trendline-selected.safetySideEffects {
-  stroke: #e52592;
+  stroke: g.$pink-600;
 }
 
 .chartLegendContainer {
@@ -351,15 +351,15 @@ footer {
 }
 
 .trendChartLegendRect.covid19Vaccination {
-  fill: #1a73e8;
+  fill: g.$blue-600;
 }
 
 .trendChartLegendRect.vaccinationIntent {
-  fill: #e8710a;
+  fill: g.$orange-600;
 }
 
 .trendChartLegendRect.safetySideEffects {
-  fill: #e52592;
+  fill: g.$pink-600;
 }
 
 .trendChartLegendTextContainer {
@@ -367,7 +367,7 @@ footer {
 }
 
 .trendChartLegendText {
-  color: #5f6368;
+  color: g.$grey-700;
   font-family: "Google Sans";
   font-size: 14px;
 }
@@ -388,7 +388,7 @@ footer {
   border-radius: 4px;
   background: white;
   border: 1px solid g.$grey-300;
-  box-shadow: 0px 2px 8px 0px #0000001f;
+  box-shadow: 0px 2px 8px 0px g.$hover-card-box-shadow;
 }
 
 .hoverCard.inactive {
@@ -454,17 +454,11 @@ footer {
 .next-steps-container {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
 .next-steps-item {
-  width: 50%;
-}
-
-.next-steps-icon-placeholder {
-  color: #f2f2f2;
-  background-color: #f2f2f2;
-  border: 1px dashed #828282;
+  width: 32%;
 }
 
 .footer-referencebar {
