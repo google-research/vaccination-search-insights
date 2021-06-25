@@ -293,16 +293,52 @@ function drawLegend(color) {
 }
 
 function handleLegendInfoPopup(event, d): void {
-  const infoRect: DOMRect = event.target.getBoundingClientRect();
   const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(
     "#map-legend-info-popup"
   );
   const hidden: boolean = popup.style("display") == "none";
+  if (hidden) {
+    const infoRect: DOMRect = event.target.getBoundingClientRect();
+    popup
+      .style("display", "block")
+      .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
+      .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
 
-  popup
-    .style("display", hidden ? "block" : "none") // we need to swap states here
-    .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
-    .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
+    event.stopPropagation();
+    document.addEventListener("click", dismissLegendInfoPopup);
+  }
+}
+
+function inClientBounds(
+  clientX: number,
+  clientY: number,
+  bounds: DOMRect
+): boolean {
+  return (
+    clientX >= bounds.left &&
+    clientX <= bounds.right &&
+    clientY >= bounds.top &&
+    clientY <= bounds.bottom
+  );
+}
+
+function dismissLegendInfoPopup(event): void {
+  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(
+    "#map-legend-info-popup"
+  );
+  if (
+    !inClientBounds(
+      event.clientX,
+      event.clientY,
+      popup.node().getBoundingClientRect()
+    )
+  ) {
+    popup.style("display", "none");
+    document.removeEventListener("click", dismissLegendInfoPopup);
+    event.stopPropagation();
+  } else {
+    console.log("Within popup ignoring");
+  }
 }
 
 function buildVaccineColorScale() {
