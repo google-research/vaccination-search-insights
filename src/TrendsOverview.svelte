@@ -146,6 +146,7 @@
   ) {
     const trendlineHoverCardMargin: number = 7;
 
+    const chartContainerElement = el.querySelector(".chartContainer");
     const chartElement = el.querySelector(".chart");
     const verticalLineElement = el.querySelector(".trendChartVerticalLine");
     const hoverCardElement = el.querySelector(".hoverCard");
@@ -336,9 +337,9 @@
         );
     };
 
-    chartElement.addEventListener("mouseenter", chartMouseEnter);
-    chartElement.addEventListener("mouseleave", chartMouseLeave);
-    chartElement.addEventListener("mousemove", chartMouseMove);
+    chartContainerElement.addEventListener("mouseenter", chartMouseEnter);
+    chartContainerElement.addEventListener("mouseleave", chartMouseLeave);
+    chartContainerElement.addEventListener("mousemove", chartMouseMove);
   }
 
   function findMinAndMax(placeValues: { place_id: string; value: number }[]) {
@@ -831,32 +832,38 @@
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
         <h3>Covid-19 vaccination searches</h3>
         <div class="chartLegendContainer" />
-        <div class="hoverCard inactive" />
-        <svg
-          class="chart"
-          width={chartWidth + chartMargin.left + chartMargin.right}
-          height={chartHeight + chartMargin.top + chartMargin.bottom}
-        />
+        <div class="chartContainer">
+          <div class="hoverCard inactive" />
+          <svg
+            class="chart"
+            width={chartWidth + chartMargin.left + chartMargin.right}
+            height={chartHeight + chartMargin.top + chartMargin.bottom}
+          />
+        </div>
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
         <h3>Vaccination intent searches</h3>
         <div class="chartLegendContainer" />
-        <div class="hoverCard inactive" />
-        <svg
-          class="chart"
-          width={chartWidth + chartMargin.left + chartMargin.right}
-          height={chartHeight + chartMargin.top + chartMargin.bottom}
-        />
+        <div class="chartContainer">
+          <div class="hoverCard inactive" />
+          <svg
+            class="chart"
+            width={chartWidth + chartMargin.left + chartMargin.right}
+            height={chartHeight + chartMargin.top + chartMargin.bottom}
+          />
+        </div>
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
         <h3>Safety and Side-effect searches</h3>
         <div class="chartLegendContainer" />
-        <div class="hoverCard inactive" />
-        <svg
-          class="chart"
-          width={chartWidth + chartMargin.left + chartMargin.right}
-          height={chartHeight + chartMargin.top + chartMargin.bottom}
-        />
+        <div class="chartContainer">
+          <div class="hoverCard inactive" />
+          <svg
+            class="chart"
+            width={chartWidth + chartMargin.left + chartMargin.right}
+            height={chartHeight + chartMargin.top + chartMargin.bottom}
+          />
+        </div>
       </div>
       <h2>About this data</h2>
       <p>
