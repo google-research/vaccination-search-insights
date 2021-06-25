@@ -66,12 +66,12 @@ export interface RegionalTrends {
   };
 }
 
-let regions: Map<string,Region>;
-let regionalTrends: Map<string,RegionalTrends>;
+let regions: Map<string, Region>;
+let regionalTrends: Map<string, RegionalTrends>;
 let regionalTrendLines: RegionalTrendLine[];
 
 //https://thoughtspile.github.io/2018/06/20/serialize-promises/
-function serializePromises<T>(immediate: ()=>Promise<T>): ()=>Promise<T> {
+function serializePromises<T>(immediate: () => Promise<T>): () => Promise<T> {
   // This works as our promise queue
   let last: Promise<any> = Promise.resolve();
   return function () {
@@ -79,47 +79,48 @@ function serializePromises<T>(immediate: ()=>Promise<T>): ()=>Promise<T> {
     // break the serializer forever
     last = last.catch(() => {}).then(() => immediate());
     return last;
-  }
-};
+  };
+}
 
 /**
  * Methods for getting all remote data, like regions and trends
  */
-export function fetchRegionData(): Promise<Map<string,Region>> {
+export function fetchRegionData(): Promise<Map<string, Region>> {
   if (regions) {
     return Promise.resolve(regions);
   } else {
-    let regionPromise = new Promise<Map<string,Region>>((resolve, reject) => {
+    let regionPromise = new Promise<Map<string, Region>>((resolve, reject) => {
       parse("./data/regions.csv", {
         download: true,
         header: true,
         complete: function (results: ParseResult<Region>) {
           console.log(`Received region data, with ${results.data.length} rows`);
-          const regionMap = results.data.reduce((acc,region)=>{
-            acc.set(region.place_id,region);
+          const regionMap = results.data.reduce((acc, region) => {
+            acc.set(region.place_id, region);
             return acc;
-          },new Map<string,Region>());
+          }, new Map<string, Region>());
           regions = regionMap;
           resolve(regionMap);
         },
       });
     });
-    
+
     return regionPromise;
   }
 }
 
-function coerceNumber(u: unknown){
-  if(u===""){
+function coerceNumber(u: unknown) {
+  if (u === "") {
     return 0;
-  }else{
+  } else {
     return Number.parseFloat(u as string);
   }
 }
 
 //During initialization it's possible this is called twice in succession before we get a chance to cache the result.
 //So let's serialize access to make sure we don't do a double request
-export const fetchRegionalTrendLines:()=>Promise<RegionalTrendLine[]> = serializePromises(_fetchRegionalTrendLines);
+export const fetchRegionalTrendLines: () => Promise<RegionalTrendLine[]> =
+  serializePromises(_fetchRegionalTrendLines);
 
 function _fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
   if (regionalTrendLines) {
@@ -148,9 +149,13 @@ function _fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
                 sub_region_3_code: d.sub_region_3_code,
                 place_id: d.place_id,
                 //We need to coerce number parsing since papaparse only gives us strings
-                snf_covid19_vaccination: coerceNumber(d.snf_covid19_vaccination),
+                snf_covid19_vaccination: coerceNumber(
+                  d.snf_covid19_vaccination
+                ),
                 snf_vaccination_intent: coerceNumber(d.snf_vaccination_intent),
-                snf_safety_side_effects: coerceNumber(d.snf_safety_side_effects),
+                snf_safety_side_effects: coerceNumber(
+                  d.snf_safety_side_effects
+                ),
               };
               return parsedRow;
             });
@@ -164,14 +169,16 @@ function _fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
   }
 }
 
-export function fetchRegionalTrendsData(): Promise<Map<string,RegionalTrends>> {
+export function fetchRegionalTrendsData(): Promise<
+  Map<string, RegionalTrends>
+> {
   if (regionalTrends) {
     return Promise.resolve(regionalTrends);
   } else {
     return fetchRegionalTrendLines().then((rtls) => {
       // Convert table data into per-trend time-series.
       let nestedTrends = d3Collection
-        .nest<RegionalTrendLine,RegionalTrends>()
+        .nest<RegionalTrendLine, RegionalTrends>()
         .key((row: RegionalTrendLine) => {
           return row.place_id;
         })
@@ -199,17 +206,17 @@ export function fetchRegionalTrendsData(): Promise<Map<string,RegionalTrends>> {
             trends: {
               covid19_vaccination,
               vaccination_intent,
-              safety_side_effects
-            }
+              safety_side_effects,
+            },
           };
         })
         .entries(rtls);
       //d3Collection nest/rollup gives us an output that is just untyped Key-Value pairs
       //so let's convert it into an actual map.
-      const trends = nestedTrends.reduce((acc,trend)=>{
-        acc.set(trend.key,trend.value);
+      const trends = nestedTrends.reduce((acc, trend) => {
+        acc.set(trend.key, trend.value);
         return acc;
-      },new Map<string,RegionalTrends>());
+      }, new Map<string, RegionalTrends>());
       regionalTrends = trends;
       return trends;
     });

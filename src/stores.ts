@@ -18,23 +18,25 @@
  * @fileoverview The state of the application persisted to query parameters
  */
 
-import {writable} from 'svelte/store';
+import { writable } from "svelte/store";
 
 type Params = {
-  placeId: string
-}
+  placeId: string;
+};
 
 // TODO(patankar): Make browser back/forward update params after refactor.
 
-function loadParams () : Params {
+function loadParams(): Params {
   const searchParams = new URLSearchParams(window.location.search);
-  const placeId = searchParams.has("placeId") ? searchParams.get("placeId") : "";
+  const placeId = searchParams.has("placeId")
+    ? searchParams.get("placeId")
+    : "";
   return {
-    placeId
+    placeId,
   };
 }
 
-function saveParams (param: Params) {
+function saveParams(param: Params) {
   if (param.placeId) {
     history.pushState(null, null, `?placeId=${param.placeId}`);
   }
