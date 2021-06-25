@@ -233,12 +233,10 @@
           selectedDataByDate.set(trendValue.date, trendValue.value);
         } else {
           if (dataByDate.has(trendValue.date)) {
-            dataByDate
-              .get(trendValue.date)
-              .push({
-                place_id: regionalTrend.place_id,
-                value: trendValue.value,
-              });
+            dataByDate.get(trendValue.date).push({
+              place_id: regionalTrend.place_id,
+              value: trendValue.value,
+            });
           } else {
             dataByDate.set(trendValue.date, [
               { place_id: regionalTrend.place_id, value: trendValue.value },
@@ -924,21 +922,33 @@
       </p>
       <div id="next-steps" class="next-steps-container">
         <div class="next-steps-item">
-          <!-- TODO(tague): replace the place holder svgs with actual icons when available -->
           <h3>Query the dataset</h3>
-          <svg width="260" height="150" class="next-steps-icon-placeholder" />
           <p>
             Get real-time insights using Google Cloud’s BigQuery. Analyse with
             SQL or call APIs from your code.
           </p>
           <p />
           <p>
-            <a href="http://todo">Bigquery public dataset</a>
+            <a
+              href="http://console.cloud.google.com/marketplace/product/bigquery-public-datasets/covid19-vaccination-search-insights"
+              >Bigquery public dataset</a
+            >
+          </p>
+        </div>
+        <div class="next-steps-item">
+          <h3>Analyze with covariates</h3>
+          <p>
+            Analyze the data alongside other covariates in the COVID-19
+            Open-Data repository. COVID-19 Open-Data repo
+          </p>
+          <p>
+            <a href="https://github.com/GoogleCloudPlatform/covid-19-open-data"
+              >COVID-19 Open Data Repository.</a
+            >
           </p>
         </div>
         <div class="next-steps-item">
           <h3>Tell us about your project</h3>
-          <svg width="260" height="150" class="next-steps-icon-placeholder" />
           <p>
             We’d love to hear more about how you’re using Vaccination Search
             Insights. If you’ve solved problems, we’d like to help you share
