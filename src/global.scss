@@ -17,6 +17,7 @@
 @use "./global-vars.scss" as g;
 @import url("//fonts.googleapis.com/css?family=Google Sans:400,700,900");
 @import url("//fonts.googleapis.com/css?family=Roboto:400,500,700,900");
+@import url("//fonts.googleapis.com/css?family=Material Icons|Material Icons Outlined");
 
 body {
   font-family: g.$body-font;
@@ -159,6 +160,51 @@ footer {
   );
 }
 
+.header-download-icon {
+  font-size: 16px;
+  line-height: 24px;
+  vertical-align: bottom;
+}
+
+.header-download-popup {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 500;
+  width: 312px;
+  height: 152px;
+  padding: 13px 16px 13px 16px;
+  box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3),
+    0px 2px 6px 2px rgba(60, 64, 67, 0.15);
+  border-radius: 8px;
+  background-color: g.$body-background-color;
+  opacity: 100%;
+  display: none;
+}
+
+.header-download-popup-body {
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+}
+
+.header-downlod-popup-title {
+  font-family: Roboto;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
+.header-download-popup-link {
+  font-family: Google Sans;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
 .link-item {
   display: inline;
   margin-right: 40px;
@@ -166,6 +212,8 @@ footer {
   font-size: 16px;
   line-height: 24px;
   color: g.$grey-600;
+
+  cursor: pointer;
 }
 
 .link-item-anchor {

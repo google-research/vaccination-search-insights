@@ -19,10 +19,6 @@
 
 <svelte:head>
   <title>COVID-19 Vaccine Search Insights</title>
-  <link
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    rel="stylesheet"
-  />
 </svelte:head>
 
 <main>
