@@ -211,6 +211,14 @@ footer {
   border: 1px solid g.$chip-background !important;
 }
 
+.map {
+  margin-top: 14px;
+}
+
+.map-content-container {
+  margin-bottom: 82px;
+}
+
 .map-trend-selector-active {
   vertical-align: bottom;
 }
@@ -310,6 +318,20 @@ footer {
   line-height: 16px;
   color: g.$grey-900;
   margin: 0px;
+}
+
+.map-attribution-text {
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.3px;
+  color: g.$grey-700;
+  margin: 0px 0px 0px 0px;
+}
+
+.map-attribution {
+  margin-top: 6px;
 }
 
 .trendline {

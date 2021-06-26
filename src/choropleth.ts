@@ -93,18 +93,10 @@ function setSelectedStateByFipsCode(fipsCode) {
 //
 function initializeMap() {
   mapSvg = d3
-    .select(".map")
+    .select("#map")
     .append("svg")
-    .attr(
-      "viewBox",
-      [
-        -mapBounds.margin,
-        0,
-        mapBounds.width + mapBounds.margin,
-        mapBounds.height + mapBounds.margin,
-      ].join(" ")
-    )
-    .style("margin-top", "15px");
+    .attr("viewBox", [0, 0, mapBounds.width, mapBounds.height].join(" "))
+    .classed("map", true);
 
   const g = mapSvg.append("g").attr("id", "transformer");
   // keep in inverse order
