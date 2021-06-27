@@ -634,6 +634,7 @@
     regionalTrends = await fetchRegionalTrendsData();
     regions = Array.from(regionsByPlaceId.values());
 
+    document.addEventListener("scroll", handleDocumentScroll);
     params.subscribe((param) => {
       placeId = param.placeId;
       if (placeId) {
@@ -709,6 +710,15 @@
       return p;
     });
   }
+
+  function handleDocumentScroll(): void {
+    const sep: DOMElelment = document.getElementById("header-divider");
+    if (window.pageYOffset > 0) {
+      sep.classList.add("header-content-divider-scrolled");
+    } else {
+      sep.classList.remove("header-content-divider-scrolled");
+    }
+  }
 </script>
 
 <main>
@@ -751,7 +761,7 @@
         />
       </div>
     </div>
-    <div class="header-content-divider" />
+    <div id="header-divider" class="header-content-divider" />
   </header>
   <div class="content-area">
     <div class="content-body">
