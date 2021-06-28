@@ -721,7 +721,7 @@
           </svg>
         </a>
         <div class="header-topbar-text">
-          Vaccine Information Search Trends <span
+          COVID-19 Vaccine Search Insights <span
             class="header-topbar-early-access">Early Access</span
           >
         </div>
@@ -755,7 +755,7 @@
   </header>
   <div class="content-area">
     <div class="content-body">
-      <h1>COVID-19 Vaccine Information Search Trends</h1>
+      <h1>COVID-19 Vaccine Search Insights</h1>
       <p>
         Explore searches for COVID-19 vaccination topics by region. This
         aggregated and anonymized data helps you understand and compare
