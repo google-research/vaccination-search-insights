@@ -65,7 +65,6 @@ export function createMap(stateData, countyData, trend, regions, selectionFn) {
   stateData.forEach((value, key) => {
     latestStateData.set(regionOneToFipsCode.get(key), value);
   });
-  console.log(latestStateData);
 
   regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions);
   selectionCallback = selectionFn;
