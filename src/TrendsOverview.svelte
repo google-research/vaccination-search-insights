@@ -635,7 +635,6 @@
     regionalTrends = await fetchRegionalTrendsData();
     regions = Array.from(regionsByPlaceId.values());
 
-
     document.addEventListener("scroll", handleDocumentScroll);
     document
       .getElementById("download-link")
@@ -950,7 +949,7 @@
           />
         </div>
       </div>
-      <h2>About this data</h2>
+      <h2 class="first-section-header">About this data</h2>
       <p>
         You can use this data to compare search interest between topics related
         to COVID-19 vaccination. The value for search interest isn’t an absolute
