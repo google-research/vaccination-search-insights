@@ -258,5 +258,6 @@ export function getLatestRegionData(
       });
       return acc;
     }, new Map<string, RegionalTrendAggregate>());
+  dataMap["latestDate"] = latestDate;
   return dataMap;
 }
