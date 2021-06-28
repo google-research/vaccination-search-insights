@@ -822,9 +822,7 @@
             <p class="map-callout-text">Interest</p>
             <svg id="map-callout-info" />
           </div>
-          <div class="mapLegendContainer">
-            <div class="mapLegend" />
-          </div>
+          <div class="mapLegendContainer" />
           <div id="map-legend-info-popup" class="map-legend-info-popup">
             <h3 class="map-legend-info-header">Interest</h3>
             <p class="map-legend-info-text">
