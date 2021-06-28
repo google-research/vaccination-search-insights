@@ -861,25 +861,19 @@
         <h3>Covid-19 vaccination searches</h3>
         <div class="chartLegendContainer" />
         <svg class="chart"/>
-          <div class="hoverCard inactive" />
-        </div>
-        </div>
+        <div class="hoverCard inactive" />
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
         <h3>Vaccination intent searches</h3>
         <div class="chartLegendContainer" />
         <svg class="chart"/>
-          <div class="hoverCard inactive" />
-        </div>
-        </div>
+        <div class="hoverCard inactive" />
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
         <h3>Safety and Side-effect searches</h3>
         <div class="chartLegendContainer" />
         <svg class="chart"/>
-          <div class="hoverCard inactive" />
-        </div>
-        </div>
+        <div class="hoverCard inactive" />
       </div>
       <h2>About this data</h2>
       <p>
