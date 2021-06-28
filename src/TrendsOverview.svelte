@@ -635,6 +635,10 @@
     regionalTrends = await fetchRegionalTrendsData();
     regions = Array.from(regionsByPlaceId.values());
 
+    document
+      .getElementById("download-link")
+      .addEventListener("click", handleDownloadPopup);
+
     params.subscribe((param) => {
       placeId = param.placeId;
       if (placeId) {
@@ -683,6 +687,42 @@
     });
   });
 
+  function handleDownloadPopup(event): void {
+    const downloadRect: DOMRect = document
+      .getElementById("download-link")
+      .getBoundingClientRect();
+    const popup = document.getElementById("header-download-popup");
+
+    const downloadCenterX: number = downloadRect.left + downloadRect.width / 2;
+    const popupLeft: number = downloadCenterX - 10 - 312 / 2;
+
+    popup.style.left = popupLeft + "px";
+    popup.style.display = "inline";
+    document.addEventListener("click", dismissDownloadPopup);
+  }
+
+  function inBounds(
+    clientX: number,
+    clientY: number,
+    bounds: DOMRect
+  ): boolean {
+    return (
+      clientX >= bounds.left &&
+      clientX <= bounds.right &&
+      clientY >= bounds.top &&
+      clientY <= bounds.bottom
+    );
+  }
+
+  function dismissDownloadPopup(event): void {
+    const popup = document.getElementById("header-download-popup");
+    if (
+      !inBounds(event.clientX, event.clientY, popup.getBoundingClientRect())
+    ) {
+      popup.style.display = "none";
+    }
+  }
+
   function onChangeHandler(selectedRegion: Region): void {
     if (selectedRegion != undefined) {
       params.update((p) => {
@@ -729,8 +769,11 @@
       </div>
       <ul class="header-topbar-menu">
         <!-- TODO: replace with actual links once available -->
-        <li class="link-item">
-          <a class="link-item-anchor" href="http://health.google">Download</a>
+        <li id="download-link" class="link-item">
+          <span class="material-icons-outlined header-download-icon"
+            >file_download</span
+          >
+          Download data
         </li>
         <li class="link-item">
           <a class="link-item-anchor" href="http://health.google"
@@ -738,6 +781,23 @@
           >
         </li>
       </ul>
+    </div>
+    <div id="header-download-popup" class="header-download-popup">
+      <h3 class="header-downlod-popup-title">
+        Covid-19 Vaccination Search Insights
+      </h3>
+      <p class="header-download-popup-body">
+        In order to download or use the data or insights, you must agree to the
+        Google
+        <a href="https://policies.google.com/terms">Terms of Service</a>.
+      </p>
+      <p>
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/Global_vaccination_search_insights.csv"
+          >Download dataset - United States</a
+        >
+      </p>
     </div>
     <div class="header-search-bar">
       <div class="header-search-container">
