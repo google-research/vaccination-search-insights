@@ -17,13 +17,15 @@
 @use "./global-vars.scss" as g;
 @import url("//fonts.googleapis.com/css?family=Google Sans:400,700,900");
 @import url("//fonts.googleapis.com/css?family=Roboto:400,500,700,900");
+@import url("//fonts.googleapis.com/css?family=Material Icons|Material Icons Outlined");
 
 body {
   font-family: g.$body-font;
   font-weight: g.$body-weight;
   color: g.$body-text;
   font-size: 16px;
-  line-height: 26px;
+  line-height: 24px;
+  letter-spacing: 0.1px;
   margin-left: g.$minimum-body-margin;
   margin-right: g.$minimum-body-margin;
   background-color: g.$body-background-color;
@@ -36,7 +38,9 @@ body {
 
 h1 {
   @include header-font;
-  font-size: 2.25rem;
+  font-size: 36px;
+  line-height: 44px;
+  color: g.$grey-900;
   text-align: center;
 }
 
@@ -46,7 +50,9 @@ h2 {
 }
 h3 {
   @include header-font;
-  font-size: 1.375rem;
+  font-size: 24px;
+  line-height: 32px;
+  color: g.$grey-800;
 }
 
 a {
@@ -162,6 +168,51 @@ footer {
   );
 }
 
+.header-download-icon {
+  font-size: 16px;
+  line-height: 24px;
+  vertical-align: bottom;
+}
+
+.header-download-popup {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 500;
+  width: 312px;
+  height: 152px;
+  padding: 13px 16px 13px 16px;
+  box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3),
+    0px 2px 6px 2px rgba(60, 64, 67, 0.15);
+  border-radius: 8px;
+  background-color: g.$body-background-color;
+  opacity: 100%;
+  display: none;
+}
+
+.header-download-popup-body {
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+}
+
+.header-downlod-popup-title {
+  font-family: Roboto;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
+.header-download-popup-link {
+  font-family: Google Sans;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
 .link-item {
   display: inline;
   margin-right: 40px;
@@ -169,6 +220,8 @@ footer {
   font-size: 16px;
   line-height: 24px;
   color: g.$grey-600;
+
+  cursor: pointer;
 }
 
 .link-item-anchor {
@@ -186,6 +239,13 @@ footer {
   min-width: g.$content-min-width;
   max-width: g.$content-max-width;
   width: 100%;
+}
+
+.content-body-intro {
+  font-size: 20px;
+  line-height: 28px;
+  font-family: g.$body-font;
+  font-weight: g.$body-weight;
 }
 
 .mapTrendSelectorGroup {
@@ -214,7 +274,17 @@ footer {
   border: 1px solid g.$chip-background !important;
 }
 
+.map-svg {
+  margin-top: 14px;
+}
+
+.map-content-container {
+  margin-bottom: 82px;
+}
+
 .map-trend-selector-active {
+  font-size: 18px !important;
+  line-height: 20px !important;
   vertical-align: bottom;
 }
 
@@ -227,7 +297,7 @@ footer {
 .mapLegendContainer {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-content: center;
   align-items: center;
 }
@@ -313,6 +383,20 @@ footer {
   line-height: 16px;
   color: g.$grey-900;
   margin: 0px;
+}
+
+.map-attribution-text {
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.3px;
+  color: g.$grey-700;
+  margin: 0px 0px 0px 0px;
+}
+
+.map-attribution {
+  margin-top: 6px;
 }
 
 .trendline {
@@ -461,7 +545,7 @@ footer {
 }
 
 .next-steps-item {
-  width: 32%;
+  width: 30%;
 }
 
 .footer-referencebar {
@@ -485,7 +569,7 @@ footer {
   fill: g.$grey-600;
   height: 18px;
   width: 75px;
-  margin: 0 24px 0 0;
+  margin: 0 24px 0 -10px;
 }
 
 @media (max-width: g.$media-breakpoint) {

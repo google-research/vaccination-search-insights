@@ -93,18 +93,10 @@ function setSelectedStateByFipsCode(fipsCode) {
 //
 function initializeMap() {
   mapSvg = d3
-    .select(".map")
+    .select("#map")
     .append("svg")
-    .attr(
-      "viewBox",
-      [
-        -mapBounds.margin,
-        0,
-        mapBounds.width + mapBounds.margin,
-        mapBounds.height + mapBounds.margin,
-      ].join(" ")
-    )
-    .style("margin-top", "15px");
+    .attr("viewBox", [0, 0, mapBounds.width, mapBounds.height].join(" "))
+    .classed("map-svg", true);
 
   const g = mapSvg.append("g").attr("id", "transformer");
   // keep in inverse order
@@ -225,6 +217,19 @@ function zoomToBounds(d) {
     );
 }
 
+function dateRangeString(date: string): string {
+  const dataPeriodStart: Date = d3.timeParse("%Y-%m-%d")(
+    latestCountyData["latestDate"]
+  );
+  let dataPeriodEnd: Date = new Date(dataPeriodStart);
+  dataPeriodEnd.setDate(dataPeriodStart.getDate() + 7);
+
+  const formatterStart = d3.timeFormat("%b %d");
+  const formatterEnd = d3.timeFormat("%b %d, %Y");
+
+  return `${formatterStart(dataPeriodStart)} - ${formatterEnd(dataPeriodEnd)}`;
+}
+
 function drawLegend(color) {
   const margin = 20;
   const height = 20;
@@ -232,16 +237,16 @@ function drawLegend(color) {
   const labelWidth = 60;
   const width = blockWidth * color.range().length;
 
-  d3.select(".mapLegend").selectAll("*").remove();
+  d3.select(".mapLegendContainer").selectAll("*").remove();
 
   const svg: d3.Selection<SVGSVGElement, any, any, any> = d3
-    .select(".mapLegend")
+    .select(".mapLegendContainer")
     .append("svg")
     .attr("width", width + margin + margin + labelWidth)
     .attr("height", height + margin + margin)
     .attr(
       "viewBox",
-      `${-margin} 0 ${width + margin + margin + labelWidth} ${height + margin}`
+      `0 0 ${width + margin + margin + labelWidth} ${height + margin}`
     )
     .style("overflow", "visible");
 
@@ -290,6 +295,23 @@ function drawLegend(color) {
     .attr("class", "map-legend-info material-icons")
     .text("info_outline")
     .on("click", handleLegendInfoPopup);
+
+  // build date range
+  d3.select(".mapLegendContainer")
+    .append("svg")
+    .attr("width", labelWidth)
+    .attr("height", height + margin + margin)
+    .attr("viewBox", `0 0 ${labelWidth} ${height + margin}`)
+    .style("overflow", "visible")
+    .style("float", "right")
+    .append("g")
+    .append("text")
+    .attr("x", labelWidth)
+    .attr("y", height + margin + margin - 10)
+    .attr("alignment-baseline", "central")
+    .attr("text-anchor", "end")
+    .attr("class", "mapTrendRange")
+    .text(dateRangeString(latestCountyData["latestDate"]));
 }
 
 function handleLegendInfoPopup(event, d): void {
@@ -443,7 +465,7 @@ function drawMapCalloutInfo(data, fipsCode) {
   const margin = 10;
 
   const trendsLabels = [
-    "Covid-19 Vaccination",
+    "COVID-19 Vaccination",
     "Vaccination intent",
     "Safety and Side-effects",
   ];
