@@ -340,16 +340,10 @@ footer {
 }
 
 .hoverCard {
-  position: absolute;
-  visibility: visible;
   border-radius: 4px;
   background: white;
   border: 1px solid g.$grey-300;
   box-shadow: 0px 2px 8px 0px #0000001f;
-}
-
-.hoverCard.inactive {
-  visibility: hidden;
 }
 
 .hoverCardDate {
@@ -448,8 +442,23 @@ footer {
 }
 
 @media (max-width: g.$media-breakpoint) {
-  html {
-    //Use scaled typography at small sizes
-    font-size: 4vw;
+  .hoverCard {
+    display: block;
+  }
+
+  .hoverCard.inactive {
+    display: none;
   }
 }
+
+@media (min-width: g.$media-breakpoint) {
+  .hoverCard {
+    position: absolute;
+    visibility: visible;
+  }
+
+  .hoverCard.inactive {
+    visibility: hidden;
+  }
+}
+

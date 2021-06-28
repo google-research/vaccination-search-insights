@@ -257,30 +257,33 @@
       hoverCard.attr("class", "hoverCard inactive");
     };
 
+    function getClosestDate(selected, earlier, later){
+      if(!earlier && later){
+        return later;
+      } else if(!later && earlier){
+        return earlier;
+      } else if (
+        selected.getTime() - earlier.getTime() <
+          later.getTime() - selected.getTime()
+      ) {
+        return earlier;
+      } else {
+        return later;
+      }
+    }
+
     const chartMouseMove = function (d) {
       dates.sort((a, b) => a.getTime() - b.getTime());
-
       const eventX: number = d3.pointer(event)[0];
       const eventY: number = d3.pointer(event)[1];
-
       // This date might be in between provided dates.
       const hoveredDate: Date = xScale.invert(eventX);
       const hoveredDateIndex: number = d3.bisectLeft(dates, hoveredDate);
       const earlierDate: Date = dates[hoveredDateIndex - 1];
       const laterDate: Date = dates[hoveredDateIndex];
-      let closestDate: Date;
-
+      let closestDate: Date = getClosestDate(hoveredDate, earlierDate, laterDate);
       let closestDateX: number;
       let hoverCardX: number;
-
-      if (
-        hoveredDate.getTime() - earlierDate.getTime() <
-        laterDate.getTime() - hoveredDate.getTime()
-      ) {
-        closestDate = earlierDate;
-      } else {
-        closestDate = laterDate;
-      }
 
       closestDateX = xScale(closestDate);
 
@@ -313,26 +316,33 @@
         hoverCardLow.attr("class", "hoverCard inactive");
       }
 
-      // Determine which side of the vertical line the hover card should be on and calculate the overall position.
-      const hoverCardRect = hoverCardElement.getBoundingClientRect();
-      const hoverCardWidth = hoverCardRect.width;
-      const hoverCardHeight = hoverCardRect.height;
-      const chartRect = chartElement.getBoundingClientRect();
-      const chartX = chartRect.x;
-      const chartY = chartRect.y;
+      const mediabreakpoint = 600;
+      if(window.innerWidth > mediabreakpoint){
+        //Determine which side of the vertical line the hover card should be on and calculate the overall position.
+        const hoverCardRect = hoverCardElement.getBoundingClientRect();
+        const hoverCardWidth = hoverCardRect.width;
+        const hoverCardHeight = hoverCardRect.height;
+        const chartRect = chartElement.getBoundingClientRect();
+        const chartY = chartRect.y;
 
-      if (closestDateX < chartBounds.width / 2) {
-        hoverCardX = closestDateX + trendlineHoverCardMargin;
-      } else {
-        hoverCardX = closestDateX - trendlineHoverCardMargin - hoverCardWidth;
+        const lineRect = verticalLineElement.getBoundingClientRect();
+        
+        const isLayoutOnRight = lineRect.x < window.innerWidth / 2;
+
+        if (isLayoutOnRight) {
+          hoverCardX = lineRect.x + trendlineHoverCardMargin;
+        } else {
+          hoverCardX = lineRect.x - trendlineHoverCardMargin - hoverCardWidth;
+        }
+
+        hoverCard
+          .style("left", `${hoverCardX}px`)
+          .style(
+            "top",
+            `${chartY + window.scrollY + (chartRect.height - hoverCardHeight) / 2}px`
+          );
       }
-
-      hoverCard
-        .style("left", `${chartX + window.scrollX + hoverCardX}px`)
-        .style(
-          "top",
-          `${chartY + window.scrollY + (chartBounds.height - hoverCardHeight) / 2}px`
-        );
+      
     };
 
     chartElement.addEventListener("mouseenter", chartMouseEnter);
@@ -411,10 +421,11 @@
     let paths: SvgSelection;
     let verticalLine: ElementSection;
 
+    let scaleFactor = chartBounds.width / chartElement.getBoundingClientRect().width;
+
     if (chartAreaElement) {
       chartArea = d3.select(chartAreaElement);
     } else {
-      
       chartArea = d3
         .select(chartElement)
         .attr(
@@ -840,20 +851,20 @@
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
         <h3>Covid-19 vaccination searches</h3>
         <div class="chartLegendContainer" />
-        <div class="hoverCard inactive" />
         <svg class="chart"/>
+        <div class="hoverCard inactive" />
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
         <h3>Vaccination intent searches</h3>
         <div class="chartLegendContainer" />
-        <div class="hoverCard inactive" />
         <svg class="chart"/>
+        <div class="hoverCard inactive" />
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
         <h3>Safety and Side-effect searches</h3>
         <div class="chartLegendContainer" />
-        <div class="hoverCard inactive" />
         <svg class="chart"/>
+        <div class="hoverCard inactive" />
       </div>
       <h2>About this data</h2>
       <p>
