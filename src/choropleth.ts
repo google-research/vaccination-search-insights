@@ -96,7 +96,7 @@ function initializeMap() {
     .select("#map")
     .append("svg")
     .attr("viewBox", [0, 0, mapBounds.width, mapBounds.height].join(" "))
-    .classed("map", true);
+    .classed("map-svg", true);
 
   const g = mapSvg.append("g").attr("id", "transformer");
   // keep in inverse order
