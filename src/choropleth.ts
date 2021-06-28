@@ -18,6 +18,8 @@ import { feature } from "topojson-client";
 import type { GeometryCollection } from "topojson-specification";
 import {
   buildRegionCodeToPlaceIdMapping,
+  dcCountyFipsCode,
+  dcStateFipsCode,
   fipsCodeFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
@@ -63,6 +65,7 @@ export function createMap(stateData, countyData, trend, regions, selectionFn) {
   stateData.forEach((value, key) => {
     latestStateData.set(regionOneToFipsCode.get(key), value);
   });
+  console.log(latestStateData);
 
   regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions);
   selectionCallback = selectionFn;
@@ -180,7 +183,14 @@ function colorizeMap(trend) {
     .join("path")
     .attr("fill", function (d) {
       let id = fipsCodeFromElementId((this as Element).id);
-      let data = latestCountyData.get(id);
+
+      // special case for Washington D.C.
+      let data;
+      if (id == dcCountyFipsCode) {
+        data = latestStateData.get(stateFipsCodeFromCounty(id));
+      } else {
+        data = latestCountyData.get(id);
+      }
       if (data) {
         if (accessor(data) === 0) {
           return "transparent";
@@ -420,6 +430,11 @@ function activateSelectedState(fipsCode, zoom = true) {
       mapSvg.select("#state").select(`path#fips-${fipsCode}`).datum()
     );
   }
+
+  // special case Washington D.C.
+  if (fipsCode == dcStateFipsCode) {
+    activateSelectedCounty(dcCountyFipsCode, zoom);
+  }
 }
 
 function activateSelectedCounty(fipsCode, zoom = true) {
@@ -447,7 +462,15 @@ function drawMapCalloutInfo(data, fipsCode) {
     "Vaccination intent",
     "Safety and Side-effects",
   ];
-  const trends = data.get(fipsCode);
+
+  let trends;
+  // Need to special case Washington D.C.
+  if (fipsCode == dcCountyFipsCode) {
+    trends = latestStateData.get(stateFipsCodeFromCounty(dcCountyFipsCode));
+  } else {
+    trends = data.get(fipsCode);
+  }
+
   let values;
   let colors;
   if (trends) {
