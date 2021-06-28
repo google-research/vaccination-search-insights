@@ -443,7 +443,7 @@ function drawMapCalloutInfo(data, fipsCode) {
   const margin = 10;
 
   const trendsLabels = [
-    "Covid-19 Vaccination",
+    "COVID-19 Vaccination",
     "Vaccination intent",
     "Safety and Side-effects",
   ];

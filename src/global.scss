@@ -23,7 +23,8 @@ body {
   font-weight: g.$body-weight;
   color: g.$body-text;
   font-size: 16px;
-  line-height: 26px;
+  line-height: 24px;
+  letter-spacing: 0.1px;
   margin-left: g.$minimum-body-margin;
   margin-right: g.$minimum-body-margin;
   background-color: g.$body-background-color;
@@ -36,7 +37,9 @@ body {
 
 h1 {
   @include header-font;
-  font-size: 2.25rem;
+  font-size: 36px;
+  line-height: 44px;
+  color: g.$grey-900;
   text-align: center;
 }
 
@@ -46,7 +49,9 @@ h2 {
 }
 h3 {
   @include header-font;
-  font-size: 1.375rem;
+  font-size: 24px;
+  line-height: 32px;
+  color: g.$grey-800;
 }
 
 a {
@@ -185,6 +190,13 @@ footer {
   width: 100%;
 }
 
+.content-body-intro {
+  font-size: 20px;
+  line-height: 28px;
+  font-family: g.$body-font;
+  font-weight: g.$body-weight;
+}
+
 .mapTrendSelectorGroup {
   display: flex;
   flex-direction: row;
@@ -212,6 +224,8 @@ footer {
 }
 
 .map-trend-selector-active {
+  font-size: 18px !important;
+  line-height: 20px !important;
   vertical-align: bottom;
 }
 
@@ -458,7 +472,7 @@ footer {
 }
 
 .next-steps-item {
-  width: 32%;
+  width: 30%;
 }
 
 .footer-referencebar {
@@ -482,7 +496,7 @@ footer {
   fill: g.$grey-600;
   height: 18px;
   width: 75px;
-  margin: 0 24px 0 0;
+  margin: 0 24px 0 -10px;
 }
 
 @media (max-width: g.$media-breakpoint) {

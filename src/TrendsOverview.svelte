@@ -761,6 +761,7 @@
         aggregated and anonymized data helps you understand and compare
         communities' information needs. We’re releasing this data to inform
         public health vaccine-confidence efforts.
+        <a href="http://todo/">Learn more</a>
       </p>
       {#await regionalTrends}
         <!-- Empty -->
@@ -780,7 +781,7 @@
                   >done</span
                 >
               {/if}
-              Covid-19 vaccination searches
+              COVID-19 vaccination searches
             </button>
             <button
               id="intent"
@@ -839,7 +840,7 @@
         </div>
       {/await}
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
-        <h3>Covid-19 vaccination searches</h3>
+        <h3>COVID-19 vaccination searches</h3>
         <div class="chartLegendContainer" />
         <div class="hoverCard inactive" />
         <svg
