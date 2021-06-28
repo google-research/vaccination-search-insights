@@ -635,7 +635,6 @@
     regionalTrends = await fetchRegionalTrendsData();
     regions = Array.from(regionsByPlaceId.values());
 
-
     document.addEventListener("scroll", handleDocumentScroll);
     document
       .getElementById("download-link")
@@ -889,11 +888,53 @@
           </div>
           <!-- map header/legend -->
           <div id="map-callout" class="map-callout">
-            <h3 id="map-callout-title" class="map-callout-title">
+            <div id="map-callout-title" class="map-callout-title">
               Region Name
-            </h3>
-            <p class="map-callout-text">Interest</p>
-            <svg id="map-callout-info" />
+            </div>
+            <div class="map-callout-metric-header">Interest</div>
+            <div>
+              <div class="map-callout-metric-column map-callout-color">
+                <svg id="callout-vaccine" width="12" height="12">
+                  <rect width="12" height="12" stroke="none" />
+                </svg>
+              </div>
+              <div class="map-callout-metric-column map-callout-metric-label">
+                COVID-19 vaccination searches
+              </div>
+              <div
+                id="callout-vaccine-value"
+                class="map-callout-metric-column map-callout-metric-value"
+              />
+            </div>
+            <div>
+              <div class="map-callout-metric-column map-callout-color">
+                <svg id="callout-intent" width="12" height="12">
+                  <rect width="12" height="12" stroke="none" />
+                </svg>
+              </div>
+              <div class="map-callout-metric-column map-callout-metric-label">
+                Vaccination intent searches
+              </div>
+              <div
+                id="callout-intent-value"
+                class="map-callout-metric-column map-callout-metric-value"
+              />
+            </div>
+            <div>
+              <div class="map-callout-metric-column map-callout-color">
+                <svg id="callout-safety" width="12" height="12">
+                  <rect width="12" height="12" stroke="none" />
+                </svg>
+              </div>
+              <div class="map-callout-metric-column map-callout-metric-label">
+                Safety & side effect searches
+              </div>
+              <div
+                id="callout-safety-value"
+                class="map-callout-metric-column map-callout-metric-value"
+              />
+            </div>
+            <div class="map-callout-tip">Click to drill down</div>
           </div>
           <div class="mapLegendContainer" />
           <div id="map-legend-info-popup" class="map-legend-info-popup">
