@@ -15,10 +15,13 @@
  */
 
 $grey-50: #f8f9fa;
+$grey-200: #e8eaed;
 $grey-300: #dadce0;
+$grey-400: #bdc1c6;
 $grey-500: #9aa0a6;
 $grey-600: #80868b;
 $grey-700: #5f6368;
+$grey-800: #3c4043;
 $grey-900: #202124;
 $blue-600: #1a73e8;
 $orange-600: #e8710a;
@@ -31,11 +34,14 @@ $body-weight: 400;
 $body-text: $grey-900;
 $body-background-color: $white;
 $header-light: $grey-700;
-$border-color: #dadce0;
+$border-color: $grey-300;
 $highlight-color: $pink-400;
 $placeholder-color: $grey-700;
 $footer-background-color: $grey-50;
 $link-blue: $blue-600;
+$chip-background: #e6f0ff;
+$chip-text: #1967d2;
+$hover-card-box-shadow: #0000001f;
 
 $content-max-width: 800px;
 $header-height: 150px;
