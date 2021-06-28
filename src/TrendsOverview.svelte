@@ -826,7 +826,7 @@
       {#await regionalTrends}
         <!-- Empty -->
       {:then trends}
-        <div>
+        <div class="map-content-container">
           <div class="mapTrendSelectorGroup">
             <button
               id="vaccination"
@@ -896,7 +896,12 @@
               <a href="http://TODO" class="map-legend-info-link">Learn more</a>
             </p>
           </div>
-          <div class="map" />
+          <div id="map" />
+          <div class="map-attribution">
+            <p class="map-attribution-text">
+              Chart includes geographic data from the US Census Bureau
+            </p>
+          </div>
         </div>
       {/await}
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
