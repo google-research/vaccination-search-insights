@@ -155,15 +155,15 @@ function colorizeMap(trend) {
 
   switch (trend) {
     case "vaccination":
-      accessor = (d) => (d ? d.snf_covid19_vaccination : 0);
+      accessor = (d) => (d ? d.sni_covid19_vaccination : 0);
       colorScale = colorScaleVaccine;
       break;
     case "intent":
-      accessor = (d) => (d ? d.snf_vaccination_intent : 0);
+      accessor = (d) => (d ? d.sni_vaccination_intent : 0);
       colorScale = colorScaleIntent;
       break;
     case "safety":
-      accessor = (d) => (d ? d.snf_safety_side_effects : 0);
+      accessor = (d) => (d ? d.sni_safety_side_effects : 0);
       colorScale = colorScaleSafety;
       break;
     default:

@@ -47,12 +47,15 @@ h1 {
 h2 {
   @include header-font;
   font-size: 1.75rem;
+  margin-top: 40px;
 }
+
 h3 {
   @include header-font;
   font-size: 24px;
   line-height: 32px;
   color: g.$grey-800;
+  margin-top: 60px;
 }
 
 a {
@@ -93,6 +96,10 @@ footer {
   width: 100%;
 
   background-color: g.$footer-background-color;
+}
+
+.first-section-header {
+  margin-top: 60px;
 }
 
 .header-topbar {
@@ -588,6 +595,10 @@ svg.map-svg path {
 
 .next-steps-item {
   width: 30%;
+}
+
+div.next-steps-item > h3 {
+  margin-top: 40px;
 }
 
 .footer-referencebar {

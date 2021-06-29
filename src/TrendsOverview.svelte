@@ -727,7 +727,11 @@
   function onChangeHandler(selectedRegion: Region): void {
     if (selectedRegion != undefined) {
       params.update((p) => {
-        p.placeId = selectedRegion.place_id;
+        if (selectedRegion.place_id !== p.placeId) {
+          p.placeId = selectedRegion.place_id;
+          p.updateHistory = true;
+        }
+        
         return p;
       });
 
@@ -748,6 +752,7 @@
   function onMapSelection(id: string): void {
     params.update((p) => {
       p.placeId = id;
+      p.updateHistory = true;
       return p;
     });
   }
@@ -786,7 +791,9 @@
           Download data
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="http://health.google"
+          <a
+            class="link-item-anchor"
+            href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
             >Documentation</a
           >
         </li>
@@ -832,7 +839,10 @@
         aggregated and anonymized data helps you understand and compare
         communities' information needs. We’re releasing this data to inform
         public health vaccine-confidence efforts.
-        <a href="http://todo/">Learn more</a>
+        <a
+          href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
+          >Learn more</a
+        >
       </p>
       {#await regionalTrends}
         <!-- Empty -->
@@ -944,7 +954,10 @@
               across regions and times.
             </p>
             <p>
-              <a href="http://TODO" class="map-legend-info-link">Learn more</a>
+              <a
+                href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
+                class="map-legend-info-link">Learn more</a
+              >
             </p>
           </div>
           <div id="map" />
@@ -991,14 +1004,17 @@
           />
         </div>
       </div>
-      <h2>About this data</h2>
+      <h2 class="first-section-header">About this data</h2>
       <p>
         You can use this data to compare search interest between topics related
         to COVID-19 vaccination. The value for search interest isn’t an absolute
         number of searches—it’s a value representing relative interest which we
         scale to make it easier to compare regions with one another, or the same
         region over time. If you’d like to know more about our calculation and
-        process, visit <a href="http://todo">technical docs</a>.
+        process, see our <a
+          href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
+          >technical docs</a
+        >.
       </p>
       <h2>How to best use this data</h2>
       <p>
@@ -1032,11 +1048,6 @@
         </a>
         which adds artificial noise to our data while enabling high quality results
         without identifying any individual person.
-      </p>
-      <p>
-        To learn more about the privacy methods used to generate the data, read
-        the
-        <a href="http://todo">privacy paper</a>.
       </p>
       <h2>Availability and updates</h2>
       <p>
@@ -1088,7 +1099,9 @@
             your solutions.
           </p>
           <p>
-            <a href="http://todo">Submission page</a>
+            <a href="mailto:covid-19-search-trends-feedback@google.com"
+              >covid-19-search-trends-feedback@google.com
+            </a>
           </p>
         </div>
       </div>
