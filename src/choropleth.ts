@@ -45,6 +45,8 @@ let selectedTrend;
 let regionCodesToPlaceId;
 let selectionCallback;
 
+let mapTimeoutRef;
+
 //
 // Exports for clients
 //
@@ -140,7 +142,7 @@ function initializeMap() {
     .attr("vector-effect", "non-scaling-stroke")
     .on("mouseenter", enterStateBoundsHandler)
     .on("mouseleave", leaveStateBoundsHandler)
-    .on("mousemove", moveMapCallout)
+    .on("mousemove", inStateMovementHandler)
     .on("click", stateSelectionOnClickHandler);
 
   mapZoom = d3.zoom().scaleExtent([1, 100]).on("zoom", zoomHandler);
@@ -367,8 +369,6 @@ function dismissLegendInfoPopup(event): void {
     popup.style("display", "none");
     document.removeEventListener("click", dismissLegendInfoPopup);
     event.stopPropagation();
-  } else {
-    console.log("Within popup ignoring");
   }
 }
 
@@ -429,11 +429,6 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", inCountyMovementHandler);
-  mapSvg
-    .select("#state")
-    .selectAll("path")
-    .attr("fill", "transparent")
-    .attr("stroke-width", 2.0);
 
   mapSvg
     .select("#county")
@@ -469,20 +464,22 @@ function activateSelectedCounty(fipsCode, zoom = true) {
   }
 }
 
+function addRegionHighlight(regionId: string): void {
+  d3.select("#" + regionId).attr("stroke-width", 3);
+}
+
+function removeRegionHighlight(regionId: string): void {
+  d3.select("#" + regionId).attr("stroke-width", 1);
+}
+
 //
 // Map callout routines
 //
 
 function drawMapCalloutInfo(data, fipsCode) {
-  const height = 20;
-  const width = 20;
+  const height = 12;
+  const width = 12;
   const margin = 10;
-
-  const trendsLabels = [
-    "COVID-19 Vaccination",
-    "Vaccination intent",
-    "Safety and Side-effects",
-  ];
 
   let trends;
   // Need to special case Washington D.C.
@@ -492,113 +489,47 @@ function drawMapCalloutInfo(data, fipsCode) {
     trends = data.get(fipsCode);
   }
 
-  let values;
-  let colors;
-  if (trends) {
-    values = [
-      trends.sni_covid19_vaccination,
-      trends.sni_vaccination_intent,
-      trends.sni_safety_side_effects,
-    ];
-    colors = [
-      colorScaleVaccine(trends.sni_covid19_vaccination),
-      colorScaleIntent(trends.sni_vaccination_intent),
-      colorScaleSafety(trends.sni_safety_side_effects),
-    ];
-  } else {
-    values = ["None", "None", "None"];
-    colors = ["transparent", "transparent", "transparent"];
-  }
-  d3.select("svg#map-callout-info").select("g").remove();
-  const g = d3
-    .select("svg#map-callout-info")
-    .attr(
-      "height",
-      height * trendsLabels.length + margin * (trendsLabels.length - 1)
-    )
-    .append("g");
-
-  trendsLabels.forEach((e, i) => {
-    const row = g.append("g");
-    row
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", i * (height + margin))
-      .attr("width", width)
-      .attr("height", height)
-      .attr("fill", colors[i]);
-    row
-      .append("text")
-      .attr("x", width + margin)
-      .attr("y", i * (height + margin) + 10)
-      .attr("class", "map-callout-text")
-      .attr("alignment-baseline", "central")
-      .text(e);
-    row
-      .append("text")
-      .attr("x", 200)
-      .attr("y", i * (height + margin) + 10)
-      .attr("class", "map-callout-text")
-      .attr("text-anchor", "end")
-      .attr("alignment-baseline", "central")
-      .text(Math.round(values[i]));
-  });
-}
-
-function isInMapCallout(event) {
-  let elem = document.elementFromPoint(event.clientX, event.clientY);
-  if (elem && elem.id == "map-callout") {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function moveMapCallout(event, d) {
-  if (isInMapCallout(event)) {
-    return;
-  }
-
-  const callout = d3.select("div#map-callout");
-  const left = parseInt(callout.style("left"), 10);
-  const top = parseInt(callout.style("top"), 10);
-  const dist = Math.sqrt(
-    Math.pow(left - event.pageX, 2) + Math.pow(top - event.pageY, 2)
+  d3.select("svg#callout-vaccine")
+    .select("rect")
+    .style("fill", colorScaleVaccine(trends.snf_covid19_vaccination));
+  d3.select("div#callout-vaccine-value").text(
+    trends.snf_covid19_vaccination.toFixed(1)
   );
-  if (dist > 45.0) {
-    callout
-      .style("left", event.pageX + 5 + "px")
-      .style("top", event.pageY + 5 + "px");
-  }
+
+  d3.select("svg#callout-intent")
+    .select("rect")
+    .attr("fill", colorScaleIntent(trends.snf_vaccination_intent));
+  d3.select("div#callout-intent-value").text(
+    trends.snf_vaccination_intent.toFixed(1)
+  );
+
+  d3.select("svg#callout-safety")
+    .select("rect")
+    .attr("fill", colorScaleSafety(trends.snf_safety_side_effects));
+  d3.select("div#callout-safety-value").text(
+    trends.snf_safety_side_effects.toFixed(1)
+  );
 }
 
-function showMapCallout(data, event, d) {
-  if (isInMapCallout(event)) {
-    return;
-  }
-
-  const elemFipsCode = fipsCodeFromElementId(event.target.id);
+function showMapCallout(data, event, d): void {
+  const elemFipsCode: string = fipsCodeFromElementId(event.target.id);
   drawMapCalloutInfo(data, elemFipsCode);
 
-  const callout = d3.select("div#map-callout");
+  const callout: d3.Selection<SVGGElement, any, any, any> =
+    d3.select("div#map-callout");
+
+  // set the callout title text
   callout.select("#map-callout-title").text(d.properties.name);
+
+  callout.style("display", "block");
+  const boundingRect: DOMRect = callout.node().getBoundingClientRect();
   callout
-    .style("left", event.pageX + 5 + "px")
-    .style("top", event.pageY + 5 + "px")
-    .transition()
-    .duration(500)
-    .style("display", "block");
+    .style("left", event.pageX - boundingRect.width / 2 + "px")
+    .style("top", event.pageY - boundingRect.height - 5 + "px");
 }
 
 function hideMapCallout(event, d) {
-  if (isInMapCallout(event)) {
-    return;
-  }
-
-  d3.select("div#map-callout")
-    .transition()
-    .duration(500)
-    .style("display", "none");
+  d3.select("div#map-callout").style("display", null);
 }
 
 //
@@ -611,15 +542,31 @@ function stateSelectionOnClickHandler(event, d) {
 }
 
 function enterStateBoundsHandler(event, d) {
-  showMapCallout(latestStateData, event, d);
+  addRegionHighlight(event.target.id);
 }
 
 function leaveStateBoundsHandler(event, d) {
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
   hideMapCallout(event, d);
+  removeRegionHighlight(event.target.id);
+}
+
+function handleStateMapTimeout(event, d) {
+  mapTimeoutRef = "";
+  if (d3.select("#map-callout").style("display") == "none") {
+    showMapCallout(latestStateData, event, d);
+  }
 }
 
 function inStateMovementHandler(event, d) {
-  moveMapCallout(event, d);
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
+  mapTimeoutRef = setTimeout(handleStateMapTimeout, 200, event, d);
 }
 
 //
@@ -631,15 +578,27 @@ function countySelectionOnClickHandler(event, d) {
 }
 
 function enterCountyBoundsHandler(event, d) {
-  showMapCallout(latestCountyData, event, d);
+  addRegionHighlight(event.target.id);
 }
 
 function leaveCountyBoundsHandler(event, d) {
   hideMapCallout(event, d);
+  removeRegionHighlight(event.target.id);
+}
+
+function handleCountyMapTimeout(event, d) {
+  mapTimeoutRef = "";
+  if (d3.select("#map-callout").style("display") == "none") {
+    showMapCallout(latestCountyData, event, d);
+  }
 }
 
 function inCountyMovementHandler(event, d) {
-  moveMapCallout(event, d);
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
+  mapTimeoutRef = setTimeout(handleCountyMapTimeout, 200, event, d);
 }
 
 function selectedCountyOnClickHandler(event, d) {
