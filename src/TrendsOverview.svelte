@@ -918,7 +918,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                COVID-19 vaccination searches
+                {COVID_19_VACCINATION_TITLE}
               </div>
               <div
                 id="callout-vaccine-value"
@@ -932,7 +932,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                Vaccination intent searches
+                {VACCINATION_INTENT_TITLE}
               </div>
               <div
                 id="callout-intent-value"
@@ -946,7 +946,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                Safety & side effect searches
+                {SAFETY_SIDE_EFFECTS_TITLE}
               </div>
               <div
                 id="callout-safety-value"
