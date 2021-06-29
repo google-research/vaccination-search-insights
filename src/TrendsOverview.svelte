@@ -62,6 +62,10 @@
 
   let isMapInitialized: boolean = false;
 
+  const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
+  const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
+  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effects searches";
+
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
   let vaccinationIntentChartContainer: HTMLElement;
@@ -550,12 +554,12 @@
         g
           .append("text")
           .attr("class", "yLabel")
-          .attr("x", chartWidth - 120)
+          .attr("x", chartWidth - 15)
           .attr("y", -10)
           .attr("fill", "#5F6368")
           .attr("font-family", "Roboto")
           .attr("font-size", 11)
-          .text("RELATIVE SEARCH VOLUME")
+          .text("INTEREST")
       );
 
     generateTrendChartLegend(el);
@@ -867,7 +871,7 @@
                   >done</span
                 >
               {/if}
-              COVID-19 vaccination searches
+              {COVID_19_VACCINATION_TITLE}
             </button>
             <button
               id="intent"
@@ -883,7 +887,7 @@
                   >done</span
                 >
               {/if}
-              Vaccination intent searches
+              {VACCINATION_INTENT_TITLE}
             </button>
             <button
               id="safety"
@@ -898,7 +902,7 @@
                   >done</span
                 >
               {/if}
-              Safety and side effect searches
+              {SAFETY_SIDE_EFFECTS_TITLE}
             </button>
           </div>
           <!-- map header/legend -->
@@ -974,7 +978,7 @@
         </div>
       {/await}
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
-        <h3>COVID-19 vaccination searches</h3>
+        <h3>{COVID_19_VACCINATION_TITLE}</h3>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <div class="hoverCard inactive" />
@@ -986,7 +990,7 @@
         </div>
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
-        <h3>Vaccination intent searches</h3>
+        <h3>{VACCINATION_INTENT_TITLE}</h3>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <div class="hoverCard inactive" />
@@ -998,7 +1002,7 @@
         </div>
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
-        <h3>Safety and Side-effect searches</h3>
+        <h3>{SAFETY_SIDE_EFFECTS_TITLE}</h3>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <div class="hoverCard inactive" />
