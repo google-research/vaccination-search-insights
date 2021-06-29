@@ -461,7 +461,12 @@
       (t) => {
         const region = regionsByPlaceId.get(t.place_id);
         let inSelectedRegion: boolean;
+        const isSelectedRegion = region.place_id === selectedRegion.place_id;
 
+        if (selectedRegion.sub_region_3) {
+          // Zipcode is selected.
+          return isSelectedRegion;
+        }
         if (selectedRegion.sub_region_2) {
           // County is selected, want component zipcodes.
           inSelectedRegion =
@@ -478,7 +483,7 @@
             region.country_region_code === selectedRegion.country_region_code;
         }
 
-        return inSelectedRegion || region.place_id === selectedRegion.place_id;
+        return inSelectedRegion || isSelectedRegion;
       }
     );
 
