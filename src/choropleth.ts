@@ -393,9 +393,9 @@ function drawMapCalloutInfo(data, fipsCode) {
   const margin = 10;
 
   const trendsLabels = [
-    "Covid-19 Vaccination",
+    "COVID-19 vaccination",
     "Vaccination intent",
-    "Safety and Side-effects",
+    "Safety and side effects",
   ];
   const trends = data.get(fipsCode);
   let values;
