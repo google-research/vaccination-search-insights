@@ -18,6 +18,8 @@ import { feature } from "topojson-client";
 import type { GeometryCollection } from "topojson-specification";
 import {
   buildRegionCodeToPlaceIdMapping,
+  dcCountyFipsCode,
+  dcStateFipsCode,
   fipsCodeFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
@@ -42,6 +44,8 @@ let selectedTrend;
 
 let regionCodesToPlaceId;
 let selectionCallback;
+
+let mapTimeoutRef;
 
 //
 // Exports for clients
@@ -93,18 +97,10 @@ function setSelectedStateByFipsCode(fipsCode) {
 //
 function initializeMap() {
   mapSvg = d3
-    .select(".map")
+    .select("#map")
     .append("svg")
-    .attr(
-      "viewBox",
-      [
-        -mapBounds.margin,
-        0,
-        mapBounds.width + mapBounds.margin,
-        mapBounds.height + mapBounds.margin,
-      ].join(" ")
-    )
-    .style("margin-top", "15px");
+    .attr("viewBox", [0, 0, mapBounds.width, mapBounds.height].join(" "))
+    .classed("map-svg", true);
 
   const g = mapSvg.append("g").attr("id", "transformer");
   // keep in inverse order
@@ -146,7 +142,7 @@ function initializeMap() {
     .attr("vector-effect", "non-scaling-stroke")
     .on("mouseenter", enterStateBoundsHandler)
     .on("mouseleave", leaveStateBoundsHandler)
-    .on("mousemove", moveMapCallout)
+    .on("mousemove", inStateMovementHandler)
     .on("click", stateSelectionOnClickHandler);
 
   mapZoom = d3.zoom().scaleExtent([1, 100]).on("zoom", zoomHandler);
@@ -159,15 +155,15 @@ function colorizeMap(trend) {
 
   switch (trend) {
     case "vaccination":
-      accessor = (d) => (d ? d.snf_covid19_vaccination : 0);
+      accessor = (d) => (d ? d.sni_covid19_vaccination : 0);
       colorScale = colorScaleVaccine;
       break;
     case "intent":
-      accessor = (d) => (d ? d.snf_vaccination_intent : 0);
+      accessor = (d) => (d ? d.sni_vaccination_intent : 0);
       colorScale = colorScaleIntent;
       break;
     case "safety":
-      accessor = (d) => (d ? d.snf_safety_side_effects : 0);
+      accessor = (d) => (d ? d.sni_safety_side_effects : 0);
       colorScale = colorScaleSafety;
       break;
     default:
@@ -180,7 +176,14 @@ function colorizeMap(trend) {
     .join("path")
     .attr("fill", function (d) {
       let id = fipsCodeFromElementId((this as Element).id);
-      let data = latestCountyData.get(id);
+
+      // special case for Washington D.C.
+      let data;
+      if (id == dcCountyFipsCode) {
+        data = latestStateData.get(stateFipsCodeFromCounty(id));
+      } else {
+        data = latestCountyData.get(id);
+      }
       if (data) {
         if (accessor(data) === 0) {
           return "transparent";
@@ -225,6 +228,19 @@ function zoomToBounds(d) {
     );
 }
 
+function dateRangeString(date: string): string {
+  const dataPeriodStart: Date = d3.timeParse("%Y-%m-%d")(
+    latestCountyData["latestDate"]
+  );
+  let dataPeriodEnd: Date = new Date(dataPeriodStart);
+  dataPeriodEnd.setDate(dataPeriodStart.getDate() + 7);
+
+  const formatterStart = d3.timeFormat("%b %d");
+  const formatterEnd = d3.timeFormat("%b %d, %Y");
+
+  return `${formatterStart(dataPeriodStart)} - ${formatterEnd(dataPeriodEnd)}`;
+}
+
 function drawLegend(color) {
   const margin = 20;
   const height = 20;
@@ -232,16 +248,16 @@ function drawLegend(color) {
   const labelWidth = 60;
   const width = blockWidth * color.range().length;
 
-  d3.select(".mapLegend").selectAll("*").remove();
+  d3.select(".mapLegendContainer").selectAll("*").remove();
 
   const svg: d3.Selection<SVGSVGElement, any, any, any> = d3
-    .select(".mapLegend")
+    .select(".mapLegendContainer")
     .append("svg")
     .attr("width", width + margin + margin + labelWidth)
     .attr("height", height + margin + margin)
     .attr(
       "viewBox",
-      `${-margin} 0 ${width + margin + margin + labelWidth} ${height + margin}`
+      `0 0 ${width + margin + margin + labelWidth} ${height + margin}`
     )
     .style("overflow", "visible");
 
@@ -287,8 +303,73 @@ function drawLegend(color) {
     .attr("x", width + labelWidth)
     .attr("y", height + margin + margin - 10)
     .attr("alignment-baseline", "central")
-    .attr("class", "mapLegendInfo material-icons")
-    .text("info_outline");
+    .attr("class", "map-legend-info material-icons")
+    .text("info_outline")
+    .on("click", handleLegendInfoPopup);
+
+  // build date range
+  d3.select(".mapLegendContainer")
+    .append("svg")
+    .attr("width", labelWidth)
+    .attr("height", height + margin + margin)
+    .attr("viewBox", `0 0 ${labelWidth} ${height + margin}`)
+    .style("overflow", "visible")
+    .style("float", "right")
+    .append("g")
+    .append("text")
+    .attr("x", labelWidth)
+    .attr("y", height + margin + margin - 10)
+    .attr("alignment-baseline", "central")
+    .attr("text-anchor", "end")
+    .attr("class", "mapTrendRange")
+    .text(dateRangeString(latestCountyData["latestDate"]));
+}
+
+function handleLegendInfoPopup(event, d): void {
+  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(
+    "#map-legend-info-popup"
+  );
+  const hidden: boolean = popup.style("display") == "none";
+  if (hidden) {
+    const infoRect: DOMRect = event.target.getBoundingClientRect();
+    popup
+      .style("display", "block")
+      .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
+      .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
+
+    event.stopPropagation();
+    document.addEventListener("click", dismissLegendInfoPopup);
+  }
+}
+
+function inClientBounds(
+  clientX: number,
+  clientY: number,
+  bounds: DOMRect
+): boolean {
+  return (
+    clientX >= bounds.left &&
+    clientX <= bounds.right &&
+    clientY >= bounds.top &&
+    clientY <= bounds.bottom
+  );
+}
+
+function dismissLegendInfoPopup(event): void {
+  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(
+    "#map-legend-info-popup"
+  );
+  if (
+    !inClientBounds(
+      event.clientX,
+      event.clientY,
+      popup.node().getBoundingClientRect()
+    )
+  ) {
+    popup.style("display", "none");
+    document.removeEventListener("click", dismissLegendInfoPopup);
+    event.stopPropagation();
+  }
 }
 
 function buildVaccineColorScale() {
@@ -348,11 +429,6 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", inCountyMovementHandler);
-  mapSvg
-    .select("#state")
-    .selectAll("path")
-    .attr("fill", "transparent")
-    .attr("stroke-width", 2.0);
 
   mapSvg
     .select("#county")
@@ -370,6 +446,11 @@ function activateSelectedState(fipsCode, zoom = true) {
       mapSvg.select("#state").select(`path#fips-${fipsCode}`).datum()
     );
   }
+
+  // special case Washington D.C.
+  if (fipsCode == dcStateFipsCode) {
+    activateSelectedCounty(dcCountyFipsCode, zoom);
+  }
 }
 
 function activateSelectedCounty(fipsCode, zoom = true) {
@@ -383,128 +464,80 @@ function activateSelectedCounty(fipsCode, zoom = true) {
   }
 }
 
+function addRegionHighlight(regionId: string): void {
+  d3.select("#" + regionId).attr("stroke-width", 3);
+}
+
+function removeRegionHighlight(regionId: string): void {
+  d3.select("#" + regionId).attr("stroke-width", 1);
+}
+
 //
 // Map callout routines
 //
 
 function drawMapCalloutInfo(data, fipsCode) {
-  const height = 20;
-  const width = 20;
+  const height = 12;
+  const width = 12;
   const margin = 10;
 
-  const trendsLabels = [
-    "COVID-19 vaccination",
-    "Vaccination intent",
-    "Safety and side effects",
-  ];
-  const trends = data.get(fipsCode);
-  let values;
-  let colors;
-  if (trends) {
-    values = [
-      trends.snf_covid19_vaccination,
-      trends.snf_vaccination_intent,
-      trends.snf_safety_side_effects,
-    ];
-    colors = [
-      colorScaleVaccine(trends.snf_covid19_vaccination),
-      colorScaleIntent(trends.snf_vaccination_intent),
-      colorScaleSafety(trends.snf_safety_side_effects),
-    ];
+  let trends;
+  // Need to special case Washington D.C.
+  if (fipsCode == dcCountyFipsCode) {
+    trends = latestStateData.get(stateFipsCodeFromCounty(dcCountyFipsCode));
   } else {
-    values = ["None", "None", "None"];
-    colors = ["transparent", "transparent", "transparent"];
-  }
-  d3.select("svg#map-callout-info").select("g").remove();
-  const g = d3
-    .select("svg#map-callout-info")
-    .attr(
-      "height",
-      height * trendsLabels.length + margin * (trendsLabels.length - 1)
-    )
-    .append("g");
-
-  trendsLabels.forEach((e, i) => {
-    const row = g.append("g");
-    row
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", i * (height + margin))
-      .attr("width", width)
-      .attr("height", height)
-      .attr("fill", colors[i]);
-    row
-      .append("text")
-      .attr("x", width + margin)
-      .attr("y", i * (height + margin) + 10)
-      .attr("class", "map-callout-text")
-      .attr("alignment-baseline", "central")
-      .text(e);
-    row
-      .append("text")
-      .attr("x", 200)
-      .attr("y", i * (height + margin) + 10)
-      .attr("class", "map-callout-text")
-      .attr("text-anchor", "end")
-      .attr("alignment-baseline", "central")
-      .text(Math.round(values[i]));
-  });
-}
-
-function isInMapCallout(event) {
-  let elem = document.elementFromPoint(event.clientX, event.clientY);
-  if (elem && elem.id == "map-callout") {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function moveMapCallout(event, d) {
-  if (isInMapCallout(event)) {
-    return;
+    trends = data.get(fipsCode);
   }
 
-  const callout = d3.select("div#map-callout");
-  const left = parseInt(callout.style("left"), 10);
-  const top = parseInt(callout.style("top"), 10);
-  const dist = Math.sqrt(
-    Math.pow(left - event.pageX, 2) + Math.pow(top - event.pageY, 2)
+  if (typeof trends == "undefined") {
+    trends = {
+      sni_covid19_vaccination: 0.0,
+      sni_vaccination_intent: 0.0,
+      sni_safety_side_effects: 0.0,
+    };
+  }
+
+  d3.select("svg#callout-vaccine")
+    .select("rect")
+    .style("fill", colorScaleVaccine(trends.sni_covid19_vaccination));
+  d3.select("div#callout-vaccine-value").text(
+    trends.sni_covid19_vaccination.toFixed(1)
   );
-  if (dist > 45.0) {
-    callout
-      .style("left", event.pageX + 5 + "px")
-      .style("top", event.pageY + 5 + "px");
-  }
+
+  d3.select("svg#callout-intent")
+    .select("rect")
+    .attr("fill", colorScaleIntent(trends.sni_vaccination_intent));
+  d3.select("div#callout-intent-value").text(
+    trends.sni_vaccination_intent.toFixed(1)
+  );
+
+  d3.select("svg#callout-safety")
+    .select("rect")
+    .attr("fill", colorScaleSafety(trends.sni_safety_side_effects));
+  d3.select("div#callout-safety-value").text(
+    trends.sni_safety_side_effects.toFixed(1)
+  );
 }
 
-function showMapCallout(data, event, d) {
-  if (isInMapCallout(event)) {
-    return;
-  }
-
-  const elemFipsCode = fipsCodeFromElementId(event.target.id);
+function showMapCallout(data, event, d): void {
+  const elemFipsCode: string = fipsCodeFromElementId(event.target.id);
   drawMapCalloutInfo(data, elemFipsCode);
 
-  const callout = d3.select("div#map-callout");
+  const callout: d3.Selection<SVGGElement, any, any, any> =
+    d3.select("div#map-callout");
+
+  // set the callout title text
   callout.select("#map-callout-title").text(d.properties.name);
+
+  callout.style("display", "block");
+  const boundingRect: DOMRect = callout.node().getBoundingClientRect();
   callout
-    .style("left", event.pageX + 5 + "px")
-    .style("top", event.pageY + 5 + "px")
-    .transition()
-    .duration(500)
-    .style("display", "block");
+    .style("left", event.pageX - boundingRect.width / 2 + "px")
+    .style("top", event.pageY - boundingRect.height - 5 + "px");
 }
 
 function hideMapCallout(event, d) {
-  if (isInMapCallout(event)) {
-    return;
-  }
-
-  d3.select("div#map-callout")
-    .transition()
-    .duration(500)
-    .style("display", "none");
+  d3.select("div#map-callout").style("display", null);
 }
 
 //
@@ -517,15 +550,31 @@ function stateSelectionOnClickHandler(event, d) {
 }
 
 function enterStateBoundsHandler(event, d) {
-  showMapCallout(latestStateData, event, d);
+  addRegionHighlight(event.target.id);
 }
 
 function leaveStateBoundsHandler(event, d) {
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
   hideMapCallout(event, d);
+  removeRegionHighlight(event.target.id);
+}
+
+function handleStateMapTimeout(event, d) {
+  mapTimeoutRef = "";
+  if (d3.select("#map-callout").style("display") == "none") {
+    showMapCallout(latestStateData, event, d);
+  }
 }
 
 function inStateMovementHandler(event, d) {
-  moveMapCallout(event, d);
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
+  mapTimeoutRef = setTimeout(handleStateMapTimeout, 200, event, d);
 }
 
 //
@@ -537,15 +586,27 @@ function countySelectionOnClickHandler(event, d) {
 }
 
 function enterCountyBoundsHandler(event, d) {
-  showMapCallout(latestCountyData, event, d);
+  addRegionHighlight(event.target.id);
 }
 
 function leaveCountyBoundsHandler(event, d) {
   hideMapCallout(event, d);
+  removeRegionHighlight(event.target.id);
+}
+
+function handleCountyMapTimeout(event, d) {
+  mapTimeoutRef = "";
+  if (d3.select("#map-callout").style("display") == "none") {
+    showMapCallout(latestCountyData, event, d);
+  }
 }
 
 function inCountyMovementHandler(event, d) {
-  moveMapCallout(event, d);
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
+  mapTimeoutRef = setTimeout(handleCountyMapTimeout, 200, event, d);
 }
 
 function selectedCountyOnClickHandler(event, d) {
