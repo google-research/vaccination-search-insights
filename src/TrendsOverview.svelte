@@ -728,7 +728,11 @@
   function onChangeHandler(selectedRegion: Region): void {
     if (selectedRegion != undefined) {
       params.update((p) => {
-        p.placeId = selectedRegion.place_id;
+        if (selectedRegion.place_id !== p.placeId) {
+          p.placeId = selectedRegion.place_id;
+          p.updateHistory = true;
+        }
+        
         return p;
       });
 
@@ -749,6 +753,7 @@
   function onMapSelection(id: string): void {
     params.update((p) => {
       p.placeId = id;
+      p.updateHistory = true;
       return p;
     });
   }

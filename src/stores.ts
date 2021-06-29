@@ -22,6 +22,7 @@ import { writable } from "svelte/store";
 
 type Params = {
   placeId: string;
+  updateHistory: boolean;
 };
 
 // TODO(patankar): Make browser back/forward update params after refactor.
@@ -33,14 +34,22 @@ function loadParams(): Params {
     : "";
   return {
     placeId,
+    updateHistory: true
   };
 }
 
 function saveParams(param: Params) {
-  if (param.placeId) {
+  if (param.placeId && param.updateHistory) {
     history.pushState(null, null, `?placeId=${param.placeId}`);
   }
 }
 
 export const params = writable(loadParams());
 params.subscribe(saveParams);
+window.onpopstate = function(event) {
+  params.update((p) => {
+    p = loadParams();
+    p.updateHistory = false;
+    return p;
+  });
+};
