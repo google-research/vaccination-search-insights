@@ -489,25 +489,33 @@ function drawMapCalloutInfo(data, fipsCode) {
     trends = data.get(fipsCode);
   }
 
+  if (typeof trends == "undefined") {
+    trends = {
+      sni_covid19_vaccination: 0.0,
+      sni_vaccination_intent: 0.0,
+      sni_safety_side_effects: 0.0,
+    };
+  }
+
   d3.select("svg#callout-vaccine")
     .select("rect")
-    .style("fill", colorScaleVaccine(trends.snf_covid19_vaccination));
+    .style("fill", colorScaleVaccine(trends.sni_covid19_vaccination));
   d3.select("div#callout-vaccine-value").text(
-    trends.snf_covid19_vaccination.toFixed(1)
+    trends.sni_covid19_vaccination.toFixed(1)
   );
 
   d3.select("svg#callout-intent")
     .select("rect")
-    .attr("fill", colorScaleIntent(trends.snf_vaccination_intent));
+    .attr("fill", colorScaleIntent(trends.sni_vaccination_intent));
   d3.select("div#callout-intent-value").text(
-    trends.snf_vaccination_intent.toFixed(1)
+    trends.sni_vaccination_intent.toFixed(1)
   );
 
   d3.select("svg#callout-safety")
     .select("rect")
-    .attr("fill", colorScaleSafety(trends.snf_safety_side_effects));
+    .attr("fill", colorScaleSafety(trends.sni_safety_side_effects));
   d3.select("div#callout-safety-value").text(
-    trends.snf_safety_side_effects.toFixed(1)
+    trends.sni_safety_side_effects.toFixed(1)
   );
 }
 
