@@ -41,15 +41,15 @@ export interface RegionalTrendLine {
   sub_region_3: string;
   sub_region_3_code: string;
   place_id: string;
-  snf_covid19_vaccination: number;
-  snf_vaccination_intent: number;
-  snf_safety_side_effects: number;
+  sni_covid19_vaccination: number;
+  sni_vaccination_intent: number;
+  sni_safety_side_effects: number;
 }
 
 export interface RegionalTrendAggregate {
-  snf_covid19_vaccination: number;
-  snf_vaccination_intent: number;
-  snf_safety_side_effects: number;
+  sni_covid19_vaccination: number;
+  sni_vaccination_intent: number;
+  sni_safety_side_effects: number;
 }
 
 export interface TrendValue {
@@ -149,12 +149,12 @@ function _fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
                 sub_region_3_code: d.sub_region_3_code,
                 place_id: d.place_id,
                 //We need to coerce number parsing since papaparse only gives us strings
-                snf_covid19_vaccination: coerceNumber(
-                  d.snf_covid19_vaccination
+                sni_covid19_vaccination: coerceNumber(
+                  d.sni_covid19_vaccination
                 ),
-                snf_vaccination_intent: coerceNumber(d.snf_vaccination_intent),
-                snf_safety_side_effects: coerceNumber(
-                  d.snf_safety_side_effects
+                sni_vaccination_intent: coerceNumber(d.sni_vaccination_intent),
+                sni_safety_side_effects: coerceNumber(
+                  d.sni_safety_side_effects
                 ),
               };
               return parsedRow;
@@ -190,15 +190,15 @@ export function fetchRegionalTrendsData(): Promise<
           leaves.map((leaf) => {
             covid19_vaccination.push({
               date: leaf.date,
-              value: leaf.snf_covid19_vaccination,
+              value: leaf.sni_covid19_vaccination,
             });
             vaccination_intent.push({
               date: leaf.date,
-              value: leaf.snf_vaccination_intent,
+              value: leaf.sni_vaccination_intent,
             });
             safety_side_effects.push({
               date: leaf.date,
-              value: leaf.snf_safety_side_effects,
+              value: leaf.sni_safety_side_effects,
             });
           });
           return {
@@ -252,9 +252,9 @@ export function getLatestRegionData(
     .filter((rtl) => rtl.date == latestDate)
     .reduce((acc, region) => {
       acc.set(aggKeyFn(region), {
-        snf_covid19_vaccination: +region.snf_covid19_vaccination,
-        snf_vaccination_intent: +region.snf_vaccination_intent,
-        snf_safety_side_effects: +region.snf_safety_side_effects,
+        sni_covid19_vaccination: +region.sni_covid19_vaccination,
+        sni_vaccination_intent: +region.sni_vaccination_intent,
+        sni_safety_side_effects: +region.sni_safety_side_effects,
       });
       return acc;
     }, new Map<string, RegionalTrendAggregate>());

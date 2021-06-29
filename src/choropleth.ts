@@ -153,15 +153,15 @@ function colorizeMap(trend) {
 
   switch (trend) {
     case "vaccination":
-      accessor = (d) => (d ? d.snf_covid19_vaccination : 0);
+      accessor = (d) => (d ? d.sni_covid19_vaccination : 0);
       colorScale = colorScaleVaccine;
       break;
     case "intent":
-      accessor = (d) => (d ? d.snf_vaccination_intent : 0);
+      accessor = (d) => (d ? d.sni_vaccination_intent : 0);
       colorScale = colorScaleIntent;
       break;
     case "safety":
-      accessor = (d) => (d ? d.snf_safety_side_effects : 0);
+      accessor = (d) => (d ? d.sni_safety_side_effects : 0);
       colorScale = colorScaleSafety;
       break;
     default:
@@ -496,14 +496,14 @@ function drawMapCalloutInfo(data, fipsCode) {
   let colors;
   if (trends) {
     values = [
-      trends.snf_covid19_vaccination,
-      trends.snf_vaccination_intent,
-      trends.snf_safety_side_effects,
+      trends.sni_covid19_vaccination,
+      trends.sni_vaccination_intent,
+      trends.sni_safety_side_effects,
     ];
     colors = [
-      colorScaleVaccine(trends.snf_covid19_vaccination),
-      colorScaleIntent(trends.snf_vaccination_intent),
-      colorScaleSafety(trends.snf_safety_side_effects),
+      colorScaleVaccine(trends.sni_covid19_vaccination),
+      colorScaleIntent(trends.sni_vaccination_intent),
+      colorScaleSafety(trends.sni_safety_side_effects),
     ];
   } else {
     values = ["None", "None", "None"];
