@@ -483,7 +483,7 @@
         } else if (selectedRegion.country_region) {
           // Country is selected, want component states.
           inSelectedRegion =
-            !region.sub_region_2 &&
+            !region.sub_region_3 && !region.sub_region_2 &&
             region.country_region_code === selectedRegion.country_region_code;
         }
 
