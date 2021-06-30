@@ -483,7 +483,8 @@
         } else if (selectedRegion.country_region) {
           // Country is selected, want component states.
           inSelectedRegion =
-            !region.sub_region_3 && !region.sub_region_2 &&
+            !region.sub_region_3 &&
+            !region.sub_region_2 &&
             region.country_region_code === selectedRegion.country_region_code;
         }
 
@@ -628,6 +629,10 @@
     }
 
     return regionName;
+  }
+
+  function filterDropdownItems(regions: Region[]): Region[] {
+    return regions?.filter((region) => !region.sub_region_3);
   }
 
   function isCountry(region: Region): boolean {
@@ -878,7 +883,7 @@
     <div class="header-search-bar">
       <div class="header-search-container">
         <AutoComplete
-          items={regions}
+          items={filterDropdownItems(regions)}
           bind:selectedItem={selectedRegion}
           placeholder={"United States"}
           labelFunction={getRegionName}
@@ -896,7 +901,7 @@
       <p>
         Explore searches for COVID-19 vaccination topics by region. This
         aggregated and anonymized data helps you understand and compare
-        communities' information needs. We’re releasing this data to inform
+        communities&apos; information needs. We’re releasing this data to inform
         public health vaccine-confidence efforts.
         <a href="#about">Learn more</a>
       </p>
@@ -926,8 +931,7 @@
                 ? "mapTrendSelector selectedTrend"
                 : "mapTrendSelector"}
               on:click={onChangeMapTrend}
-              title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times.
-"
+              title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "intent"}
                 <span class="material-icons map-trend-selector-active"
@@ -965,7 +969,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                COVID-19 vaccination searches
+                {COVID_19_VACCINATION_TITLE}
               </div>
               <div
                 id="callout-vaccine-value"
@@ -979,7 +983,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                Vaccination intent searches
+                {VACCINATION_INTENT_TITLE}
               </div>
               <div
                 id="callout-intent-value"
@@ -993,7 +997,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                Safety & side effect searches
+                {SAFETY_SIDE_EFFECTS_TITLE}
               </div>
               <div
                 id="callout-safety-value"
