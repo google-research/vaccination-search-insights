@@ -630,6 +630,10 @@
     return regionName;
   }
 
+  function filterDropdownItems(regions: Region[]): Region[] {
+    return regions?.filter((region) => !region.sub_region_3);
+  }
+
   function isCountry(region: Region): boolean {
     return (
       !region.sub_region_3 &&
@@ -828,7 +832,7 @@
     <div class="header-search-bar">
       <div class="header-search-container">
         <AutoComplete
-          items={regions}
+          items={filterDropdownItems(regions)}
           bind:selectedItem={selectedRegion}
           placeholder={"United States"}
           labelFunction={getRegionName}
