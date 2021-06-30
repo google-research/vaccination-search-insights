@@ -186,8 +186,8 @@ footer {
   left: 10px;
   top: 10px;
   z-index: 500;
-  width: 312px;
-  height: 152px;
+  width: 315px;
+  height: 115px;
   padding: 13px 16px 13px 16px;
   box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3),
     0px 2px 6px 2px rgba(60, 64, 67, 0.15);
@@ -211,6 +211,7 @@ footer {
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.25px;
+  margin: 0px;
 }
 
 .header-download-popup-link {
@@ -234,6 +235,12 @@ footer {
 .link-item-anchor {
   color: inherit;
   text-decoration: none;
+}
+
+.about-anchor {
+  display: block;
+  position: relative;
+  top: -150px;
 }
 
 .content-area {
@@ -273,16 +280,17 @@ footer {
   border: 1px solid g.$grey-300;
   margin-right: 8px;
   padding: 6px 16px;
+  cursor: pointer;
 }
 
 .selectedTrend {
   background: g.$chip-background;
   color: g.$chip-text;
   border: 1px solid g.$chip-background !important;
+  pointer-events: none;
 }
 
 .map-svg {
-  margin-top: 14px;
   cursor: grab;
 }
 
@@ -306,29 +314,75 @@ svg.map-svg path {
   font-size: 14px;
 }
 
-.mapLegendContainer {
+.map-legend-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-content: center;
+  margin: 50px 0px 20px 0px;
+
+  font-family: Google Sans;
+  font-size: 14px;
+  font-weight: 500;
+  color: g.$grey-800;
+  align-items: baseline;
+}
+
+.map-legend-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
 }
 
-.mapLegend {
+.map-legend-label {
+  height: 14px;
+  line-height: 14px;
+  padding-top: 24px;
+  margin-right: 12px;
 }
 
-.mapLegendInfoContainer {
+.map-legend-date-label {
+  height: 14px;
+  line-height: 14px;
+  padding-top: 24px;
+  text-align: right;
 }
 
-.map-legend-info {
-  color: g.$grey-700;
+.map-legend-scale-top {
+  display: inline-flex;
+  margin-left: 20px;
+  margin-bottom: 3px;
+}
+
+.map-legend-scale-number {
+  width: 40px;
+  text-align: center;
+}
+
+.map-info-button svg {
+  margin: 8px 6px 6px 6px;
+}
+
+.map-info-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
   cursor: pointer;
+}
+
+.map-info-button:hover {
+  background: g.$info-button-hover;
+}
+
+.map-data-legend + .map-info-button {
+  margin-top: 12px;
+  margin-left: 8px;
 }
 
 .map-legend-info-popup {
   position: absolute;
   width: 310px;
-  height: 152px;
+  height: 178px;
   top: 620px;
   left: 690px;
   border-radius: 8px;
@@ -469,6 +523,25 @@ svg.map-svg path {
 
 .trendline-selected.safetySideEffects {
   stroke: g.$pink-600;
+}
+
+.chart-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.chart-header svg {
+  margin-top: 60px;
+  margin-right: -20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.chart-header svg:hover {
+  background: g.$info-button-hover;
 }
 
 .chartLegendContainer {

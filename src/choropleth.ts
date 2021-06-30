@@ -242,134 +242,31 @@ function dateRangeString(date: string): string {
 }
 
 function drawLegend(color) {
-  const margin = 20;
-  const height = 20;
-  const blockWidth = 40;
-  const labelWidth = 60;
-  const width = blockWidth * color.range().length;
+  const blockWidth: number = 40;
+  const blockHeight: number = 20;
 
-  d3.select(".mapLegendContainer").selectAll("*").remove();
+  d3.select("div#map-legend-scale").selectAll("div").remove();
 
-  const svg: d3.Selection<SVGSVGElement, any, any, any> = d3
-    .select(".mapLegendContainer")
-    .append("svg")
-    .attr("width", width + margin + margin + labelWidth)
-    .attr("height", height + margin + margin)
-    .attr(
-      "viewBox",
-      `0 0 ${width + margin + margin + labelWidth} ${height + margin}`
-    )
-    .style("overflow", "visible");
+  d3.select("div#map-legend-scale")
+    .selectAll("div")
+    .data(color.domain())
+    .join("div")
+    .classed("map-legend-scale-number", true)
+    .text((d: number, i) => d);
 
-  let colorRange = color.range();
-  svg
-    .append("g")
+  d3.select("svg#map-legend-bar")
     .selectAll("rect")
-    .data(colorRange)
+    .data(color.range())
     .join("rect")
-    .attr("x", (d, i) => labelWidth + i * blockWidth)
-    .attr("y", height + margin)
-    .attr("width", 40)
-    .attr("height", 20)
+    .attr("width", blockWidth)
+    .attr("height", blockHeight)
+    .attr("y", 0)
+    .attr("x", (d: string, i: number) => i * blockWidth)
     .attr("fill", (d: string) => d);
 
-  svg
-    .append("g")
-    .selectAll("text")
-    .data(color.domain())
-    .join("text")
-    .attr("x", (d, i) => labelWidth + (i + 1) * blockWidth)
-    .attr("y", height + margin - 5)
-    .attr("text-anchor", "middle")
-    .attr("class", "mapTrendRange")
-    .text((d: number, i) => Math.round(d));
-
-  svg
-    .append("g")
-    .append("text")
-    .attr("x", 0)
-    .attr("y", height + margin + margin - 10)
-    .attr("alignment-baseline", "central")
-    .attr("class", "mapTrendRange")
-    .text("Interest")
-    .append("title")
-    .text(
-      "A scaled value, showing relative interest, that you can compare across regions and times."
-    );
-
-  svg
-    .append("g")
-    .append("text")
-    .attr("x", width + labelWidth)
-    .attr("y", height + margin + margin - 10)
-    .attr("alignment-baseline", "central")
-    .attr("class", "map-legend-info material-icons")
-    .text("info_outline")
-    .on("click", handleLegendInfoPopup);
-
-  // build date range
-  d3.select(".mapLegendContainer")
-    .append("svg")
-    .attr("width", labelWidth)
-    .attr("height", height + margin + margin)
-    .attr("viewBox", `0 0 ${labelWidth} ${height + margin}`)
-    .style("overflow", "visible")
-    .style("float", "right")
-    .append("g")
-    .append("text")
-    .attr("x", labelWidth)
-    .attr("y", height + margin + margin - 10)
-    .attr("alignment-baseline", "central")
-    .attr("text-anchor", "end")
-    .attr("class", "mapTrendRange")
-    .text(dateRangeString(latestCountyData["latestDate"]));
-}
-
-function handleLegendInfoPopup(event, d): void {
-  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(
-    "#map-legend-info-popup"
+  d3.select("div#map-legend-date").text(
+    dateRangeString(latestCountyData["latestDate"])
   );
-  const hidden: boolean = popup.style("display") == "none";
-  if (hidden) {
-    const infoRect: DOMRect = event.target.getBoundingClientRect();
-    popup
-      .style("display", "block")
-      .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
-      .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
-
-    event.stopPropagation();
-    document.addEventListener("click", dismissLegendInfoPopup);
-  }
-}
-
-function inClientBounds(
-  clientX: number,
-  clientY: number,
-  bounds: DOMRect
-): boolean {
-  return (
-    clientX >= bounds.left &&
-    clientX <= bounds.right &&
-    clientY >= bounds.top &&
-    clientY <= bounds.bottom
-  );
-}
-
-function dismissLegendInfoPopup(event): void {
-  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(
-    "#map-legend-info-popup"
-  );
-  if (
-    !inClientBounds(
-      event.clientX,
-      event.clientY,
-      popup.node().getBoundingClientRect()
-    )
-  ) {
-    popup.style("display", "none");
-    document.removeEventListener("click", dismissLegendInfoPopup);
-    event.stopPropagation();
-  }
 }
 
 function buildVaccineColorScale() {
