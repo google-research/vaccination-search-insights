@@ -147,6 +147,8 @@ function initializeMap() {
 
   mapZoom = d3.zoom().scaleExtent([1, 100]).on("zoom", zoomHandler);
   mapSvg.call(mapZoom);
+
+  mapSvg.on("mouseleave", mapOnMouseLeaveHandler);
 }
 
 function colorizeMap(trend) {
@@ -522,4 +524,12 @@ function selectedCountyOnClickHandler(event, d) {
     .attr("stroke-width", 1.0);
   resetZoom();
   selectionCallback(resetNavigationPlaceId);
+}
+
+function mapOnMouseLeaveHandler(event, d) {
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
+  hideMapCallout(event, d);
 }
