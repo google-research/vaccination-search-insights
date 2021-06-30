@@ -866,7 +866,7 @@
     </div>
     <div id="header-download-popup" class="header-download-popup">
       <h3 class="header-downlod-popup-title">
-        Covid-19 Vaccination Search Insights
+        COVID-19 Vaccination Search Insights
       </h3>
       <p class="header-download-popup-body">
         In order to download or use the data or insights, you must agree to the
