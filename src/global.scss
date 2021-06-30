@@ -382,7 +382,7 @@ svg.map-svg path {
 .map-legend-info-popup {
   position: absolute;
   width: 310px;
-  height: 165px;
+  height: 178px;
   top: 620px;
   left: 690px;
   border-radius: 8px;
@@ -523,6 +523,19 @@ svg.map-svg path {
 
 .trendline-selected.safetySideEffects {
   stroke: g.$pink-600;
+}
+
+.chart-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.chart-header svg {
+  font-size: 24px;
+  line-height: 32px;
+  margin-top: 60px;
+  margin-right: -20px;
 }
 
 .chartLegendContainer {

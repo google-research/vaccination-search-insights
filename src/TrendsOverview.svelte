@@ -778,6 +778,9 @@
   let popupId: string;
 
   function handleLegendInfoPopup(event, id): void {
+    if (popupId) {
+      dismissLegendInfoPopup(event);
+    }
     const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(id);
 
     const hidden: boolean = popup.style("display") == "none";
@@ -1056,9 +1059,65 @@
             <a href="#about" class="map-legend-info-link">Learn more</a>
           </p>
         </div>
+
+        <div id="info-popup-vaccine" class="map-legend-info-popup">
+          <h3 class="map-legend-info-header">
+            All Covid-19 vaccination searches
+          </h3>
+          <p class="map-legend-info-text">
+            Search interest in any aspect of COVID-19 vaccination. A scaled
+            value that you can compare across regions and times.
+          </p>
+          <p>
+            <a href="#about" class="map-legend-info-link">Learn more</a>
+          </p>
+        </div>
+
+        <div id="info-popup-intent" class="map-legend-info-popup">
+          <h3 class="map-legend-info-header">Vaccination-intent searches</h3>
+          <p class="map-legend-info-text">
+            Search interest in the eligibility, availability, and accessibility
+            of COVID-19 vaccines. A scaled value that you can compare across
+            regions and times.
+          </p>
+          <p>
+            <a href="#about" class="map-legend-info-link">Learn more</a>
+          </p>
+        </div>
+
+        <div id="info-popup-safety" class="map-legend-info-popup">
+          <h3 class="map-legend-info-header">
+            Safety and side effect searches
+          </h3>
+          <p class="map-legend-info-text">
+            Search interest in the safety and side effects of COVID-19 vaccines.
+            A scaled value that you can compare across regions and times.
+          </p>
+          <p>
+            <a href="#about" class="map-legend-info-link">Learn more</a>
+          </p>
+        </div>
       {/await}
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
-        <h3>{COVID_19_VACCINATION_TITLE}</h3>
+        <div class="chart-header">
+          <h3>{COVID_19_VACCINATION_TITLE}</h3>
+          <svg
+            id="map-info-button-icon"
+            width="24"
+            height="24"
+            on:click={(e) => {
+              handleLegendInfoPopup(e, "#info-popup-vaccine");
+            }}
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+              fill="#5F6368"
+              stroke="none"
+            />
+          </svg>
+        </div>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <div class="hoverCard inactive" />
@@ -1070,7 +1129,26 @@
         </div>
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
-        <h3>{VACCINATION_INTENT_TITLE}</h3>
+        <div class="chart-header">
+          <h3>{VACCINATION_INTENT_TITLE}</h3>
+          <svg
+            id="map-info-button-icon"
+            width="24"
+            height="24"
+            on:click={(e) => {
+              handleLegendInfoPopup(e, "#info-popup-intent");
+            }}
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+              fill="#5F6368"
+              stroke="none"
+            />
+          </svg>
+        </div>
+
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <div class="hoverCard inactive" />
@@ -1082,7 +1160,26 @@
         </div>
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
-        <h3>{SAFETY_SIDE_EFFECTS_TITLE}</h3>
+        <div class="chart-header">
+          <h3>{SAFETY_SIDE_EFFECTS_TITLE}</h3>
+          <svg
+            id="map-info-button-icon"
+            width="24"
+            height="24"
+            on:click={(e) => {
+              handleLegendInfoPopup(e, "#info-popup-safety");
+            }}
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+              fill="#5F6368"
+              stroke="none"
+            />
+          </svg>
+        </div>
+
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <div class="hoverCard inactive" />
