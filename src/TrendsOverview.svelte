@@ -474,7 +474,8 @@
         if (selectedRegion.sub_region_2) {
           // County is selected, want component zipcodes.
           inSelectedRegion =
-            region.sub_region_2_code === selectedRegion.sub_region_2_code;
+            region.sub_region_2 === selectedRegion.sub_region_2 && 
+            region.sub_region_1 === selectedRegion.sub_region_1;
         } else if (selectedRegion.sub_region_1) {
           // State is selected, want component counties.
           inSelectedRegion =
@@ -606,7 +607,7 @@
       return "";
     }
     if (region.sub_region_3) {
-      regionName = region.sub_region_3;
+      regionName = region.sub_region_3_code;
 
       if (region.sub_region_2) {
         regionName += `, ${region.sub_region_2}`;
