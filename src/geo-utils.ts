@@ -21,6 +21,9 @@ import type { Region } from "./data";
 
 let regionCodesToPlaceId: Map<string, string>;
 
+export const dcStateFipsCode: string = "11";
+export const dcCountyFipsCode: string = "11001";
+
 export const regionOneToFipsCode: Map<string, string> = new Map([
   ["US-AL", "01"],
   ["US-AK", "02"],
@@ -30,6 +33,7 @@ export const regionOneToFipsCode: Map<string, string> = new Map([
   ["US-CO", "08"],
   ["US-CT", "09"],
   ["US-DE", "10"],
+  ["US-DC", "11"],
   ["US-FL", "12"],
   ["US-GA", "13"],
   ["US-HI", "15"],

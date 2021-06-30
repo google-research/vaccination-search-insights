@@ -68,6 +68,10 @@
 
   let isMapInitialized: boolean = false;
 
+  const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
+  const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
+  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effects searches";
+
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
   let vaccinationIntentChartContainer: HTMLElement;
@@ -420,7 +424,7 @@
     let paths: SvgSelection;
     let verticalLine: ElementSection;
 
-    let scaleFactor = chartBounds.width / chartElement.getBoundingClientRect().width;
+    let chartWidth = chartElement.getBoundingClientRect().width;
 
     if (chartAreaElement) {
       chartArea = d3.select(chartAreaElement);
@@ -479,7 +483,12 @@
       (t) => {
         const region = regionsByPlaceId.get(t.place_id);
         let inSelectedRegion: boolean;
+        const isSelectedRegion = region.place_id === selectedRegion.place_id;
 
+        if (selectedRegion.sub_region_3) {
+          // Zipcode is selected.
+          return isSelectedRegion;
+        }
         if (selectedRegion.sub_region_2) {
           // County is selected, want component zipcodes.
           inSelectedRegion =
@@ -496,7 +505,7 @@
             region.country_region_code === selectedRegion.country_region_code;
         }
 
-        return inSelectedRegion || region.place_id === selectedRegion.place_id;
+        return inSelectedRegion || isSelectedRegion;
       }
     );
 
@@ -563,12 +572,12 @@
         g
           .append("text")
           .attr("class", "yLabel")
-          .attr("x", chartBounds.width - 120)
+          .attr("x", chartWidth - 15)
           .attr("y", -10)
           .attr("fill", "#5F6368")
           .attr("font-family", "Roboto")
           .attr("font-size", 11)
-          .text("RELATIVE SEARCH VOLUME")
+          .text("INTEREST")
       );
 
     generateTrendChartLegend(el);
@@ -639,6 +648,10 @@
     return regionName;
   }
 
+  function filterDropdownItems(regions: Region[]): Region[] {
+    return regions?.filter((region) => !region.sub_region_3);
+  }
+
   function isCountry(region: Region): boolean {
     return (
       region.sub_region_3 === "" &&
@@ -652,6 +665,11 @@
     regionsByPlaceId = await fetchRegionData();
     regionalTrends = await fetchRegionalTrendsData();
     regions = Array.from(regionsByPlaceId.values());
+
+    document.addEventListener("scroll", handleDocumentScroll);
+    document
+      .getElementById("download-link")
+      .addEventListener("click", handleDownloadPopup);
 
     params.subscribe((param) => {
       placeId = param.placeId;
@@ -701,10 +719,50 @@
     });
   });
 
+  function handleDownloadPopup(event): void {
+    const downloadRect: DOMRect = document
+      .getElementById("download-link")
+      .getBoundingClientRect();
+    const popup = document.getElementById("header-download-popup");
+
+    const downloadCenterX: number = downloadRect.left + downloadRect.width / 2;
+    const popupLeft: number = downloadCenterX - 10 - 312 / 2;
+
+    popup.style.left = popupLeft + "px";
+    popup.style.display = "inline";
+    document.addEventListener("click", dismissDownloadPopup);
+  }
+
+  function inBounds(
+    clientX: number,
+    clientY: number,
+    bounds: DOMRect
+  ): boolean {
+    return (
+      clientX >= bounds.left &&
+      clientX <= bounds.right &&
+      clientY >= bounds.top &&
+      clientY <= bounds.bottom
+    );
+  }
+
+  function dismissDownloadPopup(event): void {
+    const popup = document.getElementById("header-download-popup");
+    if (
+      !inBounds(event.clientX, event.clientY, popup.getBoundingClientRect())
+    ) {
+      popup.style.display = "none";
+    }
+  }
+
   function onChangeHandler(selectedRegion: Region): void {
     if (selectedRegion != undefined) {
       params.update((p) => {
-        p.placeId = selectedRegion.place_id;
+        if (selectedRegion.place_id !== p.placeId) {
+          p.placeId = selectedRegion.place_id;
+          p.updateHistory = true;
+        }
+        
         return p;
       });
 
@@ -725,8 +783,18 @@
   function onMapSelection(id: string): void {
     params.update((p) => {
       p.placeId = id;
+      p.updateHistory = true;
       return p;
     });
+  }
+
+  function handleDocumentScroll(): void {
+    const sep: HTMLElement = document.getElementById("header-divider");
+    if (window.pageYOffset > 0) {
+      sep.classList.add("header-content-divider-scrolled");
+    } else {
+      sep.classList.remove("header-content-divider-scrolled");
+    }
   }
 </script>
 
@@ -740,27 +808,49 @@
           </svg>
         </a>
         <div class="header-topbar-text">
-          Vaccine Information Search Trends <span
+          COVID-19 Vaccine Search Insights <span
             class="header-topbar-early-access">Early Access</span
           >
         </div>
       </div>
       <ul class="header-topbar-menu">
         <!-- TODO: replace with actual links once available -->
-        <li class="link-item">
-          <a class="link-item-anchor" href="http://health.google">Download</a>
+        <li id="download-link" class="link-item">
+          <span class="material-icons-outlined header-download-icon"
+            >file_download</span
+          >
+          Download data
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="http://health.google"
+          <a
+            class="link-item-anchor"
+            href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
             >Documentation</a
           >
         </li>
       </ul>
     </div>
+    <div id="header-download-popup" class="header-download-popup">
+      <h3 class="header-downlod-popup-title">
+        Covid-19 Vaccination Search Insights
+      </h3>
+      <p class="header-download-popup-body">
+        In order to download or use the data or insights, you must agree to the
+        Google
+        <a href="https://policies.google.com/terms">Terms of Service</a>.
+      </p>
+      <p>
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/Global_vaccination_search_insights.csv"
+          >Download dataset - United States</a
+        >
+      </p>
+    </div>
     <div class="header-search-bar">
       <div class="header-search-container">
         <AutoComplete
-          items={regions}
+          items={filterDropdownItems(regions)}
           bind:selectedItem={selectedRegion}
           placeholder={"United States"}
           labelFunction={getRegionName}
@@ -770,21 +860,25 @@
         />
       </div>
     </div>
-    <div class="header-content-divider" />
+    <div id="header-divider" class="header-content-divider" />
   </header>
   <div class="content-area">
     <div class="content-body">
-      <h1>COVID-19 Vaccine Information Search Trends</h1>
+      <h1>COVID-19 Vaccine Search Insights</h1>
       <p>
         Explore searches for COVID-19 vaccination topics by region. This
         aggregated and anonymized data helps you understand and compare
         communities' information needs. We’re releasing this data to inform
         public health vaccine-confidence efforts.
+        <a
+          href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
+          >Learn more</a
+        >
       </p>
       {#await regionalTrends}
         <!-- Empty -->
       {:then trends}
-        <div>
+        <div class="map-content-container">
           <div class="mapTrendSelectorGroup">
             <button
               id="vaccination"
@@ -799,7 +893,7 @@
                   >done</span
                 >
               {/if}
-              Covid-19 vaccination searches
+              {COVID_19_VACCINATION_TITLE}
             </button>
             <button
               id="intent"
@@ -815,7 +909,7 @@
                   >done</span
                 >
               {/if}
-              Vaccination intent searches
+              {VACCINATION_INTENT_TITLE}
             </button>
             <button
               id="safety"
@@ -830,20 +924,60 @@
                   >done</span
                 >
               {/if}
-              Safety and side effect searches
+              {SAFETY_SIDE_EFFECTS_TITLE}
             </button>
           </div>
           <!-- map header/legend -->
           <div id="map-callout" class="map-callout">
-            <h3 id="map-callout-title" class="map-callout-title">
+            <div id="map-callout-title" class="map-callout-title">
               Region Name
-            </h3>
-            <p class="map-callout-text">Interest</p>
-            <svg id="map-callout-info" />
+            </div>
+            <div class="map-callout-metric-header">Interest</div>
+            <div>
+              <div class="map-callout-metric-column map-callout-color">
+                <svg id="callout-vaccine" width="12" height="12">
+                  <rect width="12" height="12" stroke="none" />
+                </svg>
+              </div>
+              <div class="map-callout-metric-column map-callout-metric-label">
+                {COVID_19_VACCINATION_TITLE}
+              </div>
+              <div
+                id="callout-vaccine-value"
+                class="map-callout-metric-column map-callout-metric-value"
+              />
+            </div>
+            <div>
+              <div class="map-callout-metric-column map-callout-color">
+                <svg id="callout-intent" width="12" height="12">
+                  <rect width="12" height="12" stroke="none" />
+                </svg>
+              </div>
+              <div class="map-callout-metric-column map-callout-metric-label">
+                {VACCINATION_INTENT_TITLE}
+              </div>
+              <div
+                id="callout-intent-value"
+                class="map-callout-metric-column map-callout-metric-value"
+              />
+            </div>
+            <div>
+              <div class="map-callout-metric-column map-callout-color">
+                <svg id="callout-safety" width="12" height="12">
+                  <rect width="12" height="12" stroke="none" />
+                </svg>
+              </div>
+              <div class="map-callout-metric-column map-callout-metric-label">
+                {SAFETY_SIDE_EFFECTS_TITLE}
+              </div>
+              <div
+                id="callout-safety-value"
+                class="map-callout-metric-column map-callout-metric-value"
+              />
+            </div>
+            <div class="map-callout-tip">Click to drill down</div>
           </div>
-          <div class="mapLegendContainer">
-            <div class="mapLegend" />
-          </div>
+          <div class="mapLegendContainer" />
           <div id="map-legend-info-popup" class="map-legend-info-popup">
             <h3 class="map-legend-info-header">Interest</h3>
             <p class="map-legend-info-text">
@@ -851,22 +985,30 @@
               across regions and times.
             </p>
             <p>
-              <a href="http://TODO" class="map-legend-info-link">Learn more</a>
+              <a
+                href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
+                class="map-legend-info-link">Learn more</a
+              >
             </p>
           </div>
-          <div class="map" />
+          <div id="map" />
+          <div class="map-attribution">
+            <p class="map-attribution-text">
+              Chart includes geographic data from the US Census Bureau
+            </p>
+          </div>
         </div>
       {/await}
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
-        <h3>Covid-19 vaccination searches</h3>
-        <div class="chartLegendContainer"/>
+        <h3>{COVID_19_VACCINATION_TITLE}</h3>
+        <div class="chartLegendContainer" />
         <div class="chartContainer">
           <svg class="chart"/>
           <div class="hoverCard inactive" />
         </div>
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
-        <h3>Vaccination intent searches</h3>
+        <h3>{VACCINATION_INTENT_TITLE}</h3>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <svg class="chart"/>
@@ -874,21 +1016,24 @@
         </div>
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
-        <h3>Safety and Side-effect searches</h3>
+        <h3>{SAFETY_SIDE_EFFECTS_TITLE}</h3>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <svg class="chart"/>
           <div class="hoverCard inactive" />
         </div>
       </div>
-      <h2>About this data</h2>
+      <h2 class="first-section-header">About this data</h2>
       <p>
         You can use this data to compare search interest between topics related
         to COVID-19 vaccination. The value for search interest isn’t an absolute
         number of searches—it’s a value representing relative interest which we
         scale to make it easier to compare regions with one another, or the same
         region over time. If you’d like to know more about our calculation and
-        process, visit <a href="http://todo">technical docs</a>.
+        process, see our <a
+          href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
+          >technical docs</a
+        >.
       </p>
       <h2>How to best use this data</h2>
       <p>
@@ -922,11 +1067,6 @@
         </a>
         which adds artificial noise to our data while enabling high quality results
         without identifying any individual person.
-      </p>
-      <p>
-        To learn more about the privacy methods used to generate the data, read
-        the
-        <a href="http://todo">privacy paper</a>.
       </p>
       <h2>Availability and updates</h2>
       <p>
@@ -978,7 +1118,9 @@
             your solutions.
           </p>
           <p>
-            <a href="http://todo">Submission page</a>
+            <a href="mailto:covid-19-search-trends-feedback@google.com"
+              >covid-19-search-trends-feedback@google.com
+            </a>
           </p>
         </div>
       </div>
