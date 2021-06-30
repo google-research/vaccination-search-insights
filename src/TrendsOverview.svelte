@@ -493,9 +493,19 @@
       }
     );
 
-    const dates: Date[] = trendLine(data[0]).map((trend) =>
-      convertStorageDate(trend.date)
-    );
+    // A superset of dates for shown trendlines.
+    const dates: Date[] = [];
+    data.forEach((regionalTrends) => {
+      const regionalTrendValues = trendLine(regionalTrends);
+
+      regionalTrendValues.forEach((regionalTrendValue) => {
+        const date = convertStorageDate(regionalTrendValue.date);
+
+        if (!dates.includes(date)) {
+          dates.push(date);
+        }
+      })
+    });
 
     let xScale = d3.scaleTime().range([0, chartWidth]).domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
