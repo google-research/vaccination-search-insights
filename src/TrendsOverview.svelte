@@ -64,7 +64,7 @@
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
-  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effects searches";
+  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
 
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
@@ -630,10 +630,6 @@
     return regionName;
   }
 
-  function filterDropdownItems(regions: Region[]): Region[] {
-    return regions?.filter((region) => !region.sub_region_3);
-  }
-
   function isCountry(region: Region): boolean {
     return (
       !region.sub_region_3 &&
@@ -744,7 +740,7 @@
           p.placeId = selectedRegion.place_id;
           p.updateHistory = true;
         }
-        
+
         return p;
       });
 
@@ -778,6 +774,54 @@
       sep.classList.remove("header-content-divider-scrolled");
     }
   }
+
+  let popupId: string;
+
+  function handleLegendInfoPopup(event, id): void {
+    const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(id);
+
+    const hidden: boolean = popup.style("display") == "none";
+    if (hidden) {
+      const infoRect: DOMRect = event.target.getBoundingClientRect();
+      popup
+        .style("display", "block")
+        .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
+        .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
+
+      event.stopPropagation();
+      popupId = id;
+      document.addEventListener("click", dismissLegendInfoPopup);
+    }
+  }
+
+  function dismissLegendInfoPopup(event): void {
+    const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(popupId);
+    if (
+      !inClientBounds(
+        event.clientX,
+        event.clientY,
+        popup.node().getBoundingClientRect()
+      )
+    ) {
+      popup.style("display", "none");
+      document.removeEventListener("click", dismissLegendInfoPopup);
+      popupId = null;
+      event.stopPropagation();
+    }
+  }
+
+  function inClientBounds(
+    clientX: number,
+    clientY: number,
+    bounds: DOMRect
+  ): boolean {
+    return (
+      clientX >= bounds.left &&
+      clientX <= bounds.right &&
+      clientY >= bounds.top &&
+      clientY <= bounds.bottom
+    );
+  }
 </script>
 
 <main>
@@ -796,7 +840,6 @@
         </div>
       </div>
       <ul class="header-topbar-menu">
-        <!-- TODO: replace with actual links once available -->
         <li id="download-link" class="link-item">
           <span class="material-icons-outlined header-download-icon"
             >file_download</span
@@ -832,7 +875,7 @@
     <div class="header-search-bar">
       <div class="header-search-container">
         <AutoComplete
-          items={filterDropdownItems(regions)}
+          items={regions}
           bind:selectedItem={selectedRegion}
           placeholder={"United States"}
           labelFunction={getRegionName}
@@ -852,10 +895,7 @@
         aggregated and anonymized data helps you understand and compare
         communities' information needs. We’re releasing this data to inform
         public health vaccine-confidence efforts.
-        <a
-          href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
-          >Learn more</a
-        >
+        <a href="#about">Learn more</a>
       </p>
       {#await regionalTrends}
         <!-- Empty -->
@@ -922,7 +962,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                {COVID_19_VACCINATION_TITLE}
+                COVID-19 vaccination searches
               </div>
               <div
                 id="callout-vaccine-value"
@@ -936,7 +976,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                {VACCINATION_INTENT_TITLE}
+                Vaccination intent searches
               </div>
               <div
                 id="callout-intent-value"
@@ -950,7 +990,7 @@
                 </svg>
               </div>
               <div class="map-callout-metric-column map-callout-metric-label">
-                {SAFETY_SIDE_EFFECTS_TITLE}
+                Safety & side effect searches
               </div>
               <div
                 id="callout-safety-value"
@@ -959,19 +999,44 @@
             </div>
             <div class="map-callout-tip">Click to drill down</div>
           </div>
-          <div class="mapLegendContainer" />
-          <div id="map-legend-info-popup" class="map-legend-info-popup">
-            <h3 class="map-legend-info-header">Interest</h3>
-            <p class="map-legend-info-text">
-              A scaled value, showing relative interest, that you can compare
-              across regions and times.
-            </p>
-            <p>
-              <a
-                href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
-                class="map-legend-info-link">Learn more</a
-              >
-            </p>
+          <div class="map-legend-container">
+            <div class="map-legend-bar">
+              <div class="map-legend-label">Interest</div>
+              <div class="map-data-legend">
+                <div id="map-legend-scale" class="map-legend-scale-top" />
+                <div>
+                  <svg id="map-legend-bar" width="280" height="20">
+                    <rect
+                      width="280"
+                      height="20"
+                      x="0"
+                      y="0"
+                      fill="none"
+                      stroke="#bdc1c6"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="map-info-button">
+                <svg
+                  id="map-info-button-icon"
+                  width="24"
+                  height="24"
+                  on:click={(e) => {
+                    handleLegendInfoPopup(e, "#map-legend-info-popup");
+                  }}
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+                    fill="#5F6368"
+                    stroke="none"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div id="map-legend-date" class="map-legend-date-label" />
           </div>
           <div id="map" />
           <div class="map-attribution">
@@ -979,6 +1044,17 @@
               Chart includes geographic data from the US Census Bureau
             </p>
           </div>
+        </div>
+        <!-- Info Popups -->
+        <div id="map-legend-info-popup" class="map-legend-info-popup">
+          <h3 class="map-legend-info-header">Interest</h3>
+          <p class="map-legend-info-text">
+            A scaled value, showing relative interest, that you can compare
+            across regions and times.
+          </p>
+          <p>
+            <a href="#about" class="map-legend-info-link">Learn more</a>
+          </p>
         </div>
       {/await}
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
@@ -1017,6 +1093,9 @@
           />
         </div>
       </div>
+      <a id="about" class="about-anchor">
+        <!-- Empty - keep to avoid warnings on empty anchor -->
+      </a>
       <h2 class="first-section-header">About this data</h2>
       <p>
         You can use this data to compare search interest between topics related
@@ -1053,9 +1132,9 @@
       <h2>Protecting privacy</h2>
       <p>
         We developed the Vaccine Search Insights to be helpful while adhering to
-        our stringent privacy protocols and protecting people’s privacy. No
-        individual search queries or other personally identifiable information
-        are made available at any point. For this data, we use <a
+        our stringent privacy protocols for search data. No individual search
+        queries or other personally identifiable information are made available
+        at any point. For this data, we use <a
           href="https://www.youtube.com/watch?v=FfAdemDkLsc&feature=youtu.be&hl=en"
           >differential privacy,
         </a>
