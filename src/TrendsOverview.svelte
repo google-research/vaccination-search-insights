@@ -494,7 +494,10 @@
     );
 
     // A superset of dates for shown trendlines.
+<<<<<<< HEAD
     // TODO(patankar): Efficiency.
+=======
+>>>>>>> 7efdcccf033e8f033843b2e921f775e07e8cf87e
     const dates: Date[] = [];
     data.forEach((regionalTrends) => {
       const regionalTrendValues = trendLine(regionalTrends);
