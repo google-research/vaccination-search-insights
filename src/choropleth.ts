@@ -157,15 +157,15 @@ function colorizeMap(trend) {
 
   switch (trend) {
     case "vaccination":
-      accessor = (d) => (d ? d.sni_covid19_vaccination : 0);
+      accessor = (d) => (d ? d.sni_covid19_vaccination | 0 : 0);
       colorScale = colorScaleVaccine;
       break;
     case "intent":
-      accessor = (d) => (d ? d.sni_vaccination_intent : 0);
+      accessor = (d) => (d ? d.sni_vaccination_intent | 0 : 0);
       colorScale = colorScaleIntent;
       break;
     case "safety":
-      accessor = (d) => (d ? d.sni_safety_side_effects : 0);
+      accessor = (d) => (d ? d.sni_safety_side_effects | 0 : 0);
       colorScale = colorScaleSafety;
       break;
     default:
@@ -396,26 +396,23 @@ function drawMapCalloutInfo(data, fipsCode) {
     };
   }
 
+  let trendval: number = trends.sni_covid19_vaccination | 0;
   d3.select("svg#callout-vaccine")
     .select("rect")
-    .style("fill", colorScaleVaccine(trends.sni_covid19_vaccination));
-  d3.select("div#callout-vaccine-value").text(
-    trends.sni_covid19_vaccination.toFixed(1)
-  );
+    .style("fill", colorScaleVaccine(trendval));
+  d3.select("div#callout-vaccine-value").text(trendval.toFixed(1));
 
+  trendval = trends.sni_vaccination_intent | 0;
   d3.select("svg#callout-intent")
     .select("rect")
-    .attr("fill", colorScaleIntent(trends.sni_vaccination_intent));
-  d3.select("div#callout-intent-value").text(
-    trends.sni_vaccination_intent.toFixed(1)
-  );
+    .attr("fill", colorScaleIntent(trendval));
+  d3.select("div#callout-intent-value").text(trendval.toFixed(1));
 
+  trendval = trends.sni_safety_side_effects | 0;
   d3.select("svg#callout-safety")
     .select("rect")
-    .attr("fill", colorScaleSafety(trends.sni_safety_side_effects));
-  d3.select("div#callout-safety-value").text(
-    trends.sni_safety_side_effects.toFixed(1)
-  );
+    .attr("fill", colorScaleSafety(trendval));
+  d3.select("div#callout-safety-value").text(trendval.toFixed(1));
 }
 
 function showMapCallout(data, event, d): void {

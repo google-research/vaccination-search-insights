@@ -105,7 +105,11 @@ export function buildRegionCodeToPlaceIdMapping(
   regions: Region[]
 ): Map<string, string> {
   return regions.reduce((acc, region) => {
-    if (region.sub_region_2_code == "") {
+    if (region.sub_region_3_code != "") {
+      // TODO: Ignore zipcodes-level data for now.
+      // Can't just use sub_region_3_code directly because it overlaps with
+      // sub_region_2_code, eg '06043' is a zipcode in CT and fips in CA.
+    } else if (region.sub_region_2_code == "") {
       acc.set(
         regionOneToFipsCode.get(region.sub_region_1_code),
         region.place_id
