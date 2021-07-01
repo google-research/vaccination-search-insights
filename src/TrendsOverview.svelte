@@ -84,7 +84,7 @@
     if (selectedRegion.sub_region_3) {
       return "";
     }
-    if (selectedRegion.sub_region_2) {
+    if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
       return "Zipcodes";
     }
     if (selectedRegion.sub_region_1) {
@@ -297,26 +297,27 @@
       const selectedValue: number = selectedDataByDate.get(
         formatDateForStorage(closestDate)
       );
-      hoverCardSelectedValue.text(Math.round(selectedValue));
+
+      displayRow(hoverCardSelected, hoverCardSelectedName, hoverCardSelectedValue, selectedRegionName, selectedValue);
 
       if (dataByDate.size > 0) {
         const placeValues: { place_id: string; value: number }[] =
           dataByDate.get(formatDateForStorage(closestDate));
         const { min, max } = findMinAndMax(placeValues);
-        const minPlaceId: string = min.place_id;
+        const minPlaceId: string = min?.place_id;
         const minRegion: Region = regionsByPlaceId.get(minPlaceId);
-        const minValue: number = min.value;
-        const maxPlaceId: string = max.place_id;
+        const minRegionName: string = getRegionName(minRegion);
+        const minValue: number = min?.value;
+        const maxPlaceId: string = max?.place_id;
         const maxRegion: Region = regionsByPlaceId.get(maxPlaceId);
-        const maxValue: number = max.value;
+        const maxRegionName: string = getRegionName(maxRegion);
+        const maxValue: number = max?.value;
 
-        hoverCardHighName.text(getRegionName(maxRegion));
-        hoverCardHighValue.text(Math.round(maxValue));
-        hoverCardLowName.text(getRegionName(minRegion));
-        hoverCardLowValue.text(Math.round(minValue));
+        displayRow(hoverCardHigh, hoverCardHighName, hoverCardHighValue, maxRegionName, maxValue);
+        displayRow(hoverCardLow, hoverCardLowName, hoverCardLowValue, minRegionName, minValue);
       } else {
-        hoverCardHigh.attr("class", "hoverCard inactive");
-        hoverCardLow.attr("class", "hoverCard inactive");
+        hoverCardHigh.style("display", "none");
+        hoverCardLow.style("display", "none");
       }
 
       // Determine which side of the vertical line the hover card should be on and calculate the overall position.
@@ -344,6 +345,16 @@
     chartContainerElement.addEventListener("mouseenter", chartMouseEnter);
     chartContainerElement.addEventListener("mouseleave", chartMouseLeave);
     chartContainerElement.addEventListener("mousemove", chartMouseMove);
+  }
+
+  function displayRow(row: Selection, rowName: Selection, rowValue: Selection, name: string, value: number) {
+    if (name && value !== undefined) {
+      row.style("display", "table-row");
+      rowName.text(name);
+      rowValue.text(Math.round(value));
+    } else {
+      row.style("display", "none");
+    }
   }
 
   function findMinAndMax(placeValues: { place_id: string; value: number }[]) {
@@ -473,7 +484,7 @@
           // Zipcode is selected.
           return isSelectedRegion;
         }
-        if (selectedRegion.sub_region_2) {
+        if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
           // County is selected, want component zipcodes.
           inSelectedRegion =
             region.sub_region_2 === selectedRegion.sub_region_2 && 
