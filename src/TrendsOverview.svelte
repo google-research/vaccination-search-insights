@@ -84,7 +84,7 @@
     if (selectedRegion.sub_region_3) {
       return "";
     }
-    if (selectedRegion.sub_region_2) {
+    if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
       return "Zipcodes";
     }
     if (selectedRegion.sub_region_1) {
@@ -471,7 +471,7 @@
           // Zipcode is selected.
           return isSelectedRegion;
         }
-        if (selectedRegion.sub_region_2) {
+        if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
           // County is selected, want component zipcodes.
           inSelectedRegion =
             region.sub_region_2 === selectedRegion.sub_region_2 && 
