@@ -351,12 +351,14 @@
     let max: { place_id: string; value: number };
 
     placeValues.forEach((placeValue) => {
-      if (!min || placeValue.value < min.value) {
-        min = placeValue;
-      }
+      if (!isNaN(placeValue.value)) {
+        if (!min || placeValue.value < min.value) {
+          min = placeValue;
+        }
 
-      if (!max || placeValue.value > max.value) {
-        max = placeValue;
+        if (!max || placeValue.value > max.value) {
+          max = placeValue;
+        }
       }
     });
 
