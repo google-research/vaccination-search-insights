@@ -70,7 +70,7 @@
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
-  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effects searches";
+  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
 
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
@@ -81,7 +81,7 @@
     if (selectedRegion.sub_region_3) {
       return "";
     }
-    if (selectedRegion.sub_region_2) {
+    if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
       return "Zipcodes";
     }
     if (selectedRegion.sub_region_1) {
@@ -297,26 +297,27 @@
       const selectedValue: number = selectedDataByDate.get(
         formatDateForStorage(closestDate)
       );
-      hoverCardSelectedValue.text(Math.round(selectedValue));
+
+      displayRow(hoverCardSelected, hoverCardSelectedName, hoverCardSelectedValue, selectedRegionName, selectedValue);
 
       if (dataByDate.size > 0) {
         const placeValues: { place_id: string; value: number }[] =
           dataByDate.get(formatDateForStorage(closestDate));
         const { min, max } = findMinAndMax(placeValues);
-        const minPlaceId: string = min.place_id;
+        const minPlaceId: string = min?.place_id;
         const minRegion: Region = regionsByPlaceId.get(minPlaceId);
-        const minValue: number = min.value;
-        const maxPlaceId: string = max.place_id;
+        const minRegionName: string = getRegionName(minRegion);
+        const minValue: number = min?.value;
+        const maxPlaceId: string = max?.place_id;
         const maxRegion: Region = regionsByPlaceId.get(maxPlaceId);
-        const maxValue: number = max.value;
+        const maxRegionName: string = getRegionName(maxRegion);
+        const maxValue: number = max?.value;
 
-        hoverCardHighName.text(getRegionName(maxRegion));
-        hoverCardHighValue.text(Math.round(maxValue));
-        hoverCardLowName.text(getRegionName(minRegion));
-        hoverCardLowValue.text(Math.round(minValue));
+        displayRow(hoverCardHigh, hoverCardHighName, hoverCardHighValue, maxRegionName, maxValue);
+        displayRow(hoverCardLow, hoverCardLowName, hoverCardLowValue, minRegionName, minValue);
       } else {
-        hoverCardHigh.attr("class", "hoverCard inactive");
-        hoverCardLow.attr("class", "hoverCard inactive");
+        hoverCardHigh.style("display", "none");
+        hoverCardLow.style("display", "none");
       }
 
       const mediabreakpoint = 600;
@@ -353,17 +354,29 @@
     chartContainerElement.addEventListener("mousemove", chartMouseMove);
   }
 
+  function displayRow(row: Selection, rowName: Selection, rowValue: Selection, name: string, value: number) {
+    if (name && value !== undefined) {
+      row.style("display", "table-row");
+      rowName.text(name);
+      rowValue.text(Math.round(value));
+    } else {
+      row.style("display", "none");
+    }
+  }
+
   function findMinAndMax(placeValues: { place_id: string; value: number }[]) {
     let min: { place_id: string; value: number };
     let max: { place_id: string; value: number };
 
     placeValues.forEach((placeValue) => {
-      if (!min || placeValue.value < min.value) {
-        min = placeValue;
-      }
+      if (!isNaN(placeValue.value)) {
+        if (!min || placeValue.value < min.value) {
+          min = placeValue;
+        }
 
-      if (!max || placeValue.value > max.value) {
-        max = placeValue;
+        if (!max || placeValue.value > max.value) {
+          max = placeValue;
+        }
       }
     });
 
@@ -489,10 +502,11 @@
           // Zipcode is selected.
           return isSelectedRegion;
         }
-        if (selectedRegion.sub_region_2) {
+        if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
           // County is selected, want component zipcodes.
           inSelectedRegion =
-            region.sub_region_2_code === selectedRegion.sub_region_2_code;
+            region.sub_region_2 === selectedRegion.sub_region_2 && 
+            region.sub_region_1 === selectedRegion.sub_region_1;
         } else if (selectedRegion.sub_region_1) {
           // State is selected, want component counties.
           inSelectedRegion =
@@ -501,6 +515,7 @@
         } else if (selectedRegion.country_region) {
           // Country is selected, want component states.
           inSelectedRegion =
+            !region.sub_region_3 &&
             !region.sub_region_2 &&
             region.country_region_code === selectedRegion.country_region_code;
         }
@@ -509,9 +524,20 @@
       }
     );
 
-    const dates: Date[] = trendLine(data[0]).map((trend) =>
-      convertStorageDate(trend.date)
-    );
+    // A superset of dates for shown trendlines.
+    // TODO(patankar): Efficiency.
+    const dates: Date[] = [];
+    data.forEach((regionalTrends) => {
+      const regionalTrendValues = trendLine(regionalTrends);
+
+      regionalTrendValues.forEach((regionalTrendValue) => {
+        const date = convertStorageDate(regionalTrendValue.date);
+
+        if (!dates.includes(date)) {
+          dates.push(date);
+        }
+      })
+    });
 
     let xScale = d3.scaleTime().range([0, chartBounds.width]).domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
@@ -624,7 +650,7 @@
       return "";
     }
     if (region.sub_region_3) {
-      regionName = region.sub_region_3;
+      regionName = region.sub_region_3_code;
 
       if (region.sub_region_2) {
         regionName += `, ${region.sub_region_2}`;
@@ -762,7 +788,7 @@
           p.placeId = selectedRegion.place_id;
           p.updateHistory = true;
         }
-        
+
         return p;
       });
 
@@ -796,6 +822,57 @@
       sep.classList.remove("header-content-divider-scrolled");
     }
   }
+
+  let popupId: string;
+
+  function handleLegendInfoPopup(event, id): void {
+    if (popupId) {
+      dismissLegendInfoPopup(event);
+    }
+    const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(id);
+
+    const hidden: boolean = popup.style("display") == "none";
+    if (hidden) {
+      const infoRect: DOMRect = event.target.getBoundingClientRect();
+      popup
+        .style("display", "block")
+        .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
+        .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
+
+      event.stopPropagation();
+      popupId = id;
+      document.addEventListener("click", dismissLegendInfoPopup);
+    }
+  }
+
+  function dismissLegendInfoPopup(event): void {
+    const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(popupId);
+    if (
+      !inClientBounds(
+        event.clientX,
+        event.clientY,
+        popup.node().getBoundingClientRect()
+      )
+    ) {
+      popup.style("display", "none");
+      document.removeEventListener("click", dismissLegendInfoPopup);
+      popupId = null;
+      event.stopPropagation();
+    }
+  }
+
+  function inClientBounds(
+    clientX: number,
+    clientY: number,
+    bounds: DOMRect
+  ): boolean {
+    return (
+      clientX >= bounds.left &&
+      clientX <= bounds.right &&
+      clientY >= bounds.top &&
+      clientY <= bounds.bottom
+    );
+  }
 </script>
 
 <main>
@@ -814,7 +891,6 @@
         </div>
       </div>
       <ul class="header-topbar-menu">
-        <!-- TODO: replace with actual links once available -->
         <li id="download-link" class="link-item">
           <span class="material-icons-outlined header-download-icon"
             >file_download</span
@@ -832,7 +908,7 @@
     </div>
     <div id="header-download-popup" class="header-download-popup">
       <h3 class="header-downlod-popup-title">
-        Covid-19 Vaccination Search Insights
+        COVID-19 Vaccination Search Insights
       </h3>
       <p class="header-download-popup-body">
         In order to download or use the data or insights, you must agree to the
@@ -868,12 +944,9 @@
       <p>
         Explore searches for COVID-19 vaccination topics by region. This
         aggregated and anonymized data helps you understand and compare
-        communities' information needs. We’re releasing this data to inform
+        communities&apos; information needs. We’re releasing this data to inform
         public health vaccine-confidence efforts.
-        <a
-          href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
-          >Learn more</a
-        >
+        <a href="#about">Learn more</a>
       </p>
       {#await regionalTrends}
         <!-- Empty -->
@@ -901,8 +974,7 @@
                 ? "mapTrendSelector selectedTrend"
                 : "mapTrendSelector"}
               on:click={onChangeMapTrend}
-              title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times.
-"
+              title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "intent"}
                 <span class="material-icons map-trend-selector-active"
@@ -977,19 +1049,44 @@
             </div>
             <div class="map-callout-tip">Click to drill down</div>
           </div>
-          <div class="mapLegendContainer" />
-          <div id="map-legend-info-popup" class="map-legend-info-popup">
-            <h3 class="map-legend-info-header">Interest</h3>
-            <p class="map-legend-info-text">
-              A scaled value, showing relative interest, that you can compare
-              across regions and times.
-            </p>
-            <p>
-              <a
-                href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
-                class="map-legend-info-link">Learn more</a
-              >
-            </p>
+          <div class="map-legend-container">
+            <div class="map-legend-bar">
+              <div class="map-legend-label">Interest</div>
+              <div class="map-data-legend">
+                <div id="map-legend-scale" class="map-legend-scale-top" />
+                <div>
+                  <svg id="map-legend-bar" width="280" height="20">
+                    <rect
+                      width="280"
+                      height="20"
+                      x="0"
+                      y="0"
+                      fill="none"
+                      stroke="#bdc1c6"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="info-button map-info-button">
+                <svg
+                  id="info-button-icon"
+                  width="24"
+                  height="24"
+                  on:click={(e) => {
+                    handleLegendInfoPopup(e, "#info-popup");
+                  }}
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+                    fill="#5F6368"
+                    stroke="none"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div id="map-legend-date" class="map-legend-date-label" />
           </div>
           <div id="map" />
           <div class="map-attribution">
@@ -998,9 +1095,80 @@
             </p>
           </div>
         </div>
+        <!-- Info Popups -->
+        <div id="info-popup" class="info-popup">
+          <h3 class="info-header">Interest</h3>
+          <p class="info-text">
+            A scaled value, showing relative interest, that you can compare
+            across regions and times.
+          </p>
+          <p>
+            <a href="#about" class="info-link">Learn more</a>
+          </p>
+        </div>
+
+        <div id="info-popup-vaccine" class="info-popup">
+          <h3 class="info-header">
+            {COVID_19_VACCINATION_TITLE}
+          </h3>
+          <p class="info-text">
+            Search interest in any aspect of COVID-19 vaccination. A scaled
+            value that you can compare across regions and times.
+          </p>
+          <p>
+            <a href="#about" class="info-link">Learn more</a>
+          </p>
+        </div>
+
+        <div id="info-popup-intent" class="info-popup">
+          <h3 class="info-header">
+            {VACCINATION_INTENT_TITLE}
+          </h3>
+          <p class="info-text">
+            Search interest in the eligibility, availability, and accessibility
+            of COVID-19 vaccines. A scaled value that you can compare across
+            regions and times.
+          </p>
+          <p>
+            <a href="#about" class="info-link">Learn more</a>
+          </p>
+        </div>
+
+        <div id="info-popup-safety" class="info-popup">
+          <h3 class="info-header">
+            {SAFETY_SIDE_EFFECTS_TITLE}
+          </h3>
+          <p class="info-text">
+            Search interest in the safety and side effects of COVID-19 vaccines.
+            A scaled value that you can compare across regions and times.
+          </p>
+          <p>
+            <a href="#about" class="info-link">Learn more</a>
+          </p>
+        </div>
       {/await}
       <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
-        <h3>{COVID_19_VACCINATION_TITLE}</h3>
+        <div class="chart-header">
+          <h3>{COVID_19_VACCINATION_TITLE}</h3>
+          <div class="info-button chart-info-button">
+            <svg
+              id="info-button-icon"
+              width="24"
+              height="24"
+              on:click={(e) => {
+                handleLegendInfoPopup(e, "#info-popup-vaccine");
+              }}
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+                fill="#5F6368"
+                stroke="none"
+              />
+            </svg>
+          </div>
+        </div>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <svg class="chart"/>
@@ -1008,7 +1176,28 @@
         </div>
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
-        <h3>{VACCINATION_INTENT_TITLE}</h3>
+        <div class="chart-header">
+          <h3>{VACCINATION_INTENT_TITLE}</h3>
+          <div class="info-button chart-info-button">
+            <svg
+              id="info-button-icon"
+              width="24"
+              height="24"
+              on:click={(e) => {
+                handleLegendInfoPopup(e, "#info-popup-intent");
+              }}
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+                fill="#5F6368"
+                stroke="none"
+              />
+            </svg>
+          </div>
+        </div>
+
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <svg class="chart"/>
@@ -1016,13 +1205,37 @@
         </div>
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
-        <h3>{SAFETY_SIDE_EFFECTS_TITLE}</h3>
+        <div class="chart-header">
+          <h3>{SAFETY_SIDE_EFFECTS_TITLE}</h3>
+          <div class="info-button chart-info-button">
+            <svg
+              id="info-button-icon"
+              width="24"
+              height="24"
+              on:click={(e) => {
+                handleLegendInfoPopup(e, "#info-popup-safety");
+              }}
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
+                fill="#5F6368"
+                stroke="none"
+              />
+            </svg>
+          </div>
+        </div>
+
         <div class="chartLegendContainer" />
         <div class="chartContainer">
           <svg class="chart"/>
           <div class="hoverCard inactive" />
         </div>
       </div>
+      <a id="about" class="about-anchor">
+        <!-- Empty - keep to avoid warnings on empty anchor -->
+      </a>
       <h2 class="first-section-header">About this data</h2>
       <p>
         You can use this data to compare search interest between topics related
@@ -1059,9 +1272,9 @@
       <h2>Protecting privacy</h2>
       <p>
         We developed the Vaccine Search Insights to be helpful while adhering to
-        our stringent privacy protocols and protecting people’s privacy. No
-        individual search queries or other personally identifiable information
-        are made available at any point. For this data, we use <a
+        our stringent privacy protocols for search data. No individual search
+        queries or other personally identifiable information are made available
+        at any point. For this data, we use <a
           href="https://www.youtube.com/watch?v=FfAdemDkLsc&feature=youtu.be&hl=en"
           >differential privacy,
         </a>

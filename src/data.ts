@@ -111,7 +111,7 @@ export function fetchRegionData(): Promise<Map<string, Region>> {
 
 function coerceNumber(u: unknown) {
   if (u === "") {
-    return 0;
+    return NaN;
   } else {
     return Number.parseFloat(u as string);
   }
