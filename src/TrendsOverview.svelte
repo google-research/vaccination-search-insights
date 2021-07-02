@@ -457,11 +457,7 @@
             chartBounds.height + chartBounds.margin,
           ].join(" ")
         )
-        .append("g")
-        .attr(
-          "transform",
-          "translate(0,0)"
-        );
+        .append("g");
     }
 
     if (xElement) {
