@@ -143,7 +143,7 @@
     trendLine: (RegionalTrends) => TrendValue[],
     data: RegionalTrends[],
     dates: Date[],
-    xScale
+    xScale: d3.ScaleTime<number, number, never>
   ) {
     const trendlineHoverCardMargin: number = 7;
 
@@ -277,8 +277,12 @@
 
     const chartMouseMove = function (d) {
       dates.sort((a, b) => a.getTime() - b.getTime());
-      const eventX: number = d3.pointer(event)[0];
-      const eventY: number = d3.pointer(event)[1];
+      //Calculate position relative to the SVG's viewBox
+      //By default this uses the event's target which is the parent container
+      //If the SVG is smaller than its defined viewBox (i.e. it was resized)
+      //then the parent container offset gives us an incorrect value
+      const eventX: number = d3.pointer(d,chartElement)[0];
+
       // This date might be in between provided dates.
       const hoveredDate: Date = xScale.invert(eventX);
       const hoveredDateIndex: number = d3.bisectLeft(dates, hoveredDate);
@@ -289,7 +293,7 @@
       let hoverCardX: number;
 
       closestDateX = xScale(closestDate);
-
+      
       verticalLine.attr("x1", closestDateX).attr("x2", closestDateX);
 
       hoverCardDate.text(formatDateForDisplay(closestDate));
@@ -354,7 +358,7 @@
     chartContainerElement.addEventListener("mousemove", chartMouseMove);
   }
 
-  function displayRow(row: Selection, rowName: Selection, rowValue: Selection, name: string, value: number) {
+  function displayRow(row: d3.Selection<any,any,any,any>, rowName: d3.Selection<any,any,any,any>, rowValue: d3.Selection<any,any,any,any>, name: string, value: number) {
     if (name && value !== undefined) {
       row.style("display", "table-row");
       rowName.text(name);
