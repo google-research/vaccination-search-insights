@@ -50,6 +50,12 @@
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
+  const chartBounds = {
+    width: 975,
+    height: 610,
+    margin: 30,
+  };
+
   const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
   const latestRegionOneData: Promise<Map<string, RegionalTrendAggregate>> =
     mapData.then((rtls) =>
@@ -70,15 +76,6 @@
   let covid19VaccinationChartContainer: HTMLElement;
   let vaccinationIntentChartContainer: HTMLElement;
   let safetySideEffectsChartContainer: HTMLElement;
-
-  const chartMargin = {
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  };
-  const chartWidth: number = 800 - chartMargin.left - chartMargin.right;
-  const chartHeight: number = 400 - chartMargin.top - chartMargin.bottom;
 
   function getLegendComponentText(): string {
     if (selectedRegion.sub_region_3) {
@@ -146,7 +143,7 @@
     trendLine: (RegionalTrends) => TrendValue[],
     data: RegionalTrends[],
     dates: Date[],
-    xScale
+    xScale: d3.ScaleTime<number, number, never>
   ) {
     const trendlineHoverCardMargin: number = 7;
 
@@ -263,33 +260,40 @@
       hoverCard.attr("class", "hoverCard inactive");
     };
 
+    function getClosestDate(selected, earlier, later){
+      if(!earlier && later){
+        return later;
+      } else if(!later && earlier){
+        return earlier;
+      } else if (
+        selected.getTime() - earlier.getTime() <
+          later.getTime() - selected.getTime()
+      ) {
+        return earlier;
+      } else {
+        return later;
+      }
+    }
+
     const chartMouseMove = function (d) {
       dates.sort((a, b) => a.getTime() - b.getTime());
-
-      const eventX: number = d3.pointer(event)[0];
-      const eventY: number = d3.pointer(event)[1];
+      //Calculate position relative to the SVG's viewBox
+      //By default this uses the event's target which is the parent container
+      //If the SVG is smaller than its defined viewBox (i.e. it was resized)
+      //then the parent container offset gives us an incorrect value
+      const eventX: number = d3.pointer(d,chartElement)[0];
 
       // This date might be in between provided dates.
       const hoveredDate: Date = xScale.invert(eventX);
       const hoveredDateIndex: number = d3.bisectLeft(dates, hoveredDate);
       const earlierDate: Date = dates[hoveredDateIndex - 1];
       const laterDate: Date = dates[hoveredDateIndex];
-      let closestDate: Date;
-
+      let closestDate: Date = getClosestDate(hoveredDate, earlierDate, laterDate);
       let closestDateX: number;
       let hoverCardX: number;
 
-      if (
-        hoveredDate.getTime() - earlierDate.getTime() <
-        laterDate.getTime() - hoveredDate.getTime()
-      ) {
-        closestDate = earlierDate;
-      } else {
-        closestDate = laterDate;
-      }
-
       closestDateX = xScale(closestDate);
-
+      
       verticalLine.attr("x1", closestDateX).attr("x2", closestDateX);
 
       hoverCardDate.text(formatDateForDisplay(closestDate));
@@ -320,26 +324,33 @@
         hoverCardLow.style("display", "none");
       }
 
-      // Determine which side of the vertical line the hover card should be on and calculate the overall position.
-      const hoverCardRect = hoverCardElement.getBoundingClientRect();
-      const hoverCardWidth = hoverCardRect.width;
-      const hoverCardHeight = hoverCardRect.height;
-      const chartRect = chartElement.getBoundingClientRect();
-      const chartX = chartRect.x;
-      const chartY = chartRect.y;
+      const mediabreakpoint = 600;
+      if(window.innerWidth > mediabreakpoint){
+        //Determine which side of the vertical line the hover card should be on and calculate the overall position.
+        const hoverCardRect = hoverCardElement.getBoundingClientRect();
+        const hoverCardWidth = hoverCardRect.width;
+        const hoverCardHeight = hoverCardRect.height;
+        const chartRect = chartElement.getBoundingClientRect();
+        const chartY = chartRect.y;
 
-      if (closestDateX < chartWidth / 2) {
-        hoverCardX = closestDateX + trendlineHoverCardMargin;
-      } else {
-        hoverCardX = closestDateX - trendlineHoverCardMargin - hoverCardWidth;
+        const lineRect = verticalLineElement.getBoundingClientRect();
+        
+        const isLayoutOnRight = lineRect.x < window.innerWidth / 2;
+
+        if (isLayoutOnRight) {
+          hoverCardX = lineRect.x + trendlineHoverCardMargin;
+        } else {
+          hoverCardX = lineRect.x - trendlineHoverCardMargin - hoverCardWidth;
+        }
+
+        hoverCard
+          .style("left", `${hoverCardX}px`)
+          .style(
+            "top",
+            `${chartY + window.scrollY + (chartRect.height - hoverCardHeight) / 2}px`
+          );
       }
-
-      hoverCard
-        .style("left", `${chartX + window.scrollX + hoverCardX}px`)
-        .style(
-          "top",
-          `${chartY + window.scrollY + (chartHeight - hoverCardHeight) / 2}px`
-        );
+      
     };
 
     chartContainerElement.addEventListener("mouseenter", chartMouseEnter);
@@ -347,7 +358,7 @@
     chartContainerElement.addEventListener("mousemove", chartMouseMove);
   }
 
-  function displayRow(row: Selection, rowName: Selection, rowValue: Selection, name: string, value: number) {
+  function displayRow(row: d3.Selection<any,any,any,any>, rowName: d3.Selection<any,any,any,any>, rowValue: d3.Selection<any,any,any,any>, name: string, value: number) {
     if (name && value !== undefined) {
       row.style("display", "table-row");
       rowName.text(name);
@@ -430,16 +441,23 @@
     let paths: SvgSelection;
     let verticalLine: ElementSection;
 
+    let chartWidth = chartElement.getBoundingClientRect().width;
+
     if (chartAreaElement) {
       chartArea = d3.select(chartAreaElement);
     } else {
       chartArea = d3
         .select(chartElement)
-        .append("g")
         .attr(
-          "transform",
-          "translate(" + chartMargin.left + "," + chartMargin.top + ")"
-        );
+          "viewBox",
+          [
+            -chartBounds.margin,
+            0,
+            chartBounds.width + chartBounds.margin,
+            chartBounds.height + chartBounds.margin,
+          ].join(" ")
+        )
+        .append("g");
     }
 
     if (xElement) {
@@ -448,7 +466,7 @@
       x = chartArea
         .append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0, " + chartHeight + ")");
+        .attr("transform", `translate(0, ${chartBounds.height})`);
     }
 
     if (yElement) {
@@ -471,7 +489,7 @@
         .append("line")
         .attr("class", "trendChartVerticalLine inactive")
         .attr("y1", 0)
-        .attr("y2", chartHeight);
+        .attr("y2", chartBounds.height);
     }
 
     let data: RegionalTrends[] = Array.from(regionalTrends.values()).filter(
@@ -521,7 +539,7 @@
       })
     });
 
-    let xScale = d3.scaleTime().range([0, chartWidth]).domain(d3.extent(dates));
+    let xScale = d3.scaleTime().range([0, chartBounds.width]).domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
       .axisBottom(xScale)
       .ticks(5)
@@ -531,8 +549,8 @@
       data.flatMap((region) => trendLine(region).map((trend) => trend.value))
     );
 
-    let yScale = d3.scaleLinear().range([chartHeight, 0]).domain([0, max]);
-    let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartWidth);
+    let yScale = d3.scaleLinear().range([chartBounds.height, 0]).domain([0, max]);
+    let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartBounds.width);
 
     // TODO(patankar): Define constants for styling.
     x.call(xAxis)
@@ -662,10 +680,10 @@
 
   function isCountry(region: Region): boolean {
     return (
-      !region.sub_region_3 &&
-      !region.sub_region_2 &&
-      !region.sub_region_1 &&
-      region.country_region
+      region.sub_region_3 === "" &&
+      region.sub_region_2 === "" &&
+      region.sub_region_1 === "" &&
+      region.country_region !== ""
     );
   }
 
@@ -797,7 +815,7 @@
   }
 
   function handleDocumentScroll(): void {
-    const sep: DOMElelment = document.getElementById("header-divider");
+    const sep: HTMLElement = document.getElementById("header-divider");
     if (window.pageYOffset > 0) {
       sep.classList.add("header-content-divider-scrolled");
     } else {
@@ -1153,12 +1171,8 @@
         </div>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
+          <svg class="chart"/>
           <div class="hoverCard inactive" />
-          <svg
-            class="chart"
-            width={chartWidth + chartMargin.left + chartMargin.right}
-            height={chartHeight + chartMargin.top + chartMargin.bottom}
-          />
         </div>
       </div>
       <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
@@ -1186,12 +1200,8 @@
 
         <div class="chartLegendContainer" />
         <div class="chartContainer">
+          <svg class="chart"/>
           <div class="hoverCard inactive" />
-          <svg
-            class="chart"
-            width={chartWidth + chartMargin.left + chartMargin.right}
-            height={chartHeight + chartMargin.top + chartMargin.bottom}
-          />
         </div>
       </div>
       <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
@@ -1219,12 +1229,8 @@
 
         <div class="chartLegendContainer" />
         <div class="chartContainer">
+          <svg class="chart"/>
           <div class="hoverCard inactive" />
-          <svg
-            class="chart"
-            width={chartWidth + chartMargin.left + chartMargin.right}
-            height={chartHeight + chartMargin.top + chartMargin.bottom}
-          />
         </div>
       </div>
       <a id="about" class="about-anchor">
