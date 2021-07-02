@@ -466,7 +466,7 @@
       x = chartArea
         .append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0, " + chartBounds.height + ")");
+        .attr("transform", `translate(0, ${chartBounds.height})`);
     }
 
     if (yElement) {
