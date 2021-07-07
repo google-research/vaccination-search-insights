@@ -81,7 +81,10 @@
     if (selectedRegion.sub_region_3) {
       return "";
     }
-    if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
+    if (
+      selectedRegion.sub_region_2 ||
+      selectedRegion.sub_region_1_code === "US-DC"
+    ) {
       return "Zipcodes";
     }
     if (selectedRegion.sub_region_1) {
@@ -260,14 +263,14 @@
       hoverCard.attr("class", "hoverCard inactive");
     };
 
-    function getClosestDate(selected, earlier, later){
-      if(!earlier && later){
+    function getClosestDate(selected, earlier, later) {
+      if (!earlier && later) {
         return later;
-      } else if(!later && earlier){
+      } else if (!later && earlier) {
         return earlier;
       } else if (
         selected.getTime() - earlier.getTime() <
-          later.getTime() - selected.getTime()
+        later.getTime() - selected.getTime()
       ) {
         return earlier;
       } else {
@@ -281,19 +284,23 @@
       //By default this uses the event's target which is the parent container
       //If the SVG is smaller than its defined viewBox (i.e. it was resized)
       //then the parent container offset gives us an incorrect value
-      const eventX: number = d3.pointer(d,chartElement)[0];
+      const eventX: number = d3.pointer(d, chartElement)[0];
 
       // This date might be in between provided dates.
       const hoveredDate: Date = xScale.invert(eventX);
       const hoveredDateIndex: number = d3.bisectLeft(dates, hoveredDate);
       const earlierDate: Date = dates[hoveredDateIndex - 1];
       const laterDate: Date = dates[hoveredDateIndex];
-      let closestDate: Date = getClosestDate(hoveredDate, earlierDate, laterDate);
+      let closestDate: Date = getClosestDate(
+        hoveredDate,
+        earlierDate,
+        laterDate
+      );
       let closestDateX: number;
       let hoverCardX: number;
 
       closestDateX = xScale(closestDate);
-      
+
       verticalLine.attr("x1", closestDateX).attr("x2", closestDateX);
 
       hoverCardDate.text(formatDateForDisplay(closestDate));
@@ -302,7 +309,13 @@
         formatDateForStorage(closestDate)
       );
 
-      displayRow(hoverCardSelected, hoverCardSelectedName, hoverCardSelectedValue, selectedRegionName, selectedValue);
+      displayRow(
+        hoverCardSelected,
+        hoverCardSelectedName,
+        hoverCardSelectedValue,
+        selectedRegionName,
+        selectedValue
+      );
 
       if (dataByDate.size > 0) {
         const placeValues: { place_id: string; value: number }[] =
@@ -317,15 +330,27 @@
         const maxRegionName: string = getRegionName(maxRegion);
         const maxValue: number = max?.value;
 
-        displayRow(hoverCardHigh, hoverCardHighName, hoverCardHighValue, maxRegionName, maxValue);
-        displayRow(hoverCardLow, hoverCardLowName, hoverCardLowValue, minRegionName, minValue);
+        displayRow(
+          hoverCardHigh,
+          hoverCardHighName,
+          hoverCardHighValue,
+          maxRegionName,
+          maxValue
+        );
+        displayRow(
+          hoverCardLow,
+          hoverCardLowName,
+          hoverCardLowValue,
+          minRegionName,
+          minValue
+        );
       } else {
         hoverCardHigh.style("display", "none");
         hoverCardLow.style("display", "none");
       }
 
       const mediabreakpoint = 600;
-      if(window.innerWidth > mediabreakpoint){
+      if (window.innerWidth > mediabreakpoint) {
         //Determine which side of the vertical line the hover card should be on and calculate the overall position.
         const hoverCardRect = hoverCardElement.getBoundingClientRect();
         const hoverCardWidth = hoverCardRect.width;
@@ -334,7 +359,7 @@
         const chartY = chartRect.y;
 
         const lineRect = verticalLineElement.getBoundingClientRect();
-        
+
         const isLayoutOnRight = lineRect.x < window.innerWidth / 2;
 
         if (isLayoutOnRight) {
@@ -347,10 +372,11 @@
           .style("left", `${hoverCardX}px`)
           .style(
             "top",
-            `${chartY + window.scrollY + (chartRect.height - hoverCardHeight) / 2}px`
+            `${
+              chartY + window.scrollY + (chartRect.height - hoverCardHeight) / 2
+            }px`
           );
       }
-      
     };
 
     chartContainerElement.addEventListener("mouseenter", chartMouseEnter);
@@ -358,7 +384,13 @@
     chartContainerElement.addEventListener("mousemove", chartMouseMove);
   }
 
-  function displayRow(row: d3.Selection<any,any,any,any>, rowName: d3.Selection<any,any,any,any>, rowValue: d3.Selection<any,any,any,any>, name: string, value: number) {
+  function displayRow(
+    row: d3.Selection<any, any, any, any>,
+    rowName: d3.Selection<any, any, any, any>,
+    rowValue: d3.Selection<any, any, any, any>,
+    name: string,
+    value: number
+  ) {
     if (name && value !== undefined) {
       row.style("display", "table-row");
       rowName.text(name);
@@ -502,10 +534,13 @@
           // Zipcode is selected.
           return isSelectedRegion;
         }
-        if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
+        if (
+          selectedRegion.sub_region_2 ||
+          selectedRegion.sub_region_1_code === "US-DC"
+        ) {
           // County is selected, want component zipcodes.
           inSelectedRegion =
-            region.sub_region_2 === selectedRegion.sub_region_2 && 
+            region.sub_region_2 === selectedRegion.sub_region_2 &&
             region.sub_region_1 === selectedRegion.sub_region_1;
         } else if (selectedRegion.sub_region_1) {
           // State is selected, want component counties.
@@ -536,10 +571,13 @@
         if (!dates.includes(date)) {
           dates.push(date);
         }
-      })
+      });
     });
 
-    let xScale = d3.scaleTime().range([0, chartBounds.width]).domain(d3.extent(dates));
+    let xScale = d3
+      .scaleTime()
+      .range([0, chartBounds.width])
+      .domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
       .axisBottom(xScale)
       .ticks(5)
@@ -549,7 +587,10 @@
       data.flatMap((region) => trendLine(region).map((trend) => trend.value))
     );
 
-    let yScale = d3.scaleLinear().range([chartBounds.height, 0]).domain([0, max]);
+    let yScale = d3
+      .scaleLinear()
+      .range([chartBounds.height, 0])
+      .domain([0, max]);
     let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartBounds.width);
 
     // TODO(patankar): Define constants for styling.
@@ -1171,7 +1212,7 @@
         </div>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
-          <svg class="chart"/>
+          <svg class="chart" />
           <div class="hoverCard inactive" />
         </div>
       </div>
@@ -1200,7 +1241,7 @@
 
         <div class="chartLegendContainer" />
         <div class="chartContainer">
-          <svg class="chart"/>
+          <svg class="chart" />
           <div class="hoverCard inactive" />
         </div>
       </div>
@@ -1229,7 +1270,7 @@
 
         <div class="chartLegendContainer" />
         <div class="chartContainer">
-          <svg class="chart"/>
+          <svg class="chart" />
           <div class="hoverCard inactive" />
         </div>
       </div>
@@ -1280,6 +1321,13 @@
         </a>
         which adds artificial noise to our data while enabling high quality results
         without identifying any individual person.
+      </p>
+      <p>
+        To learn more about the privacy methods used to generate the data, read
+        the
+        <a href="https://arxiv.org/abs/2107.01179"
+          >anonymization process description</a
+        >.
       </p>
       <h2>Availability and updates</h2>
       <p>
