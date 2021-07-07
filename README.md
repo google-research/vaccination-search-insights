@@ -44,7 +44,11 @@ We’d love to hear more about how you’re using Vaccination Search Insights. I
 
 [covid-19-search-trends-feedback@google.com](mailto:covid-19-search-trends-feedback@google.com)
 
-## Getting started with dashboard development
+## Dashboard development
+
+### Getting started
+
+This project should build in most posix-like enviroments.  Besides `npm`, it has small dependencies on `make` and `wget`.
 
 Install the dependencies...
 
@@ -59,3 +63,33 @@ npm run dev
 ```
 
 Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+
+### Development process and releasing
+
+All changes require a PR.  Normal feature PRs are merged into `dev`.  When it's time for a release:
+
+Install https://github.com/release-it/release-it
+
+```bash
+$ npm install -g release-it
+```
+Then create the release branch from dev and push it as a new PR. Say you want to release version 1.2.3
+
+```bash
+$ git checkout dev
+$ git pull --all
+$ git branch -b release-v1.2.3 origin/dev
+$ git push -u origin release-v1.2.3
+$ release-it 1.2.3
+```
+
+Then create the PR and make sure that the PR will merge into main.  If there are any issues found during release testing, they can be made directly on the release branch or cherry-picked from `dev`.
+
+Afterwards there should be a sync PR from main back into dev (like #93).
+
+### Deployment
+
+`.github/gh-pages.yml` defines a process publishes build output to a special branch called `gh-pages`, whenever there is a new push (e.g. PR merging) on the `main` branch.  This workflow can also be manually triggered, which may be handy to include a new version of the data set.
+
+
+
