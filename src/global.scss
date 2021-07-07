@@ -134,7 +134,7 @@ footer {
 
 .header-search-container {
   height: 56px;
-  
+
   max-width: g.$content-max-width;
   width: 100%;
 }
@@ -250,7 +250,6 @@ footer {
 }
 
 .content-body {
-  
   max-width: g.$content-max-width;
   width: 100%;
 }
@@ -314,24 +313,13 @@ svg.map-svg path {
   font-size: 14px;
 }
 
-.map-legend-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 50px 0px 20px 0px;
-
-  font-family: Google Sans;
+.map-legend {
+  display: inline-flex;
+  margin-bottom: 8px;
   font-size: 14px;
+  font-family: Roboto;
   font-weight: 500;
   color: g.$grey-800;
-  align-items: baseline;
-}
-
-.map-legend-bar {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
 }
 
 .map-legend-label {
@@ -340,23 +328,75 @@ svg.map-svg path {
   padding-top: 24px;
   margin-right: 12px;
 }
-
-.map-legend-date-label {
-  height: 14px;
-  line-height: 14px;
-  padding-top: 24px;
-  text-align: right;
-}
-
 .map-legend-scale-top {
   display: inline-flex;
   margin-left: 20px;
   margin-bottom: 3px;
 }
-
 .map-legend-scale-number {
   width: 40px;
   text-align: center;
+}
+.map-info-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  cursor: pointer;
+}
+.map-info-button span {
+  margin: 6px;
+}
+.map-info-button:hover {
+  background: g.$info-button-hover;
+}
+.map-legend-scale + .map-info-button {
+  margin-top: 12px;
+  margin-left: 8px;
+}
+
+.date-nav-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.date-nav-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  user-select: none;
+}
+
+.date-nav-button span {
+  margin: 6px;
+}
+
+.date-nav-button-active {
+  cursor: pointer;
+}
+.date-nav-button-active:hover {
+  background: g.$info-button-hover;
+}
+
+.date-nav-button-inactive {
+  pointer-events: none;
+  color: g.$grey-500;
+}
+
+.date-nav-display {
+  height: 14px;
+  line-height: 14px;
+  text-align: right;
+  margin-right: 6px;
+}
+
+.map-header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  line-height: normal;
+  margin-top: 60px;
 }
 
 .info-button svg {
@@ -372,11 +412,6 @@ svg.map-svg path {
 
 .info-button:hover {
   background: g.$info-button-hover;
-}
-
-.map-info-button {
-  margin-top: 18px;
-  margin-left: 8px;
 }
 
 .chart-info-button {
@@ -703,4 +738,3 @@ div.next-steps-item > h3 {
     visibility: hidden;
   }
 }
-

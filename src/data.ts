@@ -31,7 +31,7 @@ export interface Region {
 }
 
 export interface RegionalTrendLine {
-  date: Date;
+  date: string;
   country_region: string;
   country_region_code: string;
   sub_region_1: string;
@@ -226,13 +226,19 @@ export function fetchRegionalTrendsData(): Promise<
 export function selectRegionOneTrends(
   rtls: RegionalTrendLine[]
 ): RegionalTrendLine[] {
-  return rtls.filter((region) => subRegionTwoCode(region) == "");
+  return rtls.filter(
+    (region) =>
+      subRegionTwoCode(region) == "" && subRegionThreeCode(region) == ""
+  );
 }
 
 export function selectRegionTwoTrends(
   rtls: RegionalTrendLine[]
 ): RegionalTrendLine[] {
-  return rtls.filter((region) => subRegionTwoCode(region) != "");
+  return rtls.filter(
+    (region) =>
+      subRegionTwoCode(region) != "" && subRegionThreeCode(region) == ""
+  );
 }
 
 export function subRegionOneCode(region: RegionalTrendLine): string {
@@ -243,13 +249,17 @@ export function subRegionTwoCode(region: RegionalTrendLine): string {
   return region.sub_region_2_code;
 }
 
-export function getLatestRegionData(
+export function subRegionThreeCode(region: RegionalTrendLine): string {
+  return region.sub_region_3_code;
+}
+
+export function aggregateRegionDataForDate(
   rtls: RegionalTrendLine[],
+  date: string,
   aggKeyFn: (RegionalTrendLine) => string
 ): Map<string, RegionalTrendAggregate> {
-  const latestDate = d3.max(rtls.map((rtl) => rtl.date));
   const dataMap = rtls
-    .filter((rtl) => rtl.date == latestDate)
+    .filter((rtl) => rtl.date == date)
     .reduce((acc, region) => {
       acc.set(aggKeyFn(region), {
         sni_covid19_vaccination: +region.sni_covid19_vaccination,
@@ -258,6 +268,15 @@ export function getLatestRegionData(
       });
       return acc;
     }, new Map<string, RegionalTrendAggregate>());
-  dataMap["latestDate"] = latestDate;
   return dataMap;
+}
+
+export function buildDateRangeList(rtls: RegionalTrendLine[]): string[] {
+  const uniqueDates: Set<string> = rtls.reduce((acc, region) => {
+    acc.add(region.date);
+    return acc;
+  }, new Set<string>());
+  const dateList: string[] = Array.from(uniqueDates.values());
+  dateList.sort();
+  return dateList;
 }
