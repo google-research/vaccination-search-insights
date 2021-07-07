@@ -1318,6 +1318,13 @@
         which adds artificial noise to our data while enabling high quality results
         without identifying any individual person.
       </p>
+      <p>
+        To learn more about the privacy methods used to generate the data, read
+        the
+        <a href="https://arxiv.org/abs/2107.01179"
+          >anonymization process description</a
+        >.
+      </p>
       <h2>Availability and updates</h2>
       <p>
         To download or use the data or insights, you must agree to the
