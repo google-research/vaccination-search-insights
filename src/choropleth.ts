@@ -333,7 +333,6 @@ function drawLegend(color) {
 
 function setDateControlState() {
   if (selectedDateIndex == 0) {
-    console.log("setDateControlState: A");
     d3.select("#date-nav-button-back")
       .classed("date-nav-button-active", null)
       .classed("date-nav-button-inactive", true);
@@ -341,7 +340,6 @@ function setDateControlState() {
       .classed("date-nav-button-inactive", null)
       .classed("date-nav-button-active", true);
   } else if (selectedDateIndex == dateList.length - 1) {
-    console.log("setDateControlState: B");
     d3.select("#date-nav-button-back")
       .classed("date-nav-button-active", true)
       .classed("date-nav-button-inactive", null);
@@ -349,7 +347,6 @@ function setDateControlState() {
       .classed("date-nav-button-active", null)
       .classed("date-nav-button-inactive", true);
   } else {
-    console.log("setDateControlState: C");
     d3.select("#date-nav-button-back")
       .classed("date-nav-button-active", true)
       .classed("date-nav-button-inactive", null);
