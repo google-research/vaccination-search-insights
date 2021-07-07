@@ -26,11 +26,23 @@ import {
   getUsAtlas,
 } from "./geo-utils";
 import * as d3 from "d3";
+import {
+  aggregateRegionDataForDate,
+  buildDateRangeList,
+  RegionalTrendLine,
+  RegionalTrendAggregate,
+  selectRegionOneTrends,
+  selectRegionTwoTrends,
+  subRegionOneCode,
+  subRegionTwoCode,
+} from "./data";
 
 const path = d3.geoPath();
 const colorScaleVaccine = buildVaccineColorScale();
 const colorScaleIntent = buildIntentColorScale();
 const colorScaleSafety = buildSafetyColorScale();
+
+const alaskaFipsCode: string = "02";
 
 // currently resetting to the US
 const resetNavigationPlaceId: string = "ChIJCzYy5IS16lQRQrfeQ5K5Oxw";
@@ -38,9 +50,12 @@ const resetNavigationPlaceId: string = "ChIJCzYy5IS16lQRQrfeQ5K5Oxw";
 let mapSvg: d3.Selection<SVGGElement, any, any, any>;
 let mapZoom;
 
-let latestStateData;
-let latestCountyData;
-let selectedTrend;
+let trendData: RegionalTrendLine[];
+let latestStateData: Map<string, RegionalTrendAggregate>;
+let latestCountyData: Map<string, RegionalTrendAggregate>;
+let selectedTrend: string;
+let dateList: string[];
+let selectedDateIndex: number;
 
 let regionCodesToPlaceId;
 let selectionCallback;
@@ -56,23 +71,28 @@ export const mapBounds = {
   margin: 30,
 };
 
-export function createMap(stateData, countyData, trend, regions, selectionFn) {
-  latestCountyData = countyData;
+export function createMap(
+  mapData: RegionalTrendLine[],
+  trend: string,
+  regions,
+  selectionFn
+) {
+  trendData = mapData;
   selectedTrend = trend;
 
-  // US gemoetry files are keyed off of fips code, so for now
-  // re-key the state data by fips code to make it easier to
-  // work with
-  latestStateData = new Map();
-  stateData.forEach((value, key) => {
-    latestStateData.set(regionOneToFipsCode.get(key), value);
-  });
+  // build in-order list of available dates
+  dateList = buildDateRangeList(trendData);
+  selectedDateIndex = dateList.length - 1;
+  setDateControlState();
+
+  // generate the region to trend data for a given date slice
+  generateRegionToTrendDataForDateSlice();
 
   regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions);
   selectionCallback = selectionFn;
 
   initializeMap();
-  colorizeMap(trend);
+  colorizeMap();
 }
 
 export function setSelectedState(regionOneCode) {
@@ -86,12 +106,54 @@ export function setSelectedCounty(fipsCode) {
 
 export function setMapTrend(trend) {
   selectedTrend = trend;
-  colorizeMap(trend);
+  colorizeMap();
+}
+
+export function decrementMapDate(controlId: string): void {
+  if (selectedDateIndex > 0) {
+    selectedDateIndex -= 1;
+    generateRegionToTrendDataForDateSlice();
+    setDateControlState();
+    colorizeMap();
+  }
+}
+
+export function incrementMapDate(controld: string): void {
+  if (selectedDateIndex < dateList.length - 1) {
+    selectedDateIndex += 1;
+    generateRegionToTrendDataForDateSlice();
+    setDateControlState();
+    colorizeMap();
+  }
 }
 
 function setSelectedStateByFipsCode(fipsCode) {
   activateSelectedState(fipsCode, true);
 }
+
+//
+// Map data processing routines
+//
+function generateRegionToTrendDataForDateSlice(): void {
+  const stateData: Map<string, RegionalTrendAggregate> =
+    aggregateRegionDataForDate(
+      selectRegionOneTrends(trendData),
+      dateList[selectedDateIndex],
+      subRegionOneCode
+    );
+  const fipsCodedStateData: Map<string, RegionalTrendAggregate> = new Map();
+  stateData.forEach((value, key) => {
+    fipsCodedStateData.set(regionOneToFipsCode.get(key), value);
+  });
+  latestStateData = fipsCodedStateData;
+
+  latestCountyData = aggregateRegionDataForDate(
+    selectRegionTwoTrends(trendData),
+    dateList[selectedDateIndex],
+    subRegionTwoCode
+  );
+}
+
 //
 // Map drawing routines
 //
@@ -137,7 +199,7 @@ function initializeMap() {
     .attr("class", "state")
     .attr("d", path)
     .attr("fill", "transparent")
-    .attr("stroke", "white")
+    .attr("stroke", (d) => (d.id == alaskaFipsCode ? "#e8eaed" : "white"))
     .attr("stroke-width", 1)
     .attr("vector-effect", "non-scaling-stroke")
     .on("mouseenter", enterStateBoundsHandler)
@@ -151,11 +213,11 @@ function initializeMap() {
   mapSvg.on("mouseleave", mapOnMouseLeaveHandler);
 }
 
-function colorizeMap(trend) {
+function colorizeMap() {
   let accessor;
   let colorScale;
 
-  switch (trend) {
+  switch (selectedTrend) {
     case "vaccination":
       accessor = (d) => (d ? d.sni_covid19_vaccination | 0 : 0);
       colorScale = colorScaleVaccine;
@@ -169,7 +231,7 @@ function colorizeMap(trend) {
       colorScale = colorScaleSafety;
       break;
     default:
-      console.log(`Unknown trend: ${trend} set on map`);
+      console.log(`Unknown trend: ${selectedTrend} set on map`);
       return;
   }
 
@@ -230,33 +292,31 @@ function zoomToBounds(d) {
     );
 }
 
-function dateRangeString(date: string): string {
-  const dataPeriodStart: Date = d3.timeParse("%Y-%m-%d")(
-    latestCountyData["latestDate"]
-  );
-  let dataPeriodEnd: Date = new Date(dataPeriodStart);
-  dataPeriodEnd.setDate(dataPeriodStart.getDate() + 7);
+function dateRangeString(startDate: string): string {
+  const periodStart: Date = d3.timeParse("%Y-%m-%d")(startDate);
+  let periodEnd: Date = new Date(periodStart);
+  periodEnd.setDate(periodStart.getDate() + 7);
 
   const formatterStart = d3.timeFormat("%b %d");
   const formatterEnd = d3.timeFormat("%b %d, %Y");
 
-  return `${formatterStart(dataPeriodStart)} - ${formatterEnd(dataPeriodEnd)}`;
+  return `${formatterStart(periodStart)} - ${formatterEnd(periodEnd)}`;
 }
 
 function drawLegend(color) {
   const blockWidth: number = 40;
   const blockHeight: number = 20;
 
-  d3.select("div#map-legend-scale").selectAll("div").remove();
+  d3.select("div#map-legend-scale-breaks").selectAll("div").remove();
 
-  d3.select("div#map-legend-scale")
+  d3.select("div#map-legend-scale-breaks")
     .selectAll("div")
     .data(color.domain())
     .join("div")
     .classed("map-legend-scale-number", true)
     .text((d: number, i) => d);
 
-  d3.select("svg#map-legend-bar")
+  d3.select("svg#map-legend-swatch-bar")
     .selectAll("rect")
     .data(color.range())
     .join("rect")
@@ -267,8 +327,36 @@ function drawLegend(color) {
     .attr("fill", (d: string) => d);
 
   d3.select("div#map-legend-date").text(
-    dateRangeString(latestCountyData["latestDate"])
+    dateRangeString(dateList[selectedDateIndex])
   );
+}
+
+function setDateControlState() {
+  if (selectedDateIndex == 0) {
+    console.log("setDateControlState: A");
+    d3.select("#date-nav-button-back")
+      .classed("date-nav-button-active", null)
+      .classed("date-nav-button-inactive", true);
+    d3.select("#date-nav-button-forward")
+      .classed("date-nav-button-inactive", null)
+      .classed("date-nav-button-active", true);
+  } else if (selectedDateIndex == dateList.length - 1) {
+    console.log("setDateControlState: B");
+    d3.select("#date-nav-button-back")
+      .classed("date-nav-button-active", true)
+      .classed("date-nav-button-inactive", null);
+    d3.select("#date-nav-button-forward")
+      .classed("date-nav-button-active", null)
+      .classed("date-nav-button-inactive", true);
+  } else {
+    console.log("setDateControlState: C");
+    d3.select("#date-nav-button-back")
+      .classed("date-nav-button-active", true)
+      .classed("date-nav-button-inactive", null);
+    d3.select("#date-nav-button-forward")
+      .classed("date-nav-button-active", true)
+      .classed("date-nav-button-inactive", null);
+  }
 }
 
 function buildVaccineColorScale() {

@@ -26,17 +26,14 @@
     fetchRegionData,
     fetchRegionalTrendsData,
     fetchRegionalTrendLines,
-    getLatestRegionData,
-    selectRegionOneTrends,
-    selectRegionTwoTrends,
-    subRegionOneCode,
-    subRegionTwoCode,
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
   import * as d3 from "d3";
   import {
     createMap,
+    decrementMapDate,
+    incrementMapDate,
     setMapTrend,
     setSelectedCounty,
     setSelectedState,
@@ -57,15 +54,6 @@
   };
 
   const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
-  const latestRegionOneData: Promise<Map<string, RegionalTrendAggregate>> =
-    mapData.then((rtls) =>
-      getLatestRegionData(selectRegionOneTrends(rtls), subRegionOneCode)
-    );
-  const latestRegionTwoData: Promise<Map<string, RegionalTrendAggregate>> =
-    mapData.then((rtls) =>
-      getLatestRegionData(selectRegionTwoTrends(rtls), subRegionTwoCode)
-    );
-
   let isMapInitialized: boolean = false;
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
@@ -81,7 +69,10 @@
     if (selectedRegion.sub_region_3) {
       return "";
     }
-    if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
+    if (
+      selectedRegion.sub_region_2 ||
+      selectedRegion.sub_region_1_code === "US-DC"
+    ) {
       return "Zipcodes";
     }
     if (selectedRegion.sub_region_1) {
@@ -260,14 +251,14 @@
       hoverCard.attr("class", "hoverCard inactive");
     };
 
-    function getClosestDate(selected, earlier, later){
-      if(!earlier && later){
+    function getClosestDate(selected, earlier, later) {
+      if (!earlier && later) {
         return later;
-      } else if(!later && earlier){
+      } else if (!later && earlier) {
         return earlier;
       } else if (
         selected.getTime() - earlier.getTime() <
-          later.getTime() - selected.getTime()
+        later.getTime() - selected.getTime()
       ) {
         return earlier;
       } else {
@@ -281,19 +272,23 @@
       //By default this uses the event's target which is the parent container
       //If the SVG is smaller than its defined viewBox (i.e. it was resized)
       //then the parent container offset gives us an incorrect value
-      const eventX: number = d3.pointer(d,chartElement)[0];
+      const eventX: number = d3.pointer(d, chartElement)[0];
 
       // This date might be in between provided dates.
       const hoveredDate: Date = xScale.invert(eventX);
       const hoveredDateIndex: number = d3.bisectLeft(dates, hoveredDate);
       const earlierDate: Date = dates[hoveredDateIndex - 1];
       const laterDate: Date = dates[hoveredDateIndex];
-      let closestDate: Date = getClosestDate(hoveredDate, earlierDate, laterDate);
+      let closestDate: Date = getClosestDate(
+        hoveredDate,
+        earlierDate,
+        laterDate
+      );
       let closestDateX: number;
       let hoverCardX: number;
 
       closestDateX = xScale(closestDate);
-      
+
       verticalLine.attr("x1", closestDateX).attr("x2", closestDateX);
 
       hoverCardDate.text(formatDateForDisplay(closestDate));
@@ -302,7 +297,13 @@
         formatDateForStorage(closestDate)
       );
 
-      displayRow(hoverCardSelected, hoverCardSelectedName, hoverCardSelectedValue, selectedRegionName, selectedValue);
+      displayRow(
+        hoverCardSelected,
+        hoverCardSelectedName,
+        hoverCardSelectedValue,
+        selectedRegionName,
+        selectedValue
+      );
 
       if (dataByDate.size > 0) {
         const placeValues: { place_id: string; value: number }[] =
@@ -317,15 +318,27 @@
         const maxRegionName: string = getRegionName(maxRegion);
         const maxValue: number = max?.value;
 
-        displayRow(hoverCardHigh, hoverCardHighName, hoverCardHighValue, maxRegionName, maxValue);
-        displayRow(hoverCardLow, hoverCardLowName, hoverCardLowValue, minRegionName, minValue);
+        displayRow(
+          hoverCardHigh,
+          hoverCardHighName,
+          hoverCardHighValue,
+          maxRegionName,
+          maxValue
+        );
+        displayRow(
+          hoverCardLow,
+          hoverCardLowName,
+          hoverCardLowValue,
+          minRegionName,
+          minValue
+        );
       } else {
         hoverCardHigh.style("display", "none");
         hoverCardLow.style("display", "none");
       }
 
       const mediabreakpoint = 600;
-      if(window.innerWidth > mediabreakpoint){
+      if (window.innerWidth > mediabreakpoint) {
         //Determine which side of the vertical line the hover card should be on and calculate the overall position.
         const hoverCardRect = hoverCardElement.getBoundingClientRect();
         const hoverCardWidth = hoverCardRect.width;
@@ -334,7 +347,7 @@
         const chartY = chartRect.y;
 
         const lineRect = verticalLineElement.getBoundingClientRect();
-        
+
         const isLayoutOnRight = lineRect.x < window.innerWidth / 2;
 
         if (isLayoutOnRight) {
@@ -347,10 +360,11 @@
           .style("left", `${hoverCardX}px`)
           .style(
             "top",
-            `${chartY + window.scrollY + (chartRect.height - hoverCardHeight) / 2}px`
+            `${
+              chartY + window.scrollY + (chartRect.height - hoverCardHeight) / 2
+            }px`
           );
       }
-      
     };
 
     chartContainerElement.addEventListener("mouseenter", chartMouseEnter);
@@ -358,7 +372,13 @@
     chartContainerElement.addEventListener("mousemove", chartMouseMove);
   }
 
-  function displayRow(row: d3.Selection<any,any,any,any>, rowName: d3.Selection<any,any,any,any>, rowValue: d3.Selection<any,any,any,any>, name: string, value: number) {
+  function displayRow(
+    row: d3.Selection<any, any, any, any>,
+    rowName: d3.Selection<any, any, any, any>,
+    rowValue: d3.Selection<any, any, any, any>,
+    name: string,
+    value: number
+  ) {
     if (name && value !== undefined) {
       row.style("display", "table-row");
       rowName.text(name);
@@ -502,10 +522,13 @@
           // Zipcode is selected.
           return isSelectedRegion;
         }
-        if (selectedRegion.sub_region_2 || selectedRegion.sub_region_1_code === "US-DC") {
+        if (
+          selectedRegion.sub_region_2 ||
+          selectedRegion.sub_region_1_code === "US-DC"
+        ) {
           // County is selected, want component zipcodes.
           inSelectedRegion =
-            region.sub_region_2 === selectedRegion.sub_region_2 && 
+            region.sub_region_2 === selectedRegion.sub_region_2 &&
             region.sub_region_1 === selectedRegion.sub_region_1;
         } else if (selectedRegion.sub_region_1) {
           // State is selected, want component counties.
@@ -536,10 +559,13 @@
         if (!dates.includes(date)) {
           dates.push(date);
         }
-      })
+      });
     });
 
-    let xScale = d3.scaleTime().range([0, chartBounds.width]).domain(d3.extent(dates));
+    let xScale = d3
+      .scaleTime()
+      .range([0, chartBounds.width])
+      .domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
       .axisBottom(xScale)
       .ticks(5)
@@ -549,7 +575,10 @@
       data.flatMap((region) => trendLine(region).map((trend) => trend.value))
     );
 
-    let yScale = d3.scaleLinear().range([chartBounds.height, 0]).domain([0, max]);
+    let yScale = d3
+      .scaleLinear()
+      .range([chartBounds.height, 0])
+      .domain([0, max]);
     let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartBounds.width);
 
     // TODO(patankar): Define constants for styling.
@@ -639,9 +668,7 @@
 
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
-    Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
-      setMapTrend(selectedMapTrendId);
-    });
+    setMapTrend(selectedMapTrendId);
   }
 
   function getRegionName(region: Region): string {
@@ -730,14 +757,8 @@
       selectedRegion = regions.find((region) => isCountry(region));
     }
 
-    Promise.all([latestRegionOneData, latestRegionTwoData]).then((values) => {
-      createMap(
-        values[0],
-        values[1],
-        selectedMapTrendId,
-        regions,
-        onMapSelection
-      );
+    mapData.then((mapData) => {
+      createMap(mapData, selectedMapTrendId, regions, onMapSelection);
       isMapInitialized = true;
       if (selectedRegion) {
         setMapSelection(selectedRegion);
@@ -1049,52 +1070,68 @@
             </div>
             <div class="map-callout-tip">Click to drill down</div>
           </div>
-          <div class="map-legend-container">
-            <div class="map-legend-bar">
+
+          <!-- Choropleth Map -->
+
+          <!-- Map header section with controls and legend -->
+          <div class="map-header-container">
+            <div class="map-legend">
               <div class="map-legend-label">Interest</div>
-              <div class="map-data-legend">
-                <div id="map-legend-scale" class="map-legend-scale-top" />
+              <div class="map-legend-scale">
+                <div id="map-legend-scale-breaks" class="map-legend-scale-top">
+                  <!-- breaks added by drawLegend routine -->
+                </div>
                 <div>
-                  <svg id="map-legend-bar" width="280" height="20">
-                    <rect
-                      width="280"
-                      height="20"
-                      x="0"
-                      y="0"
-                      fill="none"
-                      stroke="#bdc1c6"
-                    />
+                  <svg id="map-legend-swatch-bar" width="280" height="20">
+                    <!-- swatches added by drawLegend routine -->
                   </svg>
                 </div>
               </div>
-              <div class="info-button map-info-button">
-                <svg
-                  id="info-button-icon"
-                  width="24"
-                  height="24"
-                  on:click={(e) => {
-                    handleLegendInfoPopup(e, "#info-popup");
-                  }}
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
-                    fill="#5F6368"
-                    stroke="none"
-                  />
-                </svg>
+              <div
+                class="map-info-button"
+                on:click={(e) => {
+                  handleLegendInfoPopup(e, "#info-popup");
+                }}
+              >
+                <span class="material-icons-outlined">info</span>
               </div>
             </div>
-            <div id="map-legend-date" class="map-legend-date-label" />
+            <div class="date-nav-control">
+              <div id="map-legend-date" class="date-nav-display">
+                <!-- date added by drawLegend routine -->
+              </div>
+              <div
+                id="date-nav-button-back"
+                class="date-nav-button"
+                on:click={(e) => {
+                  decrementMapDate("#date-nav-button-back");
+                }}
+              >
+                <span class="material-icons-outlined">arrow_back_ios</span>
+              </div>
+              <div
+                id="date-nav-button-forward"
+                class="date-nav-button"
+                on:click={(e) => {
+                  incrementMapDate("#date-nav-button-forward");
+                }}
+              >
+                <span class="material-icons-outlined">arrow_forward_ios</span>
+              </div>
+            </div>
           </div>
+
+          <!-- Map body -->
           <div id="map" />
+
+          <!-- Map attribution line -->
           <div class="map-attribution">
             <p class="map-attribution-text">
               Chart includes geographic data from the US Census Bureau
             </p>
           </div>
         </div>
+
         <!-- Info Popups -->
         <div id="info-popup" class="info-popup">
           <h3 class="info-header">Interest</h3>
@@ -1171,7 +1208,7 @@
         </div>
         <div class="chartLegendContainer" />
         <div class="chartContainer">
-          <svg class="chart"/>
+          <svg class="chart" />
           <div class="hoverCard inactive" />
         </div>
       </div>
@@ -1200,7 +1237,7 @@
 
         <div class="chartLegendContainer" />
         <div class="chartContainer">
-          <svg class="chart"/>
+          <svg class="chart" />
           <div class="hoverCard inactive" />
         </div>
       </div>
@@ -1229,7 +1266,7 @@
 
         <div class="chartLegendContainer" />
         <div class="chartContainer">
-          <svg class="chart"/>
+          <svg class="chart" />
           <div class="hoverCard inactive" />
         </div>
       </div>
