@@ -32,10 +32,9 @@
   export let regionalTrendsByPlaceId: Map<string, RegionalTrends>;
   export let trendLine: (trends: RegionalTrends) => TrendValue[];
   export let title: string;
-  export let infoText: string;
 
   let placeId: string;
-  let selectedRegion: Region
+  let selectedRegion: Region;
   let chartContainerElement: HTMLElement;
 
   const chartBounds = {
@@ -64,9 +63,8 @@
 
   // TODO(patankar): Generalize this to allow for different selections.
   function generateChartLegend() {
-    const legendContainerElement: HTMLElement = chartContainerElement.querySelector(
-      ".chart-legend-container"
-    );
+    const legendContainerElement: HTMLElement =
+      chartContainerElement.querySelector(".chart-legend-container");
     const legendComponentText: string = getLegendComponentText();
 
     d3.select(legendContainerElement).selectAll("*").remove();
@@ -115,10 +113,14 @@
   ) {
     const trendlineHoverCardMargin: number = 7;
 
-    const chartAreaHoverElement: HTMLElement = chartContainerElement.querySelector(".chart-area-hover");
-    const chartAreaContainerElement: HTMLElement = chartContainerElement.querySelector(".chart-area-container");
-    const verticalLineElement: SVGGElement = chartContainerElement.querySelector(".chart-vertical-line");
-    const hoverCardElement = chartContainerElement.querySelector(".chart-hover-card");
+    const chartAreaHoverElement: HTMLElement =
+      chartContainerElement.querySelector(".chart-area-hover");
+    const chartAreaContainerElement: HTMLElement =
+      chartContainerElement.querySelector(".chart-area-container");
+    const verticalLineElement: SVGGElement =
+      chartContainerElement.querySelector(".chart-vertical-line");
+    const hoverCardElement =
+      chartContainerElement.querySelector(".chart-hover-card");
     const verticalLine = d3.select(verticalLineElement);
     const hoverCard = d3.select(hoverCardElement);
 
@@ -173,7 +175,9 @@
       .attr("id", "chart-hover-card-high-value")
       .attr("class", "chart-hover-card-value");
 
-    const hoverCardLow = hoverCardTable.append("tr").attr("id", "chart-hover-card-low");
+    const hoverCardLow = hoverCardTable
+      .append("tr")
+      .attr("id", "chart-hover-card-low");
 
     const hoverCardLowIcon = hoverCardLow
       .append("td")
@@ -420,12 +424,18 @@
   type ElementSection = HtmlSelection | SvgSelection;
 
   function generateChart() {
-    const chartAreaContainerElement: SVGElement = chartContainerElement.querySelector(".chart-area-container");
-    const chartAreaElement: SVGGElement = chartAreaContainerElement.querySelector("g");
-    const xElement: SVGGElement = chartContainerElement.querySelector(".x.axis");
-    const yElement: SVGGElement = chartContainerElement.querySelector(".y.axis");
-    const pathsElement: SVGGElement = chartContainerElement.querySelector(".paths");
-    const verticalLineElement: SVGGElement = chartContainerElement.querySelector(".chart-vertical-line");
+    const chartAreaContainerElement: SVGElement =
+      chartContainerElement.querySelector(".chart-area-container");
+    const chartAreaElement: SVGGElement =
+      chartAreaContainerElement.querySelector("g");
+    const xElement: SVGGElement =
+      chartContainerElement.querySelector(".x.axis");
+    const yElement: SVGGElement =
+      chartContainerElement.querySelector(".y.axis");
+    const pathsElement: SVGGElement =
+      chartContainerElement.querySelector(".paths");
+    const verticalLineElement: SVGGElement =
+      chartContainerElement.querySelector(".chart-vertical-line");
     let chartArea: SvgSelection;
     let x: SvgSelection;
     let y: SvgSelection;
@@ -483,40 +493,40 @@
         .attr("y2", chartBounds.height);
     }
 
-    let data: RegionalTrends[] = Array.from(regionalTrendsByPlaceId.values()).filter(
-      (t) => {
-        const region = regionsByPlaceId.get(t.place_id);
-        let inSelectedRegion: boolean;
-        const isSelectedRegion = region.place_id === selectedRegion.place_id;
+    let data: RegionalTrends[] = Array.from(
+      regionalTrendsByPlaceId.values()
+    ).filter((t) => {
+      const region = regionsByPlaceId.get(t.place_id);
+      let inSelectedRegion: boolean;
+      const isSelectedRegion = region.place_id === selectedRegion.place_id;
 
-        if (selectedRegion.sub_region_3) {
-          // Zipcode is selected.
-          return isSelectedRegion;
-        }
-        if (
-          selectedRegion.sub_region_2 ||
-          selectedRegion.sub_region_1_code === "US-DC"
-        ) {
-          // County is selected, want component zipcodes.
-          inSelectedRegion =
-            region.sub_region_2 === selectedRegion.sub_region_2 &&
-            region.sub_region_1 === selectedRegion.sub_region_1;
-        } else if (selectedRegion.sub_region_1) {
-          // State is selected, want component counties.
-          inSelectedRegion =
-            !region.sub_region_3 &&
-            region.sub_region_1_code === selectedRegion.sub_region_1_code;
-        } else if (selectedRegion.country_region) {
-          // Country is selected, want component states.
-          inSelectedRegion =
-            !region.sub_region_3 &&
-            !region.sub_region_2 &&
-            region.country_region_code === selectedRegion.country_region_code;
-        }
-
-        return inSelectedRegion || isSelectedRegion;
+      if (selectedRegion.sub_region_3) {
+        // Zipcode is selected.
+        return isSelectedRegion;
       }
-    );
+      if (
+        selectedRegion.sub_region_2 ||
+        selectedRegion.sub_region_1_code === "US-DC"
+      ) {
+        // County is selected, want component zipcodes.
+        inSelectedRegion =
+          region.sub_region_2 === selectedRegion.sub_region_2 &&
+          region.sub_region_1 === selectedRegion.sub_region_1;
+      } else if (selectedRegion.sub_region_1) {
+        // State is selected, want component counties.
+        inSelectedRegion =
+          !region.sub_region_3 &&
+          region.sub_region_1_code === selectedRegion.sub_region_1_code;
+      } else if (selectedRegion.country_region) {
+        // Country is selected, want component states.
+        inSelectedRegion =
+          !region.sub_region_3 &&
+          !region.sub_region_2 &&
+          region.country_region_code === selectedRegion.country_region_code;
+      }
+
+      return inSelectedRegion || isSelectedRegion;
+    });
 
     // A superset of dates for shown trendlines.
     // TODO(patankar): Efficiency.
@@ -638,47 +648,33 @@
   }
 
   onMount(async () => {
-
     params.subscribe((param) => {
       placeId = param.placeId;
-      if (placeId) {
+      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId) {
         selectedRegion = regionsByPlaceId.get(placeId);
 
         generateChart();
       }
     });
   });
-
-  </script>
+</script>
 
 <div bind:this={chartContainerElement}>
   <div class="chart-header">
     <h3>{title}</h3>
-    <div class="info-button chart-info-button"
+    <div
+      class="info-button chart-info-button"
       on:click={(e) => {
         handleInfoPopup(e, `#info-popup-${id}`);
-      }}>
-      <svg
-        id="chart-info-button-icon"
-        width="24"
-        height="24"
-      >
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 11 7 V 9 H 13 V 7 H 11 Z M 11 11 V 17 H 13 V 11 H 11 Z M 4 12 C 4 16.41 7.59 20 12 20 C 16.41 20 20 16.41 20 12 C 20 7.59 16.41 4 12 4 C 7.59 4 4 7.59 4 12 Z"
-          fill="#5F6368"
-          stroke="none"
-        />
-      </svg>
+      }}
+    >
+      <span class="material-icons-outlined">info</span>
     </div>
-    <div id=info-popup-{id} class="info-popup">
+    <div id="info-popup-{id}" class="info-popup">
       <h3 class="info-header">
         {title}
       </h3>
-      <p class="info-text">
-        {infoText}
-      </p>
+      <slot />
       <p>
         <a href="#about" class="info-link">Learn more</a>
       </p>

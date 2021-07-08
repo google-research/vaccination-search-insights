@@ -189,6 +189,20 @@
       sep.classList.remove("header-content-divider-scrolled");
     }
   }
+
+  function selectMapInfoPopup(): string {
+    switch (selectedMapTrendId) {
+      case "vaccination":
+        return "#info-popup-vaccine";
+      case "intent":
+        return "#info-popup-intent";
+      case "safety":
+        return "#info-popup-safety";
+      default:
+        console.log(`Unknown trend: ${selectedMapTrendId} set on map`);
+        return "";
+    }
+  }
 </script>
 
 <main>
@@ -385,7 +399,7 @@
               <div
                 class="map-info-button"
                 on:click={(e) => {
-                  handleInfoPopup(e, "#info-popup");
+                  handleInfoPopup(e, selectMapInfoPopup());
                 }}
               >
                 <span class="material-icons-outlined">info</span>
@@ -428,19 +442,89 @@
         </div>
 
         <!-- Info Popups -->
-        <div id="info-popup" class="info-popup">
-          <h3 class="info-header">Interest</h3>
+        <div id="info-popup-vaccine" class="info-popup">
+          <h3 class="info-header">
+            {COVID_19_VACCINATION_TITLE}
+          </h3>
           <p class="info-text">
-            A scaled value, showing relative interest, that you can compare
-            across regions and times.
+            Search interest in any aspect of COVID-19 vaccination. A scaled
+            value that you can compare across regions, times, or topics.
           </p>
           <p>
             <a href="#about" class="info-link">Learn more</a>
           </p>
         </div>
-        <TimeSeries id="covid-19-vaccination" regionsByPlaceId ={regionsByPlaceId} regionalTrendsByPlaceId={trends} trendLine={(t) => {return t.trends.covid19_vaccination;}} title={COVID_19_VACCINATION_TITLE} infoText="Search interest in any aspect of COVID-19 vaccination. A scaled value that you can compare across regions and times." />
-        <TimeSeries id="vaccination-intent" regionsByPlaceId ={regionsByPlaceId} regionalTrendsByPlaceId={trends} trendLine={(t) => {return t.trends.vaccination_intent;}} title={VACCINATION_INTENT_TITLE} infoText="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times." />
-        <TimeSeries id="safety-side-effects" regionsByPlaceId ={regionsByPlaceId} regionalTrendsByPlaceId={trends} trendLine={(t) => {return t.trends.safety_side_effects;}} title={SAFETY_SIDE_EFFECTS_TITLE} infoText="Search interest in the safety and side effects of COVID-19 vaccines. A scaled value that you can compare across regions and times." />
+        <div id="info-popup-intent" class="info-popup">
+          <h3 class="info-header">
+            {VACCINATION_INTENT_TITLE}
+          </h3>
+          <p class="info-text">
+            Search interest in the eligibility, availability, and accessibility
+            of COVID-19 vaccines. A scaled value that you can compare across
+            regions, times, or topics.
+          </p>
+          <p>
+            <a href="#about" class="info-link">Learn more</a>
+          </p>
+        </div>
+        <div id="info-popup-safety" class="info-popup">
+          <h3 class="info-header">
+            {SAFETY_SIDE_EFFECTS_TITLE}
+          </h3>
+          <p class="info-text">
+            Search interest in the safety and side effects of COVID-19 vaccines.
+            A scaled value that you can compare across regions, times, or
+            topics.
+          </p>
+          <p>
+            <a href="#about" class="info-link">Learn more</a>
+          </p>
+        </div>
+
+        <TimeSeries
+          id="covid-19-vaccination"
+          {regionsByPlaceId}
+          regionalTrendsByPlaceId={trends}
+          trendLine={(t) => {
+            return t.trends.covid19_vaccination;
+          }}
+          title={COVID_19_VACCINATION_TITLE}
+        >
+          <p class="info-text">
+            Search interest in any aspect of COVID-19 vaccination. A scaled
+            value that you can compare across regions, times, or topics.
+          </p>
+        </TimeSeries>
+        <TimeSeries
+          id="vaccination-intent"
+          {regionsByPlaceId}
+          regionalTrendsByPlaceId={trends}
+          trendLine={(t) => {
+            return t.trends.vaccination_intent;
+          }}
+          title={VACCINATION_INTENT_TITLE}
+        >
+          <p class="info-text">
+            Search interest in the eligibility, availability, and accessibility
+            of COVID-19 vaccines. A scaled value that you can compare across
+            regions, times, or topics.
+          </p>
+        </TimeSeries>
+        <TimeSeries
+          id="safety-side-effects"
+          {regionsByPlaceId}
+          regionalTrendsByPlaceId={trends}
+          trendLine={(t) => {
+            return t.trends.safety_side_effects;
+          }}
+          title={SAFETY_SIDE_EFFECTS_TITLE}
+        >
+          <p class="info-text">
+            Search interest in the safety and side effects of COVID-19 vaccines.
+            A scaled value that you can compare across regions, times, or
+            topics.
+          </p>
+        </TimeSeries>
       {/await}
       <a id="about" class="about-anchor">
         <!-- Empty - keep to avoid warnings on empty anchor -->
@@ -514,10 +598,10 @@
       </p>
       <div id="next-steps" class="next-steps-container">
         <div class="next-steps-item">
-          <h3>Query the dataset</h3>
+          <h3>Query the dataset with SQL</h3>
           <p>
-            Get real-time insights using Google Cloud’s BigQuery. Analyse with
-            SQL or call APIs from your code.
+            Get insights using Google Cloud’s BigQuery. Analyze with SQL,
+            generate reports, or call the API from your code.
           </p>
           <p />
           <p>
@@ -528,14 +612,14 @@
           </p>
         </div>
         <div class="next-steps-item">
-          <h3>Analyze with covariates</h3>
+          <h3>Analyze with covariate data</h3>
           <p>
-            Analyze the data alongside other covariates in the COVID-19
-            Open-Data repository. COVID-19 Open-Data repo
+            Analyze this data alongside other covariates in the COVID-19
+            Open-Data repository.
           </p>
           <p>
             <a href="https://github.com/GoogleCloudPlatform/covid-19-open-data"
-              >COVID-19 Open Data Repository.</a
+              >Github repository</a
             >
           </p>
         </div>
@@ -547,8 +631,9 @@
             your solutions.
           </p>
           <p>
-            <a href="mailto:covid-19-search-trends-feedback@google.com"
-              >covid-19-search-trends-feedback@google.com
+            <a
+              href="mailto:covid-19-search-trends-feedback+webcallout@google.com"
+              >Email us
             </a>
           </p>
         </div>
