@@ -17,6 +17,8 @@
 import type { Region } from "./data";
 import * as d3 from "d3";
 
+let activePopupId: string;
+
 export function getRegionName(region: Region): string {
   let regionName: string;
 
@@ -62,13 +64,13 @@ export function inClientBounds(
 }
 
 export function handleInfoPopup(event, id): void {
-  if (id === document.activePopupId) {
+  if (id === activePopupId) {
     dismissInfoPopup(event);
   } else {
     const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(id);
     const infoRect: DOMRect = event.target.getBoundingClientRect();
 
-    if (document.activePopupId) {
+    if (activePopupId) {
       dismissInfoPopup(event);
     }
 
@@ -78,13 +80,13 @@ export function handleInfoPopup(event, id): void {
       .style("top", `${infoRect.y + infoRect.height + window.pageYOffset}px`);
 
     event.stopPropagation();
-    document.activePopupId = id;
+    activePopupId = id;
     document.addEventListener("click", dismissInfoPopup);
   }
 }
 
 function dismissInfoPopup(event): void {
-  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(document.activePopupId);
+  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(activePopupId);
   if (
     !inClientBounds(
       event.clientX,
@@ -94,7 +96,7 @@ function dismissInfoPopup(event): void {
   ) {
     popup.style("display", "none");
     document.removeEventListener("click", dismissInfoPopup);
-    document.activePopupId = null;
+    activePopupId = null;
     event.stopPropagation();
   }
 }
