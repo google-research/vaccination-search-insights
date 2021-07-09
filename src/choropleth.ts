@@ -35,6 +35,7 @@ import {
   selectRegionTwoTrends,
   subRegionOneCode,
   subRegionTwoCode,
+  fetchZipData
 } from "./data";
 
 const path = d3.geoPath();
@@ -166,8 +167,10 @@ function initializeMap() {
 
   const g = mapSvg.append("g").attr("id", "transformer");
   // keep in inverse order
+  
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
+  g.append("g").attr("id", "zip");
 
   const topology = getUsAtlas();
   const countyFeatures = feature(
@@ -206,6 +209,22 @@ function initializeMap() {
     .on("mouseleave", leaveStateBoundsHandler)
     .on("mousemove", inStateMovementHandler)
     .on("click", stateSelectionOnClickHandler);
+
+  fetchZipData("00001").then(zipData => {
+
+    d3.select("#zip")
+      .selectAll("path")
+      .data(zipData.features)
+      .join("path")
+      .attr("id",(z:any)=>`zcta-${z.properties.GEOID10}`)
+      .attr("d",path)
+      .attr("fill","transparent")
+      .attr("stroke","white")
+      .attr("stroke-width",1)
+      .attr("vector-effect","non-scaling-stroke");
+    console.log("Loaded zip data");
+
+  })
 
   mapZoom = d3.zoom().scaleExtent([1, 100]).on("zoom", zoomHandler);
   mapSvg.call(mapZoom);

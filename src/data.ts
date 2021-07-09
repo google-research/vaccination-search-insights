@@ -169,6 +169,10 @@ function _fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
   }
 }
 
+export function fetchZipData(geoid):Promise<any> {
+  return fetch('./data/42003.geo.json').then(response => response.json());
+}
+
 export function fetchRegionalTrendsData(): Promise<
   Map<string, RegionalTrends>
 > {
