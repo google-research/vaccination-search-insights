@@ -292,9 +292,11 @@
               title="Search interest in any aspect of COVID-19 vaccination. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "vaccination"}
-                <span class="material-icons md-20 map-trend-selector-active"
-                  >done</span
-                >
+                <div class="map-trend-icon-container">
+                  <span class="material-icons map-trend-selected-icon"
+                    >done</span
+                  >
+                </div>
               {/if}
               {COVID_19_VACCINATION_TITLE}
             </button>
@@ -307,9 +309,11 @@
               title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "intent"}
-                <span class="material-icons map-trend-selector-active"
-                  >done</span
-                >
+                <div class="map-trend-icon-container">
+                  <span class="material-icons map-trend-selected-icon"
+                    >done</span
+                  >
+                </div>
               {/if}
               {VACCINATION_INTENT_TITLE}
             </button>
@@ -322,9 +326,11 @@
               title="Search interest in the safety and side effects of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "safety"}
-                <span class="material-icons map-trend-selector-active"
-                  >done</span
-                >
+                <div class="map-trend-icon-container">
+                  <span class="material-icons map-trend-selected-icon"
+                    >done</span
+                  >
+                </div>
               {/if}
               {SAFETY_SIDE_EFFECTS_TITLE}
             </button>
