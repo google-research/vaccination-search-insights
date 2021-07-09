@@ -1342,11 +1342,9 @@
       </p>
       <div id="next-steps" class="next-steps-container">
         <div class="next-steps-item">
-          <h3>Query the dataset</h3>
+          <h3>Query the dataset with SQL</h3>
           <p>
-            Get real-time insights using Google Cloud’s BigQuery. Analyse with
-            SQL or call APIs from your code.
-          </p>
+            Get insights using Google Cloud’s BigQuery. Analyze with SQL, generate reports, or call the API from your code.
           <p />
           <p>
             <a
@@ -1356,14 +1354,13 @@
           </p>
         </div>
         <div class="next-steps-item">
-          <h3>Analyze with covariates</h3>
+          <h3>Analyze with covariate data</h3>
           <p>
-            Analyze the data alongside other covariates in the COVID-19
-            Open-Data repository. COVID-19 Open-Data repo
+            Analyze this data alongside other covariates in the COVID-19 Open-Data repository.
           </p>
           <p>
             <a href="https://github.com/GoogleCloudPlatform/covid-19-open-data"
-              >COVID-19 Open Data Repository.</a
+              >Github repository</a
             >
           </p>
         </div>
@@ -1375,8 +1372,8 @@
             your solutions.
           </p>
           <p>
-            <a href="mailto:covid-19-search-trends-feedback@google.com"
-              >covid-19-search-trends-feedback@google.com
+            <a href="mailto:covid-19-search-trends-feedback+webcallout@google.com"
+              >Email us
             </a>
           </p>
         </div>
