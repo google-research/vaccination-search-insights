@@ -282,17 +282,17 @@
         <!-- Empty -->
       {:then trends}
         <div class="map-content-container">
-          <div class="mapTrendSelectorGroup">
+          <div class="map-trend-selector-group">
             <button
               id="vaccination"
               class={selectedMapTrendId == "vaccination"
-                ? "mapTrendSelector selectedTrend"
-                : "mapTrendSelector"}
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
               title="Search interest in any aspect of COVID-19 vaccination. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "vaccination"}
-                <span class="material-icons map-trend-selector-active"
+                <span class="material-icons md-20 map-trend-selector-active"
                   >done</span
                 >
               {/if}
@@ -301,8 +301,8 @@
             <button
               id="intent"
               class={selectedMapTrendId == "intent"
-                ? "mapTrendSelector selectedTrend"
-                : "mapTrendSelector"}
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
               title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >
@@ -316,8 +316,8 @@
             <button
               id="safety"
               class={selectedMapTrendId == "safety"
-                ? "mapTrendSelector selectedTrend"
-                : "mapTrendSelector"}
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
               title="Search interest in the safety and side effects of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >

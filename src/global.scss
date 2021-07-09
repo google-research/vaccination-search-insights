@@ -261,7 +261,7 @@ footer {
   font-weight: g.$body-weight;
 }
 
-.mapTrendSelectorGroup {
+.map-trend-selector-group {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -269,7 +269,7 @@ footer {
   margin-top: 40px;
 }
 
-.mapTrendSelector {
+.map-trend-selector-button {
   @include header-font;
   font-size: 14px;
   line-height: 20px;
@@ -282,7 +282,7 @@ footer {
   cursor: pointer;
 }
 
-.selectedTrend {
+.map-trend-selector-selected {
   background: g.$chip-background;
   color: g.$chip-text;
   border: 1px solid g.$chip-background !important;
