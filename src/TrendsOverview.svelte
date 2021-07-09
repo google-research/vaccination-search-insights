@@ -29,6 +29,7 @@
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
+  import { getRegionName, inClientBounds, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
     createMap,
@@ -38,6 +39,7 @@
     setSelectedCounty,
     setSelectedState,
   } from "./choropleth.js";
+  import TimeSeries from "./TimeSeries.svelte";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -46,12 +48,6 @@
   let selectedRegionName: string;
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
-
-  const chartBounds = {
-    width: 975,
-    height: 610,
-    margin: 30,
-  };
 
   const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
   let isMapInitialized: boolean = false;
@@ -65,640 +61,9 @@
   let vaccinationIntentChartContainer: HTMLElement;
   let safetySideEffectsChartContainer: HTMLElement;
 
-  function getLegendComponentText(): string {
-    if (selectedRegion.sub_region_3) {
-      return "";
-    }
-    if (
-      selectedRegion.sub_region_2 ||
-      selectedRegion.sub_region_1_code === "US-DC"
-    ) {
-      return "Zipcodes";
-    }
-    if (selectedRegion.sub_region_1) {
-      return "Counties";
-    }
-    if (selectedRegion.country_region) {
-      return "States";
-    }
-  }
-
-  // TODO(patankar): Generalize this to allow for different selections.
-  function generateTrendChartLegend(el: HTMLElement) {
-    const legendContainerElement: HTMLElement = el.querySelector(
-      ".chartLegendContainer"
-    );
-    const legendComponentText: string = getLegendComponentText();
-
-    d3.select(legendContainerElement).selectAll("*").remove();
-
-    d3.select(legendContainerElement)
-      .append("div")
-      .attr("class", "trendChartLegendRectContainer")
-      .append("svg")
-      .append("g")
-      .append("rect")
-      .attr("class", `trendChartLegendRect ${el.id}`)
-      .attr("width", 16)
-      .attr("height", 4);
-
-    d3.select(legendContainerElement)
-      .append("div")
-      .attr("class", "trendChartLegendTextContainer")
-      .append("text")
-      .attr("class", "trendChartLegendText")
-      .text(selectedRegionName);
-
-    if (legendComponentText) {
-      d3.select(legendContainerElement)
-        .append("div")
-        .attr("class", "trendChartLegendRectContainer")
-        .append("svg")
-        .append("g")
-        .append("rect")
-        .attr("width", 16)
-        .attr("height", 4)
-        .attr("fill", "#BDC1C6");
-
-      d3.select(legendContainerElement)
-        .append("div")
-        .attr("class", "trendChartLegendTextContainer")
-        .append("text")
-        .attr("class", "trendChartLegendText")
-        .text(legendComponentText);
-    }
-  }
-
-  function generateTrendChartHoverCard(
-    el: HTMLElement,
-    trendLine: (RegionalTrends) => TrendValue[],
-    data: RegionalTrends[],
-    dates: Date[],
-    xScale: d3.ScaleTime<number, number, never>
-  ) {
-    const trendlineHoverCardMargin: number = 7;
-
-    const chartContainerElement = el.querySelector(".chartContainer");
-    const chartElement = el.querySelector(".chart");
-    const verticalLineElement = el.querySelector(".trendChartVerticalLine");
-    const hoverCardElement = el.querySelector(".hoverCard");
-    const verticalLine = d3.select(verticalLineElement);
-    const hoverCard = d3.select(hoverCardElement);
-
-    hoverCard.selectAll("*").remove();
-
-    const hoverCardDate = hoverCard
-      .append("text")
-      .attr("class", "hoverCardDate");
-
-    const hoverCardTable = hoverCard
-      .append("table")
-      .attr("class", "hoverCardTable");
-
-    // Each of the hover card rows has three entities: the icon (rectangle or "High"/"Low"), the name of the selected region, and the value for the selected region on the selected date.
-    const hoverCardSelected = hoverCardTable
-      .append("tr")
-      .attr("id", "hoverCardSelected");
-
-    const hoverCardSelectedIcon = hoverCardSelected
-      .append("td")
-      .append("div")
-      .attr("id", "hoverCardSelectedIcon")
-      .attr("class", `hoverCardSelectedIcon ${el.id}`);
-
-    const hoverCardSelectedName = hoverCardSelected
-      .append("td")
-      .attr("id", "hoverCardSelectedName")
-      .attr("class", "hoverCardName")
-      .text(selectedRegionName);
-
-    const hoverCardSelectedValue = hoverCardSelected
-      .append("td")
-      .attr("id", "hoverCardSelectedValue")
-      .attr("class", "hoverCardValue");
-
-    const hoverCardHigh = hoverCardTable
-      .append("tr")
-      .attr("id", "hoverCardHigh");
-
-    const hoverCardHighIcon = hoverCardHigh
-      .append("td")
-      .attr("id", "hoverCardHighIcon")
-      .attr("class", "hoverCardIconText")
-      .text("High");
-
-    const hoverCardHighName = hoverCardHigh
-      .append("td")
-      .attr("id", "hoverCardHighName")
-      .attr("class", "hoverCardName");
-
-    const hoverCardHighValue = hoverCardHigh
-      .append("td")
-      .attr("id", "hoverCardHighValue")
-      .attr("class", "hoverCardValue");
-
-    const hoverCardLow = hoverCardTable.append("tr").attr("id", "hoverCardLow");
-
-    const hoverCardLowIcon = hoverCardLow
-      .append("td")
-      .attr("id", "hoverCardLowIcon")
-      .attr("class", "hoverCardIconText")
-      .text("Low");
-
-    const hoverCardLowName = hoverCardLow
-      .append("td")
-      .attr("id", "hoverCardLowName")
-      .attr("class", "hoverCardName");
-
-    const hoverCardLowValue = hoverCardLow
-      .append("td")
-      .attr("id", "hoverCardLowValue")
-      .attr("class", "hoverCardValue");
-
-    const dataByDate = new Map<string, { place_id: string; value: number }[]>();
-    const selectedDataByDate = new Map<string, number>();
-
-    data.forEach((regionalTrend) => {
-      const trendValues = trendLine(regionalTrend);
-
-      trendValues.forEach((trendValue) => {
-        if (regionalTrend.place_id === placeId) {
-          selectedDataByDate.set(trendValue.date, trendValue.value);
-        } else {
-          if (dataByDate.has(trendValue.date)) {
-            dataByDate.get(trendValue.date).push({
-              place_id: regionalTrend.place_id,
-              value: trendValue.value,
-            });
-          } else {
-            dataByDate.set(trendValue.date, [
-              { place_id: regionalTrend.place_id, value: trendValue.value },
-            ]);
-          }
-        }
-      });
-    });
-
-    const chartMouseEnter = function (d) {
-      verticalLine.attr("class", "trendChartVerticalLine");
-
-      hoverCard.attr("class", "hoverCard");
-    };
-
-    const chartMouseLeave = function (d) {
-      verticalLine.attr("class", "trendChartVerticalLine inactive");
-
-      hoverCard.attr("class", "hoverCard inactive");
-    };
-
-    function getClosestDate(selected, earlier, later) {
-      if (!earlier && later) {
-        return later;
-      } else if (!later && earlier) {
-        return earlier;
-      } else if (
-        selected.getTime() - earlier.getTime() <
-        later.getTime() - selected.getTime()
-      ) {
-        return earlier;
-      } else {
-        return later;
-      }
-    }
-
-    const chartMouseMove = function (d) {
-      dates.sort((a, b) => a.getTime() - b.getTime());
-      //Calculate position relative to the SVG's viewBox
-      //By default this uses the event's target which is the parent container
-      //If the SVG is smaller than its defined viewBox (i.e. it was resized)
-      //then the parent container offset gives us an incorrect value
-      const eventX: number = d3.pointer(d, chartElement)[0];
-
-      // This date might be in between provided dates.
-      const hoveredDate: Date = xScale.invert(eventX);
-      const hoveredDateIndex: number = d3.bisectLeft(dates, hoveredDate);
-      const earlierDate: Date = dates[hoveredDateIndex - 1];
-      const laterDate: Date = dates[hoveredDateIndex];
-      let closestDate: Date = getClosestDate(
-        hoveredDate,
-        earlierDate,
-        laterDate
-      );
-      let closestDateX: number;
-      let hoverCardX: number;
-
-      closestDateX = xScale(closestDate);
-
-      verticalLine.attr("x1", closestDateX).attr("x2", closestDateX);
-
-      hoverCardDate.text(formatDateForDisplay(closestDate));
-
-      const selectedValue: number = selectedDataByDate.get(
-        formatDateForStorage(closestDate)
-      );
-
-      displayRow(
-        hoverCardSelected,
-        hoverCardSelectedName,
-        hoverCardSelectedValue,
-        selectedRegionName,
-        selectedValue
-      );
-
-      if (dataByDate.size > 0) {
-        const placeValues: { place_id: string; value: number }[] =
-          dataByDate.get(formatDateForStorage(closestDate));
-        const { min, max } = findMinAndMax(placeValues);
-        const minPlaceId: string = min?.place_id;
-        const minRegion: Region = regionsByPlaceId.get(minPlaceId);
-        const minRegionName: string = getRegionName(minRegion);
-        const minValue: number = min?.value;
-        const maxPlaceId: string = max?.place_id;
-        const maxRegion: Region = regionsByPlaceId.get(maxPlaceId);
-        const maxRegionName: string = getRegionName(maxRegion);
-        const maxValue: number = max?.value;
-
-        displayRow(
-          hoverCardHigh,
-          hoverCardHighName,
-          hoverCardHighValue,
-          maxRegionName,
-          maxValue
-        );
-        displayRow(
-          hoverCardLow,
-          hoverCardLowName,
-          hoverCardLowValue,
-          minRegionName,
-          minValue
-        );
-      } else {
-        hoverCardHigh.style("display", "none");
-        hoverCardLow.style("display", "none");
-      }
-
-      const mediabreakpoint = 600;
-      if (window.innerWidth > mediabreakpoint) {
-        //Determine which side of the vertical line the hover card should be on and calculate the overall position.
-        const hoverCardRect = hoverCardElement.getBoundingClientRect();
-        const hoverCardWidth = hoverCardRect.width;
-        const hoverCardHeight = hoverCardRect.height;
-        const chartRect = chartElement.getBoundingClientRect();
-        const chartY = chartRect.y;
-
-        const lineRect = verticalLineElement.getBoundingClientRect();
-
-        const isLayoutOnRight = lineRect.x < window.innerWidth / 2;
-
-        if (isLayoutOnRight) {
-          hoverCardX = lineRect.x + trendlineHoverCardMargin;
-        } else {
-          hoverCardX = lineRect.x - trendlineHoverCardMargin - hoverCardWidth;
-        }
-
-        hoverCard
-          .style("left", `${hoverCardX}px`)
-          .style(
-            "top",
-            `${
-              chartY + window.scrollY + (chartRect.height - hoverCardHeight) / 2
-            }px`
-          );
-      }
-    };
-
-    chartContainerElement.addEventListener("mouseenter", chartMouseEnter);
-    chartContainerElement.addEventListener("mouseleave", chartMouseLeave);
-    chartContainerElement.addEventListener("mousemove", chartMouseMove);
-  }
-
-  function displayRow(
-    row: d3.Selection<any, any, any, any>,
-    rowName: d3.Selection<any, any, any, any>,
-    rowValue: d3.Selection<any, any, any, any>,
-    name: string,
-    value: number
-  ) {
-    if (name && value !== undefined) {
-      row.style("display", "table-row");
-      rowName.text(name);
-      rowValue.text(Math.round(value));
-    } else {
-      row.style("display", "none");
-    }
-  }
-
-  function findMinAndMax(placeValues: { place_id: string; value: number }[]) {
-    let min: { place_id: string; value: number };
-    let max: { place_id: string; value: number };
-
-    placeValues.forEach((placeValue) => {
-      if (!isNaN(placeValue.value)) {
-        if (!min || placeValue.value < min.value) {
-          min = placeValue;
-        }
-
-        if (!max || placeValue.value > max.value) {
-          max = placeValue;
-        }
-      }
-    });
-
-    return { min, max };
-  }
-
-  function formatDateForDisplay(date: Date): string {
-    const options: Intl.DateTimeFormatOptions = {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  }
-
-  function formatDateForStorage(date: Date): string {
-    const month = new Intl.DateTimeFormat("en-US", { month: "2-digit" }).format(
-      date
-    );
-    const day = new Intl.DateTimeFormat("en-US", { day: "2-digit" }).format(
-      date
-    );
-    const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
-      date
-    );
-
-    return `${year}-${month}-${day}`;
-  }
-
-  function convertStorageDate(storageDate: string): Date {
-    const date = new Date(storageDate);
-    const time = date.getTime();
-    const timeZoneOffset = date.getTimezoneOffset() * 60 * 1000;
-    const adjustedTime = time + timeZoneOffset;
-
-    return new Date(adjustedTime);
-  }
-
-  type HtmlSelection = d3.Selection<HTMLElement, any, any, any>;
-  type SvgSelection = d3.Selection<SVGGElement, any, any, any>;
-  type ElementSection = HtmlSelection | SvgSelection;
-
-  function generateTrendChart(
-    el: HTMLElement,
-    trendLine: (t: RegionalTrends) => TrendValue[]
-  ) {
-    const chartElement: HTMLElement = el.querySelector(".chart");
-    const chartAreaElement: SVGGElement = chartElement.querySelector("g");
-    const xElement: SVGGElement = el.querySelector(".x.axis");
-    const yElement: SVGGElement = el.querySelector(".y.axis");
-    const pathsElement: SVGGElement = el.querySelector(".paths");
-    const verticalLineElement: HTMLElement = el.querySelector(
-      ".trendChartVerticalLine"
-    );
-    let chartArea: ElementSection;
-    let x: SvgSelection;
-    let y: SvgSelection;
-    let paths: SvgSelection;
-    let verticalLine: ElementSection;
-
-    let chartWidth = chartElement.getBoundingClientRect().width;
-
-    if (chartAreaElement) {
-      chartArea = d3.select(chartAreaElement);
-    } else {
-      chartArea = d3
-        .select(chartElement)
-        .attr(
-          "viewBox",
-          [
-            -chartBounds.margin,
-            0,
-            chartBounds.width + chartBounds.margin,
-            chartBounds.height + chartBounds.margin,
-          ].join(" ")
-        )
-        .append("g");
-    }
-
-    if (xElement) {
-      x = d3.select(xElement);
-    } else {
-      x = chartArea
-        .append("g")
-        .attr("class", "x axis")
-        .attr("transform", `translate(0, ${chartBounds.height})`);
-    }
-
-    if (yElement) {
-      y = d3.select(yElement);
-    } else {
-      y = chartArea.append("g").attr("class", "y axis");
-    }
-
-    if (pathsElement) {
-      paths = d3.select(pathsElement);
-    } else {
-      paths = chartArea.append("g").attr("class", "paths");
-    }
-
-    if (verticalLineElement) {
-      verticalLine = d3.select(verticalLineElement);
-    } else {
-      verticalLine = chartArea
-        .append("g")
-        .append("line")
-        .attr("class", "trendChartVerticalLine inactive")
-        .attr("y1", 0)
-        .attr("y2", chartBounds.height);
-    }
-
-    let data: RegionalTrends[] = Array.from(regionalTrends.values()).filter(
-      (t) => {
-        const region = regionsByPlaceId.get(t.place_id);
-        let inSelectedRegion: boolean;
-        const isSelectedRegion = region.place_id === selectedRegion.place_id;
-
-        if (selectedRegion.sub_region_3) {
-          // Zipcode is selected.
-          return isSelectedRegion;
-        }
-        if (
-          selectedRegion.sub_region_2 ||
-          selectedRegion.sub_region_1_code === "US-DC"
-        ) {
-          // County is selected, want component zipcodes.
-          inSelectedRegion =
-            region.sub_region_2 === selectedRegion.sub_region_2 &&
-            region.sub_region_1 === selectedRegion.sub_region_1;
-        } else if (selectedRegion.sub_region_1) {
-          // State is selected, want component counties.
-          inSelectedRegion =
-            !region.sub_region_3 &&
-            region.sub_region_1_code === selectedRegion.sub_region_1_code;
-        } else if (selectedRegion.country_region) {
-          // Country is selected, want component states.
-          inSelectedRegion =
-            !region.sub_region_3 &&
-            !region.sub_region_2 &&
-            region.country_region_code === selectedRegion.country_region_code;
-        }
-
-        return inSelectedRegion || isSelectedRegion;
-      }
-    );
-
-    // A superset of dates for shown trendlines.
-    // TODO(patankar): Efficiency.
-    const dates: Date[] = [];
-    data.forEach((regionalTrends) => {
-      const regionalTrendValues = trendLine(regionalTrends);
-
-      regionalTrendValues.forEach((regionalTrendValue) => {
-        const date = convertStorageDate(regionalTrendValue.date);
-
-        if (!dates.includes(date)) {
-          dates.push(date);
-        }
-      });
-    });
-
-    let xScale = d3
-      .scaleTime()
-      .range([0, chartBounds.width])
-      .domain(d3.extent(dates));
-    let xAxis: d3.Axis<Date | d3.NumberValue> = d3
-      .axisBottom(xScale)
-      .ticks(5)
-      .tickSizeOuter(0);
-
-    let max = d3.max(
-      data.flatMap((region) => trendLine(region).map((trend) => trend.value))
-    );
-
-    let yScale = d3
-      .scaleLinear()
-      .range([chartBounds.height, 0])
-      .domain([0, max]);
-    let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartBounds.width);
-
-    // TODO(patankar): Define constants for styling.
-    x.call(xAxis)
-      .call((g) =>
-        g.select(".domain").attr("stroke-width", 1).attr("stroke", "#80868B")
-      )
-      .call((g) =>
-        g
-          .selectAll(".tick line")
-          .attr("stroke-width", 1)
-          .attr("stroke", "#80868B")
-      )
-      .call((g) =>
-        g
-          .selectAll(".tick text")
-          .attr("color", "#5F6368")
-          .attr("font-family", "Roboto")
-          .attr("font-size", 12)
-      );
-    y.call(yAxis)
-      .call((g) => g.select(".domain").remove())
-      .call((g) =>
-        g
-          .selectAll(".tick")
-          .filter((t) => {
-            return t === 0;
-          })
-          .remove()
-      )
-      .call((g) =>
-        g
-          .selectAll(".tick line")
-          .attr("stroke-width", 1)
-          .attr("stroke", "#DADCE0")
-      )
-      .call((g) =>
-        g
-          .selectAll(".tick text")
-          .attr("color", "#5F6368")
-          .attr("font-family", "Roboto")
-          .attr("font-size", 12)
-      )
-      .call((g) => g.select(".yLabel").remove())
-      .call((g) =>
-        g
-          .append("text")
-          .attr("class", "yLabel")
-          .attr("x", chartWidth - 15)
-          .attr("y", -10)
-          .attr("fill", "#5F6368")
-          .attr("font-family", "Roboto")
-          .attr("font-size", 11)
-          .text("INTEREST")
-      );
-
-    generateTrendChartLegend(el);
-    generateTrendChartHoverCard(el, trendLine, data, dates, xScale);
-
-    let lineFn = d3
-      .line<TrendValue>()
-      .defined((d) => !isNaN(d.value))
-      .x((d) => xScale(new Date(d.date)))
-      .y((d) => yScale(d.value))
-      .curve(d3.curveLinear);
-
-    paths
-      .selectAll("path")
-      .data(data, (d: RegionalTrends) => d.place_id)
-      .join("path")
-      .sort((a, b) => {
-        if (a.place_id != placeId) {
-          return -1;
-        }
-        return 1;
-      })
-      .attr("id", (d) => d.place_id)
-      .attr("class", (regionalTrend) => {
-        if (regionalTrend.place_id === placeId) {
-          return `trendline trendline-selected ${el.id}`;
-        } else {
-          return "trendline";
-        }
-      })
-      .attr("d", (d) => lineFn(trendLine(d)));
-  }
-
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
     setMapTrend(selectedMapTrendId);
-  }
-
-  function getRegionName(region: Region): string {
-    let regionName: string;
-    if (!region) {
-      return "";
-    }
-    if (region.sub_region_3) {
-      regionName = region.sub_region_3_code;
-
-      if (region.sub_region_2) {
-        regionName += `, ${region.sub_region_2}`;
-      }
-    } else if (region.sub_region_2) {
-      regionName = region.sub_region_2;
-
-      if (region.sub_region_1) {
-        regionName += `, ${region.sub_region_1}`;
-      }
-    } else if (region.sub_region_1) {
-      regionName = region.sub_region_1;
-
-      if (region.country_region) {
-        regionName += `, ${region.country_region}`;
-      }
-    } else if (region.country_region) {
-      regionName = region.country_region;
-    }
-
-    return regionName;
   }
 
   function filterDropdownItems(regions: Region[]): Region[] {
@@ -729,25 +94,6 @@
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
-
-        generateTrendChart(
-          covid19VaccinationChartContainer,
-          (t: RegionalTrends) => {
-            return t.trends.covid19_vaccination;
-          }
-        );
-        generateTrendChart(
-          vaccinationIntentChartContainer,
-          (t: RegionalTrends) => {
-            return t.trends.vaccination_intent;
-          }
-        );
-        generateTrendChart(
-          safetySideEffectsChartContainer,
-          (t: RegionalTrends) => {
-            return t.trends.safety_side_effects;
-          }
-        );
       }
     });
 
@@ -844,9 +190,7 @@
     }
   }
 
-  let popupId: string;
-
-  function selectInfoPopup(): string {
+  function selectMapInfoPopup(): string {
     switch (selectedMapTrendId) {
       case "vaccination":
         return "#info-popup-vaccine";
@@ -858,55 +202,6 @@
         console.log(`Unknown trend: ${selectedMapTrendId} set on map`);
         return "";
     }
-  }
-
-  function handleLegendInfoPopup(event, id): void {
-    if (popupId) {
-      dismissLegendInfoPopup(event);
-    }
-    const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(id);
-
-    const hidden: boolean = popup.style("display") == "none";
-    if (hidden) {
-      const infoRect: DOMRect = event.target.getBoundingClientRect();
-      popup
-        .style("display", "block")
-        .style("left", infoRect.x + infoRect.width + window.pageXOffset + "px")
-        .style("top", infoRect.y + infoRect.height + window.pageYOffset + "px");
-
-      event.stopPropagation();
-      popupId = id;
-      document.addEventListener("click", dismissLegendInfoPopup);
-    }
-  }
-
-  function dismissLegendInfoPopup(event): void {
-    const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(popupId);
-    if (
-      !inClientBounds(
-        event.clientX,
-        event.clientY,
-        popup.node().getBoundingClientRect()
-      )
-    ) {
-      popup.style("display", "none");
-      document.removeEventListener("click", dismissLegendInfoPopup);
-      popupId = null;
-      event.stopPropagation();
-    }
-  }
-
-  function inClientBounds(
-    clientX: number,
-    clientY: number,
-    bounds: DOMRect
-  ): boolean {
-    return (
-      clientX >= bounds.left &&
-      clientX <= bounds.right &&
-      clientY >= bounds.top &&
-      clientY <= bounds.bottom
-    );
   }
 </script>
 
@@ -1104,7 +399,7 @@
               <div
                 class="map-info-button"
                 on:click={(e) => {
-                  handleLegendInfoPopup(e, selectInfoPopup());
+                  handleInfoPopup(e, selectMapInfoPopup());
                 }}
               >
                 <span class="material-icons-outlined">info</span>
@@ -1147,7 +442,6 @@
         </div>
 
         <!-- Info Popups -->
-
         <div id="info-popup-vaccine" class="info-popup">
           <h3 class="info-header">
             {COVID_19_VACCINATION_TITLE}
@@ -1160,7 +454,6 @@
             <a href="#about" class="info-link">Learn more</a>
           </p>
         </div>
-
         <div id="info-popup-intent" class="info-popup">
           <h3 class="info-header">
             {VACCINATION_INTENT_TITLE}
@@ -1174,7 +467,6 @@
             <a href="#about" class="info-link">Learn more</a>
           </p>
         </div>
-
         <div id="info-popup-safety" class="info-popup">
           <h3 class="info-header">
             {SAFETY_SIDE_EFFECTS_TITLE}
@@ -1188,63 +480,52 @@
             <a href="#about" class="info-link">Learn more</a>
           </p>
         </div>
+
+        <TimeSeries
+          id="covid-19-vaccination"
+          {regionsByPlaceId}
+          regionalTrendsByPlaceId={trends}
+          trendLine={(t) => {
+            return t.trends.covid19_vaccination;
+          }}
+          title={COVID_19_VACCINATION_TITLE}
+        >
+          <p class="info-text">
+            Search interest in any aspect of COVID-19 vaccination. A scaled
+            value that you can compare across regions, times, or topics.
+          </p>
+        </TimeSeries>
+        <TimeSeries
+          id="vaccination-intent"
+          {regionsByPlaceId}
+          regionalTrendsByPlaceId={trends}
+          trendLine={(t) => {
+            return t.trends.vaccination_intent;
+          }}
+          title={VACCINATION_INTENT_TITLE}
+        >
+          <p class="info-text">
+            Search interest in the eligibility, availability, and accessibility
+            of COVID-19 vaccines. A scaled value that you can compare across
+            regions, times, or topics.
+          </p>
+        </TimeSeries>
+        <TimeSeries
+          id="safety-side-effects"
+          {regionsByPlaceId}
+          regionalTrendsByPlaceId={trends}
+          trendLine={(t) => {
+            return t.trends.safety_side_effects;
+          }}
+          title={SAFETY_SIDE_EFFECTS_TITLE}
+        >
+          <p class="info-text">
+            Search interest in the safety and side effects of COVID-19 vaccines.
+            A scaled value that you can compare across regions, times, or
+            topics.
+          </p>
+        </TimeSeries>
       {/await}
-      <div id="covid19Vaccination" bind:this={covid19VaccinationChartContainer}>
-        <div class="chart-header">
-          <h3>{COVID_19_VACCINATION_TITLE}</h3>
-          <div
-            class="info-button chart-info-button"
-            on:click={(e) => {
-              handleLegendInfoPopup(e, "#info-popup-vaccine");
-            }}
-          >
-            <span class="material-icons-outlined">info</span>
-          </div>
-        </div>
-        <div class="chartLegendContainer" />
-        <div class="chartContainer">
-          <svg class="chart" />
-          <div class="hoverCard inactive" />
-        </div>
-      </div>
-      <div id="vaccinationIntent" bind:this={vaccinationIntentChartContainer}>
-        <div class="chart-header">
-          <h3>{VACCINATION_INTENT_TITLE}</h3>
-          <div
-            class="info-button chart-info-button"
-            on:click={(e) => {
-              handleLegendInfoPopup(e, "#info-popup-intent");
-            }}
-          >
-            <span class="material-icons-outlined">info</span>
-          </div>
-        </div>
-
-        <div class="chartLegendContainer" />
-        <div class="chartContainer">
-          <svg class="chart" />
-          <div class="hoverCard inactive" />
-        </div>
-      </div>
-      <div id="safetySideEffects" bind:this={safetySideEffectsChartContainer}>
-        <div class="chart-header">
-          <h3>{SAFETY_SIDE_EFFECTS_TITLE}</h3>
-          <div
-            class="info-button chart-info-button"
-            on:click={(e) => {
-              handleLegendInfoPopup(e, "#info-popup-safety");
-            }}
-          >
-            <span class="material-icons-outlined">info</span>
-          </div>
-        </div>
-
-        <div class="chartLegendContainer" />
-        <div class="chartContainer">
-          <svg class="chart" />
-          <div class="hoverCard inactive" />
-        </div>
-      </div>
       <a id="about" class="about-anchor">
         <!-- Empty - keep to avoid warnings on empty anchor -->
       </a>
@@ -1319,7 +600,9 @@
         <div class="next-steps-item">
           <h3>Query the dataset with SQL</h3>
           <p>
-            Get insights using Google Cloud’s BigQuery. Analyze with SQL, generate reports, or call the API from your code.
+            Get insights using Google Cloud’s BigQuery. Analyze with SQL,
+            generate reports, or call the API from your code.
+          </p>
           <p />
           <p>
             <a
@@ -1331,7 +614,8 @@
         <div class="next-steps-item">
           <h3>Analyze with covariate data</h3>
           <p>
-            Analyze this data alongside other covariates in the COVID-19 Open-Data repository.
+            Analyze this data alongside other covariates in the COVID-19
+            Open-Data repository.
           </p>
           <p>
             <a href="https://github.com/GoogleCloudPlatform/covid-19-open-data"
@@ -1347,7 +631,8 @@
             your solutions.
           </p>
           <p>
-            <a href="mailto:covid-19-search-trends-feedback+webcallout@google.com"
+            <a
+              href="mailto:covid-19-search-trends-feedback+webcallout@google.com"
               >Email us
             </a>
           </p>
