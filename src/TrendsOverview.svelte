@@ -214,11 +214,7 @@
             <use xlink:href="glue/glue-icons.svg#google-color-logo" />
           </svg>
         </a>
-        <div class="header-topbar-text">
-          COVID-19 Vaccine Search Insights <span
-            class="header-topbar-early-access">Early Access</span
-          >
-        </div>
+        <div class="header-topbar-text">COVID-19 Vaccine Search Insights</div>
       </div>
       <ul class="header-topbar-menu">
         <li id="download-link" class="link-item">
