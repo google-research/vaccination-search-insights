@@ -148,13 +148,6 @@ footer {
   color: g.$grey-900;
 }
 
-.header-topbar-early-access {
-  @include header-font;
-  font-size: 1rem;
-  color: g.$highlight-color;
-  text-transform: uppercase;
-}
-
 .header-topbar-menu {
   margin: 0 0 0 0px;
   list-style: none;
