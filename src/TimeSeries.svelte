@@ -442,8 +442,6 @@
     let paths: SvgSelection;
     let verticalLine: SvgSelection;
 
-    let chartWidth = chartAreaContainerElement.getBoundingClientRect().width;
-
     if (chartAreaElement) {
       chartArea = d3.select(chartAreaElement);
     } else {
@@ -603,12 +601,12 @@
           .attr("font-family", "Roboto")
           .attr("font-size", 12)
       )
-      .call((g) => g.select(".yLabel").remove())
+      .call((g) => g.select(".y-label").remove())
       .call((g) =>
         g
           .append("text")
-          .attr("class", "yLabel")
-          .attr("x", chartWidth - 15)
+          .attr("class", "y-label")
+          .attr("x", chartBounds.width - 15)
           .attr("y", -10)
           .attr("fill", "#5F6368")
           .attr("font-family", "Roboto")
