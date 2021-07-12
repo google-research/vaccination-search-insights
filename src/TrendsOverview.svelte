@@ -278,49 +278,55 @@
         <!-- Empty -->
       {:then trends}
         <div class="map-content-container">
-          <div class="mapTrendSelectorGroup">
+          <div class="map-trend-selector-group">
             <button
               id="vaccination"
               class={selectedMapTrendId == "vaccination"
-                ? "mapTrendSelector selectedTrend"
-                : "mapTrendSelector"}
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
               title="Search interest in any aspect of COVID-19 vaccination. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "vaccination"}
-                <span class="material-icons map-trend-selector-active"
-                  >done</span
-                >
+                <div class="map-trend-icon-container">
+                  <span class="material-icons map-trend-selected-icon"
+                    >done</span
+                  >
+                </div>
               {/if}
               {COVID_19_VACCINATION_TITLE}
             </button>
             <button
               id="intent"
               class={selectedMapTrendId == "intent"
-                ? "mapTrendSelector selectedTrend"
-                : "mapTrendSelector"}
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
               title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "intent"}
-                <span class="material-icons map-trend-selector-active"
-                  >done</span
-                >
+                <div class="map-trend-icon-container">
+                  <span class="material-icons map-trend-selected-icon"
+                    >done</span
+                  >
+                </div>
               {/if}
               {VACCINATION_INTENT_TITLE}
             </button>
             <button
               id="safety"
               class={selectedMapTrendId == "safety"
-                ? "mapTrendSelector selectedTrend"
-                : "mapTrendSelector"}
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
               title="Search interest in the safety and side effects of COVID-19 vaccines. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "safety"}
-                <span class="material-icons map-trend-selector-active"
-                  >done</span
-                >
+                <div class="map-trend-icon-container">
+                  <span class="material-icons map-trend-selected-icon"
+                    >done</span
+                  >
+                </div>
               {/if}
               {SAFETY_SIDE_EFFECTS_TITLE}
             </button>

@@ -15,7 +15,7 @@
  */
 
 @use "./global-vars.scss" as g;
-@import url("//fonts.googleapis.com/css?family=Google Sans:400,700,900");
+@import url("//fonts.googleapis.com/css?family=Google Sans:400,500,700,900");
 @import url("//fonts.googleapis.com/css?family=Roboto:400,500,700,900");
 @import url("//fonts.googleapis.com/css?family=Material Icons|Material Icons Outlined");
 
@@ -254,32 +254,46 @@ footer {
   font-weight: g.$body-weight;
 }
 
-.mapTrendSelectorGroup {
+.map-trend-selector-group {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   max-width: 100%;
-  margin-top: 40px;
+  margin-top: 60px;
 }
 
-.mapTrendSelector {
-  @include header-font;
+.map-trend-selector-button {
+  display: inline-flex;
+  font-family: Google Sans;
+  font-weight: 500;
   font-size: 14px;
-  line-height: 20px;
-  color: g.$grey-700;
+  line-height: 30px;
+  color: g.$grey-600;
   background: white;
   border-radius: 8px;
   border: 1px solid g.$grey-300;
   margin-right: 8px;
-  padding: 6px 16px;
+  padding: 0 15px;
   cursor: pointer;
 }
 
-.selectedTrend {
-  background: g.$chip-background;
-  color: g.$chip-text;
-  border: 1px solid g.$chip-background !important;
-  pointer-events: none;
+.map-trend-icon-container {
+  display: inline-flex;
+  align-self: center;
+  margin-left: -8px;
+  margin-right: 6px;
+}
+
+.map-trend-selector-selected {
+  background: g.$chip-background-selected;
+  color: g.$chip-text-selected;
+  border: 1px solid g.$chip-background-selected;
+}
+
+.map-trend-selected-icon {
+  height: 24px;
+  width: 24px;
+  font-size: 24px;
 }
 
 .map-svg {
@@ -292,12 +306,6 @@ svg.map-svg path {
 
 .map-content-container {
   margin-bottom: 82px;
-}
-
-.map-trend-selector-active {
-  font-size: 18px !important;
-  line-height: 20px !important;
-  vertical-align: bottom;
 }
 
 .mapTrendRange {
