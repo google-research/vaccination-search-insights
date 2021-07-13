@@ -15,7 +15,7 @@
  */
 
 @use "./global-vars.scss" as g;
-@import url("//fonts.googleapis.com/css?family=Google Sans:400,700,900");
+@import url("//fonts.googleapis.com/css?family=Google Sans:400,500,700,900");
 @import url("//fonts.googleapis.com/css?family=Roboto:400,500,700,900");
 @import url("//fonts.googleapis.com/css?family=Material Icons|Material Icons Outlined");
 
@@ -134,7 +134,7 @@ footer {
 
 .header-search-container {
   height: 56px;
-  min-width: g.$content-min-width;
+
   max-width: g.$content-max-width;
   width: 100%;
 }
@@ -146,13 +146,6 @@ footer {
   font-size: 22px;
   line-height: 28px;
   color: g.$grey-900;
-}
-
-.header-topbar-early-access {
-  @include header-font;
-  font-size: 1rem;
-  color: g.$highlight-color;
-  text-transform: uppercase;
 }
 
 .header-topbar-menu {
@@ -250,7 +243,6 @@ footer {
 }
 
 .content-body {
-  min-width: g.$content-min-width;
   max-width: g.$content-max-width;
   width: 100%;
 }
@@ -262,32 +254,46 @@ footer {
   font-weight: g.$body-weight;
 }
 
-.mapTrendSelectorGroup {
+.map-trend-selector-group {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   max-width: 100%;
-  margin-top: 40px;
+  margin-top: 60px;
 }
 
-.mapTrendSelector {
-  @include header-font;
+.map-trend-selector-button {
+  display: inline-flex;
+  font-family: Google Sans;
+  font-weight: 500;
   font-size: 14px;
-  line-height: 20px;
-  color: g.$grey-700;
+  line-height: 30px;
+  color: g.$grey-600;
   background: white;
   border-radius: 8px;
   border: 1px solid g.$grey-300;
   margin-right: 8px;
-  padding: 6px 16px;
+  padding: 0 15px;
   cursor: pointer;
 }
 
-.selectedTrend {
-  background: g.$chip-background;
-  color: g.$chip-text;
-  border: 1px solid g.$chip-background !important;
-  pointer-events: none;
+.map-trend-icon-container {
+  display: inline-flex;
+  align-self: center;
+  margin-left: -8px;
+  margin-right: 6px;
+}
+
+.map-trend-selector-selected {
+  background: g.$chip-background-selected;
+  color: g.$chip-text-selected;
+  border: 1px solid g.$chip-background-selected;
+}
+
+.map-trend-selected-icon {
+  height: 24px;
+  width: 24px;
+  font-size: 24px;
 }
 
 .map-svg {
@@ -302,36 +308,19 @@ svg.map-svg path {
   margin-bottom: 82px;
 }
 
-.map-trend-selector-active {
-  font-size: 18px !important;
-  line-height: 20px !important;
-  vertical-align: bottom;
-}
-
 .mapTrendRange {
   font-family: Roboto;
   font-weight: 500;
   font-size: 14px;
 }
 
-.map-legend-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 50px 0px 20px 0px;
-
-  font-family: Google Sans;
+.map-legend {
+  display: inline-flex;
+  margin-bottom: 8px;
   font-size: 14px;
+  font-family: Roboto;
   font-weight: 500;
   color: g.$grey-800;
-  align-items: baseline;
-}
-
-.map-legend-bar {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
 }
 
 .map-legend-label {
@@ -340,26 +329,78 @@ svg.map-svg path {
   padding-top: 24px;
   margin-right: 12px;
 }
-
-.map-legend-date-label {
-  height: 14px;
-  line-height: 14px;
-  padding-top: 24px;
-  text-align: right;
-}
-
 .map-legend-scale-top {
   display: inline-flex;
   margin-left: 20px;
   margin-bottom: 3px;
 }
-
 .map-legend-scale-number {
   width: 40px;
   text-align: center;
 }
+.map-info-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  cursor: pointer;
+}
+.map-info-button span {
+  margin: 6px;
+}
+.map-info-button:hover {
+  background: g.$info-button-hover;
+}
+.map-legend-scale + .map-info-button {
+  margin-top: 12px;
+  margin-left: 8px;
+}
 
-.info-button svg {
+.date-nav-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.date-nav-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  user-select: none;
+}
+
+.date-nav-button span {
+  margin: 6px;
+}
+
+.date-nav-button-active {
+  cursor: pointer;
+}
+.date-nav-button-active:hover {
+  background: g.$info-button-hover;
+}
+
+.date-nav-button-inactive {
+  pointer-events: none;
+  color: g.$grey-500;
+}
+
+.date-nav-display {
+  height: 14px;
+  line-height: 14px;
+  text-align: right;
+  margin-right: 6px;
+}
+
+.map-header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  line-height: normal;
+  margin-top: 60px;
+}
+
+.info-button span {
   margin: 6px;
 }
 
@@ -372,11 +413,6 @@ svg.map-svg path {
 
 .info-button:hover {
   background: g.$info-button-hover;
-}
-
-.map-info-button {
-  margin-top: 18px;
-  margin-left: 8px;
 }
 
 .chart-info-button {
@@ -518,15 +554,15 @@ svg.map-svg path {
   fill: none;
 }
 
-.trendline-selected.covid19Vaccination {
+.trendline-selected.covid-19-vaccination {
   stroke: g.$blue-600;
 }
 
-.trendline-selected.vaccinationIntent {
+.trendline-selected.vaccination-intent {
   stroke: g.$orange-600;
 }
 
-.trendline-selected.safetySideEffects {
+.trendline-selected.safety-side-effects {
   stroke: g.$pink-600;
 }
 
@@ -536,67 +572,61 @@ svg.map-svg path {
   justify-content: space-between;
 }
 
-.chartLegendContainer {
+.chart-legend-container {
   display: flex;
   align-items: center;
 }
 
-.chart {
+.chart-area-container {
   overflow: visible;
 }
 
-.trendChartLegendRectContainer {
+.chart-legend-rect-container {
   width: 16px;
   height: 4px;
   margin-right: 6px;
 }
 
-.trendChartLegendRect.covid19Vaccination {
+.chart-legend-rect.covid-19-vaccination {
   fill: g.$blue-600;
 }
 
-.trendChartLegendRect.vaccinationIntent {
+.chart-legend-rect.vaccination-intent {
   fill: g.$orange-600;
 }
 
-.trendChartLegendRect.safetySideEffects {
+.chart-legend-rect.safety-side-effects {
   fill: g.$pink-600;
 }
 
-.trendChartLegendTextContainer {
+.chart-legend-text-container {
   margin-right: 16px;
 }
 
-.trendChartLegendText {
+.chart-legend-text {
   color: g.$grey-700;
   font-family: "Google Sans";
   font-size: 14px;
 }
 
-.trendChartVerticalLine {
+.chart-vertical-line {
   stroke: black;
   stroke-width: 1px;
   stroke-dasharray: 1, 5;
 }
 
-.trendChartVerticalLine.inactive {
+.chart-vertical-line.inactive {
   stroke: none;
 }
 
-.hoverCard {
-  position: absolute;
-  visibility: visible;
+.chart-hover-card {
   border-radius: 4px;
   background: white;
   border: 1px solid g.$grey-300;
   box-shadow: 0px 2px 8px 0px g.$hover-card-box-shadow;
 }
 
-.hoverCard.inactive {
-  visibility: hidden;
-}
-
-.hoverCardDate {
+.chart-hover-card-date {
   display: block;
   margin-left: 12px;
   margin-top: 10px;
@@ -606,36 +636,36 @@ svg.map-svg path {
   font-weight: 500;
 }
 
-.hoverCardTable {
+.chart-hover-card-table {
   margin: 10px 12px 16px 12px;
 }
 
-.hoverCardSelectedIcon {
+.chart-hover-card-selected-icon {
   margin-left: 3px;
   width: 18px;
   height: 2.5px;
 }
 
-.hoverCardSelectedIcon.covid19Vaccination {
+.chart-hover-card-selected-icon.covid-19-vaccination {
   background: g.$blue-600;
 }
 
-.hoverCardSelectedIcon.vaccinationIntent {
+.chart-hover-card-selected-icon.vaccination-intent {
   background: g.$orange-600;
 }
 
-.hoverCardSelectedIcon.safetySideEffects {
+.chart-hover-card-selected-icon.safety-side-effects {
   background: g.$pink-600;
 }
 
-.hoverCardIconText {
+.chart-hover-card-icon-text {
   color: g.$grey-500;
   font-family: g.$body-font;
   font-size: 14px;
   font-weight: g.$body-weight;
 }
 
-.hoverCardName {
+.chart-hover-card-name {
   padding-left: 8px;
   color: g.$grey-900;
   font-family: g.$body-font;
@@ -643,7 +673,7 @@ svg.map-svg path {
   font-weight: g.$body-weight;
 }
 
-.hoverCardValue {
+.chart-hover-card-value {
   padding-left: 17px;
   text-align: right;
   color: black;
@@ -667,7 +697,6 @@ div.next-steps-item > h3 {
 }
 
 .footer-referencebar {
-  min-width: g.$content-min-width;
   max-width: g.$content-max-width;
   width: 100%;
 
@@ -691,8 +720,22 @@ div.next-steps-item > h3 {
 }
 
 @media (max-width: g.$media-breakpoint) {
-  html {
-    //Use scaled typography at small sizes
-    font-size: 4vw;
+  .chart-hover-card {
+    display: block;
+  }
+
+  .chart-hover-card.inactive {
+    display: none;
+  }
+}
+
+@media (min-width: g.$media-breakpoint) {
+  .chart-hover-card {
+    position: absolute;
+    visibility: visible;
+  }
+
+  .chart-hover-card.inactive {
+    display: none;
   }
 }
