@@ -295,7 +295,7 @@ function zoomToBounds(d) {
 function dateRangeString(startDate: string): string {
   const periodStart: Date = d3.timeParse("%Y-%m-%d")(startDate);
   let periodEnd: Date = new Date(periodStart);
-  periodEnd.setDate(periodStart.getDate() + 7);
+  periodEnd.setDate(periodStart.getDate() + 6);
 
   const formatterStart = d3.timeFormat("%b %d");
   const formatterEnd = d3.timeFormat("%b %d, %Y");
