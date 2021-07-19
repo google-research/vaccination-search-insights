@@ -285,3 +285,17 @@ export function buildDateRangeList(rtls: RegionalTrendLine[]): string[] {
   dateList.sort();
   return dateList;
 }
+
+export function getTrendValue(trendName: string, trend: RegionalTrendLine): number{
+  switch (trendName) {
+    case "vaccination":
+      return (trend ? trend.sni_covid19_vaccination | 0 : 0);
+    case "intent":
+      return (trend ? trend.sni_vaccination_intent | 0 : 0);
+    case "safety":
+      return (trend ? trend.sni_safety_side_effects | 0 : 0);
+    default:
+      console.log(`Unknown trend type: ${trendName}`);
+      return;
+  }
+}
