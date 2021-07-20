@@ -128,9 +128,6 @@ export function decrementMapDate(controlId: string): void {
     generateRegionToTrendDataForDateSlice();
     setDateControlState();
     colorizeMap();
-    if(currentGeoLevel == GeoLevel.SubRegion2){
-      drawZipData(currentGeoId);
-    }
   }
 }
 
@@ -140,9 +137,6 @@ export function incrementMapDate(controld: string): void {
     generateRegionToTrendDataForDateSlice();
     setDateControlState();
     colorizeMap();
-    if(currentGeoLevel == GeoLevel.SubRegion2){
-      drawZipData(currentGeoId);
-    }
   }
 }
 
@@ -280,6 +274,9 @@ function colorizeMap() {
     });
   
   drawLegend(colorScale);
+  if(currentGeoLevel == GeoLevel.SubRegion2){
+    drawZipData(currentGeoId);
+  }
 }
 
 function zoomHandler({ transform }) {
@@ -523,9 +520,8 @@ function drawZipData(fipsCode){
       .attr("stroke","white")
       .attr("stroke-width",1)
       .attr("vector-effect","non-scaling-stroke");
-    console.log("Loaded zip data");
   }).catch(err=>{
-    console.log(`No ZIP data available for ${fipsCode}`);
+    console.log(`No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`);
     removeZipData();
   });
 
