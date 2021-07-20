@@ -40,6 +40,13 @@ import {
 } from "./data";
 import { getCountyZctas } from "./zcta-county";
 
+enum GeoLevel {
+  Country = 1,
+  SubRegion1, //e.g. State
+  SubRegion2, //e.g. County
+  SubRegion3  //e.g. Zip
+}
+
 const path = d3.geoPath();
 const colorScaleVaccine = buildVaccineColorScale();
 const colorScaleIntent = buildIntentColorScale();
@@ -49,6 +56,8 @@ const alaskaFipsCode: string = "02";
 
 // currently resetting to the US
 const resetNavigationPlaceId: string = "ChIJCzYy5IS16lQRQrfeQ5K5Oxw";
+let currentGeoLevel = GeoLevel.Country;
+let currentGeoId: string = resetNavigationPlaceId;
 
 let mapSvg: d3.Selection<SVGGElement, any, any, any>;
 let mapZoom;
@@ -96,10 +105,14 @@ export function createMap(
 }
 
 export function setSelectedState(regionOneCode) {
+  currentGeoLevel = GeoLevel.SubRegion1;
+  currentGeoId = regionOneCode;
   setSelectedStateByFipsCode(regionOneToFipsCode.get(regionOneCode));
 }
 
 export function setSelectedCounty(fipsCode) {
+  currentGeoLevel = GeoLevel.SubRegion2;
+  currentGeoId = fipsCode;
   activateSelectedState(stateFipsCodeFromCounty(fipsCode), false);
   activateSelectedCounty(fipsCode, true);
 }
@@ -115,6 +128,9 @@ export function decrementMapDate(controlId: string): void {
     generateRegionToTrendDataForDateSlice();
     setDateControlState();
     colorizeMap();
+    if(currentGeoLevel == GeoLevel.SubRegion2){
+      drawZipData(currentGeoId);
+    }
   }
 }
 
@@ -124,6 +140,9 @@ export function incrementMapDate(controld: string): void {
     generateRegionToTrendDataForDateSlice();
     setDateControlState();
     colorizeMap();
+    if(currentGeoLevel == GeoLevel.SubRegion2){
+      drawZipData(currentGeoId);
+    }
   }
 }
 
@@ -168,9 +187,9 @@ function initializeMap() {
   
   //Order is important here, since groups positioned later in the DOM get drawn on top 
   // i.e. z-order, of groups written earlier
+  g.append("g").attr("id", "zip");
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
-  g.append("g").attr("id", "zip");
 
   const topology = getUsAtlas();
   const countyFeatures = feature(
@@ -230,6 +249,26 @@ function getColorScale(trendName: string): d3.ScaleThreshold<number, string, nev
   }
 }
 
+function getFillColor(fipsCode){
+  let data;
+  if (fipsCode == dcCountyFipsCode) {
+    data = latestStateData.get(stateFipsCodeFromCounty(fipsCode));
+  } else {
+    data = latestCountyData.get(fipsCode);
+  }
+  if (data) {
+    let trendValue = getTrendValue(selectedTrend, data as RegionalTrendLine);
+    let colorScale = getColorScale(selectedTrend);
+    if (trendValue === 0) {
+      return "transparent";
+    } else {
+      return colorScale(trendValue);
+    }
+  } else {
+    return "transparent";
+  }
+}
+
 function colorizeMap() {
   const colorScale = getColorScale(selectedTrend);
   d3.select("#county")
@@ -237,24 +276,7 @@ function colorizeMap() {
     .join("path")
     .attr("fill", function (d) {
       let id = fipsCodeFromElementId((this as Element).id);
-      // special case for Washington D.C.
-      let data;
-      if (id == dcCountyFipsCode) {
-        data = latestStateData.get(stateFipsCodeFromCounty(id));
-      } else {
-        data = latestCountyData.get(id);
-      }
-      if (data) {
-        let trendValue = getTrendValue(selectedTrend, data as RegionalTrendLine);
-        let colorScale = getColorScale(selectedTrend);
-        if (trendValue === 0) {
-          return "transparent";
-        } else {
-          return colorScale(trendValue);
-        }
-      } else {
-        return "transparent";
-      }
+      return getFillColor(id);
     });
   
   drawLegend(colorScale);
@@ -265,6 +287,8 @@ function zoomHandler({ transform }) {
 }
 
 function resetZoom() {
+  currentGeoLevel = GeoLevel.Country;
+  currentGeoId = resetNavigationPlaceId;
   removeZipData();
   mapSvg.transition().duration(750).call(mapZoom.transform, d3.zoomIdentity);
 }
@@ -439,6 +463,8 @@ function activateSelectedState(fipsCode, zoom = true) {
 }
 
 function activateSelectedCounty(fipsCode, zoom = true) {
+  resetLastSelectedCountyFill();
+  
   mapSvg
     .select("#county")
     .select(`#fips-${fipsCode}`)
@@ -448,6 +474,15 @@ function activateSelectedCounty(fipsCode, zoom = true) {
     zoomToBounds(mapSvg.select("#county").select(`#fips-${fipsCode}`).datum());
   }
   drawZipData(fipsCode);
+}
+
+let setLastSelectedCountyFill: ()=>void;
+
+function resetLastSelectedCountyFill(){
+  if(setLastSelectedCountyFill){
+    setLastSelectedCountyFill();
+    setLastSelectedCountyFill = null;
+  }
 }
 
 function drawZipData(fipsCode){
@@ -460,37 +495,45 @@ function drawZipData(fipsCode){
       getTrendValue(selectedTrend,t) != 0
   );
 
-  if(zipTrends){
-    fetchZipData(fipsCode)
-    .then(zipData => {
-      d3.select("#zip")
-        .selectAll("path")
-        .data(zipData.features)
-        .join("path")
-        .attr("id",(z:any)=>`zcta-${z.properties.GEOID10}`)
-        .attr("d",path)
-        .attr("fill",(d:any)=>{
-          const colorScale = getColorScale(selectedTrend);
-          const trend = zipTrends.find((t)=>t.sub_region_3_code == d.properties.GEOID10);
-          const trendValue = getTrendValue(selectedTrend,trend);
-          if(trendValue && trendValue != 0){
-            return colorScale(trendValue)
-          }else{
-            return "#DADCE0";
-          }
-        })
-        .attr("stroke","white")
-        .attr("stroke-width",1)
-        .attr("vector-effect","non-scaling-stroke");
-      console.log("Loaded zip data");
-    }).catch(err=>{
-      console.log(`No ZIP data available for ${fipsCode}`);
-      removeZipData();
-    });
+  
+  d3.select(`#fips-${fipsCode}`).attr("fill","transparent");
+
+  setLastSelectedCountyFill = () => {
+    d3.select(`#fips-${fipsCode}`).attr("fill",getFillColor(fipsCode));
   }
+
+  fetchZipData(fipsCode)
+  .then(zipData => {
+    d3.select("#zip")
+      .selectAll("path")
+      .data(zipData.features)
+      .join("path")
+      .attr("id",(z:any)=>`zcta-${z.properties.GEOID10}`)
+      .attr("d",path)
+      .attr("fill",(d:any)=>{
+        const colorScale = getColorScale(selectedTrend);
+        const trend = zipTrends.find((t)=>t.sub_region_3_code == d.properties.GEOID10);
+        const trendValue = getTrendValue(selectedTrend,trend);
+        if(trendValue && trendValue != 0){
+          return colorScale(trendValue)
+        }else{
+          return "#DADCE0";
+        }
+      })
+      .attr("stroke","white")
+      .attr("stroke-width",1)
+      .attr("vector-effect","non-scaling-stroke");
+    console.log("Loaded zip data");
+  }).catch(err=>{
+    console.log(`No ZIP data available for ${fipsCode}`);
+    removeZipData();
+  });
+
 }
 
 function removeZipData(){
+  resetLastSelectedCountyFill();
+  
   d3.select("#zip")
       .selectAll("path")
       .remove();
