@@ -722,6 +722,11 @@ div.next-steps-item > h3 {
 @media (max-width: g.$media-breakpoint) {
   .chart-hover-card {
     display: block;
+    margin-top: 15px;
+  }
+
+  .chart-hover-card-name {
+    width: 100%;
   }
 
   .chart-hover-card.inactive {

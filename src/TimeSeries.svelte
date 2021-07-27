@@ -38,9 +38,8 @@
   let chartContainerElement: HTMLElement;
 
   const chartBounds = {
-    width: 975,
-    height: 610,
-    margin: 30,
+    width: 684,
+    height: 276,
   };
 
   function getLegendComponentText(): string {
@@ -449,12 +448,7 @@
         .select(chartAreaContainerElement)
         .attr(
           "viewBox",
-          [
-            -chartBounds.margin,
-            0,
-            chartBounds.width + chartBounds.margin,
-            chartBounds.height + chartBounds.margin,
-          ].join(" ")
+          [0, 0, chartBounds.width, chartBounds.height].join(" ")
         )
         .append("g");
     }
@@ -614,6 +608,8 @@
           .text("INTEREST")
       );
 
+    scaleChartText();
+
     generateChartLegend();
     generateChartHoverCard(data, dates, xScale);
 
@@ -645,6 +641,46 @@
       .attr("d", (d) => lineFn(trendLine(d)));
   }
 
+  function scaleChartText() {
+    // as per d3
+    const padding: number = 3;
+    const tickSize: number = 6;
+
+    const chartAreaContainerElement: SVGElement =
+      chartContainerElement.querySelector(".chart-area-container");
+    const chartXAxisElement: SVGElement =
+      chartAreaContainerElement.querySelector(".x.axis");
+    const chartYAxisElement: SVGElement =
+      chartAreaContainerElement.querySelector(".y.axis");
+    const chartXAxisTickTextElements: NodeList =
+      chartXAxisElement.querySelectorAll(".tick text");
+    const chartYAxisTickTextElements: NodeList =
+      chartYAxisElement.querySelectorAll(".tick text");
+    const chartYAxisLabelElement: SVGElement =
+      chartYAxisElement.querySelector(".y-label");
+    const chartXAxisTickTexts: SvgSelection = d3.selectAll(
+      chartXAxisTickTextElements
+    );
+    const chartYAxisTickTexts: SvgSelection = d3.selectAll(
+      chartYAxisTickTextElements
+    );
+    const chartYAxisLabelText: SvgSelection = d3.select(chartYAxisLabelElement);
+
+    const chartAreaScale: number =
+      chartAreaContainerElement.getBoundingClientRect().width /
+      chartBounds.width;
+
+    chartXAxisTickTexts
+      .attr("transform", `scale(${1 / chartAreaScale})`)
+      .attr("y", `${tickSize * chartAreaScale + padding}`);
+    chartYAxisTickTexts
+      .attr("transform", `scale(${1 / chartAreaScale})`)
+      .attr("x", `${chartBounds.width * chartAreaScale + padding}`);
+    chartYAxisLabelText
+      .attr("transform", `scale(${1 / chartAreaScale})`)
+      .attr("x", `${chartBounds.width * chartAreaScale - 15}`);
+  }
+
   onMount(async () => {
     params.subscribe((param) => {
       placeId = param.placeId;
@@ -654,6 +690,8 @@
         generateChart();
       }
     });
+
+    window.addEventListener("resize", scaleChartText);
   });
 </script>
 
