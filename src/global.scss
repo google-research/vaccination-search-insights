@@ -75,7 +75,7 @@ header {
   margin-left: 0px;
   margin-right: 0px;
   width: 100%;
-
+  
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -682,16 +682,6 @@ svg.map-svg path {
   font-weight: g.$body-weight;
 }
 
-.next-steps-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.next-steps-item {
-  width: 30%;
-}
-
 div.next-steps-item > h3 {
   margin-top: 40px;
 }
@@ -735,6 +725,16 @@ div.next-steps-item > h3 {
 }
 
 @media (min-width: g.$media-breakpoint) {
+  .next-steps-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .next-steps-item {
+    width: 30%;
+  }
+
   .chart-hover-card {
     position: absolute;
     visibility: visible;
