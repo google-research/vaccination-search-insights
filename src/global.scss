@@ -359,6 +359,7 @@ svg.map-svg path {
   display: flex;
   flex-direction: row;
   align-items: center;
+  min-width: 222px;
 }
 
 .date-nav-button {
@@ -395,6 +396,7 @@ svg.map-svg path {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-items: baseline;
   line-height: normal;
   margin-top: 60px;
