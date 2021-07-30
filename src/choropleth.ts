@@ -262,7 +262,7 @@ function getFillColor(fipsCode){
       return colorScale(trendValue);
     }
   } else {
-    return "transparent";
+    return unknownColor;
   }
 }
 
@@ -580,23 +580,37 @@ function drawMapCalloutInfo(data, fipsCode) {
     };
   }
 
+  const renderValue = (value: number): string => {
+    //TODO(tilchris): Add more robust NaN handling
+    //It should be the cases where any 0 value should be interpreted
+    //as "Not enough data available" instead of an actual measurement
+    //of 0, but this assumption may not hold.  For example, in the 
+    //far far beautiful feature where nobody needs to search for
+    //COVID-19 at all.
+    if(value==0){
+      return "n/a";
+    }else{
+      return value.toFixed(1);
+    }
+  }
+
   let trendval: number = trends.sni_covid19_vaccination | 0;
   d3.select("svg#callout-vaccine")
     .select("rect")
     .style("fill", colorScaleVaccine(trendval));
-  d3.select("div#callout-vaccine-value").text(trendval.toFixed(1));
+  d3.select("div#callout-vaccine-value").text(renderValue(trendval));
 
   trendval = trends.sni_vaccination_intent | 0;
   d3.select("svg#callout-intent")
     .select("rect")
     .attr("fill", colorScaleIntent(trendval));
-  d3.select("div#callout-intent-value").text(trendval.toFixed(1));
+  d3.select("div#callout-intent-value").text(renderValue(trendval));
 
   trendval = trends.sni_safety_side_effects | 0;
   d3.select("svg#callout-safety")
     .select("rect")
     .attr("fill", colorScaleSafety(trendval));
-  d3.select("div#callout-safety-value").text(trendval.toFixed(1));
+  d3.select("div#callout-safety-value").text(renderValue(trendval));
 }
 
 function showMapCallout(data, event, d): void {
