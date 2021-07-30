@@ -531,6 +531,8 @@ svg.map-svg path {
   color: g.$grey-500;
   font-weight: 500;
   padding-top: 8px;
+  display: flex;
+  justify-content: space-between
 }
 
 .map-attribution-text {
