@@ -487,8 +487,8 @@
         .append("g")
         .append("line")
         .attr("class", "chart-vertical-line inactive")
-        .attr("y1", 0)
-        .attr("y2", chartBounds.height);
+        .attr("y1", margin.top)
+        .attr("y2", chartBounds.height-margin.bottom);
     }
 
     let data: RegionalTrends[] = Array.from(
