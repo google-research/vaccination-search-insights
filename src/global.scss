@@ -104,11 +104,9 @@ footer {
 
 .header-topbar {
   margin-top: 20px;
-
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -149,8 +147,9 @@ footer {
 }
 
 .header-topbar-menu {
-  margin: 0 0 0 0px;
-  list-style: none;
+  margin-left:auto;
+  
+
 }
 
 .header-content-divider {
@@ -320,6 +319,7 @@ svg.map-svg path {
 
 .map-legend {
   display: inline-flex;
+  flex-wrap: wrap;
   margin-bottom: 8px;
   font-size: 14px;
   font-family: Roboto;
@@ -737,6 +737,11 @@ div.next-steps-item > h3 {
 
   .chart-hover-card.inactive {
     display: none;
+  }
+
+  .header-search-bar{
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
