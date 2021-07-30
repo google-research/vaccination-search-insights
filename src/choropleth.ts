@@ -597,20 +597,27 @@ function drawMapCalloutInfo(data, fipsCode) {
   let trendval: number = trends.sni_covid19_vaccination | 0;
   d3.select("svg#callout-vaccine")
     .select("rect")
-    .style("fill", colorScaleVaccine(trendval));
+    .style("fill", trendval==0 ? unknownColor : colorScaleVaccine(trendval));
   d3.select("div#callout-vaccine-value").text(renderValue(trendval));
 
   trendval = trends.sni_vaccination_intent | 0;
   d3.select("svg#callout-intent")
     .select("rect")
-    .attr("fill", colorScaleIntent(trendval));
+    .attr("fill", trendval==0 ? unknownColor : colorScaleIntent(trendval));
   d3.select("div#callout-intent-value").text(renderValue(trendval));
 
   trendval = trends.sni_safety_side_effects | 0;
   d3.select("svg#callout-safety")
     .select("rect")
-    .attr("fill", colorScaleSafety(trendval));
+    .attr("fill", trendval==0 ? unknownColor : colorScaleSafety(trendval));
   d3.select("div#callout-safety-value").text(renderValue(trendval));
+
+  const hasNa = !Object.keys(trends).every(key=> trends[key] !== 0);
+  if(hasNa){
+    d3.select("#not-enough-data-message").style("display","inline-block");
+  }else{
+    d3.select("#not-enough-data-message").style("display","none");
+  }
 }
 
 function showMapCallout(data, event, d): void {

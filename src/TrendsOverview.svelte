@@ -377,7 +377,10 @@
                 class="map-callout-metric-column map-callout-metric-value"
               />
             </div>
-            <div class="map-callout-tip">Click to drill down</div>
+            <div class="map-callout-tip">
+              <span id="not-enough-data-message" style="display: none;">* Not enough data</span>
+              <span>Click to drill down</span>
+            </div>
           </div>
 
           <!-- Choropleth Map -->
