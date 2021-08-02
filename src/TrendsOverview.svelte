@@ -35,6 +35,7 @@
     createMap,
     decrementMapDate,
     incrementMapDate,
+    resetToUnitedStates,
     setMapTrend,
     setSelectedCounty,
     setSelectedState,
@@ -170,6 +171,8 @@
       setSelectedCounty(selectedRegion.sub_region_2_code);
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
+    } else {
+      resetToUnitedStates();
     }
   }
 
@@ -218,7 +221,9 @@
       </div>
       <div class="header-topbar-menu">
         <div id="download-link" class="link-item">
-          <span class="material-icons-outlined header-download-icon">file_download</span>
+          <span class="material-icons-outlined header-download-icon"
+            >file_download</span
+          >
           Download data
         </div>
         <div class="link-item">
@@ -378,7 +383,9 @@
               />
             </div>
             <div class="map-callout-tip">
-              <span id="not-enough-data-message" style="display: none;">* Not enough data</span>
+              <span id="not-enough-data-message" style="display: none;"
+                >* Not enough data</span
+              >
               <span>Click to drill down</span>
             </div>
           </div>
@@ -391,7 +398,10 @@
               <div class="map-legend-label">Interest</div>
               <div style="display:flex">
                 <div class="map-legend-scale">
-                  <div id="map-legend-scale-breaks" class="map-legend-scale-top">
+                  <div
+                    id="map-legend-scale-breaks"
+                    class="map-legend-scale-top"
+                  >
                     <!-- breaks added by drawLegend routine -->
                   </div>
                   <div>

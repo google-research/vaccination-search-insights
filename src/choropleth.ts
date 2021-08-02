@@ -37,7 +37,7 @@ import {
   subRegionTwoCode,
   fetchZipData,
   getTrendValue,
-  TrendValue
+  TrendValue,
 } from "./data";
 import { getCountyZctas } from "./zcta-county";
 
@@ -45,10 +45,10 @@ enum GeoLevel {
   Country = 1,
   SubRegion1, //e.g. State
   SubRegion2, //e.g. County
-  SubRegion3  //e.g. Zip
+  SubRegion3, //e.g. Zip
 }
 
-const unknownColor = "#DADCE0";//material grey 300
+const unknownColor = "#DADCE0"; //material grey 300
 const path = d3.geoPath();
 const colorScaleVaccine = buildVaccineColorScale();
 const colorScaleIntent = buildIntentColorScale();
@@ -66,7 +66,7 @@ let mapZoom;
 let trendData: RegionalTrendLine[];
 let latestStateData: Map<string, RegionalTrendAggregate>;
 let latestCountyData: Map<string, RegionalTrendAggregate>;
-let latestZipData: Map<string,RegionalTrendAggregate>;
+let latestZipData: Map<string, RegionalTrendAggregate>;
 let selectedTrend: string;
 let dateList: string[];
 let selectedDateIndex: number;
@@ -118,6 +118,10 @@ export function setSelectedCounty(fipsCode) {
   currentGeoId = fipsCode;
   activateSelectedState(stateFipsCodeFromCounty(fipsCode), false);
   activateSelectedCounty(fipsCode, true);
+}
+
+export function resetToUnitedStates() {
+  resetZoom();
 }
 
 export function setMapTrend(trend) {
@@ -181,8 +185,8 @@ function initializeMap() {
     .classed("map-svg", true);
 
   const g = mapSvg.append("g").attr("id", "transformer");
-  
-  //Order is important here, since groups positioned later in the DOM get drawn on top 
+
+  //Order is important here, since groups positioned later in the DOM get drawn on top
   // i.e. z-order, of groups written earlier
   g.append("g").attr("id", "zip");
   g.append("g").attr("id", "county");
@@ -232,7 +236,9 @@ function initializeMap() {
   mapSvg.on("mouseleave", mapOnMouseLeaveHandler);
 }
 
-function getColorScale(trendName: string): d3.ScaleThreshold<number, string, never>{
+function getColorScale(
+  trendName: string
+): d3.ScaleThreshold<number, string, never> {
   switch (trendName) {
     case "vaccination":
       return colorScaleVaccine;
@@ -246,7 +252,7 @@ function getColorScale(trendName: string): d3.ScaleThreshold<number, string, nev
   }
 }
 
-function getFillColor(fipsCode){
+function getFillColor(fipsCode) {
   let data;
   if (fipsCode == dcCountyFipsCode) {
     data = latestStateData.get(stateFipsCodeFromCounty(fipsCode));
@@ -275,9 +281,9 @@ function colorizeMap() {
       let id = fipsCodeFromElementId((this as Element).id);
       return getFillColor(id);
     });
-  
+
   drawLegend(colorScale);
-  if(currentGeoLevel == GeoLevel.SubRegion2){
+  if (currentGeoLevel == GeoLevel.SubRegion2) {
     drawZipData(currentGeoId);
   }
 }
@@ -290,6 +296,7 @@ function resetZoom() {
   currentGeoLevel = GeoLevel.Country;
   currentGeoId = resetNavigationPlaceId;
   removeZipData();
+  deselectAllCounties();
   mapSvg.transition().duration(750).call(mapZoom.transform, d3.zoomIdentity);
 }
 
@@ -429,8 +436,7 @@ function buildSafetyColorScale() {
 //
 // Map event handler state routines
 //
-function activateSelectedState(fipsCode, zoom = true) {
-  removeZipData();
+function deselectAllCounties() {
   mapSvg
     .select("#county")
     .selectAll("path")
@@ -439,6 +445,11 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", movementHandler(latestCountyData));
+}
+
+function activateSelectedState(fipsCode, zoom = true) {
+  removeZipData();
+  deselectAllCounties();
 
   mapSvg
     .select("#county")
@@ -465,7 +476,7 @@ function activateSelectedState(fipsCode, zoom = true) {
 
 function activateSelectedCounty(fipsCode, zoom = true) {
   resetLastSelectedCountyFill();
-  
+
   mapSvg
     .select("#county")
     .select(`#fips-${fipsCode}`)
@@ -479,72 +490,77 @@ function activateSelectedCounty(fipsCode, zoom = true) {
 
 let setLastSelectedCounty: string;
 
-function resetLastSelectedCountyFill(){
-  if(setLastSelectedCounty){
-    d3.select(`#fips-${setLastSelectedCounty}`).attr("fill",getFillColor(setLastSelectedCounty));
+function resetLastSelectedCountyFill() {
+  if (setLastSelectedCounty) {
+    d3.select(`#fips-${setLastSelectedCounty}`).attr(
+      "fill",
+      getFillColor(setLastSelectedCounty)
+    );
     setLastSelectedCounty = null;
   }
 }
 
-function drawZipData(fipsCode){
+function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];
   const zipsForCounty = new Set(getCountyZctas(fipsCode));
-  const zipTrends: Map<String,RegionalTrendLine> = trendData.filter(
-    t=>
-      zipsForCounty.has(t.sub_region_3_code) &&
-      t.date == currentDate &&
-      getTrendValue(selectedTrend,t) != 0
-  ).reduce((acc,trend)=>{
-    acc.set(trend.sub_region_3_code,trend)
-    return acc;
-  }, new Map<string,RegionalTrendLine>());
-  
-  d3.selectAll(`#fips-${fipsCode}`)
-    .attr("fill","none");
+  const zipTrends: Map<String, RegionalTrendLine> = trendData
+    .filter(
+      (t) =>
+        zipsForCounty.has(t.sub_region_3_code) &&
+        t.date == currentDate &&
+        getTrendValue(selectedTrend, t) != 0
+    )
+    .reduce((acc, trend) => {
+      acc.set(trend.sub_region_3_code, trend);
+      return acc;
+    }, new Map<string, RegionalTrendLine>());
+
+  d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
 
   setLastSelectedCounty = fipsCode;
 
   fetchZipData(fipsCode)
-  .then(zipData => {
-    zipData.features.forEach(f=>{f.properties.name = `Zip code ${f.properties.GEOID10}`});
+    .then((zipData) => {
+      zipData.features.forEach((f) => {
+        f.properties.name = `Zip code ${f.properties.GEOID10}`;
+      });
 
-    d3.select("#zip")
-      .selectAll("path")
-      .data(zipData.features)
-      .join("path")
-      .attr("class","sub-region-3")
-      .attr("id",(z:any)=>`zcta-${z.properties.GEOID10}`)
-      .attr("d",path)
-      .attr("fill",(d:any)=>{
-        const colorScale = getColorScale(selectedTrend);
-        const trend = zipTrends.get(d.properties.GEOID10);
-        const trendValue = getTrendValue(selectedTrend,trend);
-        if(trendValue && trendValue != 0){
-          return colorScale(trendValue)
-        }else{
-          return unknownColor;
-        }
-      })
-      .attr("stroke","white")
-      .attr("stroke-width",1)
-      .attr("vector-effect","non-scaling-stroke")
-      .on("mouseenter", enterCountyBoundsHandler)
-      .on("mouseleave", leaveCountyBoundsHandler)
-      .on("mousemove", movementHandler(zipTrends))
-      ;
-  }).catch(err=>{
-    console.log(`No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`);
-    removeZipData();
-  });
-
+      d3.select("#zip")
+        .selectAll("path")
+        .data(zipData.features)
+        .join("path")
+        .attr("class", "sub-region-3")
+        .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
+        .attr("d", path)
+        .attr("fill", (d: any) => {
+          const colorScale = getColorScale(selectedTrend);
+          const trend = zipTrends.get(d.properties.GEOID10);
+          const trendValue = getTrendValue(selectedTrend, trend);
+          if (trendValue && trendValue != 0) {
+            return colorScale(trendValue);
+          } else {
+            return unknownColor;
+          }
+        })
+        .attr("stroke", "white")
+        .attr("stroke-width", 1)
+        .attr("vector-effect", "non-scaling-stroke")
+        .on("mouseenter", enterCountyBoundsHandler)
+        .on("mouseleave", leaveCountyBoundsHandler)
+        .on("mousemove", movementHandler(zipTrends));
+    })
+    .catch((err) => {
+      console.log(
+        `No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`
+      );
+      removeZipData();
+    });
 }
 
-function removeZipData(){
+function removeZipData() {
   resetLastSelectedCountyFill();
-  
-  d3.select("#zip")
-      .selectAll("path")
-      .remove();
+
+  d3.select("#zip").selectAll("path").remove();
 }
 
 function addRegionHighlight(regionId: string): void {
@@ -584,39 +600,39 @@ function drawMapCalloutInfo(data, fipsCode) {
     //TODO(tilchris): Add more robust NaN handling
     //It should be the cases where any 0 value should be interpreted
     //as "Not enough data available" instead of an actual measurement
-    //of 0, but this assumption may not hold.  For example, in the 
+    //of 0, but this assumption may not hold.  For example, in the
     //far far beautiful feature where nobody needs to search for
     //COVID-19 at all.
-    if(value==0){
+    if (value == 0) {
       return "n/a";
-    }else{
+    } else {
       return value.toFixed(1);
     }
-  }
+  };
 
   let trendval: number = trends.sni_covid19_vaccination | 0;
   d3.select("svg#callout-vaccine")
     .select("rect")
-    .style("fill", trendval==0 ? unknownColor : colorScaleVaccine(trendval));
+    .style("fill", trendval == 0 ? unknownColor : colorScaleVaccine(trendval));
   d3.select("div#callout-vaccine-value").text(renderValue(trendval));
 
   trendval = trends.sni_vaccination_intent | 0;
   d3.select("svg#callout-intent")
     .select("rect")
-    .attr("fill", trendval==0 ? unknownColor : colorScaleIntent(trendval));
+    .attr("fill", trendval == 0 ? unknownColor : colorScaleIntent(trendval));
   d3.select("div#callout-intent-value").text(renderValue(trendval));
 
   trendval = trends.sni_safety_side_effects | 0;
   d3.select("svg#callout-safety")
     .select("rect")
-    .attr("fill", trendval==0 ? unknownColor : colorScaleSafety(trendval));
+    .attr("fill", trendval == 0 ? unknownColor : colorScaleSafety(trendval));
   d3.select("div#callout-safety-value").text(renderValue(trendval));
 
-  const hasNa = !Object.keys(trends).every(key=> trends[key] !== 0);
-  if(hasNa){
-    d3.select("#not-enough-data-message").style("display","inline-block");
-  }else{
-    d3.select("#not-enough-data-message").style("display","none");
+  const hasNa = !Object.keys(trends).every((key) => trends[key] !== 0);
+  if (hasNa) {
+    d3.select("#not-enough-data-message").style("display", "inline-block");
+  } else {
+    d3.select("#not-enough-data-message").style("display", "none");
   }
 }
 
@@ -703,22 +719,22 @@ function handleZipMapTimeout(event, d) {
 }
 
 function handleMapTimeout(data) {
-  return (event,d)=>{
+  return (event, d) => {
     mapTimeoutRef = "";
     if (d3.select("#map-callout").style("display") == "none") {
       showMapCallout(data, event, d);
     }
-  }
+  };
 }
 
 function movementHandler(data) {
-  return (event,d)=>{
+  return (event, d) => {
     if (mapTimeoutRef) {
       clearTimeout(mapTimeoutRef);
       mapTimeoutRef = "";
     }
     mapTimeoutRef = setTimeout(handleMapTimeout(data), 200, event, d);
-  }
+  };
 }
 
 function selectedCountyOnClickHandler(event, d) {
