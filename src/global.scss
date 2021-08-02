@@ -75,7 +75,7 @@ header {
   margin-left: 0px;
   margin-right: 0px;
   width: 100%;
-  
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -147,9 +147,7 @@ footer {
 }
 
 .header-topbar-menu {
-  margin-left:auto;
-  
-
+  margin-left: auto;
 }
 
 .header-content-divider {
@@ -333,6 +331,13 @@ svg.map-svg path {
   padding-top: 24px;
   margin-right: 12px;
 }
+
+.map-legend-no-data-label {
+  margin-left: 12px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
 .map-legend-scale-top {
   display: inline-flex;
   margin-left: 20px;
@@ -357,6 +362,11 @@ svg.map-svg path {
 .map-legend-scale + .map-info-button {
   margin-top: 12px;
   margin-left: 8px;
+}
+
+.map-legend-no-data {
+  height: 20px;
+  margin-top: 20px;
 }
 
 .date-nav-control {
@@ -532,7 +542,7 @@ svg.map-svg path {
   font-weight: 500;
   padding-top: 8px;
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 .map-attribution-text {
@@ -690,7 +700,7 @@ svg.map-svg path {
 
 .chart-axis-label {
   margin-left: auto;
-  margin-right:0;
+  margin-right: 0;
   text {
     color: g.$grey-700;
     font-family: "Google Sans";
@@ -698,7 +708,6 @@ svg.map-svg path {
     font-weight: g.$body-weight;
   }
 }
-
 
 div.next-steps-item > h3 {
   margin-top: 40px;
@@ -741,7 +750,7 @@ div.next-steps-item > h3 {
     display: none;
   }
 
-  .header-search-bar{
+  .header-search-bar {
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -753,7 +762,7 @@ div.next-steps-item > h3 {
     flex-direction: row;
     justify-content: space-between;
   }
-  
+
   .next-steps-item {
     width: 30%;
   }
