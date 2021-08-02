@@ -42,7 +42,7 @@
     height: 276,
   };
   //https://observablehq.com/@d3/margin-convention?collection=@d3/d3-axis
-  const margin = {top:10, bottom:30, left:0, right:30};
+  const margin = { top: 10, bottom: 30, left: 0, right: 30 };
 
   function getLegendComponentText(): string {
     if (selectedRegion.sub_region_3) {
@@ -463,9 +463,7 @@
     if (xElement) {
       x = d3.select(xElement);
     } else {
-      x = chartArea
-        .append("g")
-        .attr("class", "x axis");
+      x = chartArea.append("g").attr("class", "x axis");
     }
 
     if (yElement) {
@@ -488,7 +486,7 @@
         .append("line")
         .attr("class", "chart-vertical-line inactive")
         .attr("y1", margin.top)
-        .attr("y2", chartBounds.height-margin.bottom);
+        .attr("y2", chartBounds.height - margin.bottom);
     }
 
     let data: RegionalTrends[] = Array.from(
@@ -540,10 +538,10 @@
         }
       });
     });
-    
+
     let xScale = d3
       .scaleTime()
-      .range([margin.left, chartBounds.width-margin.right])
+      .range([margin.left, chartBounds.width - margin.right])
       .domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
       .axisBottom(xScale)
@@ -556,15 +554,16 @@
 
     let yScale = d3
       .scaleLinear()
-      .range([chartBounds.height-margin.bottom, margin.top])
+      .range([chartBounds.height - margin.bottom, margin.top])
       .domain([0, max]);
     let yAxis = d3
       .axisRight(yScale)
-      .ticks(5).tickSize(chartBounds.width-margin.right);
+      .ticks(5)
+      .tickSize(chartBounds.width - margin.right);
 
     // TODO(patankar): Define constants for styling.
     x.call(xAxis)
-      .attr("transform",`translate(0,${chartBounds.height-margin.bottom})`)
+      .attr("transform", `translate(0,${chartBounds.height - margin.bottom})`)
       .call((g) =>
         g.select(".domain").attr("stroke-width", 1).attr("stroke", "#80868B")
       )
@@ -582,7 +581,7 @@
           .attr("font-size", 12)
       );
     y.call(yAxis)
-    //.attr("transform",`translate(${chartBounds.width-margin.right},0)`)
+      //.attr("transform",`translate(${chartBounds.width-margin.right},0)`)
       .call((g) => g.select(".domain").remove())
       .call((g) =>
         g
@@ -662,7 +661,10 @@
       .attr("y", `${tickSize * chartAreaScale + padding}`);
     chartYAxisTickTexts
       .attr("transform", `scale(${1 / chartAreaScale})`)
-      .attr("x", `${(chartBounds.width-margin.right) * chartAreaScale + padding}`);
+      .attr(
+        "x",
+        `${(chartBounds.width - margin.right) * chartAreaScale + padding}`
+      );
   }
 
   onMount(async () => {

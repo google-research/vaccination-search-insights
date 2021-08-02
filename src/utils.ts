@@ -77,9 +77,11 @@ export function handleInfoPopup(event, id): void {
     }
 
     const offsetOnRight = infoRect.x + infoRect.width + window.pageXOffset;
-    
-    const left = offsetOnRight + popupRectWidth > window.innerWidth ?
-      window.innerWidth - popupRectWidth - rightPadding: offsetOnRight;
+
+    const left =
+      offsetOnRight + popupRectWidth > window.innerWidth
+        ? window.innerWidth - popupRectWidth - rightPadding
+        : offsetOnRight;
 
     popup
       .style("display", "block")
@@ -93,7 +95,8 @@ export function handleInfoPopup(event, id): void {
 }
 
 function dismissInfoPopup(event): void {
-  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(activePopupId);
+  const popup: d3.Selection<SVGGElement, any, any, any> =
+    d3.select(activePopupId);
   if (
     !inClientBounds(
       event.clientX,
@@ -107,4 +110,3 @@ function dismissInfoPopup(event): void {
     event.stopPropagation();
   }
 }
-
