@@ -34,7 +34,7 @@ function loadParams(): Params {
     : "";
   return {
     placeId,
-    updateHistory: true
+    updateHistory: true,
   };
 }
 
@@ -46,7 +46,7 @@ function saveParams(param: Params) {
 
 export const params = writable(loadParams());
 params.subscribe(saveParams);
-window.onpopstate = function(event) {
+window.onpopstate = function (event) {
   params.update((p) => {
     p = loadParams();
     p.updateHistory = false;
