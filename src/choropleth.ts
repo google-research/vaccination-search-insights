@@ -451,6 +451,8 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", movementHandler(latestCountyData));
 
+  // disable any active state selection, then activate
+  mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
   mapSvg.select("#state").select(`path#fips-${fipsCode}`).attr("fill", "none");
 
   if (zoom) {
