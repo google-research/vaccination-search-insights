@@ -147,6 +147,20 @@ function setSelectedStateByFipsCode(fipsCode) {
   activateSelectedState(fipsCode, true);
 }
 
+export function resetToUnitedStates() {
+  mapSvg
+    .select("#county")
+    .selectAll("path")
+    .attr("stroke-width", 0)
+    .on("click", null)
+    .on("mouseenter", enterCountyBoundsHandler)
+    .on("mouseleave", leaveCountyBoundsHandler)
+    .on("mousemove", movementHandler(latestCountyData));
+  mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
+	resetZoom();
+  selectionCallback(resetNavigationPlaceId);
+}
+
 //
 // Map data processing routines
 //
@@ -451,6 +465,8 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", movementHandler(latestCountyData));
 
+  // disable any active state selection, then activate
+  mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
   mapSvg.select("#state").select(`path#fips-${fipsCode}`).attr("fill", "none");
 
   if (zoom) {
