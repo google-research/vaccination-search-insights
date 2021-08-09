@@ -169,6 +169,14 @@ function _fetchRegionalTrendLines(): Promise<RegionalTrendLine[]> {
   }
 }
 
+export function fetchZipData(geoid): Promise<any> {
+  var baseUrl =
+    "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo";
+  return fetch(`${baseUrl}/${geoid}.geo.json`).then((response) =>
+    response.json()
+  );
+}
+
 export function fetchRegionalTrendsData(): Promise<
   Map<string, RegionalTrends>
 > {
@@ -279,4 +287,21 @@ export function buildDateRangeList(rtls: RegionalTrendLine[]): string[] {
   const dateList: string[] = Array.from(uniqueDates.values());
   dateList.sort();
   return dateList;
+}
+
+export function getTrendValue(
+  trendName: string,
+  trend: RegionalTrendLine
+): number {
+  switch (trendName) {
+    case "vaccination":
+      return trend ? trend.sni_covid19_vaccination | 0 : 0;
+    case "intent":
+      return trend ? trend.sni_vaccination_intent | 0 : 0;
+    case "safety":
+      return trend ? trend.sni_safety_side_effects | 0 : 0;
+    default:
+      console.log(`Unknown trend type: ${trendName}`);
+      return;
+  }
 }

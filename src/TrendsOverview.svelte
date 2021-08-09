@@ -35,6 +35,7 @@
     createMap,
     decrementMapDate,
     incrementMapDate,
+    resetToUnitedStates,
     setMapTrend,
     setSelectedCounty,
     setSelectedState,
@@ -170,6 +171,8 @@
       setSelectedCounty(selectedRegion.sub_region_2_code);
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
+    } else {
+      resetToUnitedStates();
     }
   }
 
@@ -208,7 +211,7 @@
 <main>
   <header>
     <div class="header-topbar">
-      <div>
+      <div style="display: flex">
         <a href="https://www.google.com/">
           <svg role="img" aria-hidden="true" class="header-topbar-glue-logo">
             <use xlink:href="glue/glue-icons.svg#google-color-logo" />
@@ -216,21 +219,21 @@
         </a>
         <div class="header-topbar-text">COVID-19 Vaccine Search Insights</div>
       </div>
-      <ul class="header-topbar-menu">
-        <li id="download-link" class="link-item">
+      <div class="header-topbar-menu">
+        <div id="download-link" class="link-item">
           <span class="material-icons-outlined header-download-icon"
             >file_download</span
           >
           Download data
-        </li>
-        <li class="link-item">
+        </div>
+        <div class="link-item">
           <a
             class="link-item-anchor"
             href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
             >Documentation</a
           >
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
     <div id="header-download-popup" class="header-download-popup">
       <h3 class="header-downlod-popup-title">
@@ -379,7 +382,12 @@
                 class="map-callout-metric-column map-callout-metric-value"
               />
             </div>
-            <div class="map-callout-tip">Click to drill down</div>
+            <div class="map-callout-tip">
+              <span id="not-enough-data-message" style="display: none;"
+                >* Not enough data</span
+              >
+              <span>Click to drill down</span>
+            </div>
           </div>
 
           <!-- Choropleth Map -->
@@ -398,13 +406,25 @@
                   </svg>
                 </div>
               </div>
-              <div
-                class="map-info-button"
-                on:click={(e) => {
-                  handleInfoPopup(e, selectMapInfoPopup());
-                }}
-              >
-                <span class="material-icons-outlined">info</span>
+              <div class="map-legend-label map-legend-no-data-label">
+                Not enough data
+              </div>
+              <div style="display:flex">
+                <div class="map-legend-scale">
+                  <div class="map-legend-no-data">
+                    <svg width="20" height="20">
+                      <rect x="0" y="0" width="20" height="20" fill="#dadce0" />
+                    </svg>
+                  </div>
+                </div>
+                <div
+                  class="map-info-button"
+                  on:click={(e) => {
+                    handleInfoPopup(e, selectMapInfoPopup());
+                  }}
+                >
+                  <span class="material-icons-outlined">info</span>
+                </div>
               </div>
             </div>
             <div class="date-nav-control">

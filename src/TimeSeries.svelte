@@ -38,10 +38,11 @@
   let chartContainerElement: HTMLElement;
 
   const chartBounds = {
-    width: 975,
-    height: 610,
-    margin: 30,
+    width: 684,
+    height: 276,
   };
+  //https://observablehq.com/@d3/margin-convention?collection=@d3/d3-axis
+  const margin = { top: 10, bottom: 30, left: 0, right: 30 };
 
   function getLegendComponentText(): string {
     if (selectedRegion.sub_region_3) {
@@ -104,6 +105,11 @@
         .attr("class", "chart-legend-text")
         .text(legendComponentText);
     }
+    d3.select(legendContainerElement)
+      .append("div")
+      .attr("class", "chart-legend-text-container chart-axis-label")
+      .append("text")
+      .text("INTEREST");
   }
 
   function generateChartHoverCard(
@@ -449,12 +455,7 @@
         .select(chartAreaContainerElement)
         .attr(
           "viewBox",
-          [
-            -chartBounds.margin,
-            0,
-            chartBounds.width + chartBounds.margin,
-            chartBounds.height + chartBounds.margin,
-          ].join(" ")
+          [0, 0, chartBounds.width, chartBounds.height].join(" ")
         )
         .append("g");
     }
@@ -462,10 +463,7 @@
     if (xElement) {
       x = d3.select(xElement);
     } else {
-      x = chartArea
-        .append("g")
-        .attr("class", "x axis")
-        .attr("transform", `translate(0, ${chartBounds.height})`);
+      x = chartArea.append("g").attr("class", "x axis");
     }
 
     if (yElement) {
@@ -487,8 +485,8 @@
         .append("g")
         .append("line")
         .attr("class", "chart-vertical-line inactive")
-        .attr("y1", 0)
-        .attr("y2", chartBounds.height);
+        .attr("y1", margin.top)
+        .attr("y2", chartBounds.height - margin.bottom);
     }
 
     let data: RegionalTrends[] = Array.from(
@@ -543,7 +541,7 @@
 
     let xScale = d3
       .scaleTime()
-      .range([0, chartBounds.width])
+      .range([margin.left, chartBounds.width - margin.right])
       .domain(d3.extent(dates));
     let xAxis: d3.Axis<Date | d3.NumberValue> = d3
       .axisBottom(xScale)
@@ -556,12 +554,16 @@
 
     let yScale = d3
       .scaleLinear()
-      .range([chartBounds.height, 0])
+      .range([chartBounds.height - margin.bottom, margin.top])
       .domain([0, max]);
-    let yAxis = d3.axisRight(yScale).ticks(5).tickSize(chartBounds.width);
+    let yAxis = d3
+      .axisRight(yScale)
+      .ticks(5)
+      .tickSize(chartBounds.width - margin.right);
 
     // TODO(patankar): Define constants for styling.
     x.call(xAxis)
+      .attr("transform", `translate(0,${chartBounds.height - margin.bottom})`)
       .call((g) =>
         g.select(".domain").attr("stroke-width", 1).attr("stroke", "#80868B")
       )
@@ -579,15 +581,8 @@
           .attr("font-size", 12)
       );
     y.call(yAxis)
+      //.attr("transform",`translate(${chartBounds.width-margin.right},0)`)
       .call((g) => g.select(".domain").remove())
-      .call((g) =>
-        g
-          .selectAll(".tick")
-          .filter((t) => {
-            return t === 0;
-          })
-          .remove()
-      )
       .call((g) =>
         g
           .selectAll(".tick line")
@@ -600,19 +595,9 @@
           .attr("color", "#5F6368")
           .attr("font-family", "Roboto")
           .attr("font-size", 12)
-      )
-      .call((g) => g.select(".y-label").remove())
-      .call((g) =>
-        g
-          .append("text")
-          .attr("class", "y-label")
-          .attr("x", chartBounds.width - 15)
-          .attr("y", -10)
-          .attr("fill", "#5F6368")
-          .attr("font-family", "Roboto")
-          .attr("font-size", 11)
-          .text("INTEREST")
       );
+
+    scaleChartText();
 
     generateChartLegend();
     generateChartHoverCard(data, dates, xScale);
@@ -645,6 +630,43 @@
       .attr("d", (d) => lineFn(trendLine(d)));
   }
 
+  function scaleChartText() {
+    // as per d3
+    const padding: number = 3;
+    const tickSize: number = 6;
+
+    const chartAreaContainerElement: SVGElement =
+      chartContainerElement.querySelector(".chart-area-container");
+    const chartXAxisElement: SVGElement =
+      chartAreaContainerElement.querySelector(".x.axis");
+    const chartYAxisElement: SVGElement =
+      chartAreaContainerElement.querySelector(".y.axis");
+    const chartXAxisTickTextElements: NodeList =
+      chartXAxisElement.querySelectorAll(".tick text");
+    const chartYAxisTickTextElements: NodeList =
+      chartYAxisElement.querySelectorAll(".tick text");
+
+    const chartXAxisTickTexts: SvgSelection = d3.selectAll(
+      chartXAxisTickTextElements
+    );
+    const chartYAxisTickTexts: SvgSelection = d3.selectAll(
+      chartYAxisTickTextElements
+    );
+
+    const chartAreaScale: number =
+      chartAreaContainerElement.getBoundingClientRect().width /
+      chartBounds.width;
+    chartXAxisTickTexts
+      .attr("transform", `scale(${1 / chartAreaScale})`)
+      .attr("y", `${tickSize * chartAreaScale + padding}`);
+    chartYAxisTickTexts
+      .attr("transform", `scale(${1 / chartAreaScale})`)
+      .attr(
+        "x",
+        `${(chartBounds.width - margin.right) * chartAreaScale + padding}`
+      );
+  }
+
   onMount(async () => {
     params.subscribe((param) => {
       placeId = param.placeId;
@@ -654,6 +676,8 @@
         generateChart();
       }
     });
+
+    window.addEventListener("resize", scaleChartText);
   });
 </script>
 

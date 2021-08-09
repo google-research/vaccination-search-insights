@@ -69,14 +69,23 @@ export function handleInfoPopup(event, id): void {
   } else {
     const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(id);
     const infoRect: DOMRect = event.target.getBoundingClientRect();
+    const popupRectWidth = 310;
+    const rightPadding = 20;
 
     if (activePopupId) {
       dismissInfoPopup(event);
     }
 
+    const offsetOnRight = infoRect.x + infoRect.width + window.pageXOffset;
+
+    const left =
+      offsetOnRight + popupRectWidth > window.innerWidth
+        ? window.innerWidth - popupRectWidth - rightPadding
+        : offsetOnRight;
+
     popup
       .style("display", "block")
-      .style("left", `${infoRect.x + infoRect.width + window.pageXOffset}px`)
+      .style("left", `${left}px`)
       .style("top", `${infoRect.y + infoRect.height + window.pageYOffset}px`);
 
     event.stopPropagation();
@@ -86,7 +95,8 @@ export function handleInfoPopup(event, id): void {
 }
 
 function dismissInfoPopup(event): void {
-  const popup: d3.Selection<SVGGElement, any, any, any> = d3.select(activePopupId);
+  const popup: d3.Selection<SVGGElement, any, any, any> =
+    d3.select(activePopupId);
   if (
     !inClientBounds(
       event.clientX,
@@ -100,4 +110,3 @@ function dismissInfoPopup(event): void {
     event.stopPropagation();
   }
 }
-
