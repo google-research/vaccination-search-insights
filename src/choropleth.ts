@@ -157,7 +157,7 @@ export function resetToUnitedStates() {
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", movementHandler(latestCountyData));
   mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
-	resetZoom();
+  resetZoom();
   selectionCallback(resetNavigationPlaceId);
 }
 
@@ -197,7 +197,9 @@ function initializeMap() {
   const g = mapSvg.append("g").attr("id", "transformer");
 
   //Order is important here, since groups positioned later in the DOM get drawn on top
-  // i.e. z-order, of groups written earlier
+  // i.e. z-order, of groups written earlier, nation must be top because it's used as
+  // a background fill for non-assigned areas
+  g.append("g").attr("id", "nation");
   g.append("g").attr("id", "zip");
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
@@ -211,6 +213,17 @@ function initializeMap() {
     topology,
     topology.objects.states as GeometryCollection
   );
+  const nationFeatures = feature(
+    topology,
+    topology.objects.nation as GeometryCollection
+  );
+
+  d3.select("#nation")
+    .selectAll("path")
+    .data(nationFeatures.features)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", "#f1f3f4");
 
   d3.select("#county")
     .selectAll("path")

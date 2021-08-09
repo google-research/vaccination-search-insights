@@ -35,7 +35,7 @@
     createMap,
     decrementMapDate,
     incrementMapDate,
-		resetToUnitedState,
+    resetToUnitedStates,
     setMapTrend,
     setSelectedCounty,
     setSelectedState,
@@ -172,7 +172,7 @@
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
     } else {
-    	resetToUnitedStates();
+      resetToUnitedStates();
     }
   }
 
