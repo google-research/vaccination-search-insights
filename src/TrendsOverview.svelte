@@ -386,7 +386,7 @@
               <span id="not-enough-data-message" style="display: none;"
                 >* Not enough data</span
               >
-              <span>Click to drill down</span>
+              <span id="map-callout-drilldown-msg">Click to drill down</span>
             </div>
           </div>
 

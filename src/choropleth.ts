@@ -666,6 +666,12 @@ function showMapCallout(data, event, d): void {
   // set the callout title text
   callout.select("#map-callout-title").text(d.properties.name);
 
+  if (d.properties.GEOID10) {
+    d3.select("#map-callout-drilldown-msg").style("display", "none");
+  } else {
+    d3.select("#map-callout-drilldown-msg").style("display", null);
+  }
+
   callout.style("display", "block");
   const boundingRect: DOMRect = callout.node().getBoundingClientRect();
   callout
