@@ -16,6 +16,7 @@
 
 import { feature } from "topojson-client";
 import type { GeometryCollection } from "topojson-specification";
+import { quantileSeq, range, round } from "mathjs";
 import {
   buildRegionCodeToPlaceIdMapping,
   dcCountyFipsCode,
@@ -37,7 +38,7 @@ import {
   subRegionTwoCode,
   fetchZipData,
   getTrendValue,
-  TrendValue,
+  TrendValueType
 } from "./data";
 import { getCountyZctas } from "./zcta-county";
 
@@ -50,9 +51,6 @@ enum GeoLevel {
 
 const unknownColor = "#DADCE0"; //material grey 300
 const path = d3.geoPath();
-const colorScaleVaccine = buildVaccineColorScale();
-const colorScaleIntent = buildIntentColorScale();
-const colorScaleSafety = buildSafetyColorScale();
 
 const alaskaFipsCode: string = "02";
 
@@ -64,6 +62,7 @@ let currentGeoId: string = resetNavigationPlaceId;
 let mapSvg: d3.Selection<SVGGElement, any, any, any>;
 let mapZoom;
 let trendData: RegionalTrendLine[];
+let colorScales: Map<TrendValueType, d3.ScaleThreshold<number, string, never>>;
 let latestStateData: Map<string, RegionalTrendAggregate>;
 let latestCountyData: Map<string, RegionalTrendAggregate>;
 let latestZipData: Map<string, RegionalTrendAggregate>;
@@ -90,12 +89,15 @@ export function createMap(
   selectionFn
 ) {
   trendData = mapData;
+  
   selectedTrend = trend;
 
   // build in-order list of available dates
   dateList = buildDateRangeList(trendData);
   selectedDateIndex = dateList.length - 1;
   setDateControlState();
+
+  colorScales = calculateColorScales(trendData,dateList[selectedDateIndex]);
 
   // generate the region to trend data for a given date slice
   generateRegionToTrendDataForDateSlice();
@@ -106,6 +108,59 @@ export function createMap(
   initializeMap();
   colorizeMap();
 }
+
+function calculateColorScales(trendData: RegionalTrendLine[], date: string): 
+  Map<TrendValueType,d3.ScaleThreshold<number, string, never>>{
+  const map = new Map<TrendValueType,d3.ScaleThreshold<number, string, never>>();
+  const trendArrays = [[],[],[]];
+
+  trendData.forEach(t=>{
+    if(t.date == date){
+      if(t.sni_covid19_vaccination) trendArrays[0].push(t.sni_covid19_vaccination);
+      if(t.sni_safety_side_effects) trendArrays[1].push(t.sni_safety_side_effects);
+      if(t.sni_vaccination_intent) trendArrays[2].push(t.sni_vaccination_intent);
+    }
+  });
+
+  const vaccineColorScale = buildVaccineColorScale(calculateDomain(trendArrays[0]));
+  map.set(TrendValueType.Vaccination,vaccineColorScale);
+  const safetyColorScale = buildSafetyColorScale(calculateDomain(trendArrays[1]))
+  map.set(TrendValueType.Safety,safetyColorScale);
+  const intentColorScale = buildIntentColorScale(calculateDomain(trendArrays[2]))
+  map.set(TrendValueType.Intent,intentColorScale);
+
+  return map;
+}
+
+/**
+ * Calculate buckets for a given array based on their normally distributed 90th and 10th 
+ * percentiles.
+ * 
+ * Our color scheme is discrete, so here we dynamically calculate bucket widths in order
+ * to maximize differentiability, i.e. contrast.  Note that if apply this method
+ * for each date, we lose some temporal consistency (e.g. the same color blue means 
+ * the same thing over time.).
+ * 
+ * @param a An unsorted array of numbers
+ * @returns An array of `numBuckets` between 10P and 90P inclusive
+ */
+function calculateDomain(a: number[]): number[]{
+  const domain = quantileSeq(a,DOMAIN_PERCENTILES) as number[];  
+  
+  return domain;
+}
+const DOMAIN_PERCENTILES: number[] = function(){
+  //This could be extracted as just a constant since our number of buckets is 
+  //unlikely to change, but this is a little less magical than
+  //DOMAIN_PERCENTILES = [ 0.1, 0.26, 0.42, 0.58, 0.74, 0.9 ]
+  const minPercentile = 0.10;
+  const maxPercentile = 0.90;
+  const numBuckets = 6;
+  const bucketWidth = (maxPercentile-minPercentile)/(numBuckets-1);
+  const percentiles = range(minPercentile,maxPercentile,bucketWidth,true)
+    .toArray().map(i=>round(i,2)) as number[];//floating point math here requires a round 
+  return percentiles;
+}();
 
 export function setSelectedState(regionOneCode) {
   currentGeoLevel = GeoLevel.SubRegion1;
@@ -128,6 +183,7 @@ export function setMapTrend(trend) {
 export function decrementMapDate(controlId: string): void {
   if (selectedDateIndex > 0) {
     selectedDateIndex -= 1;
+    colorScales = calculateColorScales(trendData,dateList[selectedDateIndex]);
     generateRegionToTrendDataForDateSlice();
     setDateControlState();
     colorizeMap();
@@ -137,6 +193,7 @@ export function decrementMapDate(controlId: string): void {
 export function incrementMapDate(controld: string): void {
   if (selectedDateIndex < dateList.length - 1) {
     selectedDateIndex += 1;
+    colorScales = calculateColorScales(trendData,dateList[selectedDateIndex]);
     generateRegionToTrendDataForDateSlice();
     setDateControlState();
     colorizeMap();
@@ -259,22 +316,6 @@ function initializeMap() {
   mapSvg.on("mouseleave", mapOnMouseLeaveHandler);
 }
 
-function getColorScale(
-  trendName: string
-): d3.ScaleThreshold<number, string, never> {
-  switch (trendName) {
-    case "vaccination":
-      return colorScaleVaccine;
-    case "intent":
-      return colorScaleIntent;
-    case "safety":
-      return colorScaleSafety;
-    default:
-      console.log(`Unknown trend: ${selectedTrend} set on map`);
-      return;
-  }
-}
-
 function getFillColor(fipsCode) {
   let data;
   if (fipsCode == dcCountyFipsCode) {
@@ -284,8 +325,8 @@ function getFillColor(fipsCode) {
   }
   if (data) {
     let trendValue = getTrendValue(selectedTrend, data as RegionalTrendLine);
-    let colorScale = getColorScale(selectedTrend);
-    if (trendValue === 0) {
+    let colorScale = colorScales.get(selectedTrend as TrendValueType);
+    if (trendValue === 0) { 
       return unknownColor;
     } else {
       return colorScale(trendValue);
@@ -296,7 +337,7 @@ function getFillColor(fipsCode) {
 }
 
 function colorizeMap() {
-  const colorScale = getColorScale(selectedTrend);
+  const colorScale = colorScales.get(selectedTrend as TrendValueType);
   d3.select("#county")
     .selectAll("path")
     .join("path")
@@ -363,12 +404,13 @@ function drawLegend(color) {
 
   d3.select("div#map-legend-scale-breaks").selectAll("div").remove();
 
+  const maxDomain = Math.max(color.domain());
   d3.select("div#map-legend-scale-breaks")
     .selectAll("div")
     .data(color.domain())
     .join("div")
     .classed("map-legend-scale-number", true)
-    .text((d: number, i) => d);
+    .text((d: number, i) => maxDomain < 10 ? d.toFixed(0):d.toFixed(1));
 
   d3.select("svg#map-legend-swatch-bar")
     .selectAll("rect")
@@ -410,10 +452,10 @@ function setDateControlState() {
   }
 }
 
-function buildVaccineColorScale() {
+function buildVaccineColorScale(domain=[7, 14, 21, 28, 35, 42]) {
   return d3
     .scaleThreshold<number, string>()
-    .domain([7, 14, 21, 28, 35, 42])
+    .domain(domain)
     .range([
       "#f7fbff",
       "#dae8f6",
@@ -425,10 +467,11 @@ function buildVaccineColorScale() {
     ]);
 }
 
-function buildIntentColorScale() {
+function buildIntentColorScale(domain=[3, 6, 9, 12, 15, 18]) {
+
   return d3
     .scaleThreshold<number, string>()
-    .domain([3, 6, 9, 12, 15, 18])
+    .domain(domain)
     .range([
       "#fff5eb",
       "#fee2c7",
@@ -440,10 +483,10 @@ function buildIntentColorScale() {
     ]);
 }
 
-function buildSafetyColorScale() {
+function buildSafetyColorScale(domain=[1.5, 2.8, 4.1, 5.4, 6.7, 8]) {
   return d3
     .scaleThreshold<number, string>()
-    .domain([1.5, 2.8, 4.1, 5.4, 6.7, 8])
+    .domain(domain)
     .range([
       "#fff7f3",
       "#fddcd8",
@@ -520,6 +563,7 @@ function resetLastSelectedCountyFill() {
   }
 }
 
+
 function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];
   const zipsForCounty = new Set(getCountyZctas(fipsCode));
@@ -553,7 +597,7 @@ function drawZipData(fipsCode) {
         .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
         .attr("d", path)
         .attr("fill", (d: any) => {
-          const colorScale = getColorScale(selectedTrend);
+          const colorScale = colorScales.get(selectedTrend as TrendValueType);
           const trend = zipTrends.get(d.properties.GEOID10);
           const trendValue = getTrendValue(selectedTrend, trend);
           if (trendValue && trendValue != 0) {
@@ -635,19 +679,19 @@ function drawMapCalloutInfo(data, fipsCode) {
   let trendval: number = trends.sni_covid19_vaccination || 0;
   d3.select("svg#callout-vaccine")
     .select("rect")
-    .style("fill", trendval == 0 ? unknownColor : colorScaleVaccine(trendval));
+    .style("fill", trendval == 0 ? unknownColor : colorScales.get(TrendValueType.Vaccination)(trendval));
   d3.select("div#callout-vaccine-value").text(renderValue(trendval));
 
   trendval = trends.sni_vaccination_intent || 0;
   d3.select("svg#callout-intent")
     .select("rect")
-    .attr("fill", trendval == 0 ? unknownColor : colorScaleIntent(trendval));
+    .attr("fill", trendval == 0 ? unknownColor : colorScales.get(TrendValueType.Intent)(trendval));
   d3.select("div#callout-intent-value").text(renderValue(trendval));
 
   trendval = trends.sni_safety_side_effects || 0;
   d3.select("svg#callout-safety")
     .select("rect")
-    .attr("fill", trendval == 0 ? unknownColor : colorScaleSafety(trendval));
+    .attr("fill", trendval == 0 ? unknownColor : colorScales.get(TrendValueType.Safety)(trendval));
   d3.select("div#callout-safety-value").text(renderValue(trendval));
 
   const hasNa = !Object.keys(trends).every((key) => trends[key] !== 0);

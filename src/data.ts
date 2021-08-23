@@ -305,3 +305,9 @@ export function getTrendValue(
       return;
   }
 }
+
+export enum TrendValueType{
+  Vaccination = "vaccination",
+  Intent = "intent",
+  Safety = "safety"
+}
