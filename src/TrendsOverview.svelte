@@ -217,36 +217,12 @@
   }
 
   function goToParentRegion(): void {
-<<<<<<< HEAD
-    let parentRegion: Region;
-
-    if (isSubRegionOne(selectedRegion)) {
-      parentRegion = regions.find(
-        (region) =>
-          isCountry(region) &&
-          region.country_region_code === selectedRegion.country_region_code
-      );
-    } else if (isSubRegionTwo(selectedRegion)) {
-      parentRegion = regions.find(
-        (region) =>
-          isSubRegionOne(region) &&
-          region.sub_region_1_code === selectedRegion.sub_region_1_code
-      );
-    } else if (isSubRegionThree(selectedRegion)) {
-      parentRegion = regions.find(
-        (region) =>
-          isSubRegionTwo(region) &&
-          region.sub_region_2_code === selectedRegion.sub_region_2_code
-      );
-    }
-=======
     const parentRegion = regions.find(
       (region) =>
         region.region_type === selectedRegion.parent_region_type &&
         region[`${region.region_type}_code`] ===
           selectedRegion[`${selectedRegion.parent_region_type}_code`]
     );
->>>>>>> df24ec6 (Add button that goes to parent region.)
 
     params.update((p) => {
       p.placeId = parentRegion.place_id;
