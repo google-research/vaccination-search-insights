@@ -98,6 +98,11 @@ footer {
   background-color: g.$footer-background-color;
 }
 
+/* Prevent sup from adding to line-height */
+sup {
+  line-height: 0;
+}
+
 .first-section-header {
   margin-top: 60px;
 }
@@ -438,7 +443,7 @@ svg.map-svg path {
 .info-popup {
   position: absolute;
   width: 310px;
-  height: 178px;
+  height: 205px;
   top: 620px;
   left: 690px;
   border-radius: 8px;
