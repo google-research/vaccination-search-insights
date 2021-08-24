@@ -19,35 +19,57 @@ import * as d3 from "d3";
 
 let activePopupId: string;
 
+export function isSubRegionThree(region: Region): boolean {
+  return (
+    region.sub_region_3 !== "" &&
+    region.sub_region_2 !== "" &&
+    region.sub_region_1 !== "" &&
+    region.country_region !== ""
+  );
+}
+
+export function isSubRegionTwo(region: Region): boolean {
+  return (
+    region.sub_region_3 === "" &&
+    region.sub_region_2 !== "" &&
+    region.sub_region_1 !== "" &&
+    region.country_region !== ""
+  );
+}
+
+export function isSubRegionOne(region: Region): boolean {
+  return (
+    region.sub_region_3 === "" &&
+    region.sub_region_2 === "" &&
+    region.sub_region_1 !== "" &&
+    region.country_region !== ""
+  );
+}
+
+export function isCountry(region: Region): boolean {
+  return (
+    region.sub_region_3 === "" &&
+    region.sub_region_2 === "" &&
+    region.sub_region_1 === "" &&
+    region.country_region !== ""
+  );
+}
+
 export function getRegionName(region: Region): string {
   let regionName: string;
 
   if (!region) {
     return "";
   }
-  if (region.sub_region_3) {
-    regionName = region.sub_region_3_code;
-
-    if (region.sub_region_2) {
-      regionName += `, ${region.sub_region_2}`;
-    }
-  } else if (region.sub_region_2) {
-    regionName = region.sub_region_2;
-
-    if (region.sub_region_1) {
-      regionName += `, ${region.sub_region_1}`;
-    }
-  } else if (region.sub_region_1) {
-    regionName = region.sub_region_1;
-
-    if (region.country_region) {
-      regionName += `, ${region.country_region}`;
-    }
-  } else if (region.country_region) {
-    regionName = region.country_region;
+  if (isCountry(region)) {
+    return region.country_region;
+  } else if (isSubRegionOne(region)) {
+    return `${region.sub_region_1}, ${region.country_region}`;
+  } else if (isSubRegionTwo(region)) {
+    return `${region.sub_region_2}, ${region.sub_region_1}`;
+  } else if (isSubRegionThree(region)) {
+    return `${region.sub_region_3}, ${region.sub_region_2}`;
   }
-
-  return regionName;
 }
 
 export function inClientBounds(

@@ -29,7 +29,14 @@
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
-  import { getRegionName, inClientBounds, handleInfoPopup } from "./utils";
+  import {
+    getRegionName,
+    handleInfoPopup,
+    isCountry,
+    isSubRegionOne,
+    isSubRegionTwo,
+    isSubRegionThree,
+  } from "./utils";
   import * as d3 from "d3";
   import {
     createMap,
@@ -71,13 +78,16 @@
     return regions?.filter((region) => !region.sub_region_3);
   }
 
-  function isCountry(region: Region): boolean {
-    return (
-      region.sub_region_3 === "" &&
-      region.sub_region_2 === "" &&
-      region.sub_region_1 === "" &&
-      region.country_region !== ""
-    );
+  function setParentRegionButton() {
+    if (hasParentRegion(selectedRegion)) {
+      d3.select(".parent-region-button-container").style("display", "block");
+    } else {
+      d3.select(".parent-region-button-container").style("display", "none");
+    }
+  }
+
+  function hasParentRegion(region: Region): boolean {
+    return !isCountry(region);
   }
 
   onMount(async () => {
@@ -96,6 +106,8 @@
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
       }
+
+      setParentRegionButton();
     });
 
     if (placeId) {
@@ -103,6 +115,8 @@
     } else {
       selectedRegion = regions.find((region) => isCountry(region));
     }
+
+    setParentRegionButton();
 
     mapData.then((mapData) => {
       createMap(mapData, selectedMapTrendId, regions, onMapSelection);
@@ -206,6 +220,37 @@
         return "";
     }
   }
+
+  function goToParentRegion(): void {
+    let parentRegion: Region;
+
+    if (isSubRegionOne(selectedRegion)) {
+      parentRegion = regions.find(
+        (region) =>
+          isCountry(region) &&
+          region.country_region_code === selectedRegion.country_region_code
+      );
+    } else if (isSubRegionTwo(selectedRegion)) {
+      parentRegion = regions.find(
+        (region) =>
+          isSubRegionOne(region) &&
+          region.sub_region_1_code === selectedRegion.sub_region_1_code
+      );
+    } else if (isSubRegionThree(selectedRegion)) {
+      parentRegion = regions.find(
+        (region) =>
+          isSubRegionTwo(region) &&
+          region.sub_region_2_code === selectedRegion.sub_region_2_code
+      );
+    }
+
+    params.update((p) => {
+      p.placeId = parentRegion.place_id;
+      p.updateHistory = false;
+
+      return p;
+    });
+  }
 </script>
 
 <main>
@@ -254,6 +299,14 @@
     </div>
     <div class="header-search-bar">
       <div class="header-search-container">
+        <div class="parent-region-button-container">
+          <span
+            class="parent-region-button material-icons-outlined"
+            on:click={(e) => {
+              goToParentRegion();
+            }}>arrow_back</span
+          >
+        </div>
         <AutoComplete
           items={filterDropdownItems(regions)}
           bind:selectedItem={selectedRegion}
