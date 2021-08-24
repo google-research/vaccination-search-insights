@@ -443,7 +443,6 @@ svg.map-svg path {
 .info-popup {
   position: absolute;
   width: 310px;
-  height: 205px;
   top: 620px;
   left: 690px;
   border-radius: 8px;
@@ -469,6 +468,10 @@ svg.map-svg path {
   letter-spacing: 0.2px;
   color: g.$grey-800;
   margin: 0px 16px 4px 16px;
+}
+
+p.info-text + p.info-text {
+  margin-top: 20px;
 }
 
 .info-link {

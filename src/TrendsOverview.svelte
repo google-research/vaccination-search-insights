@@ -288,7 +288,7 @@
                 ? "map-trend-selector-button map-trend-selector-selected"
                 : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
-              title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times."
+              title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
             >
               {#if selectedMapTrendId == "vaccination"}
                 <div class="map-trend-icon-container">
@@ -473,6 +473,10 @@
             “when can i get the covid vaccine” or “cdc vaccine tracker”. A
             scaled value that you can compare across regions, times, or topics.
           </p>
+          <p class="info-text">
+            This parent category includes searches from the other two
+            subcategories.
+          </p>
           <p>
             <a href="#about" class="info-link">Learn more</a>
           </p>
@@ -505,7 +509,6 @@
             <a href="#about" class="info-link">Learn more</a>
           </p>
         </div>
-
         <TimeSeries
           id="covid-19-vaccination"
           {regionsByPlaceId}
@@ -519,6 +522,10 @@
             Search interest in any aspect of COVID-19 vaccination. For example,
             “when can i get the covid vaccine” or “cdc vaccine tracker”. A
             scaled value that you can compare across regions, times, or topics.
+          </p>
+          <p class="info-text">
+            This parent category includes searches from the other two
+            subcategories.
           </p>
         </TimeSeries>
         <TimeSeries
