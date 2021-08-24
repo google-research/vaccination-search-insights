@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type { Region } from "./data";
+import { Region, RegionType } from "./data";
 import * as d3 from "d3";
 
 let activePopupId: string;
@@ -57,18 +57,24 @@ export function isCountry(region: Region): boolean {
 
 export function getRegionName(region: Region): string {
   let regionName: string;
+  let parentRegionName: string;
 
   if (!region) {
     return "";
   }
-  if (isCountry(region)) {
-    return region.country_region;
-  } else if (isSubRegionOne(region)) {
-    return `${region.sub_region_1}, ${region.country_region}`;
-  } else if (isSubRegionTwo(region)) {
-    return `${region.sub_region_2}, ${region.sub_region_1}`;
-  } else if (isSubRegionThree(region)) {
-    return `${region.sub_region_3}, ${region.sub_region_2}`;
+
+  if (region.region_type === RegionType.SubRegionThree) {
+    regionName = region[`${region.region_type}_code`];
+  } else {
+    regionName = region[region.region_type];
+  }
+
+  parentRegionName = region[region.parent_region_type];
+
+  if (parentRegionName) {
+    return `${regionName}, ${parentRegionName}`;
+  } else {
+    return regionName;
   }
 }
 

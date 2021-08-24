@@ -26,17 +26,11 @@
     fetchRegionData,
     fetchRegionalTrendsData,
     fetchRegionalTrendLines,
+    RegionType,
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
-  import {
-    getRegionName,
-    handleInfoPopup,
-    isCountry,
-    isSubRegionOne,
-    isSubRegionTwo,
-    isSubRegionThree,
-  } from "./utils";
+  import { getRegionName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
     createMap,
@@ -48,6 +42,7 @@
     setSelectedState,
   } from "./choropleth.js";
   import TimeSeries from "./TimeSeries.svelte";
+  import { select } from "d3";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -87,7 +82,7 @@
   }
 
   function hasParentRegion(region: Region): boolean {
-    return !isCountry(region);
+    return Boolean(region?.parent_region_type);
   }
 
   onMount(async () => {
@@ -113,7 +108,7 @@
     if (placeId) {
       selectedRegion = regionsByPlaceId.get(placeId);
     } else {
-      selectedRegion = regions.find((region) => isCountry(region));
+      selectedRegion = regions.find((region) => region.region_type === RegionType.CountryRegion);
     }
 
     setParentRegionButton();
@@ -222,6 +217,7 @@
   }
 
   function goToParentRegion(): void {
+<<<<<<< HEAD
     let parentRegion: Region;
 
     if (isSubRegionOne(selectedRegion)) {
@@ -243,6 +239,14 @@
           region.sub_region_2_code === selectedRegion.sub_region_2_code
       );
     }
+=======
+    const parentRegion = regions.find(
+      (region) =>
+        region.region_type === selectedRegion.parent_region_type &&
+        region[`${region.region_type}_code`] ===
+          selectedRegion[`${selectedRegion.parent_region_type}_code`]
+    );
+>>>>>>> df24ec6 (Add button that goes to parent region.)
 
     params.update((p) => {
       p.placeId = parentRegion.place_id;
