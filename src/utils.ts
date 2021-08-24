@@ -19,42 +19,6 @@ import * as d3 from "d3";
 
 let activePopupId: string;
 
-export function isSubRegionThree(region: Region): boolean {
-  return (
-    region.sub_region_3 !== "" &&
-    region.sub_region_2 !== "" &&
-    region.sub_region_1 !== "" &&
-    region.country_region !== ""
-  );
-}
-
-export function isSubRegionTwo(region: Region): boolean {
-  return (
-    region.sub_region_3 === "" &&
-    region.sub_region_2 !== "" &&
-    region.sub_region_1 !== "" &&
-    region.country_region !== ""
-  );
-}
-
-export function isSubRegionOne(region: Region): boolean {
-  return (
-    region.sub_region_3 === "" &&
-    region.sub_region_2 === "" &&
-    region.sub_region_1 !== "" &&
-    region.country_region !== ""
-  );
-}
-
-export function isCountry(region: Region): boolean {
-  return (
-    region.sub_region_3 === "" &&
-    region.sub_region_2 === "" &&
-    region.sub_region_1 === "" &&
-    region.country_region !== ""
-  );
-}
-
 export function getRegionName(region: Region): string {
   let regionName: string;
   let parentRegionName: string;
