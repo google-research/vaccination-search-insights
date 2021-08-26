@@ -288,7 +288,7 @@
                 ? "map-trend-selector-button map-trend-selector-selected"
                 : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
-              title="Search interest in any aspect of COVID-19 vaccination. A scaled value that you can compare across regions and times."
+              title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
             >
               {#if selectedMapTrendId == "vaccination"}
                 <div class="map-trend-icon-container">
@@ -305,7 +305,7 @@
                 ? "map-trend-selector-button map-trend-selector-selected"
                 : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
-              title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. A scaled value that you can compare across regions and times."
+              title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "intent"}
                 <div class="map-trend-icon-container">
@@ -322,7 +322,7 @@
                 ? "map-trend-selector-button map-trend-selector-selected"
                 : "map-trend-selector-button"}
               on:click={onChangeMapTrend}
-              title="Search interest in the safety and side effects of COVID-19 vaccines. A scaled value that you can compare across regions and times."
+              title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
             >
               {#if selectedMapTrendId == "safety"}
                 <div class="map-trend-icon-container">
@@ -469,8 +469,13 @@
             {COVID_19_VACCINATION_TITLE}
           </h3>
           <p class="info-text">
-            Search interest in any aspect of COVID-19 vaccination. A scaled
-            value that you can compare across regions, times, or topics.
+            Search interest in any aspect of COVID-19 vaccination. For example,
+            “when can i get the covid vaccine” or “cdc vaccine tracker”. A
+            scaled value that you can compare across regions, times, or topics.
+          </p>
+          <p class="info-text">
+            This parent category includes searches from the other two
+            subcategories.
           </p>
           <p>
             <a href="#about" class="info-link">Learn more</a>
@@ -482,7 +487,8 @@
           </h3>
           <p class="info-text">
             Search interest in the eligibility, availability, and accessibility
-            of COVID-19 vaccines. A scaled value that you can compare across
+            of COVID-19 vaccines. For example, “covid vaccine near me” or
+            “safeway covid vaccine”. A scaled value that you can compare across
             regions, times, or topics.
           </p>
           <p>
@@ -495,14 +501,14 @@
           </h3>
           <p class="info-text">
             Search interest in the safety and side effects of COVID-19 vaccines.
-            A scaled value that you can compare across regions, times, or
-            topics.
+            For example, “is the covid vaccine safe” or “pfizer vaccine side
+            effects”. A scaled value that you can compare across regions, times,
+            or topics.
           </p>
           <p>
             <a href="#about" class="info-link">Learn more</a>
           </p>
         </div>
-
         <TimeSeries
           id="covid-19-vaccination"
           {regionsByPlaceId}
@@ -513,8 +519,13 @@
           title={COVID_19_VACCINATION_TITLE}
         >
           <p class="info-text">
-            Search interest in any aspect of COVID-19 vaccination. A scaled
-            value that you can compare across regions, times, or topics.
+            Search interest in any aspect of COVID-19 vaccination. For example,
+            “when can i get the covid vaccine” or “cdc vaccine tracker”. A
+            scaled value that you can compare across regions, times, or topics.
+          </p>
+          <p class="info-text">
+            This parent category includes searches from the other two
+            subcategories.
           </p>
         </TimeSeries>
         <TimeSeries
@@ -528,7 +539,8 @@
         >
           <p class="info-text">
             Search interest in the eligibility, availability, and accessibility
-            of COVID-19 vaccines. A scaled value that you can compare across
+            of COVID-19 vaccines. For example, “covid vaccine near me” or
+            “safeway covid vaccine”. A scaled value that you can compare across
             regions, times, or topics.
           </p>
         </TimeSeries>
@@ -543,8 +555,9 @@
         >
           <p class="info-text">
             Search interest in the safety and side effects of COVID-19 vaccines.
-            A scaled value that you can compare across regions, times, or
-            topics.
+            For example, “is the covid vaccine safe” or “pfizer vaccine side
+            effects”. A scaled value that you can compare across regions, times,
+            or topics.
           </p>
         </TimeSeries>
       {/await}
@@ -594,7 +607,8 @@
           >differential privacy,
         </a>
         which adds artificial noise to our data while enabling high quality results
-        without identifying any individual person.
+        without identifying any individual person. Additionally, we don’t show data
+        for regions that are smaller than 3 km<sup>2</sup>.
       </p>
       <p>
         To learn more about the privacy methods used to generate the data, read
