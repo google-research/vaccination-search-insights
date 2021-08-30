@@ -28,6 +28,15 @@ export interface Region {
   sub_region_3: string;
   sub_region_3_code: string;
   place_id: string;
+  region_type: RegionType;
+  parent_region_type: RegionType;
+}
+
+export enum RegionType {
+  CountryRegion = 'country_region',
+  SubRegionOne = 'sub_region_1',
+  SubRegionTwo = 'sub_region_2',
+  SubRegionThree = 'sub_region_3'
 }
 
 export interface RegionalTrendLine {
@@ -96,6 +105,28 @@ export function fetchRegionData(): Promise<Map<string, Region>> {
         complete: function (results: ParseResult<Region>) {
           console.log(`Received region data, with ${results.data.length} rows`);
           const regionMap = results.data.reduce((acc, region) => {
+            if (region.sub_region_3_code) {
+              region.region_type = RegionType.SubRegionThree;
+              region.parent_region_type = RegionType.SubRegionTwo;
+            } else if (region.sub_region_2_code) {
+              region.region_type = RegionType.SubRegionTwo;
+              region.parent_region_type = RegionType.SubRegionOne;
+            } else if (region.sub_region_1_code) {
+              region.region_type = RegionType.SubRegionOne;
+              region.parent_region_type = RegionType.CountryRegion;
+            } else if (region.country_region_code) {
+              region.region_type = RegionType.CountryRegion;
+            }
+
+            // for special cases like Washington DC
+            if (region.parent_region_type && !region[region.parent_region_type]) {
+              if (region.sub_region_1_code && region.region_type !== RegionType.SubRegionOne) {
+                region.parent_region_type = RegionType.SubRegionOne;
+              } else if (region.country_region_code) {
+                region.parent_region_type = RegionType.CountryRegion;
+              }
+            }
+
             acc.set(region.place_id, region);
             return acc;
           }, new Map<string, Region>());

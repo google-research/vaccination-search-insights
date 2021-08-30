@@ -136,10 +136,11 @@ sup {
 }
 
 .header-search-container {
-  height: 56px;
-
+  display: flex;
   max-width: g.$content-max-width;
   width: 100%;
+  height: 56px;
+  align-items: center;
 }
 
 .header-search-box {
@@ -149,6 +150,21 @@ sup {
   font-size: 22px;
   line-height: 28px;
   color: g.$grey-900;
+}
+
+.parent-region-button-container {
+  width: 36px;
+  height: 36px;
+  display: none;
+}
+
+.parent-region-button {
+  margin: 6px;
+  cursor: pointer;
+}
+
+.parent-region-button:hover {
+  background: g.$button-hover;
 }
 
 .header-topbar-menu {
@@ -362,7 +378,7 @@ svg.map-svg path {
   margin: 6px;
 }
 .map-info-button:hover {
-  background: g.$info-button-hover;
+  background: g.$button-hover;
 }
 .map-legend-scale + .map-info-button {
   margin-top: 12px;
@@ -396,7 +412,7 @@ svg.map-svg path {
   cursor: pointer;
 }
 .date-nav-button-active:hover {
-  background: g.$info-button-hover;
+  background: g.$button-hover;
 }
 
 .date-nav-button-inactive {
@@ -433,7 +449,7 @@ svg.map-svg path {
 }
 
 .info-button:hover {
-  background: g.$info-button-hover;
+  background: g.$button-hover;
 }
 
 .chart-info-button {

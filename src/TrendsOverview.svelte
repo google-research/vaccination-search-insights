@@ -26,10 +26,11 @@
     fetchRegionData,
     fetchRegionalTrendsData,
     fetchRegionalTrendLines,
+    RegionType,
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
-  import { getRegionName, inClientBounds, handleInfoPopup } from "./utils";
+  import { getRegionName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
     createMap,
@@ -41,6 +42,7 @@
     setSelectedState,
   } from "./choropleth.js";
   import TimeSeries from "./TimeSeries.svelte";
+  import { select } from "d3";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -71,13 +73,16 @@
     return regions?.filter((region) => !region.sub_region_3);
   }
 
-  function isCountry(region: Region): boolean {
-    return (
-      region.sub_region_3 === "" &&
-      region.sub_region_2 === "" &&
-      region.sub_region_1 === "" &&
-      region.country_region !== ""
-    );
+  function setParentRegionButton() {
+    if (hasParentRegion(selectedRegion)) {
+      d3.select(".parent-region-button-container").style("display", "block");
+    } else {
+      d3.select(".parent-region-button-container").style("display", "none");
+    }
+  }
+
+  function hasParentRegion(region: Region): boolean {
+    return Boolean(region?.parent_region_type);
   }
 
   onMount(async () => {
@@ -96,13 +101,17 @@
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
       }
+
+      setParentRegionButton();
     });
 
     if (placeId) {
       selectedRegion = regionsByPlaceId.get(placeId);
     } else {
-      selectedRegion = regions.find((region) => isCountry(region));
+      selectedRegion = regions.find((region) => region.region_type === RegionType.CountryRegion);
     }
+
+    setParentRegionButton();
 
     mapData.then((mapData) => {
       createMap(mapData, selectedMapTrendId, regions, onMapSelection);
@@ -206,6 +215,22 @@
         return "";
     }
   }
+
+  function goToParentRegion(): void {
+    const parentRegion = regions.find(
+      (region) =>
+        region.region_type === selectedRegion.parent_region_type &&
+        region[`${region.region_type}_code`] ===
+          selectedRegion[`${selectedRegion.parent_region_type}_code`]
+    );
+
+    params.update((p) => {
+      p.placeId = parentRegion.place_id;
+      p.updateHistory = false;
+
+      return p;
+    });
+  }
 </script>
 
 <main>
@@ -254,6 +279,14 @@
     </div>
     <div class="header-search-bar">
       <div class="header-search-container">
+        <div class="parent-region-button-container">
+          <span
+            class="parent-region-button material-icons-outlined"
+            on:click={(e) => {
+              goToParentRegion();
+            }}>arrow_back</span
+          >
+        </div>
         <AutoComplete
           items={filterDropdownItems(regions)}
           bind:selectedItem={selectedRegion}
