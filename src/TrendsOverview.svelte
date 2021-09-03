@@ -108,7 +108,9 @@
     if (placeId) {
       selectedRegion = regionsByPlaceId.get(placeId);
     } else {
-      selectedRegion = regions.find((region) => region.region_type === RegionType.CountryRegion);
+      selectedRegion = regions.find(
+        (region) => region.region_type === RegionType.CountryRegion
+      );
     }
 
     setParentRegionButton();
@@ -133,7 +135,7 @@
 
     popup.style.left = popupLeft + "px";
     popup.style.display = "inline";
-    document.addEventListener("click", dismissDownloadPopup);
+    document.addEventListener("click", dismissDownloadPopupOnClick);
   }
 
   function inBounds(
@@ -149,13 +151,19 @@
     );
   }
 
-  function dismissDownloadPopup(event): void {
+  function dismissDownloadPopupOnClick(event): void {
     const popup = document.getElementById("header-download-popup");
     if (
       !inBounds(event.clientX, event.clientY, popup.getBoundingClientRect())
     ) {
-      popup.style.display = "none";
+      dismissDownloadPopup();
     }
+  }
+
+  function dismissDownloadPopup(): void {
+    const popup = document.getElementById("header-download-popup");
+    popup.style.display = "none";
+    document.removeEventListner("click", dismissDownloadPopupOnClick);
   }
 
   function onChangeHandler(selectedRegion: Region): void {
@@ -273,6 +281,7 @@
         <a
           class="header-download-popup-link"
           href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/Global_vaccination_search_insights.csv"
+          on:click={(e) => dismissDownloadPopup()}
           >Download dataset - United States</a
         >
       </p>
