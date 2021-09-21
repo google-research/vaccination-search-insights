@@ -151,19 +151,22 @@
     );
   }
 
+  // This function will conditionally close the download popup if the user
+  // clicks outside of the popup bounds.
   function dismissDownloadPopupOnClick(event): void {
     const popup = document.getElementById("header-download-popup");
     if (
       !inBounds(event.clientX, event.clientY, popup.getBoundingClientRect())
     ) {
-      dismissDownloadPopup();
+      closeDownloadPopup();
     }
   }
 
-  function dismissDownloadPopup(): void {
+  // This fuction will unconditionally close the download popup window.
+  function closeDownloadPopup(): void {
     const popup = document.getElementById("header-download-popup");
     popup.style.display = "none";
-    document.removeEventListner("click", dismissDownloadPopupOnClick);
+    document.removeEventListener("click", dismissDownloadPopupOnClick);
   }
 
   function onChangeHandler(selectedRegion: Region): void {
@@ -281,7 +284,7 @@
         <a
           class="header-download-popup-link"
           href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/Global_vaccination_search_insights.csv"
-          on:click={(e) => dismissDownloadPopup()}
+          on:click={(e) => closeDownloadPopup()}
           >Download dataset - United States</a
         >
       </p>
