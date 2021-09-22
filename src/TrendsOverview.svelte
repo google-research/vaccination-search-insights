@@ -707,14 +707,13 @@
         <div class="next-steps-item">
           <h3>Tell us about your project</h3>
           <p>
-            We’d love to hear more about how you’re using Vaccination Search
-            Insights. If you’ve solved problems, we’d like to help you share
-            your solutions.
+            We’d love to hear more about how you’re using the data. Send
+            feedback using our form.
           </p>
           <p>
             <a
-              href="mailto:covid-19-search-trends-feedback+webcallout@google.com"
-              >Email us
+              href="https://google-health.force.com/s/form?type=VSIFeedbackForm"
+              >Feedback
             </a>
           </p>
         </div>
