@@ -14,40 +14,32 @@
  * limitations under the License.
  */
 
-import type { Region } from "./data";
+import { Region, RegionType } from "./data";
 import * as d3 from "d3";
 
 let activePopupId: string;
 
 export function getRegionName(region: Region): string {
   let regionName: string;
+  let parentRegionName: string;
 
   if (!region) {
     return "";
   }
-  if (region.sub_region_3) {
-    regionName = region.sub_region_3_code;
 
-    if (region.sub_region_2) {
-      regionName += `, ${region.sub_region_2}`;
-    }
-  } else if (region.sub_region_2) {
-    regionName = region.sub_region_2;
-
-    if (region.sub_region_1) {
-      regionName += `, ${region.sub_region_1}`;
-    }
-  } else if (region.sub_region_1) {
-    regionName = region.sub_region_1;
-
-    if (region.country_region) {
-      regionName += `, ${region.country_region}`;
-    }
-  } else if (region.country_region) {
-    regionName = region.country_region;
+  if (region.region_type === RegionType.SubRegionThree) {
+    regionName = region[`${region.region_type}_code`];
+  } else {
+    regionName = region[region.region_type];
   }
 
-  return regionName;
+  parentRegionName = region[region.parent_region_type];
+
+  if (parentRegionName) {
+    return `${regionName}, ${parentRegionName}`;
+  } else {
+    return regionName;
+  }
 }
 
 export function inClientBounds(
