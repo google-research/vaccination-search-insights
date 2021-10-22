@@ -37,7 +37,7 @@ After you have gained direct contributor access, you may follow this example wor
 ```sh
 # grab the dev branch, after you create your local dev, this just becomes git checkout dev
 > git checkout -b dev origin/dev 
-# make sure you're local repo is up to date
+# make sure your local repo is up to date
 > git pull --all 
 > git checkout -b feature-branch-name origin/dev
 # then make and stage your changes
