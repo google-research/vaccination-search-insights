@@ -800,3 +800,23 @@ div.next-steps-item > h3 {
     display: none;
   }
 }
+
+.queries-lists{
+  margin-top: 10px;
+  display: flex;
+}
+
+.query-list-title {
+  font-size: 22px;
+  line-height: 28px;
+  margin-bottom: 12px;
+  color: #202124;
+}
+
+.top-searches{
+  flex: 1
+}
+
+.rising-searches{
+  flex: 1
+}

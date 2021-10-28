@@ -42,6 +42,7 @@
     setSelectedState,
   } from "./choropleth.js";
   import TimeSeries from "./TimeSeries.svelte";
+  import TopQueries from "./TopQueries.svelte";
   import { select } from "d3";
 
   let selectedRegion: Region;
@@ -606,6 +607,7 @@
           </p>
         </TimeSeries>
       {/await}
+      <TopQueries/>
       <a id="about" class="about-anchor">
         <!-- Empty - keep to avoid warnings on empty anchor -->
       </a>
