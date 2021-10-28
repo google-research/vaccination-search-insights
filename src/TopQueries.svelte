@@ -14,9 +14,72 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
+
+    let selectedListId: string = "vaccination";
+    function changeList() {
+        selectedListId = this.id; //will only currently highlight button
+    }
+
+    export let covid_vaccination_button_title: string;
+    export let vaccination_intent_button_title: string;
+    export let safety_side_effects_button_title: string;
 </script>
 
 <div id="top-queries">
+    <div class="map-trend-selector-group">
+        <button
+            id="vaccination"
+            class={selectedListId == "vaccination"
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
+            on:click={changeList}
+            title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
+        >
+            {#if selectedListId == "vaccination"}
+                <div class="map-trend-icon-container">
+                    <span class="material-icons map-trend-selected-icon"
+                        >done</span
+                    >
+                </div>
+            {/if}
+            {covid_vaccination_button_title}
+        </button>
+        <button
+            id="intent"
+            class={selectedListId == "intent"
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
+            on:click={changeList}
+            title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
+        >
+            {#if selectedListId == "intent"}
+                <div class="map-trend-icon-container">
+                    <span class="material-icons map-trend-selected-icon"
+                        >done</span
+                    >
+                </div>
+            {/if}
+            {vaccination_intent_button_title}
+        </button>
+        <button
+            id="safety"
+            class={selectedListId == "safety"
+                ? "map-trend-selector-button map-trend-selector-selected"
+                : "map-trend-selector-button"}
+            on:click={changeList}
+            title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
+        >
+            {#if selectedListId == "safety"}
+                <div class="map-trend-icon-container">
+                    <span class="material-icons map-trend-selected-icon"
+                        >done</span
+                    >
+                </div>
+            {/if}
+            {safety_side_effects_button_title}
+        </button>
+    </div>
+
     <div class="queries-lists">
         <div class="top-searches">
             <div class="query-list-title">Top searches</div>

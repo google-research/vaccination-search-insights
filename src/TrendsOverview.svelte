@@ -607,7 +607,11 @@
           </p>
         </TimeSeries>
       {/await}
-      <TopQueries/>
+      <TopQueries
+        covid_vaccination_button_title={COVID_19_VACCINATION_TITLE}
+        vaccination_intent_button_title={VACCINATION_INTENT_TITLE}
+        safety_side_effects_button_title={SAFETY_SIDE_EFFECTS_TITLE}
+      />
       <a id="about" class="about-anchor">
         <!-- Empty - keep to avoid warnings on empty anchor -->
       </a>
