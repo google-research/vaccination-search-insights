@@ -16,8 +16,14 @@
      */
 
     let selectedListId: string = "vaccination";
+
+    /**
+     * Change selectedListId so that the selected button becomes active and display the list associated with the selectedListId.
+     *
+     * TODO(mhkshum): Add code to change the currently displayed list to the list associated with the category selected.
+     */
     function changeList() {
-        selectedListId = this.id; //will only currently highlight button
+        selectedListId = this.id;
     }
 
     export let covid_vaccination_button_title: string;
@@ -79,7 +85,6 @@
             {safety_side_effects_button_title}
         </button>
     </div>
-
     <div class="queries-lists">
         <div class="top-searches">
             <div class="query-list-title">Top searches</div>
