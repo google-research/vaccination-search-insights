@@ -14,7 +14,10 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
+
     let selectedListId: string = "vaccination";
+
+    const MINIMUM_DATE_INDEX = 0;
 
     /**
      * Change selectedListId so that the selected button becomes active and display the list associated with the selectedListId.
@@ -24,6 +27,29 @@
     function changeCategory() {
         selectedListId = this.id;
     }
+
+    let dateList: string[] = [];
+    let selectedDateIndex: number = dateList.length - 1;
+    let date = dateList.length != MINIMUM_DATE_INDEX ? dateList[selectedDateIndex] : "No Data";
+
+    function incrementDate() {
+        if (selectedDateIndex < dateList.length - 1) {
+            selectedDateIndex += 1;
+            setDate(selectedDateIndex);
+        }
+    }
+
+    function decrementDate() {
+        if (selectedDateIndex > MINIMUM_DATE_INDEX) {
+            selectedDateIndex -= 1;
+            setDate(selectedDateIndex);
+        }
+    }
+
+    function setDate(index: number): void {
+        date = dateList[selectedDateIndex];
+    }
+
     export let covid_vaccination_button_title: string;
     export let vaccination_intent_button_title: string;
     export let safety_side_effects_button_title: string;
@@ -89,6 +115,31 @@
         </div>
         <div class="rising-searches">
             <div class="query-list-title">Rising</div>
+            <div class="date-nav-control">
+                <div id="map-legend-date" class="date-nav-display">
+                    {date}
+                </div>
+                <div
+                    id="date-nav-button-back"
+                    class={selectedDateIndex <= MINIMUM_DATE_INDEX
+                        ? "date-nav-button date-nav-button-inactive"
+                        : "date-nav-button date-nav-button-active"}
+                    on:click={decrementDate}
+                >
+                    <span class="material-icons-outlined">arrow_back_ios</span>
+                </div>
+                <div
+                    id="date-nav-button-forward"
+                    class={selectedDateIndex === dateList.length - 1
+                        ? "date-nav-button date-nav-button-inactive"
+                        : "date-nav-button date-nav-button-active"}
+                    on:click={incrementDate}
+                >
+                    <span class="material-icons-outlined"
+                        >arrow_forward_ios</span
+                    >
+                </div>
+            </div>
         </div>
     </div>
 </div>

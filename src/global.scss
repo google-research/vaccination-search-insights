@@ -804,19 +804,27 @@ div.next-steps-item > h3 {
 .queries-lists{
   margin-top: 16px;
   display: flex;
+  align-items: center;
 }
 
 .query-list-title {
+  display: flex;
   font-size: 22px;
   line-height: 28px;
-  margin-bottom: 12px;
   color: #202124;
 }
 
 .top-searches{
-  flex: 1
+  flex: 1;
 }
 
 .rising-searches{
-  flex: 1
-} 
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rising-searches .date-nav-control {
+  min-width: initial;
+}
