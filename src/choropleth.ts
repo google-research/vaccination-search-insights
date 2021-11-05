@@ -566,11 +566,9 @@ function resetLastSelectedCountyFill() {
 
 function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];
-  const zipsForCounty = new Set(getCountyZctas(fipsCode));
   const zipTrends: Map<String, RegionalTrendLine> = trendData
     .filter(
       (t) =>
-        zipsForCounty.has(t.sub_region_3_code) &&
         t.date == currentDate &&
         getTrendValue(selectedTrend, t) != 0
     )

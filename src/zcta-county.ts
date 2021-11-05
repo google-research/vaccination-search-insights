@@ -1,4 +1,5 @@
-// Converted CSV at
+// Since zip codes can span over multiple counties, this provides a poper taxonomy mapping
+// For the US, converted CSV at
 // http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_county_rel_10.txt
 import zctaCounty from "../public/geo/zcta-county-us.json";
 
