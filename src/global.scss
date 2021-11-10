@@ -187,9 +187,9 @@ sup {
 }
 
 .header-download-icon {
-  font-size: 16px;
   line-height: 24px;
   vertical-align: bottom;
+  margin-right: 2px;
 }
 
 .header-download-popup {
@@ -197,9 +197,8 @@ sup {
   left: 10px;
   top: 10px;
   z-index: 500;
-  width: 315px;
-  height: 115px;
-  padding: 13px 16px 13px 16px;
+  width: 370px;
+  padding: 22px 20px;
   box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3),
     0px 2px 6px 2px rgba(60, 64, 67, 0.15);
   border-radius: 8px;
@@ -217,11 +216,24 @@ sup {
 }
 
 .header-downlod-popup-title {
-  font-family: Roboto;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 20px;
   line-height: 20px;
   letter-spacing: 0.25px;
+  margin: 0px;
+}
+
+.header-download-popup-subtitle{
+  font-family: Google Sans;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.25px;
+  margin: 0px;
+  color: #5f6368;
+}
+
+.header-download-popup-link-list{
   margin: 0px;
 }
 
@@ -230,6 +242,17 @@ sup {
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.25px;
+  display: block;
+  margin-block: 5px;
+  color: #5f6368;
+}
+
+.header-download-popup-icon{
+  font-size: 20px;
+  line-height: 24px;
+  vertical-align: bottom;
+  margin-right: 14px;
+  color: #5f6368;
 }
 
 .link-item {
