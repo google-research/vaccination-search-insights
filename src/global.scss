@@ -829,3 +829,31 @@ div.next-steps-item > h3 {
     display: none;
   }
 }
+
+.queries-lists{
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.query-list-title {
+  display: flex;
+  font-size: 22px;
+  line-height: 28px;
+  color: #202124;
+}
+
+.top-searches{
+  flex: 1;
+}
+
+.rising-searches{
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rising-searches .date-nav-control {
+  min-width: initial;
+}
