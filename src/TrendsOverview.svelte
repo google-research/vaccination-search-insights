@@ -273,19 +273,34 @@
     </div>
     <div id="header-download-popup" class="header-download-popup">
       <h3 class="header-downlod-popup-title">
-        COVID-19 Vaccination Search Insights
+        Covid-19 Vaccination Search Insights
       </h3>
       <p class="header-download-popup-body">
         In order to download or use the data or insights, you must agree to the
         Google
         <a href="https://policies.google.com/terms">Terms of Service</a>.
       </p>
-      <p>
+      <h4 class = "header-download-popup-subtitle">
+        Download dataset
+      </h4>
+      <p class="header-download-popup-link-list">
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/Global_vaccination_search_insights.csv"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv"
           on:click={(e) => closeDownloadPopup()}
-          >Download dataset - United States</a
+          ><span class="material-icons-outlined header-download-popup-icon">file_download</span>Canada</a
+        >
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon">file_download</span>United Kingdom</a
+        >
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/US_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon">file_download</span>United States</a
         >
       </p>
     </div>
