@@ -26,8 +26,8 @@
   const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
 
   const COUNTRIES = {
-    "Canada":"", 
-    "United Kingdom":"", 
+    "Canada":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk", 
+    "United Kingdom":"ChIJqZHHQhE7WgIReiWIMkOg-MQ", 
     "United States":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
   };
   

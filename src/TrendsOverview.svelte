@@ -28,7 +28,7 @@
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
-  import { getRegionName, handleInfoPopup } from "./utils";
+  import { getRegionName, getCountryCode, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
     createMap,
@@ -46,10 +46,11 @@
   let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   let placeId: string;
   let selectedRegionName: string;
+  let selectedCountryCode: string;
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
-  const mapData: Promise<RegionalTrendLine[]> = fetchRegionalTrendLines();
+  let mapData: Promise<RegionalTrendLine[]>;
   let isMapInitialized: boolean = false;
 
   export let covid_vaccination_title: string;
@@ -67,7 +68,7 @@
   }
 
   function filterDropdownItems(regions: Region[]): Region[] {
-    return regions?.filter((region) => !region.sub_region_3);
+    return regions?.filter((region) => !region.sub_region_3 && region.country_region_code == selectedCountryCode);
   }
 
   function setParentRegionButton() {
@@ -85,8 +86,7 @@
   }
 
   onMount(async () => {
-    regionsByPlaceId = await fetchRegionData();
-    regionalTrends = await fetchRegionalTrendsData();
+    regionsByPlaceId = await fetchRegionData();    
     regions = Array.from(regionsByPlaceId.values());
 
     params.subscribe((param) => {
@@ -94,6 +94,7 @@
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
+        selectedCountryCode = getCountryCode(selectedRegion);
       }
 
       setParentRegionButton();
@@ -105,13 +106,18 @@
 
     setParentRegionButton();
 
-    mapData.then((mapData) => {
-      createMap(mapData, selectedMapTrendId, regions, onMapSelection);
-      isMapInitialized = true;
-      if (selectedRegion) {
-        setMapSelection(selectedRegion);
-      }
-    });
+    if (selectedCountryCode){
+      mapData = fetchRegionalTrendLines(selectedCountryCode);
+      regionalTrends = await fetchRegionalTrendsData(selectedCountryCode);
+    
+      mapData.then((mapData) => {
+        createMap(mapData, selectedMapTrendId, regions, onMapSelection);
+        isMapInitialized = true;
+        if (selectedRegion) {
+          setMapSelection(selectedRegion);
+        }
+      });
+    }
   });
 
   function onChangeHandler(selectedRegion: Region): void {
