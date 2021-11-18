@@ -139,6 +139,7 @@ sup {
 .header-topbar-text {
   display: inline;
   vertical-align: middle;
+  color: g.$header-light;
 }
 
 .header-search-bar {
@@ -167,12 +168,19 @@ sup {
 .parent-region-button-container {
   width: 36px;
   height: 36px;
-  display: none;
 }
 
 .parent-region-button {
   margin: 6px;
   cursor: pointer;
+  display: none;
+}
+
+.parent-country-button {
+  margin: 6px;
+  cursor: pointer;
+  display: block;
+  color: #5f6368;
 }
 
 .parent-region-button:hover {

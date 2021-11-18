@@ -72,9 +72,11 @@
 
   function setParentRegionButton() {
     if (hasParentRegion(selectedRegion)) {
-      d3.select(".parent-region-button-container").style("display", "block");
+      d3.select(".parent-region-button").style("display", "block");
+      d3.select(".parent-country-button").style("display", "none");
     } else {
-      d3.select(".parent-region-button-container").style("display", "none");
+      d3.select(".parent-region-button").style("display", "none");
+      d3.select(".parent-country-button").style("display", "block");
     }
   }
 
@@ -99,10 +101,6 @@
 
     if (placeId) {
       selectedRegion = regionsByPlaceId.get(placeId);
-    } else {
-      selectedRegion = regions.find(
-        (region) => region.region_type === RegionType.CountryRegion
-      );
     }
 
     setParentRegionButton();
@@ -193,6 +191,10 @@
               goToParentRegion();
             }}>arrow_back</span
           >
+          <!-- TODO(jelenako): switch between place IDs, rather than load the main page -->
+          <a class="parent-country-button material-icons-outlined" href="/"
+            >arrow_back</a
+          >
         </div>
         <AutoComplete
           items={filterDropdownItems(regions)}
@@ -208,14 +210,6 @@
     <div id="header-divider" class="header-content-divider" />
   </div>
 
-  <h1>COVID-19 Vaccine Search Insights</h1>
-  <p>
-    Explore searches for COVID-19 vaccination topics by region. This aggregated
-    and anonymized data helps you understand and compare communities&apos;
-    information needs. We’re releasing this data to inform public health
-    vaccine-confidence efforts.
-    <a href="#about">Learn more</a>
-  </p>
   {#await regionalTrends}
     <!-- Empty -->
   {:then trends}
