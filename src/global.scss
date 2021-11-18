@@ -107,6 +107,18 @@ sup {
   margin-top: 60px;
 }
 
+.container-header{
+  @include header-font;
+  font-size: 1.25rem;
+  color: g.$header-light;
+  background-color: g.$body-background-color;
+
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 100%;
+}
+
 .header-topbar {
   margin-top: 20px;
   display: flex;
@@ -286,7 +298,7 @@ sup {
 .content-area {
   display: flex;
   justify-content: center;
-  margin-top: g.$header-height;
+  margin-top: g.$header-height + g.$header-search-bar-height;
 }
 
 .content-body {
