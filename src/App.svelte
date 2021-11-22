@@ -14,7 +14,9 @@
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+  import AutoComplete from "simple-svelte-autocomplete";
   import { onMount } from "svelte";
+  import { params } from "./stores";
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import TopQueries from "./TopQueries.svelte";
@@ -23,11 +25,29 @@
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
   const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
 
+  const COUNTRIES = {
+    "Canada":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk", 
+    "United Kingdom":"ChIJqZHHQhE7WgIReiWIMkOg-MQ", 
+    "United States":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
+  };
+  
+  let selectedCountry: string;
+  let selectedCountryID: string;
+  let placeId: string;
+
   onMount(async () => {
     document.addEventListener("scroll", handleDocumentScroll);
     document
       .getElementById("download-link")
       .addEventListener("click", handleDownloadPopup);
+
+    params.subscribe((param) => {
+      placeId = param.placeId;
+    });
+
+    if (placeId) {
+      selectedCountryID = placeId;
+    }
   });
 
   function handleDownloadPopup(event): void {
@@ -84,6 +104,20 @@
     document.removeEventListener("click", dismissDownloadPopupOnClick);
   }
 
+  function onCountrySelectHandler(selectedCountry: string): void {
+    selectedCountryID = COUNTRIES[selectedCountry];
+    if (selectedCountryID != undefined) {
+      params.update((p) => {
+        if (selectedCountryID !== p.placeId) {
+          p.placeId = selectedCountryID;
+          p.updateHistory = true;
+        }
+
+        return p;
+      });
+    }
+  }
+
 </script>
 
 <svelte:head>
@@ -99,7 +133,9 @@
             <use xlink:href="glue/glue-icons.svg#google-color-logo" />
           </svg>
         </a>
-        <div class="header-topbar-text">COVID-19 Vaccine Search Insights</div>
+        <a href="/" class="header-topbar-text">
+          COVID-19 Vaccine Search Insights
+        </a>
       </div>
       <div class="header-topbar-menu">
         <div id="download-link" class="link-item">
@@ -154,19 +190,48 @@
         >
       </p>
     </div>
+    {#if !placeId}
+      <div class="container-header">
+        <div class="header-search-bar">
+          <div class="header-search-container">
+            <AutoComplete
+              items={Object.keys(COUNTRIES)}
+              bind:selectedItem={selectedCountry}
+              placeholder={"Select a country"}
+              onChange={onCountrySelectHandler}
+              inputClassName={"header-search-box"}
+              className={"header-search-container"}
+            />
+          </div>
+        </div>
+        <div id="header-divider" class="header-content-divider" />
+      </div>
+    {/if}
   </header>
 
   <div class="content-area">
     <div class="content-body">
-      <TrendsOverview 
-        covid_vaccination_title={COVID_19_VACCINATION_TITLE}
-        vaccination_intent_title={VACCINATION_INTENT_TITLE}
-        safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}/>
-      <TopQueries
-        covid_vaccination_button_title={COVID_19_VACCINATION_TITLE}
-        vaccination_intent_button_title={VACCINATION_INTENT_TITLE}
-        safety_side_effects_button_title={SAFETY_SIDE_EFFECTS_TITLE}
-      />
+      <h1>COVID-19 Vaccine Search Insights</h1>
+      <p>
+        Explore searches for COVID-19 vaccination topics by region. This aggregated
+        and anonymized data helps you understand and compare communities&apos;
+        information needs. We’re releasing this data to inform public health
+        vaccine-confidence efforts.
+        <a href="#about">Learn more</a>
+      </p>
+
+      {#if placeId}
+        <TrendsOverview
+          covid_vaccination_title={COVID_19_VACCINATION_TITLE}
+          vaccination_intent_title={VACCINATION_INTENT_TITLE}
+          safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}
+        />
+        <TopQueries
+          covid_vaccination_button_title={COVID_19_VACCINATION_TITLE}
+          vaccination_intent_button_title={VACCINATION_INTENT_TITLE}
+          safety_side_effects_button_title={SAFETY_SIDE_EFFECTS_TITLE}
+        />
+      {/if}
 
       <h2 class="first-section-header">About this data</h2>
       <p>
