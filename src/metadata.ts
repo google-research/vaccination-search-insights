@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-
-//import { parse, ParseResult } from "papaparse";
-
-import * as metadata from '../public/data/VSI_metadata.json';
-
-export function fetchCountryMetaData(countryCode: string) {
-    //let countryMetadata = JSON.parse(metadata)
-    return metadata.filter((c) => c.countryCode == countryCode);
+/* Simple component to return country metadata for a given country name. */
+import metadata from '../public/data/VSI_metadata.json';
+ 
+export function fetchCountryMetaData(countryNameString: string) {
+    //const countryData = metadata;
+    return metadata.filter(c => c.countryName === countryNameString);
 }
 
+// TODO: Remove these tests once we are satisfied this component does its job.
 function _testCountryMetaData(){
-    const countries = ["CA", "GB", "US"]
+    const countries = ["Canada", "United Kingdom", "United States"]
    countries.forEach(country => {
        console.log("testing "+country);
        console.log(fetchCountryMetaData(country))
@@ -33,7 +32,4 @@ function _testCountryMetaData(){
        
    });
 }
-
-function c(c: any) {
-    throw new Error('Function not implemented.');
-}
+ _testCountryMetaData();

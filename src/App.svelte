@@ -20,6 +20,7 @@
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import TopQueries from "./TopQueries.svelte";
+  import { fetchCountryMetaData } from "./metadata";
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
@@ -105,6 +106,9 @@
   }
 
   function onCountrySelectHandler(selectedCountry: string): void {
+    let countryMetadata = fetchCountryMetaData(selectedCountry);
+    console.log("selected country "+ selectedCountry +" metadata is:");
+    console.log(countryMetadata);
     selectedCountryID = COUNTRIES[selectedCountry];
     if (selectedCountryID != undefined) {
       params.update((p) => {
