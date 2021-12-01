@@ -22,14 +22,27 @@ export function fetchCountryMetaData(countryNameString: string) {
     return metadata.filter(c => c.countryName === countryNameString);
 }
 
+export function fetchCountryNames() {
+    // TODO: we can add some logic here and in the metadata.json to filter for a valid country tag.
+    var countryList = [];
+    metadata.forEach( (country) => countryList.push(country.countryName) );
+    return countryList;
+}
+
 // TODO: Remove these tests once we are satisfied this component does its job.
 function _testCountryMetaData(){
     const countries = ["Canada", "United Kingdom", "United States"]
-   countries.forEach(country => {
+    countries.forEach(country => {
        console.log("testing "+country);
        console.log(fetchCountryMetaData(country))
        console.log("done with "+country)
        
    });
 }
+
+function _testCountryList(){
+    var myCountries = fetchCountryNames();
+    console.log(myCountries);
+}
  _testCountryMetaData();
+ _testCountryList();

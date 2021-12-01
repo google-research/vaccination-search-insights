@@ -106,9 +106,12 @@
   }
 
   function onCountrySelectHandler(selectedCountry: string): void {
-    let countryMetadata = fetchCountryMetaData(selectedCountry);
-    console.log("selected country "+ selectedCountry +" metadata is:");
-    console.log(countryMetadata);
+    if(selectedCountry) {
+      let countryMetadata = fetchCountryMetaData(selectedCountry)[0];
+      console.log("selected country "+ selectedCountry +" metadata is:");
+      console.log(countryMetadata);
+      console.log("placeId is: "+countryMetadata.placeId);
+    }
     selectedCountryID = COUNTRIES[selectedCountry];
     if (selectedCountryID != undefined) {
       params.update((p) => {
