@@ -42,8 +42,8 @@ export function getRegionName(region: Region): string {
   }
 }
 
-export function getCountryCode(region: Region): string{  
-  return region.country_region_code;
+export function getCountryName(region: Region): string{  
+  return region.country_region;
 }
 
 export function inClientBounds(

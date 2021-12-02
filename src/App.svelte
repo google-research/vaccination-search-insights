@@ -20,20 +20,16 @@
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import TopQueries from "./TopQueries.svelte";
+  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
   const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
-
-  const COUNTRIES = {
-    "Canada":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk", 
-    "United Kingdom":"ChIJqZHHQhE7WgIReiWIMkOg-MQ", 
-    "United States":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
-  };
   
   let selectedCountry: string;
   let selectedCountryID: string;
   let placeId: string;
+  let selectedCountryMetadata;
 
   onMount(async () => {
     document.addEventListener("scroll", handleDocumentScroll);
@@ -105,16 +101,19 @@
   }
 
   function onCountrySelectHandler(selectedCountry: string): void {
-    selectedCountryID = COUNTRIES[selectedCountry];
-    if (selectedCountryID != undefined) {
-      params.update((p) => {
-        if (selectedCountryID !== p.placeId) {
-          p.placeId = selectedCountryID;
-          p.updateHistory = true;
-        }
-
-        return p;
-      });
+    if(selectedCountry) {
+      selectedCountryMetadata = fetchCountryMetaData(selectedCountry)[0];
+    
+      selectedCountryID = selectedCountryMetadata.placeId;
+      if (selectedCountryID != undefined) {
+        params.update((p) => {
+          if (selectedCountryID !== p.placeId) {
+            p.placeId = selectedCountryID;
+            p.updateHistory = true;
+          }
+          return p;
+        });
+      }
     }
   }
 
@@ -195,7 +194,7 @@
         <div class="header-search-bar">
           <div class="header-search-container">
             <AutoComplete
-              items={Object.keys(COUNTRIES)}
+              items={fetchCountryNames()}
               bind:selectedItem={selectedCountry}
               placeholder={"Select a country"}
               onChange={onCountrySelectHandler}
@@ -222,6 +221,7 @@
 
       {#if placeId}
         <TrendsOverview
+          selectedCountryMetadata={selectedCountryMetadata}
           covid_vaccination_title={COVID_19_VACCINATION_TITLE}
           vaccination_intent_title={VACCINATION_INTENT_TITLE}
           safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}

@@ -28,7 +28,7 @@
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
-  import { getRegionName, getCountryCode, handleInfoPopup } from "./utils";
+  import { getRegionName, getCountryName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
     createMap,
@@ -56,6 +56,7 @@
   export let covid_vaccination_title: string;
   export let vaccination_intent_title: string;
   export let safety_side_effects_title: string;
+  export let selectedCountryMetadata;
 
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
@@ -94,7 +95,7 @@
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
-        selectedCountryCode = getCountryCode(selectedRegion);
+        selectedCountryCode = getCountryName(selectedRegion);
       }
 
       setParentRegionButton();
@@ -106,9 +107,9 @@
 
     setParentRegionButton();
 
-    if (selectedCountryCode){
-      mapData = fetchRegionalTrendLines(selectedCountryCode);
-      regionalTrends = await fetchRegionalTrendsData(selectedCountryCode);
+    if (selectedCountryMetadata){
+      mapData = fetchRegionalTrendLines(selectedCountryMetadata.dataFile);
+      regionalTrends = await fetchRegionalTrendsData(mapData);
     
       mapData.then((mapData) => {
         createMap(mapData, selectedMapTrendId, regions, onMapSelection);
