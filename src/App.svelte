@@ -221,6 +221,7 @@
 
       {#if placeId}
         <TrendsOverview
+          selectedCountryMetadata={selectedCountryMetadata}
           covid_vaccination_title={COVID_19_VACCINATION_TITLE}
           vaccination_intent_title={VACCINATION_INTENT_TITLE}
           safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}
