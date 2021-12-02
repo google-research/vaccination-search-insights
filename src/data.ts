@@ -149,21 +149,19 @@ function coerceNumber(u: unknown) {
   }
 }
 
-export function fetchRegionalTrendLines(countryName: string): Promise<RegionalTrendLine[]> {
+export function fetchRegionalTrendLines(countryDataFile: string): Promise<RegionalTrendLine[]> {
   if (regionalTrendLines) {
-    console.log("Test")
     return Promise.resolve(regionalTrendLines);
-  } else if (countryName) {
-    let country_metadata = fetchCountryMetaData(countryName)[0];
+  } else if (countryDataFile) {
     let results: Promise<RegionalTrendLine[]> = new Promise(
       (resolve, reject) => {
-        parse("./data/" + country_metadata.dataFile, {
+        parse("./data/" + countryDataFile, {
           download: true,
           header: true,
           skipEmptyLines: true,
           complete: function (results: ParseResult<RegionalTrendLine>) {
             console.log(
-              `Load regional trend data with ${results.data.length} rows for ${countryName}`
+              `Load regional trend data with ${results.data.length} from ${countryDataFile}`
             );
             const mappedData = results.data.map((d) => {
               const parsedRow: RegionalTrendLine = {

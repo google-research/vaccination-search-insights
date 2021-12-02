@@ -56,6 +56,7 @@
   export let covid_vaccination_title: string;
   export let vaccination_intent_title: string;
   export let safety_side_effects_title: string;
+  export let selectedCountryMetadata;
 
   // TODO(patankar): Update all metric names where they appear.
   let covid19VaccinationChartContainer: HTMLElement;
@@ -106,8 +107,8 @@
 
     setParentRegionButton();
 
-    if (selectedCountryCode){
-      mapData = fetchRegionalTrendLines(selectedCountryCode);
+    if (selectedCountryMetadata){
+      mapData = fetchRegionalTrendLines(selectedCountryMetadata.dataFile);
       regionalTrends = await fetchRegionalTrendsData(mapData);
     
       mapData.then((mapData) => {
