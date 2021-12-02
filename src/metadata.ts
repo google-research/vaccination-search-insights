@@ -30,6 +30,7 @@ export function fetchCountryNames() {
 }
 
 // TODO: Remove these tests once we are satisfied this component does its job.
+/*
 function _testCountryMetaData(){
     const countries = ["Canada", "United Kingdom", "United States"]
     countries.forEach(country => {
@@ -46,3 +47,4 @@ function _testCountryList(){
 }
  _testCountryMetaData();
  _testCountryList();
+ */
