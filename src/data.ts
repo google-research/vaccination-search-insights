@@ -17,6 +17,7 @@
 import { parse, ParseResult } from "papaparse";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
+import { fetchCountryMetaData } from "./metadata";
 
 export interface Region {
   country_region: string;
@@ -73,12 +74,6 @@ export interface RegionalTrends {
     vaccination_intent: TrendValue[];
     safety_side_effects: TrendValue[];
   };
-}
-
-const COUNTRY_DATA = {
-  CA: "CA_vaccination_search_insights.csv",
-  GB: "GB_vaccination_search_insights.csv",
-  US: "Global_vaccination_search_insights.csv"
 }
 
 let regions: Map<string, Region>;
@@ -154,26 +149,21 @@ function coerceNumber(u: unknown) {
   }
 }
 
-//During initialization it's possible this is called twice in succession before we get a chance to cache the result.
-//So let's serialize access to make sure we don't do a double request
-// export const fetchRegionalTrendLines: () => Promise<RegionalTrendLine[]> =
-//   serializePromises(_fetchRegionalTrendLines);
-
-// TODO(jelenako): this function is called twice. Fix with the above seralized access solution
-export function fetchRegionalTrendLines(countryCode: string): Promise<RegionalTrendLine[]> {
+export function fetchRegionalTrendLines(countryName: string): Promise<RegionalTrendLine[]> {
   if (regionalTrendLines) {
     console.log("Test")
     return Promise.resolve(regionalTrendLines);
-  } else if (countryCode){
+  } else if (countryName) {
+    let country_metadata = fetchCountryMetaData(countryName)[0];
     let results: Promise<RegionalTrendLine[]> = new Promise(
       (resolve, reject) => {
-        parse("./data/" + COUNTRY_DATA[countryCode], {
+        parse("./data/" + country_metadata.dataFile, {
           download: true,
           header: true,
           skipEmptyLines: true,
           complete: function (results: ParseResult<RegionalTrendLine>) {
             console.log(
-              `Load regional trend data with ${results.data.length} rows for ${countryCode}`
+              `Load regional trend data with ${results.data.length} rows for ${countryName}`
             );
             const mappedData = results.data.map((d) => {
               const parsedRow: RegionalTrendLine = {
@@ -216,13 +206,13 @@ export function fetchZipData(geoid): Promise<any> {
   );
 }
 
-export function fetchRegionalTrendsData(countryCode: string): Promise<
+export function fetchRegionalTrendsData(trendLines: Promise<RegionalTrendLine[]>): Promise<
   Map<string, RegionalTrends>
 > {
   if (regionalTrends) {
     return Promise.resolve(regionalTrends);
   } else {
-    return fetchRegionalTrendLines(countryCode).then((rtls) => {
+    return trendLines.then((rtls) => {
       // Convert table data into per-trend time-series.
       let nestedTrends = d3Collection
         .nest<RegionalTrendLine, RegionalTrends>()

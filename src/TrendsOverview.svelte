@@ -28,7 +28,7 @@
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
-  import { getRegionName, getCountryCode, handleInfoPopup } from "./utils";
+  import { getRegionName, getCountryName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
     createMap,
@@ -94,7 +94,7 @@
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
-        selectedCountryCode = getCountryCode(selectedRegion);
+        selectedCountryCode = getCountryName(selectedRegion);
       }
 
       setParentRegionButton();
@@ -108,7 +108,7 @@
 
     if (selectedCountryCode){
       mapData = fetchRegionalTrendLines(selectedCountryCode);
-      regionalTrends = await fetchRegionalTrendsData(selectedCountryCode);
+      regionalTrends = await fetchRegionalTrendsData(mapData);
     
       mapData.then((mapData) => {
         createMap(mapData, selectedMapTrendId, regions, onMapSelection);

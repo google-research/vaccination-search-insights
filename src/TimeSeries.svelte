@@ -493,35 +493,40 @@
       regionalTrendsByPlaceId.values()
     ).filter((t) => {
       const region = regionsByPlaceId.get(t.place_id);
-      let inSelectedRegion: boolean;
-      const isSelectedRegion = region.place_id === selectedRegion.place_id;
+      if (region) {
+        let inSelectedRegion: boolean;
+        const isSelectedRegion = region.place_id === selectedRegion.place_id;
 
-      if (selectedRegion.sub_region_3) {
-        // Zipcode is selected.
-        return isSelectedRegion;
-      }
-      if (
-        selectedRegion.sub_region_2 ||
-        selectedRegion.sub_region_1_code === "US-DC"
-      ) {
-        // County is selected, want component zipcodes.
-        inSelectedRegion =
-          region.sub_region_2 === selectedRegion.sub_region_2 &&
-          region.sub_region_1 === selectedRegion.sub_region_1;
-      } else if (selectedRegion.sub_region_1) {
-        // State is selected, want component counties.
-        inSelectedRegion =
-          !region.sub_region_3 &&
-          region.sub_region_1_code === selectedRegion.sub_region_1_code;
-      } else if (selectedRegion.country_region) {
-        // Country is selected, want component states.
-        inSelectedRegion =
-          !region.sub_region_3 &&
-          !region.sub_region_2 &&
-          region.country_region_code === selectedRegion.country_region_code;
-      }
+        if (selectedRegion.sub_region_3) {
+          // Zipcode is selected.
+          return isSelectedRegion;
+        }
+        if (
+          selectedRegion.sub_region_2 ||
+          selectedRegion.sub_region_1_code === "US-DC"
+        ) {
+          // County is selected, want component zipcodes.
+          inSelectedRegion =
+            region.sub_region_2 === selectedRegion.sub_region_2 &&
+            region.sub_region_1 === selectedRegion.sub_region_1;
+        } else if (selectedRegion.sub_region_1) {
+          // State is selected, want component counties.
+          inSelectedRegion =
+            !region.sub_region_3 &&
+            region.sub_region_1_code === selectedRegion.sub_region_1_code;
+        } else if (selectedRegion.country_region) {
+          // Country is selected, want component states.
+          inSelectedRegion =
+            !region.sub_region_3 &&
+            !region.sub_region_2 &&
+            region.country_region_code === selectedRegion.country_region_code;
+        }
 
-      return inSelectedRegion || isSelectedRegion;
+        return inSelectedRegion || isSelectedRegion;
+      } else {
+        console.log("Place ID not found in regions mapping: ", t.place_id);
+        return false;
+      }
     });
 
     // A superset of dates for shown trendlines.
