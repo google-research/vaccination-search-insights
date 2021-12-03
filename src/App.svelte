@@ -17,10 +17,11 @@
   import AutoComplete from "simple-svelte-autocomplete";
   import { onMount } from "svelte";
   import { params } from "./stores";
+  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import TopQueries from "./TopQueries.svelte";
-  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
+  import CountryPicker from "./CountryPicker.svelte"; 
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
@@ -231,6 +232,11 @@
           vaccination_intent_button_title={VACCINATION_INTENT_TITLE}
           safety_side_effects_button_title={SAFETY_SIDE_EFFECTS_TITLE}
         />
+      {:else}
+          <CountryPicker
+            id="covid-19-vaccination"
+          >
+          </CountryPicker>
       {/if}
 
       <h2 class="first-section-header">About this data</h2>

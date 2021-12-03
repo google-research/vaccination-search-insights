@@ -62,6 +62,22 @@ export interface RegionalTrendAggregate {
   sni_safety_side_effects: number;
 }
 
+export interface Country {
+  country_region: string;
+  country_region_code: string;
+  place_id: string;
+}
+
+export interface CountryTrendLine {
+  date: string;
+  country_region: string;
+  country_region_code: string;
+  place_id: string;
+  sni_covid19_vaccination: number;
+  sni_vaccination_intent: number;
+  sni_safety_side_effects: number;
+}
+
 export interface TrendValue {
   date: string;
   value: number;
@@ -76,9 +92,15 @@ export interface RegionalTrends {
   };
 }
 
+const GLOBAL_TRENDS_FILENAME = "Global_l0_vaccination_search_insights.csv";
+
 let regions: Map<string, Region>;
 let regionalTrends: Map<string, RegionalTrends>;
 let regionalTrendLines: RegionalTrendLine[];
+
+let countries: Map<string, Country>;
+let globalTrends: Map<string, RegionalTrends>;
+let globalTrendLines: CountryTrendLine[];
 
 //https://thoughtspile.github.io/2018/06/20/serialize-promises/
 function serializePromises<T>(immediate: () => Promise<T>): () => Promise<T> {
@@ -141,6 +163,33 @@ export function fetchRegionData(): Promise<Map<string, Region>> {
   }
 }
 
+/**
+ * Methods for getting all country - place ID mapping
+ */
+export function fetchGlobalData(): Promise<Map<string, Country>> {
+  if (countries) {
+    return Promise.resolve(countries);
+  } else {
+    let countryPromise = new Promise<Map<string, Country>>((resolve, reject) => {
+      parse("./data/countries.csv", {
+        download: true,
+        header: true,
+        complete: function (results: ParseResult<Country>) {
+          console.log(`Received global data, with ${results.data.length} rows`);
+          const countryMap = results.data.reduce((acc, country) => {
+            acc.set(country.place_id, country);
+            return acc;
+          }, new Map<string, Country>());
+          countries = countryMap;
+          resolve(countryMap);
+        },
+      });
+    });
+
+    return countryPromise;
+  }
+}
+
 function coerceNumber(u: unknown) {
   if (u === "") {
     return NaN;
@@ -196,6 +245,54 @@ export function fetchRegionalTrendLines(countryDataFile: string): Promise<Region
   }
 }
 
+
+//So let's serialize access to make sure we don't do a double request
+export const fetchGlobalTrendLines: () => Promise<CountryTrendLine[]> =
+  serializePromises(_fetchGlobalTrendLines);
+
+// TODO(jelenako): this function is called twice. Fix with the above seralized access solution
+function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
+  if (globalTrendLines) {
+    return Promise.resolve(globalTrendLines);
+  } else {
+    let results: Promise<CountryTrendLine[]> = new Promise(
+      (resolve, reject) => {
+        parse("./data/" + GLOBAL_TRENDS_FILENAME, {
+          download: true,
+          header: true,
+          skipEmptyLines: true,
+          complete: function (results: ParseResult<CountryTrendLine>) {
+            console.log(
+              `Load global trend data with ${results.data.length} rows`
+            );
+            const mappedData = results.data.map((d) => {
+              const parsedRow: CountryTrendLine = {
+                date: d.date,
+                country_region: d.country_region,
+                country_region_code: d.country_region_code,
+                place_id: d.place_id,
+                //We need to coerce number parsing since papaparse only gives us strings
+                sni_covid19_vaccination: coerceNumber(
+                  d.sni_covid19_vaccination
+                ),
+                sni_vaccination_intent: coerceNumber(d.sni_vaccination_intent),
+                sni_safety_side_effects: coerceNumber(
+                  d.sni_safety_side_effects
+                ),
+              };
+              return parsedRow;
+            });
+            globalTrendLines = mappedData;
+            resolve(mappedData);
+          },
+        });
+      }
+    );
+    return results;
+  }
+}
+
+
 export function fetchZipData(geoid): Promise<any> {
   var baseUrl =
     "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo";
@@ -212,50 +309,67 @@ export function fetchRegionalTrendsData(trendLines: Promise<RegionalTrendLine[]>
   } else {
     return trendLines.then((rtls) => {
       // Convert table data into per-trend time-series.
-      let nestedTrends = d3Collection
-        .nest<RegionalTrendLine, RegionalTrends>()
-        .key((row: RegionalTrendLine) => {
-          return row.place_id;
-        })
-        .sortValues((leaf_l, leaf_r) => d3.ascending(leaf_l.date, leaf_r.date))
-        .rollup((leaves) => {
-          let covid19_vaccination = [];
-          let vaccination_intent = [];
-          let safety_side_effects = [];
-          leaves.map((leaf) => {
-            covid19_vaccination.push({
-              date: leaf.date,
-              value: leaf.sni_covid19_vaccination,
-            });
-            vaccination_intent.push({
-              date: leaf.date,
-              value: leaf.sni_vaccination_intent,
-            });
-            safety_side_effects.push({
-              date: leaf.date,
-              value: leaf.sni_safety_side_effects,
-            });
-          });
-          return {
-            place_id: leaves[0].place_id,
-            trends: {
-              covid19_vaccination,
-              vaccination_intent,
-              safety_side_effects,
-            },
-          };
-        })
-        .entries(rtls);
-      //d3Collection nest/rollup gives us an output that is just untyped Key-Value pairs
-      //so let's convert it into an actual map.
-      const trends = nestedTrends.reduce((acc, trend) => {
-        acc.set(trend.key, trend.value);
-        return acc;
-      }, new Map<string, RegionalTrends>());
-      regionalTrends = trends;
-      return trends;
+      regionalTrends = _convert_table_to_trend_timeseries(rtls);
+      return regionalTrends;
     });
   }
+}
+
+export function fetchGlobalTrendsData(): Promise<Map<string, RegionalTrends>> {
+  if (globalTrends) {
+    return Promise.resolve(globalTrends);
+  } else {
+    return fetchGlobalTrendLines().then((rtls) => {
+      // Convert table data into per-trend time-series.
+      globalTrends = _convert_table_to_trend_timeseries(rtls);
+      return globalTrends;
+    });
+  }
+}
+
+// Convert table data into per-trend time-series.
+function _convert_table_to_trend_timeseries(rtls) {
+  let nestedTrends = d3Collection
+    .nest<CountryTrendLine, RegionalTrends>()
+    .key((row: CountryTrendLine) => {
+      return row.place_id;
+    })
+    .sortValues((leaf_l, leaf_r) => d3.ascending(leaf_l.date, leaf_r.date))
+    .rollup((leaves) => {
+      let covid19_vaccination = [];
+      let vaccination_intent = [];
+      let safety_side_effects = [];
+      leaves.map((leaf) => {
+        covid19_vaccination.push({
+          date: leaf.date,
+          value: leaf.sni_covid19_vaccination,
+        });
+        vaccination_intent.push({
+          date: leaf.date,
+          value: leaf.sni_vaccination_intent,
+        });
+        safety_side_effects.push({
+          date: leaf.date,
+          value: leaf.sni_safety_side_effects,
+        });
+      });
+      return {
+        place_id: leaves[0].place_id,
+        trends: {
+          covid19_vaccination,
+          vaccination_intent,
+          safety_side_effects,
+        },
+      };
+    })
+    .entries(rtls);
+  //d3Collection nest/rollup gives us an output that is just untyped Key-Value pairs
+  //so let's convert it into an actual map.
+  const trends = nestedTrends.reduce((acc, trend) => {
+    acc.set(trend.key, trend.value);
+    return acc;
+  }, new Map<string, RegionalTrends>());
+  return trends
 }
 
 export function selectRegionOneTrends(

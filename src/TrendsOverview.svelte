@@ -39,6 +39,7 @@
     setSelectedCounty,
     setSelectedState,
   } from "./choropleth.js";
+  import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
 
   let selectedRegion: Region;
@@ -46,7 +47,7 @@
   let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   let placeId: string;
   let selectedRegionName: string;
-  let selectedCountryCode: string;
+  let selectedCountryName: string;
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
@@ -69,7 +70,7 @@
   }
 
   function filterDropdownItems(regions: Region[]): Region[] {
-    return regions?.filter((region) => !region.sub_region_3 && region.country_region_code == selectedCountryCode);
+    return regions?.filter((region) => !region.sub_region_3 && region.country_region == selectedCountryName);
   }
 
   function setParentRegionButton() {
@@ -95,7 +96,10 @@
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
-        selectedCountryCode = getCountryName(selectedRegion);
+        selectedCountryName = getCountryName(selectedRegion);
+        if (!selectedCountryMetadata){
+          selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
+        }
       }
 
       setParentRegionButton();
@@ -110,14 +114,16 @@
     if (selectedCountryMetadata){
       mapData = fetchRegionalTrendLines(selectedCountryMetadata.dataFile);
       regionalTrends = await fetchRegionalTrendsData(mapData);
-    
-      mapData.then((mapData) => {
-        createMap(mapData, selectedMapTrendId, regions, onMapSelection);
-        isMapInitialized = true;
-        if (selectedRegion) {
-          setMapSelection(selectedRegion);
-        }
-      });
+      
+      if (selectedCountryMetadata.countryCode == "US"){
+        mapData.then((mapData) => {
+          createMap(mapData, selectedMapTrendId, regions, onMapSelection);
+          isMapInitialized = true;
+          if (selectedRegion) {
+            setMapSelection(selectedRegion);
+          }
+        });
+      }
     }
   });
 

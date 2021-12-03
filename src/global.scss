@@ -655,6 +655,18 @@ p.info-text + p.info-text {
   stroke: g.$pink-600;
 }
 
+.trendline-selected.Canada {
+  stroke: g.$blue-600;
+}
+
+.trendline-selected.United_Kingdom {
+  stroke: g.$orange-600;
+}
+
+.trendline-selected.United_States {
+  stroke: g.$pink-600;
+}
+
 .chart-header {
   display: flex;
   flex-direction: row;
@@ -685,6 +697,18 @@ p.info-text + p.info-text {
 }
 
 .chart-legend-rect.safety-side-effects {
+  fill: g.$pink-600;
+}
+
+.chart-legend-rect.Canada {
+  fill: g.$blue-600;
+}
+
+.chart-legend-rect.United_Kingdom {
+  fill: g.$orange-600;
+}
+
+.chart-legend-rect.United_States {
   fill: g.$pink-600;
 }
 
@@ -744,6 +768,18 @@ p.info-text + p.info-text {
 }
 
 .chart-hover-card-selected-icon.safety-side-effects {
+  background: g.$pink-600;
+}
+
+.chart-hover-card-selected-icon.Canada {
+  background: g.$blue-600;
+}
+
+.chart-hover-card-selected-icon.United_Kingdom {
+  background: g.$orange-600;
+}
+
+.chart-hover-card-selected-icon.United_States {
   background: g.$pink-600;
 }
 
@@ -876,4 +912,47 @@ div.next-steps-item > h3 {
 
 .rising-searches .date-nav-control {
   min-width: initial;
+}
+
+// CountryPicker css
+.world-picker {
+  margin-top: 60px;
+    display: grid;
+    grid-template-columns: 210px 590px;
+    font-family: Roboto;
+}
+.menu-title,
+.chart-title {
+    line-height: 24px;
+    font-size: 18px;
+    color: #202124;
+}
+.menu-title {
+    line-height: 24px;
+    font-size: 18px;
+    color: #202124;
+}
+.menu-list {
+    margin-top: 12px;
+    margin-right: 18px;
+}
+.menu-item {
+    display: grid;
+    grid-template-columns: 32px auto;
+    line-height: 44px;
+    font-size: 16px;
+    color: #202124;
+    cursor: pointer;
+}
+.menu-item svg {
+    position: relative;
+    top: -3px;
+    left: 2px;
+}
+.menu-item:hover {
+    background: #f1f3f4;
+    border-radius: 4px;
+}
+.cp2 {
+  margin-top: 20px;
 }
