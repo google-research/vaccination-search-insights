@@ -15,11 +15,7 @@
    * limitations under the License.
    */
   import AutoComplete from "simple-svelte-autocomplete";
-  import type {
-    Region,
-    RegionalTrends,
-    RegionalTrendLine
-  } from "./data";
+  import type { Region, RegionalTrends, RegionalTrendLine } from "./data";
   import {
     fetchRegionData,
     fetchRegionalTrendsData,
@@ -70,25 +66,18 @@
   }
 
   function filterDropdownItems(regions: Region[]): Region[] {
-    return regions?.filter((region) => !region.sub_region_3 && region.country_region == selectedCountryName);
+    return regions?.filter(
+      (region) =>
+        !region.sub_region_3 && region.country_region == selectedCountryName
+    );
   }
 
   function setParentRegionButton() {
-    if (hasParentRegion(selectedRegion)) {
-      d3.select(".parent-region-button").style("display", "block");
-      d3.select(".parent-country-button").style("display", "none");
-    } else {
-      d3.select(".parent-region-button").style("display", "none");
-      d3.select(".parent-country-button").style("display", "block");
-    }
-  }
-
-  function hasParentRegion(region: Region): boolean {
-    return Boolean(region?.parent_region_type);
+    d3.select(".parent-region-button").style("display", "block");
   }
 
   onMount(async () => {
-    regionsByPlaceId = await fetchRegionData();    
+    regionsByPlaceId = await fetchRegionData();
     regions = Array.from(regionsByPlaceId.values());
 
     params.subscribe((param) => {
@@ -97,8 +86,9 @@
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
         selectedCountryName = getCountryName(selectedRegion);
-        if (!selectedCountryMetadata){
-          selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
+        if (!selectedCountryMetadata) {
+          selectedCountryMetadata =
+            fetchCountryMetaData(selectedCountryName)[0];
         }
       }
 
@@ -111,11 +101,11 @@
 
     setParentRegionButton();
 
-    if (selectedCountryMetadata){
+    if (selectedCountryMetadata) {
       mapData = fetchRegionalTrendLines(selectedCountryMetadata.dataFile);
       regionalTrends = await fetchRegionalTrendsData(mapData);
-      
-      if (selectedCountryMetadata.countryCode == "US"){
+
+      if (selectedCountryMetadata.countryCode == "US") {
         mapData.then((mapData) => {
           createMap(mapData, selectedMapTrendId, regions, onMapSelection);
           isMapInitialized = true;
@@ -186,7 +176,7 @@
 
     params.update((p) => {
       p.placeId = parentRegion.place_id;
-      p.updateHistory = false;
+      p.updateHistory = true;
 
       return p;
     });
@@ -203,10 +193,6 @@
             on:click={(e) => {
               goToParentRegion();
             }}>arrow_back</span
-          >
-          <!-- TODO(jelenako): switch between place IDs, rather than load the main page -->
-          <a class="parent-country-button material-icons-outlined" href="/"
-            >arrow_back</a
           >
         </div>
         <AutoComplete

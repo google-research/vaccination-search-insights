@@ -14,56 +14,51 @@
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  import type {
-    Country,
-    RegionalTrends,
-    TrendValue
-  } from "./data";
-  import {
-    fetchGlobalTrendsData,
-    fetchGlobalData
-  } from "./data";
+  import type { Country, RegionalTrends, TrendValue } from "./data";
+  import { fetchGlobalTrendsData, fetchGlobalData } from "./data";
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import { params } from "./stores";
   import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
+  import {
+    formatDateForDisplay,
+    formatDateForStorage,
+    convertStorageDate,
+    getClosestDate,
+  } from "./utils";
 
   export let id: string;
+  export let trendLine: (trends: RegionalTrends) => TrendValue[];
 
   let globalTrendsByPlaceId: Map<string, RegionalTrends>;
   let countriesByPlaceId: Map<string, Country> = new Map<string, Country>();
   let placeId: string;
   let country_list;
   let chartContainerElement: HTMLElement;
+  let countryNameToPlaceId = new Map();
 
   const chartBounds = {
     width: 480,
     height: 294,
   };
 
-  const COUNTRIES = new Map();
-
   //https://observablehq.com/@d3/margin-convention?collection=@d3/d3-axis
   const margin = { top: 10, bottom: 30, left: 0, right: 30 };
 
-  function trendLine(tr: RegionalTrends){
-    return tr.trends.covid19_vaccination;
-  }
-  // TODO(patankar): Generalize this to allow for different selections.
   function generateChartLegend() {
     const legendContainerElement: HTMLElement =
       chartContainerElement.querySelector(".chart-legend-container");
 
     d3.select(legendContainerElement).selectAll("*").remove();
 
-    country_list.forEach( countryName => {
+    country_list.forEach((countryName) => {
       d3.select(legendContainerElement)
         .append("div")
         .attr("class", "chart-legend-rect-container")
         .append("svg")
         .append("g")
         .append("rect")
-        .attr("class", `chart-legend-rect ${countryName.replace(/\s+/g, '_')}`)
+        .attr("class", `chart-legend-rect ${countryName.replace(/\s+/g, "_")}`)
         .attr("width", 16)
         .attr("height", 4);
 
@@ -110,8 +105,7 @@
       .append("table")
       .attr("class", "chart-hover-card-table");
 
-    // Each of the hover card rows has three entities: the icon (rectangle or "High"/"Low"), the name of the selected region, and the value for the selected region on the selected date.
-    country_list.forEach( countryName => {
+    country_list.forEach((countryName) => {
       const hoverCard = hoverCardTable
         .append("tr")
         .attr("class", "chart-hover-card-selected")
@@ -121,23 +115,25 @@
         .append("td")
         .append("div")
         .attr("class", "chart-hover-card-selected-icon")
-        .attr("class", `chart-hover-card-selected-icon ${countryName.replace(/\s+/g, '_')}`);
+        .attr(
+          "class",
+          `chart-hover-card-selected-icon ${countryName.replace(/\s+/g, "_")}`
+        );
 
       const hoverCardName = hoverCard
         .append("td")
         .attr("class", "chart-hover-card-selected-name")
         .attr("class", "chart-hover-card-name")
-        .attr("id", `name-${countryName.replace(/\s+/g, '_')}`)
+        .attr("id", `name-${countryName.replace(/\s+/g, "_")}`)
         .text(countryName);
-      
+
       const hoverCardValue = hoverCard
         .append("td")
         .attr("class", "chart-hover-card-selected-value")
         .attr("class", "chart-hover-card-value")
-        .attr("id", `value-${countryName.replace(/\s+/g, '_')}`)
+        .attr("id", `value-${countryName.replace(/\s+/g, "_")}`)
         .text("");
     });
-    
 
     const dataByDate = new Map<string, { place_id: string; value: number }[]>();
     data.forEach((countryTrend) => {
@@ -169,21 +165,6 @@
       hoverCard.attr("class", "chart-hover-card inactive");
     };
 
-    function getClosestDate(selected, earlier, later) {
-      if (!earlier && later) {
-        return later;
-      } else if (!later && earlier) {
-        return earlier;
-      } else if (
-        selected.getTime() - earlier.getTime() <
-        later.getTime() - selected.getTime()
-      ) {
-        return earlier;
-      } else {
-        return later;
-      }
-    }
-
     const chartMouseMove = function (d) {
       dates.sort((a, b) => a.getTime() - b.getTime());
       //Calculate position relative to the SVG's viewBox
@@ -210,13 +191,18 @@
       verticalLine.attr("x1", closestDateX).attr("x2", closestDateX);
 
       hoverCardDate.text(formatDateForDisplay(closestDate));
-      
+
       if (dataByDate.size > 0) {
         const placeValues: { place_id: string; value: number }[] =
           dataByDate.get(formatDateForStorage(closestDate));
-        country_list.forEach( countryName => {
-          let the_value = placeValues.find(placeValue => placeValue.place_id == COUNTRIES.get(countryName));
-          let value_cell = document.getElementById(`value-${countryName.replace(/\s+/g, '_')}`);
+        country_list.forEach((countryName) => {
+          let the_value = placeValues.find(
+            (placeValue) =>
+              placeValue.place_id == countryNameToPlaceId.get(countryName)
+          );
+          let value_cell = document.getElementById(
+            `value-${countryName.replace(/\s+/g, "_")}`
+          );
           value_cell.textContent = the_value.value.toString();
         });
       }
@@ -254,38 +240,6 @@
     chartAreaHoverElement.addEventListener("mouseenter", chartMouseEnter);
     chartAreaHoverElement.addEventListener("mouseleave", chartMouseLeave);
     chartAreaHoverElement.addEventListener("mousemove", chartMouseMove);
-  }
-
-  function formatDateForDisplay(date: Date): string {
-    const options: Intl.DateTimeFormatOptions = {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  }
-
-  function formatDateForStorage(date: Date): string {
-    const month = new Intl.DateTimeFormat("en-US", { month: "2-digit" }).format(
-      date
-    );
-    const day = new Intl.DateTimeFormat("en-US", { day: "2-digit" }).format(
-      date
-    );
-    const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
-      date
-    );
-
-    return `${year}-${month}-${day}`;
-  }
-
-  function convertStorageDate(storageDate: string): Date {
-    const date = new Date(storageDate);
-    const time = date.getTime();
-    const timeZoneOffset = date.getTimezoneOffset() * 60 * 1000;
-    const adjustedTime = time + timeZoneOffset;
-
-    return new Date(adjustedTime);
   }
 
   type HtmlSelection = d3.Selection<HTMLElement, any, any, any>;
@@ -352,9 +306,7 @@
         .attr("y2", chartBounds.height - margin.bottom);
     }
 
-    let data: RegionalTrends[] = Array.from(
-      globalTrendsByPlaceId.values()
-    );
+    let data: RegionalTrends[] = Array.from(globalTrendsByPlaceId.values());
 
     // A superset of dates for shown trendlines.
     // TODO(patankar): Efficiency.
@@ -446,12 +398,17 @@
       .data(data, (d: RegionalTrends) => d.place_id)
       .join("path")
       .sort((a, b) => {
-          return -1;
+        return -1;
       })
       .attr("id", (d) => d.place_id)
       .attr("class", (regionalTrend) => {
-          let countryName = [...COUNTRIES].find(([key, val]) => val === regionalTrend.place_id)[0];
-          return `trendline trendline-selected ${countryName.replace(/\s+/g, '_')}`;
+        let countryName = [...countryNameToPlaceId].find(
+          ([key, val]) => val === regionalTrend.place_id
+        )[0];
+        return `trendline trendline-selected ${countryName.replace(
+          /\s+/g,
+          "_"
+        )}`;
       })
       .attr("d", (d) => lineFn(trendLine(d)));
   }
@@ -493,39 +450,62 @@
       );
   }
 
+  function onCountrySelectHandler(): void {
+    var selectedCountryName = this.getAttribute("data-countryName");
+    if (selectedCountryName) {
+      let selectedCountryID = countryNameToPlaceId.get(selectedCountryName);
+      if (selectedCountryID != undefined) {
+        params.update((p) => {
+          if (selectedCountryID !== p.placeId) {
+            p.placeId = selectedCountryID;
+            p.updateHistory = true;
+          }
+          return p;
+        });
+      }
+    }
+  }
+
   onMount(async () => {
     params.subscribe((param) => {
       placeId = param.placeId;
     });
-    
-    if (!placeId){
+
+    if (!placeId) {
       country_list = fetchCountryNames();
-      country_list.forEach( countryName => {
-        let country_metadata = fetchCountryMetaData(countryName)[0]
-        COUNTRIES.set(countryName, country_metadata.placeId);
-      })
+      country_list.forEach((countryName) => {
+        let country_metadata = fetchCountryMetaData(countryName)[0];
+        countryNameToPlaceId.set(countryName, country_metadata.placeId);
+      });
       let menu, item, div;
 
-      countriesByPlaceId = await fetchGlobalData();   
+      countriesByPlaceId = await fetchGlobalData();
       globalTrendsByPlaceId = await fetchGlobalTrendsData();
 
       menu = document.getElementById("menu");
-      country_list.forEach( countryName => {
-          // Row
-          item = document.createElement("a");
-          item.classList.add("menu-item");
-          item.href = `/?placeId=${COUNTRIES.get(countryName)}`;
-          menu.appendChild(item);
+      country_list.forEach((countryName) => {
+        // Row
+        item = document.createElement("a");
+        item.classList.add("menu-item");
+        item.setAttribute("data-countryName", countryName);
+        item.addEventListener("click", onCountrySelectHandler, false);
+        menu.appendChild(item);
 
-          // Color
-          div = document.createElement("div");
-          div.setAttribute("class", `cp2 chart-hover-card-selected-icon ${countryName.replace(/\s+/g, '_')}`);
-          item.appendChild(div);
+        // Color
+        div = document.createElement("div");
+        div.setAttribute(
+          "class",
+          `country-picker-icon chart-hover-card-selected-icon ${countryName.replace(
+            /\s+/g,
+            "_"
+          )}`
+        );
+        item.appendChild(div);
 
-          // Label
-          div = document.createElement("div");
-          div.appendChild(document.createTextNode(countryName));
-          item.appendChild(div);
+        // Label
+        div = document.createElement("div");
+        div.appendChild(document.createTextNode(countryName));
+        item.appendChild(div);
       });
 
       if (globalTrendsByPlaceId && countriesByPlaceId) {
@@ -554,4 +534,3 @@
     </div>
   </div>
 </div>
-

@@ -176,13 +176,6 @@ sup {
   display: none;
 }
 
-.parent-country-button {
-  margin: 6px;
-  cursor: pointer;
-  display: block;
-  color: #5f6368;
-}
-
 .parent-region-button:hover {
   background: g.$button-hover;
 }
@@ -953,6 +946,6 @@ div.next-steps-item > h3 {
     background: #f1f3f4;
     border-radius: 4px;
 }
-.cp2 {
+.country-picker-icon {
   margin-top: 20px;
 }

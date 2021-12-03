@@ -24,7 +24,15 @@
   } from "./data";
   import { onMount } from "svelte";
   import { params } from "./stores";
-  import { getRegionName, inClientBounds, handleInfoPopup } from "./utils";
+  import { 
+    getRegionName,
+    handleInfoPopup,
+    formatDateForDisplay, 
+    formatDateForStorage, 
+    convertStorageDate,
+    getClosestDate
+  } from "./utils";
+
   import * as d3 from "d3";
 
   export let id: string;
@@ -237,21 +245,6 @@
       hoverCard.attr("class", "chart-hover-card inactive");
     };
 
-    function getClosestDate(selected, earlier, later) {
-      if (!earlier && later) {
-        return later;
-      } else if (!later && earlier) {
-        return earlier;
-      } else if (
-        selected.getTime() - earlier.getTime() <
-        later.getTime() - selected.getTime()
-      ) {
-        return earlier;
-      } else {
-        return later;
-      }
-    }
-
     const chartMouseMove = function (d) {
       dates.sort((a, b) => a.getTime() - b.getTime());
       //Calculate position relative to the SVG's viewBox
@@ -391,38 +384,6 @@
     });
 
     return { min, max };
-  }
-
-  function formatDateForDisplay(date: Date): string {
-    const options: Intl.DateTimeFormatOptions = {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  }
-
-  function formatDateForStorage(date: Date): string {
-    const month = new Intl.DateTimeFormat("en-US", { month: "2-digit" }).format(
-      date
-    );
-    const day = new Intl.DateTimeFormat("en-US", { day: "2-digit" }).format(
-      date
-    );
-    const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
-      date
-    );
-
-    return `${year}-${month}-${day}`;
-  }
-
-  function convertStorageDate(storageDate: string): Date {
-    const date = new Date(storageDate);
-    const time = date.getTime();
-    const timeZoneOffset = date.getTimezoneOffset() * 60 * 1000;
-    const adjustedTime = time + timeZoneOffset;
-
-    return new Date(adjustedTime);
   }
 
   type HtmlSelection = d3.Selection<HTMLElement, any, any, any>;
