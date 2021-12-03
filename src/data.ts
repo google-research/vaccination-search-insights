@@ -198,19 +198,19 @@ function coerceNumber(u: unknown) {
   }
 }
 
-export function fetchRegionalTrendLines(countryDataFile: string): Promise<RegionalTrendLine[]> {
-  if (regionalTrendLines) {
+export function fetchRegionalTrendLines(selectedCountryMetadata): Promise<RegionalTrendLine[]> {
+  if (regionalTrendLines && regionalTrendLines[0].country_region_code == selectedCountryMetadata.countryCode) {
     return Promise.resolve(regionalTrendLines);
-  } else if (countryDataFile) {
+  } else if (selectedCountryMetadata) {
     let results: Promise<RegionalTrendLine[]> = new Promise(
       (resolve, reject) => {
-        parse("./data/" + countryDataFile, {
+        parse("./data/" + selectedCountryMetadata.dataFile, {
           download: true,
           header: true,
           skipEmptyLines: true,
           complete: function (results: ParseResult<RegionalTrendLine>) {
             console.log(
-              `Load regional trend data with ${results.data.length} from ${countryDataFile}`
+              `Load regional trend data with ${results.data.length} from ${selectedCountryMetadata.dataFile}`
             );
             const mappedData = results.data.map((d) => {
               const parsedRow: RegionalTrendLine = {
@@ -303,16 +303,16 @@ export function fetchZipData(geoid): Promise<any> {
 
 export function fetchRegionalTrendsData(trendLines: Promise<RegionalTrendLine[]>): Promise<
   Map<string, RegionalTrends>
-> {
-  if (regionalTrends) {
-    return Promise.resolve(regionalTrends);
-  } else {
-    return trendLines.then((rtls) => {
-      // Convert table data into per-trend time-series.
-      regionalTrends = _convert_table_to_trend_timeseries(rtls);
-      return regionalTrends;
-    });
-  }
+  > {
+  // TODO(jelenako): check if regionalTrends already loaded for selected country
+  // if (regionalTrends) {
+  //   return Promise.resolve(regionalTrends);
+  // } else {
+  return trendLines.then((rtls) => {
+    // Convert table data into per-trend time-series.
+    regionalTrends = _convert_table_to_trend_timeseries(rtls);
+    return regionalTrends;
+  });
 }
 
 export function fetchGlobalTrendsData(): Promise<Map<string, RegionalTrends>> {

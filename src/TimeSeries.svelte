@@ -18,8 +18,6 @@
   import type {
     Region,
     RegionalTrends,
-    RegionalTrendLine,
-    RegionalTrendAggregate,
     TrendValue,
   } from "./data";
   import { onMount } from "svelte";
@@ -636,7 +634,7 @@
   onMount(async () => {
     params.subscribe((param) => {
       placeId = param.placeId;
-      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId) {
+      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
 
         generateChart();
