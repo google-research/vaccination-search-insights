@@ -14,8 +14,8 @@
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  import type { Country, RegionalTrends, TrendValue } from "./data";
-  import { fetchGlobalTrendsData, fetchGlobalData } from "./data";
+  import type { RegionalTrends, TrendValue } from "./data";
+  import { fetchGlobalTrendsData } from "./data";
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import { params } from "./stores";
@@ -31,7 +31,6 @@
   export let trendLine: (trends: RegionalTrends) => TrendValue[];
 
   let globalTrendsByPlaceId: Map<string, RegionalTrends>;
-  let countriesByPlaceId: Map<string, Country> = new Map<string, Country>();
   let placeId: string;
   let country_list;
   let chartContainerElement: HTMLElement;
@@ -479,7 +478,6 @@
       });
       let menu, item, div;
 
-      countriesByPlaceId = await fetchGlobalData();
       globalTrendsByPlaceId = await fetchGlobalTrendsData();
 
       menu = document.getElementById("menu");
@@ -508,7 +506,7 @@
         item.appendChild(div);
       });
 
-      if (globalTrendsByPlaceId && countriesByPlaceId) {
+      if (globalTrendsByPlaceId ) {
         generateChart();
       }
 

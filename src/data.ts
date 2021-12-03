@@ -17,7 +17,6 @@
 import { parse, ParseResult } from "papaparse";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
-import { fetchCountryMetaData } from "./metadata";
 
 export interface Region {
   country_region: string;
@@ -98,7 +97,6 @@ let regions: Map<string, Region>;
 let regionalTrends: Map<string, RegionalTrends>;
 let regionalTrendLines: RegionalTrendLine[];
 
-let countries: Map<string, Country>;
 let globalTrends: Map<string, RegionalTrends>;
 let globalTrendLines: CountryTrendLine[];
 
@@ -163,32 +161,6 @@ export function fetchRegionData(): Promise<Map<string, Region>> {
   }
 }
 
-/**
- * Methods for getting all country - place ID mapping
- */
-export function fetchGlobalData(): Promise<Map<string, Country>> {
-  if (countries) {
-    return Promise.resolve(countries);
-  } else {
-    let countryPromise = new Promise<Map<string, Country>>((resolve, reject) => {
-      parse("./data/countries.csv", {
-        download: true,
-        header: true,
-        complete: function (results: ParseResult<Country>) {
-          console.log(`Received global data, with ${results.data.length} rows`);
-          const countryMap = results.data.reduce((acc, country) => {
-            acc.set(country.place_id, country);
-            return acc;
-          }, new Map<string, Country>());
-          countries = countryMap;
-          resolve(countryMap);
-        },
-      });
-    });
-
-    return countryPromise;
-  }
-}
 
 function coerceNumber(u: unknown) {
   if (u === "") {
@@ -197,6 +169,7 @@ function coerceNumber(u: unknown) {
     return Number.parseFloat(u as string);
   }
 }
+
 
 export function fetchRegionalTrendLines(selectedCountryMetadata): Promise<RegionalTrendLine[]> {
   if (regionalTrendLines && regionalTrendLines[0].country_region_code == selectedCountryMetadata.countryCode) {
