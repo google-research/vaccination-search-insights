@@ -246,11 +246,10 @@ export function fetchRegionalTrendLines(selectedCountryMetadata): Promise<Region
 }
 
 
-//So let's serialize access to make sure we don't do a double request
+// Serialize access to make sure we don't do a double request
 export const fetchGlobalTrendLines: () => Promise<CountryTrendLine[]> =
   serializePromises(_fetchGlobalTrendLines);
 
-// TODO(jelenako): this function is called twice. Fix with the above seralized access solution
 function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
   if (globalTrendLines) {
     return Promise.resolve(globalTrendLines);
