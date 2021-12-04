@@ -53,6 +53,9 @@
     export let covid_vaccination_button_title: string;
     export let vaccination_intent_button_title: string;
     export let safety_side_effects_button_title: string;
+
+    let topQueriesList = [];
+    let risingQueriesList = [];
 </script>
 
 <div id="top-queries">
@@ -112,6 +115,11 @@
     <div class="queries-lists">
         <div class="top-searches">
             <div class="query-list-title">Top searches</div>
+            <ul class="bullet-list">
+                {#each topQueriesList as query}
+                    <li class="bullet-list-text">{query.query}</li>
+                {/each}
+            </ul>
         </div>
         <div class="rising-searches">
             <div class="query-list-title">Rising</div>
@@ -140,6 +148,11 @@
                     >
                 </div>
             </div>
+            <ul class="bullet-list">
+                {#each risingQueriesList as query}
+                    <li class="bullet-list-text">{query.query}</li>
+                {/each}
+            </ul>
         </div>
     </div>
 </div>
