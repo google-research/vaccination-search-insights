@@ -206,7 +206,7 @@
         });
       }
 
-      const mediabreakpoint = 600;
+      const mediabreakpoint = 600 - 210;
       if (window.innerWidth > mediabreakpoint) {
         // Determine which side of the vertical line the hover card should be on and calculate the overall position.
         const hoverCardRect = hoverCardElement.getBoundingClientRect();
@@ -416,37 +416,38 @@
     // as per d3
     const padding: number = 3;
     const tickSize: number = 6;
+    if (chartContainerElement){
+      const chartAreaContainerElement: SVGElement =
+        chartContainerElement.querySelector(".chart-area-container");
+      const chartXAxisElement: SVGElement =
+        chartAreaContainerElement.querySelector(".x.axis");
+      const chartYAxisElement: SVGElement =
+        chartAreaContainerElement.querySelector(".y.axis");
+      const chartXAxisTickTextElements: NodeList =
+        chartXAxisElement.querySelectorAll(".tick text");
+      const chartYAxisTickTextElements: NodeList =
+        chartYAxisElement.querySelectorAll(".tick text");
 
-    const chartAreaContainerElement: SVGElement =
-      chartContainerElement.querySelector(".chart-area-container");
-    const chartXAxisElement: SVGElement =
-      chartAreaContainerElement.querySelector(".x.axis");
-    const chartYAxisElement: SVGElement =
-      chartAreaContainerElement.querySelector(".y.axis");
-    const chartXAxisTickTextElements: NodeList =
-      chartXAxisElement.querySelectorAll(".tick text");
-    const chartYAxisTickTextElements: NodeList =
-      chartYAxisElement.querySelectorAll(".tick text");
-
-    const chartXAxisTickTexts: SvgSelection = d3.selectAll(
-      chartXAxisTickTextElements
-    );
-    const chartYAxisTickTexts: SvgSelection = d3.selectAll(
-      chartYAxisTickTextElements
-    );
-
-    const chartAreaScale: number =
-      chartAreaContainerElement.getBoundingClientRect().width /
-      chartBounds.width;
-    chartXAxisTickTexts
-      .attr("transform", `scale(${1 / chartAreaScale})`)
-      .attr("y", `${tickSize * chartAreaScale + padding}`);
-    chartYAxisTickTexts
-      .attr("transform", `scale(${1 / chartAreaScale})`)
-      .attr(
-        "x",
-        `${(chartBounds.width - margin.right) * chartAreaScale + padding}`
+      const chartXAxisTickTexts: SvgSelection = d3.selectAll(
+        chartXAxisTickTextElements
       );
+      const chartYAxisTickTexts: SvgSelection = d3.selectAll(
+        chartYAxisTickTextElements
+      );
+
+      const chartAreaScale: number =
+        chartAreaContainerElement.getBoundingClientRect().width /
+        chartBounds.width;
+      chartXAxisTickTexts
+        .attr("transform", `scale(${1 / chartAreaScale})`)
+        .attr("y", `${tickSize * chartAreaScale + padding}`);
+      chartYAxisTickTexts
+        .attr("transform", `scale(${1 / chartAreaScale})`)
+        .attr(
+          "x",
+          `${(chartBounds.width - margin.right) * chartAreaScale + padding}`
+        );
+    }
   }
 
   function onCountrySelectHandler(): void {
@@ -518,12 +519,16 @@
 <div bind:this={chartContainerElement}>
   <div class="world-picker">
     <div class="menu">
-      <div class="menu-title">Select a country</div>
-      <div class="menu-list" id="menu" />
+      <div class="menu-title">Countries</div>
+      <div class="menu-list" id="menu"/>
+      <div class="menu-info">Select a country to see more insights</div>
     </div>
 
     <div class="chart">
-      <div class="chart-title">COVID-19 vaccination searches</div>
+      <div class="chart-top">
+        <div class="chart-title">COVID-19 vaccination searches</div>
+        <div class="chart-y-axis-name">Interest</div>
+      </div>
       <div class="chart-area-hover">
         <svg class="chart-area-container" />
         <div class="chart-hover-card inactive" />

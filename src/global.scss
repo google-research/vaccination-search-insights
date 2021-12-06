@@ -815,6 +815,71 @@ div.next-steps-item > h3 {
   margin-top: 40px;
 }
 
+.world-picker {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: 30% 70%;
+  font-family: 'Google Sans';
+}
+
+.chart-top{
+  display: flex;
+}
+
+.menu-title,
+.chart-title {
+  line-height: 32px;
+  font-size: 24px;
+  color: #202124;
+}
+
+.chart-y-axis-name{
+  line-height: 20px;
+  font-size: 12px;
+  color: #5F6368;
+  text-transform: uppercase;
+  font-family: Roboto;
+  letter-spacing: 0.4px;
+  margin: auto 10px 0 auto;
+}
+
+.menu-list {
+  line-height: 40px;
+  margin-top: 12px;
+  margin-right: 18px;
+}
+
+.menu-item {
+  display: grid;
+  grid-template-columns: 32px auto;
+  line-height: 40px;
+  font-size: 18px;
+  color: #202124;
+  cursor: pointer;
+}
+
+.menu-info{
+  line-height: 24px;
+  font-size: 16px;
+  color: #5F6368;
+  margin: 20px 10px 10px 0;
+}
+
+.menu-item svg {
+  position: relative;
+  top: -3px;
+  left: 2px;
+}
+
+.menu-item:hover {
+  background: #f1f3f4;
+  border-radius: 4px;
+}
+
+.country-picker-icon {
+  margin-top: 20px;
+}
+
 .footer-referencebar {
   max-width: g.$content-max-width;
   width: 100%;
@@ -855,6 +920,20 @@ div.next-steps-item > h3 {
   .header-search-bar {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .world-picker {
+    display: block;
+  }
+
+  .menu {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .container-header {
+    top: 100px;
   }
 }
 
@@ -905,47 +984,4 @@ div.next-steps-item > h3 {
 
 .rising-searches .date-nav-control {
   min-width: initial;
-}
-
-// CountryPicker css
-.world-picker {
-  margin-top: 60px;
-    display: grid;
-    grid-template-columns: 210px 590px;
-    font-family: Roboto;
-}
-.menu-title,
-.chart-title {
-    line-height: 24px;
-    font-size: 18px;
-    color: #202124;
-}
-.menu-title {
-    line-height: 24px;
-    font-size: 18px;
-    color: #202124;
-}
-.menu-list {
-    margin-top: 12px;
-    margin-right: 18px;
-}
-.menu-item {
-    display: grid;
-    grid-template-columns: 32px auto;
-    line-height: 44px;
-    font-size: 16px;
-    color: #202124;
-    cursor: pointer;
-}
-.menu-item svg {
-    position: relative;
-    top: -3px;
-    left: 2px;
-}
-.menu-item:hover {
-    background: #f1f3f4;
-    border-radius: 4px;
-}
-.country-picker-icon {
-  margin-top: 20px;
 }

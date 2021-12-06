@@ -560,9 +560,9 @@
           .attr("font-family", "Roboto")
           .attr("font-size", 12)
       );
-
-    scaleChartText();
-
+    if (chartContainerElement){
+      scaleChartText();
+    }
     generateChartLegend();
     generateChartHoverCard(data, dates, xScale);
 
@@ -599,36 +599,38 @@
     const padding: number = 3;
     const tickSize: number = 6;
 
-    const chartAreaContainerElement: SVGElement =
-      chartContainerElement.querySelector(".chart-area-container");
-    const chartXAxisElement: SVGElement =
-      chartAreaContainerElement.querySelector(".x.axis");
-    const chartYAxisElement: SVGElement =
-      chartAreaContainerElement.querySelector(".y.axis");
-    const chartXAxisTickTextElements: NodeList =
-      chartXAxisElement.querySelectorAll(".tick text");
-    const chartYAxisTickTextElements: NodeList =
-      chartYAxisElement.querySelectorAll(".tick text");
+    if (chartContainerElement){
+      const chartAreaContainerElement: SVGElement =
+        chartContainerElement.querySelector(".chart-area-container");
+      const chartXAxisElement: SVGElement =
+        chartAreaContainerElement.querySelector(".x.axis");
+      const chartYAxisElement: SVGElement =
+        chartAreaContainerElement.querySelector(".y.axis");
+      const chartXAxisTickTextElements: NodeList =
+        chartXAxisElement.querySelectorAll(".tick text");
+      const chartYAxisTickTextElements: NodeList =
+        chartYAxisElement.querySelectorAll(".tick text");
 
-    const chartXAxisTickTexts: SvgSelection = d3.selectAll(
-      chartXAxisTickTextElements
-    );
-    const chartYAxisTickTexts: SvgSelection = d3.selectAll(
-      chartYAxisTickTextElements
-    );
-
-    const chartAreaScale: number =
-      chartAreaContainerElement.getBoundingClientRect().width /
-      chartBounds.width;
-    chartXAxisTickTexts
-      .attr("transform", `scale(${1 / chartAreaScale})`)
-      .attr("y", `${tickSize * chartAreaScale + padding}`);
-    chartYAxisTickTexts
-      .attr("transform", `scale(${1 / chartAreaScale})`)
-      .attr(
-        "x",
-        `${(chartBounds.width - margin.right) * chartAreaScale + padding}`
+      const chartXAxisTickTexts: SvgSelection = d3.selectAll(
+        chartXAxisTickTextElements
       );
+      const chartYAxisTickTexts: SvgSelection = d3.selectAll(
+        chartYAxisTickTextElements
+      );
+
+      const chartAreaScale: number =
+        chartAreaContainerElement.getBoundingClientRect().width /
+        chartBounds.width;
+      chartXAxisTickTexts
+        .attr("transform", `scale(${1 / chartAreaScale})`)
+        .attr("y", `${tickSize * chartAreaScale + padding}`);
+      chartYAxisTickTexts
+        .attr("transform", `scale(${1 / chartAreaScale})`)
+        .attr(
+          "x",
+          `${(chartBounds.width - margin.right) * chartAreaScale + padding}`
+        );
+    }
   }
 
   onMount(async () => {
@@ -640,8 +642,9 @@
         generateChart();
       }
     });
-
-    window.addEventListener("resize", scaleChartText);
+    if (chartContainerElement){
+      window.addEventListener("resize", scaleChartText);
+    }
   });
 </script>
 
