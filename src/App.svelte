@@ -17,15 +17,16 @@
   import AutoComplete from "simple-svelte-autocomplete";
   import { onMount } from "svelte";
   import { params } from "./stores";
+  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import TopQueries from "./TopQueries.svelte";
-  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
+  import CountryPicker from "./CountryPicker.svelte";
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
   const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
-  
+
   let selectedCountry: string;
   let selectedCountryID: string;
   let placeId: string;
@@ -100,10 +101,10 @@
     document.removeEventListener("click", dismissDownloadPopupOnClick);
   }
 
-  function onCountrySelectHandler(selectedCountry: string): void {
-    if(selectedCountry) {
-      selectedCountryMetadata = fetchCountryMetaData(selectedCountry)[0];
-    
+  function onCountrySelectHandler(selectedCountryName: string): void {
+    if (selectedCountryName) {
+      selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
+
       selectedCountryID = selectedCountryMetadata.placeId;
       if (selectedCountryID != undefined) {
         params.update((p) => {
@@ -116,7 +117,6 @@
       }
     }
   }
-
 </script>
 
 <svelte:head>
@@ -212,16 +212,16 @@
     <div class="content-body">
       <h1>COVID-19 Vaccine Search Insights</h1>
       <p>
-        Explore searches for COVID-19 vaccination topics by region. This aggregated
-        and anonymized data helps you understand and compare communities&apos;
-        information needs. We’re releasing this data to inform public health
-        vaccine-confidence efforts.
+        Explore searches for COVID-19 vaccination topics by region. This
+        aggregated and anonymized data helps you understand and compare
+        communities&apos; information needs. We’re releasing this data to inform
+        public health vaccine-confidence efforts.
         <a href="#about">Learn more</a>
       </p>
 
       {#if placeId}
         <TrendsOverview
-          selectedCountryMetadata={selectedCountryMetadata}
+          {selectedCountryMetadata}
           covid_vaccination_title={COVID_19_VACCINATION_TITLE}
           vaccination_intent_title={VACCINATION_INTENT_TITLE}
           safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}
@@ -230,6 +230,13 @@
           covid_vaccination_button_title={COVID_19_VACCINATION_TITLE}
           vaccination_intent_button_title={VACCINATION_INTENT_TITLE}
           safety_side_effects_button_title={SAFETY_SIDE_EFFECTS_TITLE}
+        />
+      {:else}
+        <CountryPicker
+          id="covid-19-vaccination"
+          trendLine={(t) => {
+            return t.trends.covid19_vaccination;
+          }}
         />
       {/if}
 

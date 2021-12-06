@@ -176,13 +176,6 @@ sup {
   display: none;
 }
 
-.parent-country-button {
-  margin: 6px;
-  cursor: pointer;
-  display: block;
-  color: #5f6368;
-}
-
 .parent-region-button:hover {
   background: g.$button-hover;
 }
@@ -655,6 +648,18 @@ p.info-text + p.info-text {
   stroke: g.$pink-600;
 }
 
+.trendline-selected.Canada {
+  stroke: g.$blue-600;
+}
+
+.trendline-selected.United_Kingdom {
+  stroke: g.$orange-600;
+}
+
+.trendline-selected.United_States {
+  stroke: g.$pink-600;
+}
+
 .chart-header {
   display: flex;
   flex-direction: row;
@@ -685,6 +690,18 @@ p.info-text + p.info-text {
 }
 
 .chart-legend-rect.safety-side-effects {
+  fill: g.$pink-600;
+}
+
+.chart-legend-rect.Canada {
+  fill: g.$blue-600;
+}
+
+.chart-legend-rect.United_Kingdom {
+  fill: g.$orange-600;
+}
+
+.chart-legend-rect.United_States {
   fill: g.$pink-600;
 }
 
@@ -747,6 +764,18 @@ p.info-text + p.info-text {
   background: g.$pink-600;
 }
 
+.chart-hover-card-selected-icon.Canada {
+  background: g.$blue-600;
+}
+
+.chart-hover-card-selected-icon.United_Kingdom {
+  background: g.$orange-600;
+}
+
+.chart-hover-card-selected-icon.United_States {
+  background: g.$pink-600;
+}
+
 .chart-hover-card-icon-text {
   color: g.$grey-500;
   font-family: g.$body-font;
@@ -784,6 +813,71 @@ p.info-text + p.info-text {
 
 div.next-steps-item > h3 {
   margin-top: 40px;
+}
+
+.world-picker {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: 30% 70%;
+  font-family: 'Google Sans';
+}
+
+.chart-top{
+  display: flex;
+}
+
+.menu-title,
+.chart-title {
+  line-height: 32px;
+  font-size: 24px;
+  color: #202124;
+}
+
+.chart-y-axis-name{
+  line-height: 20px;
+  font-size: 12px;
+  color: #5F6368;
+  text-transform: uppercase;
+  font-family: Roboto;
+  letter-spacing: 0.4px;
+  margin: auto 10px 0 auto;
+}
+
+.menu-list {
+  line-height: 40px;
+  margin-top: 12px;
+  margin-right: 18px;
+}
+
+.menu-item {
+  display: grid;
+  grid-template-columns: 32px auto;
+  line-height: 40px;
+  font-size: 18px;
+  color: #202124;
+  cursor: pointer;
+}
+
+.menu-info{
+  line-height: 24px;
+  font-size: 16px;
+  color: #5F6368;
+  margin: 20px 10px 10px 0;
+}
+
+.menu-item svg {
+  position: relative;
+  top: -3px;
+  left: 2px;
+}
+
+.menu-item:hover {
+  background: #f1f3f4;
+  border-radius: 4px;
+}
+
+.country-picker-icon {
+  margin-top: 20px;
 }
 
 .footer-referencebar {
@@ -826,6 +920,20 @@ div.next-steps-item > h3 {
   .header-search-bar {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .world-picker {
+    display: block;
+  }
+
+  .menu {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .container-header {
+    top: 100px;
   }
 }
 
