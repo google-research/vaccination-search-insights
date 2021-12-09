@@ -27,11 +27,13 @@
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
     const RISING_QUERY_TYPE = "trending";
+    const DAYS_BETWEEN = 6;
 
     let selectedListId: string = "all-covid-vaccine";
     let dateList: string[] = [];
     let selectedDateIndex: number = dateList.length - 1;
-    let date = "";
+    let dateKey: string = "";
+    let dateRange: string = "";
     let queriesData: Map<string, Query[]> = new Map<string, Query[]>();
     let placeId: string;
     let topQueriesList = [];
@@ -68,10 +70,40 @@
         }
     }
 
+    /**
+     * Converts a simple numerical string to an English 7 days date range,
+     * in which the initial date would only include the month and day and
+     * the end date would include the month, day, and year.
+     * 
+     * Example: "2021-11-22" would be converted to "Nov 22 - Nov 28, 2021".
+     */
+    function convertDateToRange(date: string): string {
+        let initialDate: Date = new Date(date);
+        let dateRange: string = initialDate.toLocaleString("en-us", {
+            month: "short",
+            day: "2-digit",
+        });
+        let endDate: Date = new Date(
+            initialDate.setDate(initialDate.getDate() + DAYS_BETWEEN)
+        );
+        dateRange +=
+            " - " +
+            endDate.toLocaleString("en-us", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+            });
+        return dateRange;
+    }
+
     function setDate(index: number): void {
-        date = dateList.length != MINIMUM_DATE_INDEX
-                ? dateList[selectedDateIndex]
-                : "";
+        if (dateList.length != MINIMUM_DATE_INDEX) {
+            dateKey = dateList[selectedDateIndex];
+            dateRange = convertDateToRange(dateKey);
+        } else {
+            dateKey = "";
+            dateRange = "";
+        }
     }
 
     /**
@@ -81,13 +113,13 @@
     function updateQueries() {
         let topKey: string = createSerialisedQueryKey(
             placeId,
-            date,
+            dateKey,
             TOP_QUERY_TYPE,
             selectedListId
         );
         let risingKey: string = createSerialisedQueryKey(
             placeId,
-            date,
+            dateKey,
             RISING_QUERY_TYPE,
             selectedListId
         );
@@ -185,7 +217,7 @@
             <div class="query-list-title">Rising</div>
             <div class="date-nav-control">
                 <div id="map-legend-date" class="date-nav-display">
-                    {date}
+                    {dateRange}
                 </div>
                 <div
                     id="date-nav-button-back"
