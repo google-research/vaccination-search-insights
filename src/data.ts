@@ -453,10 +453,13 @@ export function createSerialisedQueryKey(place_id: string, date: string, query_t
   return place_id + "," + date + "," + query_type + "," + category;
 }
 
-export function extractDateFromQueryKey(key: string){
+function extractDateFromQueryKey(key: string) {
   return key.split(',')[1];
 }
 
+/**
+ * Creates a unique list of dates based on the data in the queries map keys.
+ */
 export function createDateList(keyList: string[]): string[] {
   const uniqueDates: Set<string> = keyList.reduce((dates, key) => {
     dates.add(extractDateFromQueryKey(key));
@@ -467,12 +470,17 @@ export function createDateList(keyList: string[]): string[] {
   return dateList;
 }
 
-export function createQuery(queryRow: QueryRow): Query {
+function createQuery(queryRow: QueryRow): Query {
   return { query: queryRow.query, rank: queryRow.rank };
 }
 
 let topQueriesDates: Set<string> = new Set<string>();
 
+/**
+ * Reads a given csv file and returns a Promise that holds a map that has keys created
+ * based on the location, date, query type, and category of an associated list of 
+ * queries.
+ */
 export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
   let topQueriesPromise: Promise<Map<string, Query[]>> = new Promise<Map<string, Query[]>>(
     (resolve, reject) => {
@@ -500,22 +508,24 @@ export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
   return topQueriesPromise;
 }
 
-
+/**
+ * Reads all TopQueries csv files and merges them into a single map.
+ */
 export function fetchAllQueries(): Promise<Map<string, Query[]>> {
-  let topQueriesFiles = ["./data/US_l0_access.csv", "./data/US_l1_access.csv", 
-  "./data/US_l1_access.csv", "./data/US_l2_access.csv", "./data/US_l0_side-effects.csv", 
-  "./data/US_l1_side-effects.csv", "./data/US_l2_side-effects.csv", "./data/US_l0_all-covid-vaccine.csv", 
-  "./data/US_l1_all-covid-vaccine.csv", "./data/US_l2_all-covid-vaccine.csv"];
-  let topQueriesData: Promise<Map<string, Query[]>> = 
-  Promise.all(topQueriesFiles.map((file) =>
-    fetchQueriesFile(file)
-  )
-  ).then(
-    (results) => {
-      return results.reduce((combinedMap, currentMap) => {
-        return new Map([...combinedMap, ...currentMap]);
-      }, new Map<string, Query[]>());
-    }
-  );
+  let topQueriesFiles = ["./data/US_l0_access.csv", "./data/US_l1_access.csv",
+    "./data/US_l1_access.csv", "./data/US_l2_access.csv", "./data/US_l0_side-effects.csv",
+    "./data/US_l1_side-effects.csv", "./data/US_l2_side-effects.csv", "./data/US_l0_all-covid-vaccine.csv",
+    "./data/US_l1_all-covid-vaccine.csv", "./data/US_l2_all-covid-vaccine.csv"];
+  let topQueriesData: Promise<Map<string, Query[]>> =
+    Promise.all(topQueriesFiles.map((file) =>
+      fetchQueriesFile(file)
+    )
+    ).then(
+      (results) => {
+        return results.reduce((combinedMap, currentMap) => {
+          return new Map([...combinedMap, ...currentMap]);
+        }, new Map<string, Query[]>());
+      }
+    );
   return topQueriesData;
 }

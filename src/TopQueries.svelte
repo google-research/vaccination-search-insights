@@ -1,6 +1,4 @@
 <script lang="ts">
-import { set } from "d3-collection";
-
     /**
      * Copyright 2021 Google LLC
      *
@@ -18,9 +16,14 @@ import { set } from "d3-collection";
      */
 
     import { onMount } from "svelte";
-    import { fetchAllQueries, Query, createDateList, createSerialisedQueryKey} from "./data";
+    import {
+        fetchAllQueries,
+        Query,
+        createDateList,
+        createSerialisedQueryKey,
+    } from "./data";
     import { params } from "./stores";
-  
+
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
     const RISING_QUERY_TYPE = "trending";
@@ -28,22 +31,24 @@ import { set } from "d3-collection";
     let selectedListId: string = "all-covid-vaccine";
     let dateList: string[] = [];
     let selectedDateIndex: number = dateList.length - 1;
-    let date = dateList.length != MINIMUM_DATE_INDEX ? dateList[selectedDateIndex] : "No Data";
+    let date = "";
     let queriesData: Map<string, Query[]> = new Map<string, Query[]>();
     let placeId: string;
     let topQueriesList = [];
     let risingQueriesList = [];
 
     /**
-     * Change selectedListId so that the selected button becomes active and display the list associated with the selectedListId.
-     *
-     * TODO(mhkshum): Add code to change the currently displayed list to the list associated with the category selected.
+     * Changes selectedListId so that the selected button becomes active and
+     * updates the Top Queries and Rising Queries lists associated with the selectedListId.
      */
     function changeCategory() {
         selectedListId = this.id;
         updateQueries();
     }
 
+    /**
+     * Increments the date displayed and updates lists based on the new date.
+     */
     function incrementDate() {
         if (selectedDateIndex < dateList.length - 1) {
             selectedDateIndex += 1;
@@ -52,6 +57,9 @@ import { set } from "d3-collection";
         }
     }
 
+    /**
+     * Increments the date displayed and updates lists based on the new date.
+     */
     function decrementDate() {
         if (selectedDateIndex > MINIMUM_DATE_INDEX) {
             selectedDateIndex -= 1;
@@ -61,25 +69,46 @@ import { set } from "d3-collection";
     }
 
     function setDate(index: number): void {
-        date = dateList[selectedDateIndex];
+        date = dateList.length != MINIMUM_DATE_INDEX
+                ? dateList[selectedDateIndex]
+                : "";
     }
 
+    /**
+     * Creates 2 new keys whenever a parameter (placeID, date, selectedListId) is modified
+     * and uses the 2 new keys to grab the list of queries.
+     */
     function updateQueries() {
-        let topKey:string = createSerialisedQueryKey(placeId, date, TOP_QUERY_TYPE, selectedListId);
-        let risingKey:string = createSerialisedQueryKey(placeId, date, RISING_QUERY_TYPE, selectedListId);
+        let topKey: string = createSerialisedQueryKey(
+            placeId,
+            date,
+            TOP_QUERY_TYPE,
+            selectedListId
+        );
+        let risingKey: string = createSerialisedQueryKey(
+            placeId,
+            date,
+            RISING_QUERY_TYPE,
+            selectedListId
+        );
         topQueriesList = queriesData.has(topKey) ? queriesData.get(topKey) : [];
-        risingQueriesList = queriesData.has(risingKey) ? queriesData.get(risingKey) : [];
+        risingQueriesList = queriesData.has(risingKey)
+            ? queriesData.get(risingKey)
+            : [];
     }
 
     export let covid_vaccination_button_title: string;
     export let vaccination_intent_button_title: string;
     export let safety_side_effects_button_title: string;
 
+    // runs after component is first rendered to the DOM
     onMount(async () => {
         queriesData = await fetchAllQueries();
         dateList = createDateList([...queriesData.keys()]);
         selectedDateIndex = dateList.length - 1;
         setDate(selectedDateIndex);
+        // subscribe to 'params' so any placeId (location changes) made by the user
+        // will update the queries displayed in the TopQueries component.
         params.subscribe((newParams) => {
             placeId = newParams.placeId;
             if (placeId) {
