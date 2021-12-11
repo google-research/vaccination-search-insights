@@ -463,9 +463,14 @@ svg.map-svg path {
 }
 
 .date-nav-display {
-  height: 14px;
-  line-height: 14px;
-  text-align: right;
+  color: g.$grey-800;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  height: 20px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
   margin-right: 6px;
 }
 
@@ -959,7 +964,7 @@ div.next-steps-item > h3 {
 }
 
 .queries-lists{
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   margin-top: 24px;
 }
@@ -971,7 +976,6 @@ div.next-steps-item > h3 {
   font-family: Google Sans;
   font-size: 24px;
   line-height: 32px;
-  min-height: 36px;
 }
 
 .top-searches{
