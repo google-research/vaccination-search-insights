@@ -439,9 +439,8 @@ export interface QueryRow {
   query_type: string;
   query: string;
   rank: number;
-  ratio: number;
-  count: number;
-  normalized_count: number;
+  sni: number;
+  category: string;
 }
 
 export interface Query {
@@ -492,7 +491,7 @@ export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
           console.log(`Received top queries data with ${results.data.length} rows`);
           const topQueries = results.data.reduce((accMap, row) => {
             topQueriesDates.add(row.date);
-            let key = createSerialisedQueryKey(row.place_id, row.date, row.query_type, file.split("_")[2].split(".")[0]);
+            let key = createSerialisedQueryKey(row.place_id, row.date, row.query_type, row.category);
             let query = createQuery(row);
             if (!accMap.has(key)) {
               accMap.set(key, []);
@@ -512,10 +511,9 @@ export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
  * Reads all TopQueries csv files and merges them into a single map.
  */
 export function fetchAllQueries(): Promise<Map<string, Query[]>> {
-  let topQueriesFiles = ["./data/US_l0_access.csv", "./data/US_l1_access.csv",
-    "./data/US_l1_access.csv", "./data/US_l2_access.csv", "./data/US_l0_side-effects.csv",
-    "./data/US_l1_side-effects.csv", "./data/US_l2_side-effects.csv", "./data/US_l0_all-covid-vaccine.csv",
-    "./data/US_l1_all-covid-vaccine.csv", "./data/US_l2_all-covid-vaccine.csv"];
+  let topQueriesFiles = ["./data/top_queries_US_l0_vaccination_trending_searches.csv",
+    "./data/top_queries_US_l1_vaccination_trending_searches.csv",
+    "./data/top_queries_US_l2_vaccination_trending_searches.csv"];
   let topQueriesData: Promise<Map<string, Query[]>> =
     Promise.all(topQueriesFiles.map((file) =>
       fetchQueriesFile(file)
