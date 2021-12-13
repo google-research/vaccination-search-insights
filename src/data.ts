@@ -107,7 +107,7 @@ function serializePromises<T>(immediate: () => Promise<T>): () => Promise<T> {
   return function () {
     // Catch is necessary here — otherwise a rejection in a promise will
     // break the serializer forever
-    last = last.catch(() => {}).then(() => immediate());
+    last = last.catch(() => { }).then(() => immediate());
     return last;
   };
 }
@@ -275,7 +275,7 @@ export function fetchZipData(geoid): Promise<any> {
 
 export function fetchRegionalTrendsData(trendLines: Promise<RegionalTrendLine[]>): Promise<
   Map<string, RegionalTrends>
-  > {
+> {
   // TODO(jelenako): check if regionalTrends already loaded for selected country
   // if (regionalTrends) {
   //   return Promise.resolve(regionalTrends);
@@ -419,8 +419,111 @@ export function getTrendValue(
   }
 }
 
-export enum TrendValueType{
+export enum TrendValueType {
   Vaccination = "vaccination",
   Intent = "intent",
   Safety = "safety"
+}
+
+export interface QueryRow {
+  date: string;
+  country_region: string;
+  country_region_code: string;
+  sub_region_1: string;
+  sub_region_1_code: string;
+  sub_region_2: string;
+  sub_region_2_code: string;
+  sub_region_3: string;
+  sub_region_3_code: string;
+  place_id: string;
+  query_type: string;
+  query: string;
+  rank: number;
+  sni: number;
+  category: string;
+}
+
+export interface Query {
+  query: string;
+  rank: number;
+}
+
+export function createSerialisedQueryKey(place_id: string, date: string, query_type: string, category: string): string {
+  return place_id + "," + date + "," + query_type + "," + category;
+}
+
+function extractDateFromQueryKey(key: string) {
+  return key.split(',')[1];
+}
+
+/**
+ * Creates a unique list of dates based on the data in the queries map keys.
+ */
+export function createDateList(keyList: string[]): string[] {
+  const uniqueDates: Set<string> = keyList.reduce((dates, key) => {
+    dates.add(extractDateFromQueryKey(key));
+    return dates;
+  }, new Set<string>());
+  const dateList: string[] = Array.from(uniqueDates.values());
+  dateList.sort();
+  return dateList;
+}
+
+function createQuery(queryRow: QueryRow): Query {
+  return { query: queryRow.query, rank: queryRow.rank };
+}
+
+let topQueriesDates: Set<string> = new Set<string>();
+
+/**
+ * Reads a given csv file and returns a Promise that holds a map that has keys created
+ * based on the location, date, query type, and category of an associated list of 
+ * queries.
+ */
+export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
+  let topQueriesPromise: Promise<Map<string, Query[]>> = new Promise<Map<string, Query[]>>(
+    (resolve, reject) => {
+      parse(file, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results: ParseResult<QueryRow>) {
+          console.log(`Received top queries data with ${results.data.length} rows`);
+          const topQueries = results.data.reduce((accMap, row) => {
+            topQueriesDates.add(row.date);
+            let key = createSerialisedQueryKey(row.place_id, row.date, row.query_type, row.category);
+            let query = createQuery(row);
+            if (!accMap.has(key)) {
+              accMap.set(key, []);
+            }
+            accMap.set(key, [...accMap.get(key), query]);
+            return accMap;
+          }, new Map<string, Query[]>());
+          resolve(topQueries);
+          console.log(topQueries.size);
+        },
+      });
+    });
+  return topQueriesPromise;
+}
+
+/**
+ * Reads all TopQueries csv files and merges them into a single map.
+ */
+export function fetchAllQueries(): Promise<Map<string, Query[]>> {
+  let topQueriesFiles = ["./data/top_queries_US_l0_vaccination_trending_searches.csv",
+    "./data/top_queries_US_l1_vaccination_trending_searches.csv",
+    "./data/top_queries_US_l2_vaccination_trending_searches.csv"];
+  let topQueriesData: Promise<Map<string, Query[]>> =
+    Promise.all(topQueriesFiles.map((file) =>
+      fetchQueriesFile(file)
+    )
+    ).then(
+      (results) => {
+        return results.reduce((combinedMap, currentMap) => {
+          return new Map([...combinedMap, ...currentMap]);
+        }, new Map<string, Query[]>());
+      }
+    );
+  return topQueriesData;
 }

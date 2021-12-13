@@ -459,9 +459,14 @@ svg.map-svg path {
 }
 
 .date-nav-display {
-  height: 14px;
-  line-height: 14px;
-  text-align: right;
+  color: g.$grey-800;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  height: 20px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
   margin-right: 6px;
 }
 
@@ -955,29 +960,59 @@ div.next-steps-item > h3 {
 }
 
 .queries-lists{
-  margin-top: 16px;
+  align-items: flex-start;
   display: flex;
-  align-items: center;
+  margin-top: 24px;
 }
 
 .query-list-title {
-  display: flex;
-  font-size: 22px;
-  line-height: 28px;
   color: #202124;
+  display: flex;
+  flex-grow: 1;
+  font-family: Google Sans;
+  font-size: 24px;
+  line-height: 32px;
+  min-height: 36px;
 }
 
 .top-searches{
   flex: 1;
+  overflow: hidden;
 }
 
 .rising-searches{
+  align-items: center;
   display: flex;
   flex: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
+  overflow: hidden;
 }
 
 .rising-searches .date-nav-control {
   min-width: initial;
 }
+
+.bullet-list {
+  list-style-position: inside;
+  overflow: hidden;
+  padding-left: 0;
+  margin-top: 12px;
+}
+
+.bullet-list-text::first-letter {
+  text-transform: capitalize;
+}
+
+.bullet-list-text {
+  color: #202124;
+  font-family: Google Sans;
+  font-size: 18px;
+  line-height: 40px;
+  letter-spacing: 0px;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+} 
