@@ -1028,3 +1028,16 @@ div.next-steps-item > h3 {
   font-size: 18px;
   line-height: 40px;
 }
+
+.queries-category-selector {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  max-width: 100%;
+}
+
+.queries-header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+}
