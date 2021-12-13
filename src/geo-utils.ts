@@ -16,7 +16,7 @@
 
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
-import * as gb from "../public/geo/gb_states.json";
+import * as gb from "../public/geo/gb-counties-albers.json";
 import type { Region } from "./data";
 
 let regionCodesToPlaceId: Map<string, string>;
@@ -81,10 +81,18 @@ export const regionOneToFipsCode: Map<string, string> = new Map([
   ["US-MP", "69"],
   ["US-PR", "72"],
   ["US-VI", "78"],
+  ["GB-ENG", "E"],
+  ["GB-SCT", "S"],
+  ["GB-WLS", "W"],
+  ["GB-NIR", "N"],
 ]);
 
-export function stateFipsCodeFromCounty(countyFipsCode: string): string {
-  return countyFipsCode.slice(0, 2);
+export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
+  if (countryCode == "US") {
+    return countyFipsCode.slice(0, 2);
+  } else if (countryCode == "GB") {
+    return countyFipsCode.slice(0, 1);
+  }
 }
 
 export function fipsCodeFromElementId(id: string): string {

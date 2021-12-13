@@ -50,12 +50,15 @@ enum GeoLevel {
 }
 
 const unknownColor = "#DADCE0"; //material grey 300
-const path = d3.geoPath();
 
 const alaskaFipsCode: string = "02";
+const northernIrelandFipsCode: string = "N";
+
+let path = d3.geoPath();
 
 // currently resetting to the US
 let resetNavigationPlaceId: string = "ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
+let selectedCountryCode: string = "US";
 let currentGeoLevel = GeoLevel.Country;
 let currentGeoId: string = resetNavigationPlaceId;
 
@@ -90,6 +93,7 @@ export function createMap(
   selectedCountryMetadata
 ) {
   resetNavigationPlaceId = selectedCountryMetadata.placeId;
+  selectedCountryCode = selectedCountryMetadata.countryCode;
   trendData = mapData;
   
   selectedTrend = trend;
@@ -107,7 +111,7 @@ export function createMap(
   regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions);
   selectionCallback = selectionFn;
 
-  initializeMap(selectedCountryMetadata.countryCode);
+  initializeMap();
   colorizeMap();
 }
 
@@ -173,7 +177,7 @@ export function setSelectedState(regionOneCode) {
 export function setSelectedCounty(fipsCode) {
   currentGeoLevel = GeoLevel.SubRegion2;
   currentGeoId = fipsCode;
-  activateSelectedState(stateFipsCodeFromCounty(fipsCode), false);
+  activateSelectedState(stateFipsCodeFromCounty(fipsCode, selectedCountryCode), false);
   activateSelectedCounty(fipsCode, true);
 }
 
@@ -246,7 +250,7 @@ function generateRegionToTrendDataForDateSlice(): void {
 //
 // Map drawing routines
 //
-function initializeMap(countryCode: string) {
+function initializeMap() {
   mapSvg = d3
     .select("#map")
     .append("svg")
@@ -263,83 +267,68 @@ function initializeMap(countryCode: string) {
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
   
-  const topology = getAtlas(countryCode);
+  const topology = getAtlas(selectedCountryCode);
 
+  const countyFeatures = feature(
+    topology,
+    topology.objects.counties as GeometryCollection
+  );
   const stateFeatures = feature(
     topology,
     topology.objects.states as GeometryCollection
   );
+  const nationFeatures = feature(
+    topology,
+    topology.objects.nation as GeometryCollection
+  );
 
-  if (countryCode == "US") {
-    const countyFeatures = feature(
-      topology,
-      topology.objects.counties as GeometryCollection
-    );
-    const nationFeatures = feature(
-      topology,
-      topology.objects.nation as GeometryCollection
-    );
-
-    d3.select("#nation")
-      .selectAll("path")
-      .data(nationFeatures.features)
-      .join("path")
-      .attr("d", path)
-      .attr("fill", "#f1f3f4");
-
-    d3.select("#county")
-      .selectAll("path")
-      .data(countyFeatures.features)
-      .join("path")
-      .attr("id", (d) => `fips-${d.id}`)
-      .attr("class", (d) => `state-${stateFipsCodeFromCounty(d.id as string)}`)
-      .attr("d", path)
-      .attr("fill", "none")
-      .attr("stroke", "white")
-      .attr("stroke-width", 0)
-      .attr("vector-effect", "non-scaling-stroke");
-
-    d3.select("#state")
-      .selectAll("path")
-      .data(stateFeatures.features)
-      .join("path")
-      .attr("id", (d) => `fips-${d.id}`)
-      .attr("class", "state")
-      .attr("d", path)
-      .attr("fill", "transparent")
-      .attr("stroke", (d) => (d.id == alaskaFipsCode ? "#e8eaed" : "white"))
-      .attr("stroke-width", 1)
-      .attr("vector-effect", "non-scaling-stroke")
-      .on("mouseenter", enterStateBoundsHandler)
-      .on("mouseleave", leaveStateBoundsHandler)
-      .on("mousemove", inStateMovementHandler)
-      .on("click", stateSelectionOnClickHandler);
-    
-  } else if (countryCode == "GB") {
+  if (selectedCountryCode == "GB") {
     var projection = d3.geoAlbers()
-      .center([0, 55.4])
-      .rotate([4.4, 0])
-      .parallels([50, 60])
-      .scale(1200 * 3)
+      .center([3, 9.5])
+      .rotate([0, 4])
+      .parallels([50, 20])
+      .scale(1200 * 3.3)
       .translate([mapBounds.width / 2, mapBounds.height / 2]);
 
-    var pathGb = d3.geoPath()
-      .projection(projection);
-
-    d3.select("#state")
-      .selectAll("path")
-      .data(stateFeatures.features)
-      .join("path")
-      .attr("class", "state")
-      .attr("d", pathGb)
-      .attr("fill", "grey")
-      .attr("stroke", "black")
-      .attr("stroke-width", 1)
-      .attr("vector-effect", "non-scaling-stroke");
-    
+    path = path.projection(projection);
   } else {
-    console.log("No map drawing routines for ", countryCode)
+    path = d3.geoPath();
   }
+
+  d3.select("#nation")
+    .selectAll("path")
+    .data(nationFeatures.features)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", "#f1f3f4");
+
+  d3.select("#county")
+    .selectAll("path")
+    .data(countyFeatures.features)
+    .join("path")
+    .attr("id", (d) => `fips-${d.id}`)
+    .attr("class", (d) => `state-${stateFipsCodeFromCounty(d.id as string, selectedCountryCode)}`)
+    .attr("d", path)
+    .attr("fill", "none")
+    .attr("stroke", "white")
+    .attr("stroke-width", 0)
+    .attr("vector-effect", "non-scaling-stroke");
+
+  d3.select("#state")
+    .selectAll("path")
+    .data(stateFeatures.features)
+    .join("path")
+    .attr("id", (d) => `fips-${d.id}`)
+    .attr("class", "state")
+    .attr("d", path)
+    .attr("fill", "transparent")
+    .attr("stroke", (d) => ([alaskaFipsCode, northernIrelandFipsCode].includes(d.id as string) ? "#e8eaed" : "white"))
+    .attr("stroke-width", 1)
+    .attr("vector-effect", "non-scaling-stroke")
+    .on("mouseenter", enterStateBoundsHandler)
+    .on("mouseleave", leaveStateBoundsHandler)
+    .on("mousemove", inStateMovementHandler)
+    .on("click", stateSelectionOnClickHandler);
 
   mapZoom = d3.zoom().scaleExtent([1, 250]).on("zoom", zoomHandler);
   mapSvg.call(mapZoom);
@@ -350,7 +339,7 @@ function initializeMap(countryCode: string) {
 function getFillColor(fipsCode) {
   let data;
   if (fipsCode == dcCountyFipsCode) {
-    data = latestStateData.get(stateFipsCodeFromCounty(fipsCode));
+    data = latestStateData.get(stateFipsCodeFromCounty(fipsCode, selectedCountryCode));
   } else {
     data = latestCountyData.get(fipsCode);
   }
@@ -678,7 +667,7 @@ function drawMapCalloutInfo(data, fipsCode) {
   let trends;
   // Need to special case Washington D.C.
   if (fipsCode == dcCountyFipsCode) {
-    trends = latestStateData.get(stateFipsCodeFromCounty(dcCountyFipsCode));
+    trends = latestStateData.get(stateFipsCodeFromCounty(dcCountyFipsCode, selectedCountryCode));
   } else {
     trends = data.get(fipsCode);
   }
