@@ -74,7 +74,7 @@
      * Converts a simple numerical string to an English 7 days date range,
      * in which the initial date would only include the month and day and
      * the end date would include the month, day, and year.
-     * 
+     *
      * Example: "2021-11-22" would be converted to "Nov 22 - Nov 28, 2021".
      */
     function convertDateToRange(date: string): string {
@@ -151,58 +151,63 @@
 </script>
 
 <div id="top-queries">
-    <div class="map-trend-selector-group">
-        <button
-            id="covid19_vaccination"
-            class={selectedListId == "covid19_vaccination"
-                ? "map-trend-selector-button map-trend-selector-selected"
-                : "map-trend-selector-button"}
-            on:click={changeCategory}
-            title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
-        >
-            {#if selectedListId == "covid19_vaccination"}
-                <div class="map-trend-icon-container">
-                    <span class="material-icons map-trend-selected-icon"
-                        >done</span
-                    >
-                </div>
-            {/if}
-            {covid_vaccination_button_title}
-        </button>
-        <button
-            id="vaccination_intent"
-            class={selectedListId == "vaccination_intent"
-                ? "map-trend-selector-button map-trend-selector-selected"
-                : "map-trend-selector-button"}
-            on:click={changeCategory}
-            title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
-        >
-            {#if selectedListId == "vaccination_intent"}
-                <div class="map-trend-icon-container">
-                    <span class="material-icons map-trend-selected-icon"
-                        >done</span
-                    >
-                </div>
-            {/if}
-            {vaccination_intent_button_title}
-        </button>
-        <button
-            id="safety_side_effects"
-            class={selectedListId == "safety_side_effects"
-                ? "map-trend-selector-button map-trend-selector-selected"
-                : "map-trend-selector-button"}
-            on:click={changeCategory}
-            title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
-        >
-            {#if selectedListId == "safety_side_effects"}
-                <div class="map-trend-icon-container">
-                    <span class="material-icons map-trend-selected-icon"
-                        >done</span
-                    >
-                </div>
-            {/if}
-            {safety_side_effects_button_title}
-        </button>
+    <div class="queries-header">
+        <div class="queries-category-selector">
+            <button
+                id="covid19_vaccination"
+                class={selectedListId == "covid19_vaccination"
+                    ? "map-trend-selector-button map-trend-selector-selected"
+                    : "map-trend-selector-button"}
+                on:click={changeCategory}
+                title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
+            >
+                {#if selectedListId == "covid19_vaccination"}
+                    <div class="map-trend-icon-container">
+                        <span class="material-icons map-trend-selected-icon"
+                            >done</span
+                        >
+                    </div>
+                {/if}
+                {covid_vaccination_button_title}
+            </button>
+            <button
+                id="vaccination_intent"
+                class={selectedListId == "vaccination_intent"
+                    ? "map-trend-selector-button map-trend-selector-selected"
+                    : "map-trend-selector-button"}
+                on:click={changeCategory}
+                title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
+            >
+                {#if selectedListId == "vaccination_intent"}
+                    <div class="map-trend-icon-container">
+                        <span class="material-icons map-trend-selected-icon"
+                            >done</span
+                        >
+                    </div>
+                {/if}
+                {vaccination_intent_button_title}
+            </button>
+            <button
+                id="safety_side_effects"
+                class={selectedListId == "safety_side_effects"
+                    ? "map-trend-selector-button map-trend-selector-selected"
+                    : "map-trend-selector-button"}
+                on:click={changeCategory}
+                title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
+            >
+                {#if selectedListId == "safety_side_effects"}
+                    <div class="map-trend-icon-container">
+                        <span class="material-icons map-trend-selected-icon"
+                            >done</span
+                        >
+                    </div>
+                {/if}
+                {safety_side_effects_button_title}
+            </button>
+        </div>
+        <div class="info-button">
+            <span class="material-icons-outlined">info</span>
+        </div>
     </div>
     <div class="queries-lists">
         <div class="top-searches">
