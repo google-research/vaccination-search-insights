@@ -350,7 +350,7 @@ export function selectRegionOneTrends(
 ): RegionalTrendLine[] {
   return rtls.filter(
     (region) =>
-      subRegionTwoCode(region) == "" && subRegionThreeCode(region) == ""
+      region.sub_region_2_code == "" && subRegionThreeCode(region) == ""
   );
 }
 
