@@ -284,10 +284,10 @@ function initializeMap() {
 
   if (selectedCountryCode == "GB") {
     var projection = d3.geoAlbers()
-      .center([3, 9.5])
+      .center([3, 8.7])
       .rotate([0, 4])
       .parallels([50, 20])
-      .scale(1200 * 3.3)
+      .scale(1200 * 4)
       .translate([mapBounds.width / 2, mapBounds.height / 2]);
 
     path = path.projection(projection);
