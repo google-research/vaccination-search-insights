@@ -1003,6 +1003,7 @@ div.next-steps-item > h3 {
   overflow: hidden;
   padding-left: 0;
   margin-top: 12px;
+  width: 100%;
 }
 
 .bullet-list-text::first-letter {
@@ -1020,3 +1021,10 @@ div.next-steps-item > h3 {
   overflow: hidden;
   white-space: nowrap;
 } 
+
+.no-queries {
+  color: #80868b;
+  font-family: Google Sans;
+  font-size: 18px;
+  line-height: 40px;
+}

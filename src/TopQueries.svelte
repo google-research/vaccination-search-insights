@@ -210,6 +210,8 @@
             <ul class="bullet-list">
                 {#each topQueriesList as query}
                     <li class="bullet-list-text">{query.query}</li>
+                {:else}
+                    <div class="no-queries">Not enough data</div>
                 {/each}
             </ul>
         </div>
@@ -243,6 +245,8 @@
             <ul class="bullet-list">
                 {#each risingQueriesList as query}
                     <li class="bullet-list-text">{query.query}</li>
+                {:else}
+                    <div class="no-queries">Not enough data</div>
                 {/each}
             </ul>
         </div>
