@@ -18,10 +18,10 @@
     import { onMount } from "svelte";
     import {
         fetchAllQueries,
-        Query,
         createDateList,
         createSerialisedQueryKey,
     } from "./data";
+    import type {Query} from "./data";
     import { params } from "./stores";
 
     const MINIMUM_DATE_INDEX = 0;
