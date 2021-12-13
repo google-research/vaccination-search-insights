@@ -37,6 +37,7 @@
   } from "./choropleth.js";
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
+  import TopQueries from "./TopQueries.svelte";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -481,6 +482,14 @@
         scaled value that you can compare across regions, times, or topics.
       </p>
     </TimeSeries>
+  {/if}
+  
+  {#if selectedCountryName == "United States"}
+    <TopQueries
+      covid_vaccination_button_title={covid_vaccination_title}
+      vaccination_intent_button_title={vaccination_intent_title}
+      safety_side_effects_button_title={safety_side_effects_title}
+    />
   {/if}
 
   <a id="about" class="about-anchor">

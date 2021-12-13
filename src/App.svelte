@@ -226,11 +226,6 @@
           vaccination_intent_title={VACCINATION_INTENT_TITLE}
           safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}
         />
-        <TopQueries
-          covid_vaccination_button_title={COVID_19_VACCINATION_TITLE}
-          vaccination_intent_button_title={VACCINATION_INTENT_TITLE}
-          safety_side_effects_button_title={SAFETY_SIDE_EFFECTS_TITLE}
-        />
       {:else}
         <CountryPicker
           id="covid-19-vaccination"
