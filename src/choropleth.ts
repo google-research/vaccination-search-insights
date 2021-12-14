@@ -51,6 +51,7 @@ enum GeoLevel {
 
 const unknownColor = "#DADCE0"; //material grey 300
 
+// Using different styling for areas with no borders with the main map
 const alaskaFipsCode: string = "02";
 const northernIrelandFipsCode: string = "N";
 

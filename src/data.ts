@@ -371,6 +371,7 @@ export function subRegionTwoCode(region: RegionalTrendLine): string {
   if (region.sub_region_2_code != "") {
     return region.sub_region_2_code
   } else {
+    // Get the code from lookup table, if not found, return empty string
     return getCountyFipsCodeGb(region.sub_region_2) || "";
   }
 }
