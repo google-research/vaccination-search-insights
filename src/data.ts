@@ -17,7 +17,7 @@
 import { parse, ParseResult } from "papaparse";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
-import { getCountyFipsCode } from "./zcta-county";
+import { getCountyFipsCodeGb } from "./zcta-county";
 
 export interface Region {
   country_region: string;
@@ -350,7 +350,7 @@ export function selectRegionOneTrends(
 ): RegionalTrendLine[] {
   return rtls.filter(
     (region) =>
-      region.sub_region_2_code == "" && subRegionThreeCode(region) == ""
+      subRegionTwoCode(region) == "" && subRegionThreeCode(region) == ""
   );
 }
 
@@ -371,7 +371,7 @@ export function subRegionTwoCode(region: RegionalTrendLine): string {
   if (region.sub_region_2_code != "") {
     return region.sub_region_2_code
   } else {
-    return getCountyFipsCode(region.sub_region_2);
+    return getCountyFipsCodeGb(region.sub_region_2) || "";
   }
 }
 
@@ -394,7 +394,6 @@ export function aggregateRegionDataForDate(
       });
       return acc;
     }, new Map<string, RegionalTrendAggregate>());
-  console.log(dataMap)
   return dataMap;
 }
 

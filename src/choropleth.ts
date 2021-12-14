@@ -81,7 +81,7 @@ let mapTimeoutRef;
 //
 export const mapBounds = {
   width: 975,
-  height: 710,
+  height: 610,
   margin: 30,
 };
 
@@ -287,7 +287,7 @@ function initializeMap() {
       .center([3, 8.7])
       .rotate([0, 4])
       .parallels([50, 20])
-      .scale(1200 * 4)
+      .scale(4000)
       .translate([mapBounds.width / 2, mapBounds.height / 2]);
 
     path = path.projection(projection);

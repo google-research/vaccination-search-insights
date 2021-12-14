@@ -20,7 +20,7 @@ const gbCountryFipsCodeMap = gbCountryFipsCode.reduce((acc, r) => {
     return acc;
 }, new Map<string, string>());
 
-export function getCountyFipsCode(county_name: string) {
+export function getCountyFipsCodeGb(county_name: string) {
     return gbCountryFipsCodeMap.get(county_name);
 }
 
