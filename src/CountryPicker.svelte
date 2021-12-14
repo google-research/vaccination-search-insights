@@ -27,7 +27,6 @@
     getClosestDate,
   } from "./utils";
 
-  export let id: string;
   export let trendLine: (trends: RegionalTrends) => TrendValue[];
 
   let globalTrendsByPlaceId: Map<string, RegionalTrends>;
