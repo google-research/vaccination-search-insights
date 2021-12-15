@@ -16,7 +16,7 @@
         "displayLevels":[0,1,2,3],
         "locales":["en-GB"],
         "subRegion1Title": "Countries",
-        "subRegion2Title": "Subregions",
+        "subRegion2Title": "Regions",
         "subRegion3Title": "Postcodes",
         "shapeFileLegal":"Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
         "placeId":"ChIJqZHHQhE7WgIReiWIMkOg-MQ"
