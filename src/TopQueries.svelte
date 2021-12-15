@@ -24,12 +24,14 @@
     } from "./data";
     import type { Region, Query } from "./data";
     import { params } from "./stores";
+    import { handleInfoPopup } from "./utils";
+    import { dateRangeString } from "./choropleth";
 
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
     const RISING_QUERY_TYPE = "rising";
-    const DAYS_BETWEEN = 6;
 
+    let loading: boolean = true;
     let selectedListId: string = "covid19_vaccination";
     let dateList: string[] = [];
     let selectedDateIndex: number = dateList.length - 1;
@@ -72,36 +74,10 @@
         }
     }
 
-    /**
-     * Converts a simple numerical string to an English 7 days date range,
-     * in which the initial date would only include the month and day and
-     * the end date would include the month, day, and year.
-     *
-     * Example: "2021-11-22" would be converted to "Nov 22 - Nov 28, 2021".
-     */
-    function convertDateToRange(date: string): string {
-        let initialDate: Date = new Date(date);
-        let dateRange: string = initialDate.toLocaleString("en-us", {
-            month: "short",
-            day: "2-digit",
-        });
-        let endDate: Date = new Date(
-            initialDate.setDate(initialDate.getDate() + DAYS_BETWEEN)
-        );
-        dateRange +=
-            " - " +
-            endDate.toLocaleString("en-us", {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-            });
-        return dateRange;
-    }
-
     function setDate(index: number): void {
         if (dateList.length != MINIMUM_DATE_INDEX) {
             dateKey = dateList[selectedDateIndex];
-            dateRange = convertDateToRange(dateKey);
+            dateRange = dateRangeString(dateKey);
         } else {
             dateKey = "";
             dateRange = "";
@@ -165,30 +141,33 @@
             }
             let newRegion: Region = regionsByPlaceId.get(placeId);
             let newSubRegion: string = newRegion.sub_region_1;
-            
+
             /**
              * Not County Level: clear county data and reset current SubRegion
              * County Level in a New Subregion: fetch new county data
              * County Level in the Same Subregion: update using existing county data
-            */
+             */
             if (newRegion.sub_region_2 === "") { // if placeId is not county level
                 countyData = null; 
                 currentSubRegion = null;
                 updateQueries();
             } else if (newSubRegion !== currentSubRegion) { // if county in a new subregion
                 currentSubRegion = newSubRegion; 
+                loading = true;
                 Promise.resolve(
                     fetchQueriesFile(
                         `US_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
                     )
                 ).then(function (newCountyData) {
                     countyData = newCountyData;
+                    loading = false;
                     updateQueries();
                 });
             } else { // county within the same subregion
                 updateQueries();
             } 
         });
+        loading = false;
     });
 </script>
 
@@ -247,7 +226,11 @@
                 {safety_side_effects_button_title}
             </button>
         </div>
-        <div class="info-button">
+        <div
+            class="info-button"
+            on:click={(e) =>
+                handleInfoPopup(e, `#info-popup-${selectedListId}`)}
+        >
             <span class="material-icons-outlined">info</span>
         </div>
     </div>
@@ -255,11 +238,15 @@
         <div class="top-searches">
             <div class="query-list-title">Top searches</div>
             <ul class="bullet-list">
-                {#each topQueriesList as query}
-                    <li class="bullet-list-text">{query.query}</li>
+                {#if loading}
+                    <div class="no-queries">Loading data...</div>
                 {:else}
-                    <div class="no-queries">Not enough data</div>
-                {/each}
+                    {#each topQueriesList as query}
+                        <li class="bullet-list-text">{query.query}</li>
+                    {:else}
+                        <div class="no-queries">Not enough data</div>
+                    {/each}
+                {/if}
             </ul>
         </div>
         <div class="rising-searches">
@@ -290,12 +277,57 @@
                 </div>
             </div>
             <ul class="bullet-list">
-                {#each risingQueriesList as query}
-                    <li class="bullet-list-text">{query.query}</li>
+                {#if loading}
+                    <div class="no-queries">Loading data...</div>
                 {:else}
-                    <div class="no-queries">Not enough data</div>
-                {/each}
+                    {#each risingQueriesList as query}
+                        <li class="bullet-list-text">{query.query}</li>
+                    {:else}
+                        <div class="no-queries">Not enough data</div>
+                    {/each}
+                {/if}
             </ul>
         </div>
     </div>
+</div>
+
+<!-- Info Popups -->
+<div id="info-popup-covid19_vaccination" class="info-popup">
+    <h3 class="info-header">
+        {covid_vaccination_button_title}
+    </h3>
+    <p class="info-text">
+        Most common searches related to any aspect of COVID-19 vaccination,
+        listed in order of frequency.
+    </p>
+    <p class="info-text">
+        This parent category includes searches from the other two subcategories.
+    </p>
+    <p>
+        <a href="#about" class="info-link">Learn more</a>
+    </p>
+</div>
+<div id="info-popup-vaccination_intent" class="info-popup">
+    <h3 class="info-header">
+        {vaccination_intent_button_title}
+    </h3>
+    <p class="info-text">
+        Most common searches related to the eligibility, availability, and
+        accessibility of COVID-19 vaccines, listed in order of frequency.
+    </p>
+    <p>
+        <a href="#about" class="info-link">Learn more</a>
+    </p>
+</div>
+<div id="info-popup-safety_side_effects" class="info-popup">
+    <h3 class="info-header">
+        {safety_side_effects_button_title}
+    </h3>
+    <p class="info-text">
+        Most common searches related to the safety and side effects of COVID-19
+        vaccines, listed in order of frequency.
+    </p>
+    <p>
+        <a href="#about" class="info-link">Learn more</a>
+    </p>
 </div>

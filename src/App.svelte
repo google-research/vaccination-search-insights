@@ -237,11 +237,11 @@
       <h2 class="first-section-header">About this data</h2>
       <p>
         You can use this data to compare search interest between topics related
-        to COVID-19 vaccination. The value for search interest isn’t an absolute
-        number of searches—it’s a value representing relative interest which we
-        scale to make it easier to compare regions with one another, or the same
-        region over time. If you’d like to know more about our calculation and
-        process, see our <a
+        to COVID-19 vaccination and see what topics are popular or rising. The
+        value for search interest isn’t an absolute number of searches—it’s a
+        value representing relative interest which we scale to make it easier to
+        compare regions with one another, or the same region over time. If you’d
+        like to know more about our calculation and process, see our <a
           href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
           >technical docs</a
         >.

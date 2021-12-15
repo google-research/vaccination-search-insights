@@ -429,9 +429,10 @@ svg.map-svg path {
 }
 
 .date-nav-control {
+  align-items: center;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  justify-content: right;
   min-width: 222px;
 }
 
@@ -1033,6 +1034,7 @@ div.next-steps-item > h3 {
 }
 
 .queries-header {
+  align-items: center;
   display: flex;
   justify-content: space-between;
   margin-top: 60px;
