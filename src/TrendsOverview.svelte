@@ -379,10 +379,8 @@
     <!-- Map attribution line -->
     <div class="map-attribution">
       <p class="map-attribution-text">
-        {#if selectedCountryName == "United States"}
-          Chart includes geographic data from the US Census Bureau
-        {:else if selectedCountryName == "United Kingdom"}
-          Chart includes geographic data from the UK ...
+        {#if selectedCountryMetadata}
+          {selectedCountryMetadata.shapeFileLegal}
         {/if}
       </p>
     </div>
