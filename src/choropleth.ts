@@ -368,7 +368,7 @@ function colorizeMap() {
     });
 
   drawLegend(colorScale);
-  if (currentGeoLevel == GeoLevel.SubRegion2) {
+  if (currentGeoLevel == GeoLevel.SubRegion2 && selectedCountryCode == "US") {
     drawZipData(currentGeoId);
   }
 }
@@ -569,7 +569,9 @@ function activateSelectedCounty(fipsCode, zoom = true) {
   if (zoom) {
     zoomToBounds(mapSvg.select("#county").select(`#fips-${fipsCode}`).datum());
   }
-  drawZipData(fipsCode);
+  if (selectedCountryCode == "US") {
+    drawZipData(fipsCode);
+  }
 }
 
 let setLastSelectedCounty: string;
