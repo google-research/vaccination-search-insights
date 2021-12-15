@@ -228,7 +228,6 @@
         />
       {:else}
         <CountryPicker
-          id="covid-19-vaccination"
           trendLine={(t) => {
             return t.trends.covid19_vaccination;
           }}
