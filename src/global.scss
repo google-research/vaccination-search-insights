@@ -433,9 +433,10 @@ svg.map-svg path {
 }
 
 .date-nav-control {
+  align-items: center;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  justify-content: right;
   min-width: 222px;
 }
 

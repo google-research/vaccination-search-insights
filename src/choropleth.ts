@@ -387,13 +387,28 @@ function zoomToBounds(d) {
     );
 }
 
-function dateRangeString(startDate: string): string {
+/**
+ * Converts a simple numerical string to an English 7 days date range.
+ * If initial and end dates:
+ *  - are in different months: "MM DD - MM DD, YYYY" (i.e. "Nov 29 - Dec 05, 2021").
+ *  - have the same month: "MM DD - DD, YYYY" (i.e. "Nov 22 - 28, 2021").
+ *  - are in different years: "MM DD, YYYY - MM DD, YYYY" (i.e. "Dec 27, 2021 - Jan 02, 2022").
+ */
+export function dateRangeString(startDate: string): string {
   const periodStart: Date = d3.timeParse("%Y-%m-%d")(startDate);
   let periodEnd: Date = new Date(periodStart);
   periodEnd.setDate(periodStart.getDate() + 6);
 
-  const formatterStart = d3.timeFormat("%b %d");
-  const formatterEnd = d3.timeFormat("%b %d, %Y");
+  let formatterStart = d3.timeFormat("%b %d");
+  let formatterEnd = d3.timeFormat("%b %d, %Y");
+
+  if (periodStart.getMonth() === periodEnd.getMonth()) {
+    formatterStart = d3.timeFormat("%b %d");
+    formatterEnd = d3.timeFormat("%d, %Y");
+  } else if (periodStart.getFullYear() !== periodEnd.getFullYear()) {
+    formatterStart = d3.timeFormat("%b %d, %Y");
+    formatterEnd = d3.timeFormat("%b %d, %Y");
+  }
 
   return `${formatterStart(periodStart)} - ${formatterEnd(periodEnd)}`;
 }

@@ -25,11 +25,11 @@
     import type { Region, Query } from "./data";
     import { params } from "./stores";
     import { handleInfoPopup } from "./utils";
+    import { dateRangeString } from "./choropleth";
 
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
     const RISING_QUERY_TYPE = "rising";
-    const DAYS_BETWEEN = 6;
 
     let loading: boolean = true;
     let selectedListId: string = "covid19_vaccination";
@@ -74,36 +74,10 @@
         }
     }
 
-    /**
-     * Converts a simple numerical string to an English 7 days date range,
-     * in which the initial date would only include the month and day and
-     * the end date would include the month, day, and year.
-     *
-     * Example: "2021-11-22" would be converted to "Nov 22 - Nov 28, 2021".
-     */
-    function convertDateToRange(date: string): string {
-        let initialDate: Date = new Date(date);
-        let dateRange: string = initialDate.toLocaleString("en-us", {
-            month: "short",
-            day: "2-digit",
-        });
-        let endDate: Date = new Date(
-            initialDate.setDate(initialDate.getDate() + DAYS_BETWEEN)
-        );
-        dateRange +=
-            " - " +
-            endDate.toLocaleString("en-us", {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-            });
-        return dateRange;
-    }
-
     function setDate(index: number): void {
         if (dateList.length != MINIMUM_DATE_INDEX) {
             dateKey = dateList[selectedDateIndex];
-            dateRange = convertDateToRange(dateKey);
+            dateRange = dateRangeString(dateKey);
         } else {
             dateKey = "";
             dateRange = "";
