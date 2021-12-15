@@ -38,6 +38,7 @@
   export let regionalTrendsByPlaceId: Map<string, RegionalTrends>;
   export let trendLine: (trends: RegionalTrends) => TrendValue[];
   export let title: string;
+  export let selectedCountryMetadata;
 
   let placeId: string;
   let selectedRegion: Region;
@@ -58,13 +59,13 @@
       selectedRegion.sub_region_2 ||
       selectedRegion.sub_region_1_code === "US-DC"
     ) {
-      return "Zipcodes";
+      return selectedCountryMetadata.subRegion3Title;
     }
     if (selectedRegion.sub_region_1) {
-      return "Counties";
+      return selectedCountryMetadata.subRegion2Title;
     }
     if (selectedRegion.country_region) {
-      return "States";
+      return selectedCountryMetadata.subRegion1Title;
     }
   }
 

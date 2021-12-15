@@ -439,6 +439,7 @@
         return t.trends.covid19_vaccination;
       }}
       title={covid_vaccination_title}
+      selectedCountryMetadata={selectedCountryMetadata}
     >
       <p class="info-text">
         Search interest in any aspect of COVID-19 vaccination. For example,
@@ -457,6 +458,7 @@
         return t.trends.vaccination_intent;
       }}
       title={vaccination_intent_title}
+      selectedCountryMetadata={selectedCountryMetadata}
     >
       <p class="info-text">
         Search interest in the eligibility, availability, and accessibility of
@@ -473,6 +475,7 @@
         return t.trends.safety_side_effects;
       }}
       title={safety_side_effects_title}
+      selectedCountryMetadata={selectedCountryMetadata}
     >
       <p class="info-text">
         Search interest in the safety and side effects of COVID-19 vaccines. For
