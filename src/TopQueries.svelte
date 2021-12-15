@@ -17,11 +17,12 @@
 
     import { onMount } from "svelte";
     import {
-        fetchAllQueries,
+        fetchTopLevelQueries,
         createDateList,
         createSerialisedQueryKey,
+        fetchQueriesFile,
     } from "./data";
-    import type {Query} from "./data";
+    import type { Region, Query } from "./data";
     import { params } from "./stores";
 
     const MINIMUM_DATE_INDEX = 0;
@@ -34,11 +35,12 @@
     let selectedDateIndex: number = dateList.length - 1;
     let dateKey: string = "";
     let dateRange: string = "";
-    let queriesData: Map<string, Query[]> = new Map<string, Query[]>();
+    let topLevelData: Map<string, Query[]> = new Map<string, Query[]>();
+    let countyData: Map<string, Query[]>;
     let placeId: string;
     let topQueriesList = [];
     let risingQueriesList = [];
-
+    let currentSubRegion: string = "";
     /**
      * Changes selectedListId so that the selected button becomes active and
      * updates the Top Queries and Rising Queries lists associated with the selectedListId.
@@ -123,29 +125,69 @@
             RISING_QUERY_TYPE,
             selectedListId
         );
-        topQueriesList = queriesData.has(topKey) ? queriesData.get(topKey) : [];
-        risingQueriesList = queriesData.has(risingKey)
-            ? queriesData.get(risingKey)
-            : [];
+        if (countyData) {
+            topQueriesList = countyData.has(topKey)
+                ? countyData.get(topKey)
+                : [];
+            risingQueriesList = countyData.has(risingKey)
+                ? countyData.get(risingKey)
+                : [];
+        } else {
+            topQueriesList = topLevelData.has(topKey)
+                ? topLevelData.get(topKey)
+                : [];
+            risingQueriesList = topLevelData.has(risingKey)
+                ? topLevelData.get(risingKey)
+                : [];
+        }
     }
 
     export let covid_vaccination_button_title: string;
     export let vaccination_intent_button_title: string;
     export let safety_side_effects_button_title: string;
+    export let regionsByPlaceId: Map<string, Region> = new Map<
+        string,
+        Region
+    >();
 
     // runs after component is first rendered to the DOM
     onMount(async () => {
-        queriesData = await fetchAllQueries();
-        dateList = createDateList([...queriesData.keys()]);
+        topLevelData = await fetchTopLevelQueries();
+        dateList = createDateList([...topLevelData.keys()]);
         selectedDateIndex = dateList.length - 1;
         setDate(selectedDateIndex);
         // subscribe to 'params' so any placeId (location changes) made by the user
         // will update the queries displayed in the TopQueries component.
         params.subscribe((newParams) => {
             placeId = newParams.placeId;
-            if (placeId) {
-                updateQueries();
+            if (!placeId || !regionsByPlaceId) {
+                return;
             }
+            let newRegion: Region = regionsByPlaceId.get(placeId);
+            let newSubRegion: string = newRegion.sub_region_1;
+            
+            /**
+             * Not County Level: clear county data and reset current SubRegion
+             * County Level in a New Subregion: fetch new county data
+             * County Level in the Same Subregion: update using existing county data
+            */
+            if (newRegion.sub_region_2 === "") { // if placeId is not county level
+                countyData = null; 
+                currentSubRegion = null;
+                updateQueries();
+            } else if (newSubRegion !== currentSubRegion) { // if county in a new subregion
+                currentSubRegion = newSubRegion; 
+                Promise.resolve(
+                    fetchQueriesFile(
+                        `US_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
+                    )
+                ).then(function (newCountyData) {
+                    countyData = newCountyData;
+                    updateQueries();
+                });
+            } else { // county within the same subregion
+                updateQueries();
+            } 
         });
     });
 </script>

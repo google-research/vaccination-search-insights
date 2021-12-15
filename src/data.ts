@@ -474,6 +474,7 @@ function createQuery(queryRow: QueryRow): Query {
 }
 
 let topQueriesDates: Set<string> = new Set<string>();
+let topQueriesStoragePrefix: string = "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/top_queries/";
 
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created
@@ -483,7 +484,7 @@ let topQueriesDates: Set<string> = new Set<string>();
 export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
   let topQueriesPromise: Promise<Map<string, Query[]>> = new Promise<Map<string, Query[]>>(
     (resolve, reject) => {
-      parse(file, {
+      parse(`${topQueriesStoragePrefix}${file}`, {
         download: true,
         header: true,
         skipEmptyLines: true,
@@ -500,7 +501,6 @@ export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
             return accMap;
           }, new Map<string, Query[]>());
           resolve(topQueries);
-          console.log(topQueries.size);
         },
       });
     });
@@ -508,12 +508,10 @@ export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
 }
 
 /**
- * Reads all TopQueries csv files and merges them into a single map.
+ * Reads all L0 and L1 TopQueries csv files and merges them into a single map.
  */
-export function fetchAllQueries(): Promise<Map<string, Query[]>> {
-  let topQueriesFiles = ["./data/top_queries_US_l0_vaccination_trending_searches.csv",
-    "./data/top_queries_US_l1_vaccination_trending_searches.csv",
-    "./data/top_queries_US_l2_vaccination_trending_searches.csv"];
+export function fetchTopLevelQueries(): Promise<Map<string, Query[]>> {
+  let topQueriesFiles = ["US_l0_vaccination_trending_searches.csv", "US_l1_vaccination_trending_searches.csv"];
   let topQueriesData: Promise<Map<string, Query[]>> =
     Promise.all(topQueriesFiles.map((file) =>
       fetchQueriesFile(file)
