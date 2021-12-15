@@ -105,15 +105,14 @@
     if (selectedCountryMetadata) {
       mapData = fetchRegionalTrendLines(selectedCountryMetadata);
 
-      if (selectedCountryMetadata.countryCode == "US") {
-        mapData.then((mapData) => {
-          createMap(mapData, selectedMapTrendId, regions, onMapSelection);
-          isMapInitialized = true;
-          if (selectedRegion) {
-            setMapSelection(selectedRegion);
-          }
-        });
-      }
+      mapData.then((mapData) => {
+        createMap(mapData, selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
+        isMapInitialized = true;
+        if (selectedRegion) {
+          setMapSelection(selectedRegion);
+        }
+      });
+      
       regionalTrends = await fetchRegionalTrendsData(mapData);
     }
   });
@@ -380,7 +379,9 @@
     <!-- Map attribution line -->
     <div class="map-attribution">
       <p class="map-attribution-text">
-        Chart includes geographic data from the US Census Bureau
+        {#if selectedCountryMetadata}
+          {selectedCountryMetadata.shapeFileLegal}
+        {/if}
       </p>
     </div>
   </div>

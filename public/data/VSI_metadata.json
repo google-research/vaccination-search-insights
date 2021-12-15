@@ -12,7 +12,7 @@
         "countryName":"United Kingdom",
         "displayLevels":[0,1,2,3],
         "locales":["en-GB"],
-        "shapeFileLegal":"lorem ipsum UK",
+        "shapeFileLegal":"Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
         "placeId":"ChIJqZHHQhE7WgIReiWIMkOg-MQ"
    },
     {   "countryCode":"US",
@@ -20,7 +20,7 @@
         "countryName":"United States",
         "displayLevels":[0,1,2,3],
         "locales":["en-US"],
-        "shapeFileLegal":"lorem ipsum US",
+        "shapeFileLegal":"Chart includes data from the US Census Bureau",
         "placeId":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
     }
 ]
