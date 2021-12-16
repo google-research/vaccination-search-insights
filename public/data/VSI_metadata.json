@@ -8,6 +8,8 @@
         "subRegion1Title": "Provinces",
         "subRegion2Title": "",
         "subRegion3Title": "Postcodes",
+        "vaccineTooltipExample": "vaccine tracker",
+        "intentTooltipExample": "covid vaccine ontario",
         "placeId":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk"
     },
     {   "countryCode":"GB",
@@ -18,6 +20,8 @@
         "subRegion1Title": "Countries",
         "subRegion2Title": "Regions",
         "subRegion3Title": "Postcodes",
+        "vaccineTooltipExample": "nhs covid vaccine",
+        "intentTooltipExample": "book nhs covid vaccine",
         "shapeFileLegal":"Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
         "placeId":"ChIJqZHHQhE7WgIReiWIMkOg-MQ"
    },
@@ -29,6 +33,8 @@
         "subRegion1Title": "States",
         "subRegion2Title": "Counties",
         "subRegion3Title": "Zipcodes",
+        "vaccineTooltipExample": "cdc vaccine tracker",
+        "intentTooltipExample": "safeway covid vaccine",
         "shapeFileLegal":"Chart includes data from the US Census Bureau",
         "placeId":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
     }

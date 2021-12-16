@@ -211,7 +211,7 @@ function setSelectedStateByFipsCode(fipsCode) {
   activateSelectedState(fipsCode, true);
 }
 
-export function resetToUnitedStates() {
+export function resetToCountryLevel() {
   mapSvg
     .select("#county")
     .selectAll("path")
