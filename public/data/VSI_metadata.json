@@ -26,7 +26,7 @@
         "placeId":"ChIJqZHHQhE7WgIReiWIMkOg-MQ"
    },
     {   "countryCode":"US",
-        "dataFile":"Global_vaccination_search_insights.csv",
+        "dataFile":"US_vaccination_search_insights.csv",
         "countryName":"United States",
         "displayLevels":[0,1,2,3],
         "locales":["en-US"],
