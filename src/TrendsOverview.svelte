@@ -47,7 +47,17 @@
   let selectedCountryName: string;
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
-  let vaccineTooltip, intentTooltip, safetyTooltip: string;
+
+  let vaccineTooltip = `
+    Search interest in the eligibility, availability, and accessibility of
+    COVID-19 vaccines. `;
+  let intentTooltip = `
+    Search interest in any aspect of COVID-19 vaccination. `;
+  const safetyTooltip = `
+    Search interest in the safety and side effects of COVID-19 vaccines. For
+    example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A
+    scaled value that you can compare across regions, times, or topics.
+  `;
 
   let mapData: Promise<RegionalTrendLine[]>;
   let isMapInitialized: boolean = false;
@@ -116,24 +126,16 @@
       
       regionalTrends = await fetchRegionalTrendsData(mapData);
 
-      vaccineTooltip = `
-        Search interest in any aspect of COVID-19 vaccination. For example,
-        “when can i get the covid vaccine” or 
+      vaccineTooltip = `${vaccineTooltip}
+        For example, “when can i get the covid vaccine” or 
         “${selectedCountryMetadata.vaccineTooltipExample}”. A scaled
         value that you can compare across regions, times, or topics.
       `;
 
-      intentTooltip = `
-        Search interest in the eligibility, availability, and accessibility of
-        COVID-19 vaccines. For example, “covid vaccine near me” or 
+      intentTooltip = `${intentTooltip}
+        For example, “covid vaccine near me” or 
         “${selectedCountryMetadata.intentTooltipExample}”. A scaled value that 
         you can compare across regions,times, or topics.
-      `;
-
-      safetyTooltip = `
-        Search interest in the safety and side effects of COVID-19 vaccines. For
-        example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A
-        scaled value that you can compare across regions, times, or topics.
       `;
     }
   });
