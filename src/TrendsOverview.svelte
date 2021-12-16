@@ -30,7 +30,7 @@
     createMap,
     decrementMapDate,
     incrementMapDate,
-    resetToUnitedStates,
+    resetToCountryLevel,
     setMapTrend,
     setSelectedCounty,
     setSelectedState,
@@ -47,6 +47,17 @@
   let selectedCountryName: string;
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
+
+  let vaccineTooltip: string = `
+    Search interest in the eligibility, availability, and accessibility of
+    COVID-19 vaccines. `;
+  let intentTooltip: string = `
+    Search interest in any aspect of COVID-19 vaccination. `;
+  const safetyTooltip: string = `
+    Search interest in the safety and side effects of COVID-19 vaccines. For
+    example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A
+    scaled value that you can compare across regions, times, or topics.
+  `;
 
   let mapData: Promise<RegionalTrendLine[]>;
   let isMapInitialized: boolean = false;
@@ -114,6 +125,18 @@
       });
       
       regionalTrends = await fetchRegionalTrendsData(mapData);
+
+      vaccineTooltip = `${vaccineTooltip}
+        For example, “when can i get the covid vaccine” or 
+        “${selectedCountryMetadata.vaccineTooltipExample}”. A scaled
+        value that you can compare across regions, times, or topics.
+      `;
+
+      intentTooltip = `${intentTooltip}
+        For example, “covid vaccine near me” or 
+        “${selectedCountryMetadata.intentTooltipExample}”. A scaled value that 
+        you can compare across regions,times, or topics.
+      `;
     }
   });
 
@@ -140,7 +163,7 @@
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
     } else {
-      resetToUnitedStates();
+      resetToCountryLevel();
     }
   }
 
@@ -392,9 +415,7 @@
       {covid_vaccination_title}
     </h3>
     <p class="info-text">
-      Search interest in any aspect of COVID-19 vaccination. For example, “when
-      can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that
-      you can compare across regions, times, or topics.
+      {vaccineTooltip}
     </p>
     <p class="info-text">
       This parent category includes searches from the other two subcategories.
@@ -408,10 +429,7 @@
       {vaccination_intent_title}
     </h3>
     <p class="info-text">
-      Search interest in the eligibility, availability, and accessibility of
-      COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid
-      vaccine”. A scaled value that you can compare across regions, times, or
-      topics.
+      {intentTooltip}
     </p>
     <p>
       <a href="#about" class="info-link">Learn more</a>
@@ -422,9 +440,7 @@
       {safety_side_effects_title}
     </h3>
     <p class="info-text">
-      Search interest in the safety and side effects of COVID-19 vaccines. For
-      example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A
-      scaled value that you can compare across regions, times, or topics.
+      {safetyTooltip}
     </p>
     <p>
       <a href="#about" class="info-link">Learn more</a>
@@ -441,14 +457,12 @@
       title={covid_vaccination_title}
       selectedCountryMetadata={selectedCountryMetadata}
     >
-      <p class="info-text">
-        Search interest in any aspect of COVID-19 vaccination. For example,
-        “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled
-        value that you can compare across regions, times, or topics.
-      </p>
-      <p class="info-text">
-        This parent category includes searches from the other two subcategories.
-      </p>
+    <p class="info-text">
+      {vaccineTooltip}
+    </p>
+    <p class="info-text">
+      This parent category includes searches from the other two subcategories.
+    </p>
     </TimeSeries>
     <TimeSeries
       id="vaccination-intent"
@@ -460,12 +474,9 @@
       title={vaccination_intent_title}
       selectedCountryMetadata={selectedCountryMetadata}
     >
-      <p class="info-text">
-        Search interest in the eligibility, availability, and accessibility of
-        COVID-19 vaccines. For example, “covid vaccine near me” or “safeway
-        covid vaccine”. A scaled value that you can compare across regions,
-        times, or topics.
-      </p>
+    <p class="info-text">
+      {intentTooltip}
+    </p>
     </TimeSeries>
     <TimeSeries
       id="safety-side-effects"
@@ -477,11 +488,9 @@
       title={safety_side_effects_title}
       selectedCountryMetadata={selectedCountryMetadata}
     >
-      <p class="info-text">
-        Search interest in the safety and side effects of COVID-19 vaccines. For
-        example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A
-        scaled value that you can compare across regions, times, or topics.
-      </p>
+    <p class="info-text">
+      {safetyTooltip}
+    </p>
     </TimeSeries>
   {/if}
   
