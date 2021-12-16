@@ -481,7 +481,7 @@ function createQuery(queryRow: QueryRow): Query {
 }
 
 let topQueriesDates: Set<string> = new Set<string>();
-let topQueriesStoragePrefix: string = "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/top_queries/";
+let topQueriesStoragePrefix: string = "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/top_queries/";
 
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created

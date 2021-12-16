@@ -24,7 +24,7 @@
     } from "./data";
     import type { Region, Query } from "./data";
     import { params } from "./stores";
-    import { handleInfoPopup } from "./utils";
+    import { getCountryName, handleInfoPopup } from "./utils";
     import { dateRangeString } from "./choropleth";
 
     const MINIMUM_DATE_INDEX = 0;
@@ -139,6 +139,11 @@
             if (!placeId || !regionsByPlaceId) {
                 return;
             }
+
+            if (getCountryName(regionsByPlaceId.get(placeId)) !== "United States") {
+                return;
+            }
+
             let newRegion: Region = regionsByPlaceId.get(placeId);
             let newSubRegion: string = newRegion.sub_region_1;
 
