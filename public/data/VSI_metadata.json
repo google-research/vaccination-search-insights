@@ -17,7 +17,7 @@
         "countryName":"United Kingdom",
         "displayLevels":[0,1,2,3],
         "locales":["en-GB"],
-        "subRegion1Title": "Countries",
+        "subRegion1Title": "UK countries",
         "subRegion2Title": "Regions",
         "subRegion3Title": "Postcodes",
         "vaccineTooltipExample": "nhs covid vaccine",
