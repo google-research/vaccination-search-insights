@@ -41,6 +41,8 @@ function loadParams(): Params {
 function saveParams(param: Params) {
   if (param.placeId && param.updateHistory) {
     history.pushState(null, null, `?placeId=${param.placeId}`);
+  } else if (!param.placeId && param.updateHistory) {
+    history.pushState(null, null, "/")
   }
 }
 
