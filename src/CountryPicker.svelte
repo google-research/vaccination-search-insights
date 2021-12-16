@@ -201,7 +201,7 @@
           let value_cell = document.getElementById(
             `value-${countryName.replace(/\s+/g, "_")}`
           );
-          value_cell.textContent = the_value.value.toString();
+          value_cell.textContent = the_value ? the_value.value.toString() : "-";
         });
       }
 
