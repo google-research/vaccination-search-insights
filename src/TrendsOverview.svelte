@@ -48,12 +48,12 @@
   let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
-  let vaccineTooltip = `
+  let vaccineTooltip: string = `
     Search interest in the eligibility, availability, and accessibility of
     COVID-19 vaccines. `;
-  let intentTooltip = `
+  let intentTooltip: string = `
     Search interest in any aspect of COVID-19 vaccination. `;
-  const safetyTooltip = `
+  const safetyTooltip: string = `
     Search interest in the safety and side effects of COVID-19 vaccines. For
     example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A
     scaled value that you can compare across regions, times, or topics.
