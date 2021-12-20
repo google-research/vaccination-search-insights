@@ -55,6 +55,9 @@ const unknownColor = "#DADCE0"; //material grey 300
 const alaskaFipsCode: string = "02";
 const northernIrelandFipsCode: string = "N";
 
+// In GB, only showing the drill down message for state level
+const gbStateIds: string[] = ["E", "W", "S", "N"];
+
 let path = d3.geoPath();
 
 // currently resetting to the US
@@ -750,7 +753,9 @@ function showMapCallout(data, event, d): void {
   // set the callout title text
   callout.select("#map-callout-title").text(d.properties.name);
 
-  if (d.properties.GEOID10) {
+  // Hide the drilldown message for US zip level, and for GB county level
+  if (d.properties.GEOID10 ||
+     (selectedCountryCode == "GB" && !gbStateIds.includes(d.id))) {
     d3.select("#map-callout-drilldown-msg").style("display", "none");
   } else {
     d3.select("#map-callout-drilldown-msg").style("display", null);
