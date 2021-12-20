@@ -132,7 +132,7 @@
             <use xlink:href="glue/glue-icons.svg#google-color-logo" />
           </svg>
         </a>
-        <a href="/" class="header-topbar-text">
+        <a href="?" class="header-topbar-text">
           COVID-19 Vaccine Search Insights
         </a>
       </div>
