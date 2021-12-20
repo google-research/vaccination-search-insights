@@ -42,6 +42,10 @@ export function getRegionName(region: Region): string {
   }
 }
 
+export function getCountryName(region: Region): string{  
+  return region.country_region;
+}
+
 export function inClientBounds(
   clientX: number,
   clientY: number,
@@ -100,5 +104,56 @@ function dismissInfoPopup(event): void {
     document.removeEventListener("click", dismissInfoPopup);
     activePopupId = null;
     event.stopPropagation();
+  }
+}
+
+type HtmlSelection = d3.Selection<HTMLElement, any, any, any>;
+type SvgSelection = d3.Selection<SVGGElement, any, any, any>;
+type ElementSection = HtmlSelection | SvgSelection;
+
+export function formatDateForDisplay(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}
+
+export function formatDateForStorage(date: Date): string {
+  const month = new Intl.DateTimeFormat("en-US", { month: "2-digit" }).format(
+    date
+  );
+  const day = new Intl.DateTimeFormat("en-US", { day: "2-digit" }).format(
+    date
+  );
+  const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
+    date
+  );
+
+  return `${year}-${month}-${day}`;
+}
+
+export function convertStorageDate(storageDate: string): Date {
+  const date = new Date(storageDate);
+  const time = date.getTime();
+  const timeZoneOffset = date.getTimezoneOffset() * 60 * 1000;
+  const adjustedTime = time + timeZoneOffset;
+
+  return new Date(adjustedTime);
+}
+
+export function getClosestDate(selected, earlier, later) {
+  if (!earlier && later) {
+    return later;
+  } else if (!later && earlier) {
+    return earlier;
+  } else if (
+    selected.getTime() - earlier.getTime() <
+    later.getTime() - selected.getTime()
+  ) {
+    return earlier;
+  } else {
+    return later;
   }
 }
