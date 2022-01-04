@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { feature } from "topojson-client";
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
+import * as gb from "../public/geo/gb-counties-albers.json";
 import type { Region } from "./data";
 
 let regionCodesToPlaceId: Map<string, string>;
@@ -81,24 +81,30 @@ export const regionOneToFipsCode: Map<string, string> = new Map([
   ["US-MP", "69"],
   ["US-PR", "72"],
   ["US-VI", "78"],
+  ["GB-ENG", "E"],
+  ["GB-SCT", "S"],
+  ["GB-WLS", "W"],
+  ["GB-NIR", "N"],
 ]);
 
-export function countiesForState(stateFipsCode: string) {
-  return (
-    feature(us as any, us.objects.counties as any) as any
-  ).features.filter((c) => c.id.slice(0, 2) == stateFipsCode);
-}
-
-export function stateFipsCodeFromCounty(countyFipsCode: string): string {
-  return countyFipsCode.slice(0, 2);
+export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
+  if (countryCode == "US") {
+    return countyFipsCode.slice(0, 2);
+  } else if (countryCode == "GB") {
+    return countyFipsCode.slice(0, 1);
+  }
 }
 
 export function fipsCodeFromElementId(id: string): string {
   return id.slice(5);
 }
 
-export function getUsAtlas(): UsAtlas {
-  return us as unknown as UsAtlas;
+export function getAtlas(countryCode: string): UsAtlas {
+  if (countryCode == "US") {
+    return us as unknown as UsAtlas;
+  } else if (countryCode == "GB") {
+    return gb as unknown as UsAtlas;
+  }
 }
 
 export function buildRegionCodeToPlaceIdMapping(

@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
     /**
      * Copyright 2021 Google LLC
      *
@@ -15,109 +15,250 @@
      * limitations under the License.
      */
 
-    let selectedListId: string = "vaccination";
+    import { onMount } from "svelte";
+    import {
+        fetchTopLevelQueries,
+        createDateList,
+        createSerialisedQueryKey,
+        fetchQueriesFile,
+    } from "./data";
+    import type { Region, Query } from "./data";
+    import { params } from "./stores";
+    import { getCountryName, handleInfoPopup } from "./utils";
+    import { dateRangeString } from "./choropleth";
 
     const MINIMUM_DATE_INDEX = 0;
+    const TOP_QUERY_TYPE = "top";
+    const RISING_QUERY_TYPE = "rising";
 
+    let loading: boolean = true;
+    let selectedListId: string = "covid19_vaccination";
+    let dateList: string[] = [];
+    let selectedDateIndex: number = dateList.length - 1;
+    let dateKey: string = "";
+    let dateRange: string = "";
+    let topLevelData: Map<string, Query[]> = new Map<string, Query[]>();
+    let countyData: Map<string, Query[]>;
+    let placeId: string;
+    let topQueriesList = [];
+    let risingQueriesList = [];
+    let currentSubRegion: string = "";
     /**
-     * Change selectedListId so that the selected button becomes active and display the list associated with the selectedListId.
-     *
-     * TODO(mhkshum): Add code to change the currently displayed list to the list associated with the category selected.
+     * Changes selectedListId so that the selected button becomes active and
+     * updates the Top Queries and Rising Queries lists associated with the selectedListId.
      */
     function changeCategory() {
         selectedListId = this.id;
+        updateQueries();
     }
 
-    let dateList: string[] = [];
-    let selectedDateIndex: number = dateList.length - 1;
-    let date = dateList.length != MINIMUM_DATE_INDEX ? dateList[selectedDateIndex] : "No Data";
-
+    /**
+     * Increments the date displayed and updates lists based on the new date.
+     */
     function incrementDate() {
         if (selectedDateIndex < dateList.length - 1) {
             selectedDateIndex += 1;
             setDate(selectedDateIndex);
+            updateQueries();
         }
     }
 
+    /**
+     * Increments the date displayed and updates lists based on the new date.
+     */
     function decrementDate() {
         if (selectedDateIndex > MINIMUM_DATE_INDEX) {
             selectedDateIndex -= 1;
             setDate(selectedDateIndex);
+            updateQueries();
         }
     }
 
     function setDate(index: number): void {
-        date = dateList[selectedDateIndex];
+        if (dateList.length != MINIMUM_DATE_INDEX) {
+            dateKey = dateList[selectedDateIndex];
+            dateRange = dateRangeString(dateKey);
+        } else {
+            dateKey = "";
+            dateRange = "";
+        }
+    }
+
+    /**
+     * Creates 2 new keys whenever a parameter (placeID, date, selectedListId) is modified
+     * and uses the 2 new keys to grab the list of queries.
+     */
+    function updateQueries() {
+        let topKey: string = createSerialisedQueryKey(
+            placeId,
+            dateKey,
+            TOP_QUERY_TYPE,
+            selectedListId
+        );
+        let risingKey: string = createSerialisedQueryKey(
+            placeId,
+            dateKey,
+            RISING_QUERY_TYPE,
+            selectedListId
+        );
+        if (countyData) {
+            topQueriesList = countyData.has(topKey)
+                ? countyData.get(topKey)
+                : [];
+            risingQueriesList = countyData.has(risingKey)
+                ? countyData.get(risingKey)
+                : [];
+        } else {
+            topQueriesList = topLevelData.has(topKey)
+                ? topLevelData.get(topKey)
+                : [];
+            risingQueriesList = topLevelData.has(risingKey)
+                ? topLevelData.get(risingKey)
+                : [];
+        }
     }
 
     export let covid_vaccination_button_title: string;
     export let vaccination_intent_button_title: string;
     export let safety_side_effects_button_title: string;
+    export let regionsByPlaceId: Map<string, Region> = new Map<
+        string,
+        Region
+    >();
+
+    // runs after component is first rendered to the DOM
+    onMount(async () => {
+        topLevelData = await fetchTopLevelQueries();
+        dateList = createDateList([...topLevelData.keys()]);
+        selectedDateIndex = dateList.length - 1;
+        setDate(selectedDateIndex);
+        // subscribe to 'params' so any placeId (location changes) made by the user
+        // will update the queries displayed in the TopQueries component.
+        params.subscribe((newParams) => {
+            placeId = newParams.placeId;
+            if (!placeId || !regionsByPlaceId) {
+                return;
+            }
+
+            if (getCountryName(regionsByPlaceId.get(placeId)) !== "United States") {
+                return;
+            }
+
+            let newRegion: Region = regionsByPlaceId.get(placeId);
+            let newSubRegion: string = newRegion.sub_region_1;
+
+            /**
+             * Not County Level: clear county data and reset current SubRegion
+             * County Level in a New Subregion: fetch new county data
+             * County Level in the Same Subregion: update using existing county data
+             */
+            if (newRegion.sub_region_2 === "") { // if placeId is not county level
+                countyData = null; 
+                currentSubRegion = null;
+                updateQueries();
+            } else if (newSubRegion !== currentSubRegion) { // if county in a new subregion
+                currentSubRegion = newSubRegion; 
+                loading = true;
+                Promise.resolve(
+                    fetchQueriesFile(
+                        `US_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
+                    )
+                ).then(function (newCountyData) {
+                    countyData = newCountyData;
+                    loading = false;
+                    updateQueries();
+                });
+            } else { // county within the same subregion
+                updateQueries();
+            } 
+        });
+        loading = false;
+    });
 </script>
 
 <div id="top-queries">
-    <div class="map-trend-selector-group">
-        <button
-            id="vaccination"
-            class={selectedListId == "vaccination"
-                ? "map-trend-selector-button map-trend-selector-selected"
-                : "map-trend-selector-button"}
-            on:click={changeCategory}
-            title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
+    <div class="queries-header">
+        <div class="queries-category-selector">
+            <button
+                id="covid19_vaccination"
+                class={selectedListId == "covid19_vaccination"
+                    ? "map-trend-selector-button map-trend-selector-selected"
+                    : "map-trend-selector-button"}
+                on:click={changeCategory}
+                title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
+            >
+                {#if selectedListId == "covid19_vaccination"}
+                    <div class="map-trend-icon-container">
+                        <span class="material-icons map-trend-selected-icon"
+                            >done</span
+                        >
+                    </div>
+                {/if}
+                {covid_vaccination_button_title}
+            </button>
+            <button
+                id="vaccination_intent"
+                class={selectedListId == "vaccination_intent"
+                    ? "map-trend-selector-button map-trend-selector-selected"
+                    : "map-trend-selector-button"}
+                on:click={changeCategory}
+                title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
+            >
+                {#if selectedListId == "vaccination_intent"}
+                    <div class="map-trend-icon-container">
+                        <span class="material-icons map-trend-selected-icon"
+                            >done</span
+                        >
+                    </div>
+                {/if}
+                {vaccination_intent_button_title}
+            </button>
+            <button
+                id="safety_side_effects"
+                class={selectedListId == "safety_side_effects"
+                    ? "map-trend-selector-button map-trend-selector-selected"
+                    : "map-trend-selector-button"}
+                on:click={changeCategory}
+                title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
+            >
+                {#if selectedListId == "safety_side_effects"}
+                    <div class="map-trend-icon-container">
+                        <span class="material-icons map-trend-selected-icon"
+                            >done</span
+                        >
+                    </div>
+                {/if}
+                {safety_side_effects_button_title}
+            </button>
+        </div>
+        <div
+            class="info-button"
+            on:click={(e) =>
+                handleInfoPopup(e, `#info-popup-${selectedListId}`)}
         >
-            {#if selectedListId == "vaccination"}
-                <div class="map-trend-icon-container">
-                    <span class="material-icons map-trend-selected-icon"
-                        >done</span
-                    >
-                </div>
-            {/if}
-            {covid_vaccination_button_title}
-        </button>
-        <button
-            id="intent"
-            class={selectedListId == "intent"
-                ? "map-trend-selector-button map-trend-selector-selected"
-                : "map-trend-selector-button"}
-            on:click={changeCategory}
-            title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
-        >
-            {#if selectedListId == "intent"}
-                <div class="map-trend-icon-container">
-                    <span class="material-icons map-trend-selected-icon"
-                        >done</span
-                    >
-                </div>
-            {/if}
-            {vaccination_intent_button_title}
-        </button>
-        <button
-            id="safety"
-            class={selectedListId == "safety"
-                ? "map-trend-selector-button map-trend-selector-selected"
-                : "map-trend-selector-button"}
-            on:click={changeCategory}
-            title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
-        >
-            {#if selectedListId == "safety"}
-                <div class="map-trend-icon-container">
-                    <span class="material-icons map-trend-selected-icon"
-                        >done</span
-                    >
-                </div>
-            {/if}
-            {safety_side_effects_button_title}
-        </button>
+            <span class="material-icons-outlined">info</span>
+        </div>
     </div>
     <div class="queries-lists">
         <div class="top-searches">
             <div class="query-list-title">Top searches</div>
+            <ul class="bullet-list">
+                {#if loading}
+                    <div class="no-queries">Loading data...</div>
+                {:else}
+                    {#each topQueriesList as query}
+                        <li class="bullet-list-text">{query.query}</li>
+                    {:else}
+                        <div class="no-queries">Not enough data</div>
+                    {/each}
+                {/if}
+            </ul>
         </div>
         <div class="rising-searches">
             <div class="query-list-title">Rising</div>
             <div class="date-nav-control">
                 <div id="map-legend-date" class="date-nav-display">
-                    {date}
+                    {dateRange}
                 </div>
                 <div
                     id="date-nav-button-back"
@@ -140,6 +281,58 @@
                     >
                 </div>
             </div>
+            <ul class="bullet-list">
+                {#if loading}
+                    <div class="no-queries">Loading data...</div>
+                {:else}
+                    {#each risingQueriesList as query}
+                        <li class="bullet-list-text">{query.query}</li>
+                    {:else}
+                        <div class="no-queries">Not enough data</div>
+                    {/each}
+                {/if}
+            </ul>
         </div>
     </div>
+</div>
+
+<!-- Info Popups -->
+<div id="info-popup-covid19_vaccination" class="info-popup">
+    <h3 class="info-header">
+        {covid_vaccination_button_title}
+    </h3>
+    <p class="info-text">
+        Most common searches related to any aspect of COVID-19 vaccination,
+        listed in order of frequency.
+    </p>
+    <p class="info-text">
+        This parent category includes searches from the other two subcategories.
+    </p>
+    <p>
+        <a href="#about" class="info-link">Learn more</a>
+    </p>
+</div>
+<div id="info-popup-vaccination_intent" class="info-popup">
+    <h3 class="info-header">
+        {vaccination_intent_button_title}
+    </h3>
+    <p class="info-text">
+        Most common searches related to the eligibility, availability, and
+        accessibility of COVID-19 vaccines, listed in order of frequency.
+    </p>
+    <p>
+        <a href="#about" class="info-link">Learn more</a>
+    </p>
+</div>
+<div id="info-popup-safety_side_effects" class="info-popup">
+    <h3 class="info-header">
+        {safety_side_effects_button_title}
+    </h3>
+    <p class="info-text">
+        Most common searches related to the safety and side effects of COVID-19
+        vaccines, listed in order of frequency.
+    </p>
+    <p>
+        <a href="#about" class="info-link">Learn more</a>
+    </p>
 </div>

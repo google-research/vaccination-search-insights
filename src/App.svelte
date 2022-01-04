@@ -17,15 +17,16 @@
   import AutoComplete from "simple-svelte-autocomplete";
   import { onMount } from "svelte";
   import { params } from "./stores";
+  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import TopQueries from "./TopQueries.svelte";
-  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
+  import CountryPicker from "./CountryPicker.svelte";
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
   const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
-  
+
   let selectedCountry: string;
   let selectedCountryID: string;
   let placeId: string;
@@ -100,10 +101,10 @@
     document.removeEventListener("click", dismissDownloadPopupOnClick);
   }
 
-  function onCountrySelectHandler(selectedCountry: string): void {
-    if(selectedCountry) {
-      selectedCountryMetadata = fetchCountryMetaData(selectedCountry)[0];
-    
+  function onCountrySelectHandler(selectedCountryName: string): void {
+    if (selectedCountryName) {
+      selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
+
       selectedCountryID = selectedCountryMetadata.placeId;
       if (selectedCountryID != undefined) {
         params.update((p) => {
@@ -116,7 +117,6 @@
       }
     }
   }
-
 </script>
 
 <svelte:head>
@@ -132,7 +132,7 @@
             <use xlink:href="glue/glue-icons.svg#google-color-logo" />
           </svg>
         </a>
-        <a href="/" class="header-topbar-text">
+        <a href="?" class="header-topbar-text">
           COVID-19 Vaccine Search Insights
         </a>
       </div>
@@ -163,14 +163,14 @@
       </p>
       <h4 class="header-download-popup-subtitle">Download dataset</h4>
       <p class="header-download-popup-link-list">
-        <a
+        <!-- <a
           class="header-download-popup-link"
           href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
           >Canada</a
-        >
+        > -->
         <a
           class="header-download-popup-link"
           href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv"
@@ -212,35 +212,36 @@
     <div class="content-body">
       <h1>COVID-19 Vaccine Search Insights</h1>
       <p>
-        Explore searches for COVID-19 vaccination topics by region. This aggregated
-        and anonymized data helps you understand and compare communities&apos;
-        information needs. We’re releasing this data to inform public health
-        vaccine-confidence efforts.
+        Explore searches for COVID-19 vaccination topics by region. This
+        aggregated and anonymized data helps you understand and compare
+        communities&apos; information needs. We’re releasing this data to inform
+        public health vaccine-confidence efforts.
         <a href="#about">Learn more</a>
       </p>
 
       {#if placeId}
         <TrendsOverview
-          selectedCountryMetadata={selectedCountryMetadata}
+          {selectedCountryMetadata}
           covid_vaccination_title={COVID_19_VACCINATION_TITLE}
           vaccination_intent_title={VACCINATION_INTENT_TITLE}
           safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}
         />
-        <TopQueries
-          covid_vaccination_button_title={COVID_19_VACCINATION_TITLE}
-          vaccination_intent_button_title={VACCINATION_INTENT_TITLE}
-          safety_side_effects_button_title={SAFETY_SIDE_EFFECTS_TITLE}
+      {:else}
+        <CountryPicker
+          trendLine={(t) => {
+            return t.trends.covid19_vaccination;
+          }}
         />
       {/if}
 
       <h2 class="first-section-header">About this data</h2>
       <p>
         You can use this data to compare search interest between topics related
-        to COVID-19 vaccination. The value for search interest isn’t an absolute
-        number of searches—it’s a value representing relative interest which we
-        scale to make it easier to compare regions with one another, or the same
-        region over time. If you’d like to know more about our calculation and
-        process, see our <a
+        to COVID-19 vaccination and see what topics are popular or rising. The
+        value for search interest isn’t an absolute number of searches—it’s a
+        value representing relative interest which we scale to make it easier to
+        compare regions with one another, or the same region over time. If you’d
+        like to know more about our calculation and process, see our <a
           href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
           >technical docs</a
         >.

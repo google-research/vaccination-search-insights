@@ -14,104 +14,60 @@
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-
-  import type {
-    Region,
-    RegionalTrends,
-    TrendValue,
-  } from "./data";
+  import type { RegionalTrends, TrendValue } from "./data";
+  import { fetchGlobalTrendsData } from "./data";
   import { onMount } from "svelte";
+  import * as d3 from "d3";
   import { params } from "./stores";
-  import { 
-    getRegionName,
-    handleInfoPopup,
-    formatDateForDisplay, 
-    formatDateForStorage, 
+  import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
+  import {
+    formatDateForDisplay,
+    formatDateForStorage,
     convertStorageDate,
-    getClosestDate
+    getClosestDate,
   } from "./utils";
 
-  import * as d3 from "d3";
-
-  export let id: string;
-  export let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
-  export let regionalTrendsByPlaceId: Map<string, RegionalTrends>;
   export let trendLine: (trends: RegionalTrends) => TrendValue[];
-  export let title: string;
-  export let selectedCountryMetadata;
 
+  let globalTrendsByPlaceId: Map<string, RegionalTrends>;
   let placeId: string;
-  let selectedRegion: Region;
+  let country_list;
   let chartContainerElement: HTMLElement;
+  let countryNameToPlaceId = new Map();
 
   const chartBounds = {
-    width: 684,
-    height: 276,
+    width: 480,
+    height: 294,
   };
+
   //https://observablehq.com/@d3/margin-convention?collection=@d3/d3-axis
   const margin = { top: 10, bottom: 30, left: 0, right: 30 };
 
-  function getLegendComponentText(): string {
-    if (selectedRegion.sub_region_3) {
-      return "";
-    }
-    if (
-      selectedRegion.sub_region_2 ||
-      selectedRegion.sub_region_1_code === "US-DC"
-    ) {
-      return selectedCountryMetadata.subRegion3Title;
-    }
-    if (selectedRegion.sub_region_1) {
-      return selectedCountryMetadata.subRegion2Title;
-    }
-    if (selectedRegion.country_region) {
-      return selectedCountryMetadata.subRegion1Title;
-    }
-  }
-
-  // TODO(patankar): Generalize this to allow for different selections.
   function generateChartLegend() {
     const legendContainerElement: HTMLElement =
       chartContainerElement.querySelector(".chart-legend-container");
-    const legendComponentText: string = getLegendComponentText();
 
     d3.select(legendContainerElement).selectAll("*").remove();
 
-    d3.select(legendContainerElement)
-      .append("div")
-      .attr("class", "chart-legend-rect-container")
-      .append("svg")
-      .append("g")
-      .append("rect")
-      .attr("class", `chart-legend-rect ${id}`)
-      .attr("width", 16)
-      .attr("height", 4);
-
-    d3.select(legendContainerElement)
-      .append("div")
-      .attr("class", "chart-legend-text-container")
-      .append("text")
-      .attr("class", "chart-legend-text")
-      .text(getRegionName(selectedRegion));
-
-    if (legendComponentText) {
+    country_list.forEach((countryName) => {
       d3.select(legendContainerElement)
         .append("div")
         .attr("class", "chart-legend-rect-container")
         .append("svg")
         .append("g")
         .append("rect")
+        .attr("class", `chart-legend-rect ${countryName.replace(/\s+/g, "_")}`)
         .attr("width", 16)
-        .attr("height", 4)
-        .attr("fill", "#BDC1C6");
+        .attr("height", 4);
 
       d3.select(legendContainerElement)
         .append("div")
         .attr("class", "chart-legend-text-container")
         .append("text")
         .attr("class", "chart-legend-text")
-        .text(legendComponentText);
-    }
+        .text(countryName);
+    });
+
     d3.select(legendContainerElement)
       .append("div")
       .attr("class", "chart-legend-text-container chart-axis-label")
@@ -147,87 +103,50 @@
       .append("table")
       .attr("class", "chart-hover-card-table");
 
-    // Each of the hover card rows has three entities: the icon (rectangle or "High"/"Low"), the name of the selected region, and the value for the selected region on the selected date.
-    const hoverCardSelected = hoverCardTable
-      .append("tr")
-      .attr("id", "chart-hover-card-selected");
+    country_list.forEach((countryName) => {
+      const hoverCard = hoverCardTable
+        .append("tr")
+        .attr("class", "chart-hover-card-selected")
+        .style("display", "table-row");
 
-    const hoverCardSelectedIcon = hoverCardSelected
-      .append("td")
-      .append("div")
-      .attr("id", "chart-hover-card-selected-icon")
-      .attr("class", `chart-hover-card-selected-icon ${id}`);
+      const hoverCardIcon = hoverCard
+        .append("td")
+        .append("div")
+        .attr("class", "chart-hover-card-selected-icon")
+        .attr(
+          "class",
+          `chart-hover-card-selected-icon ${countryName.replace(/\s+/g, "_")}`
+        );
 
-    const hoverCardSelectedName = hoverCardSelected
-      .append("td")
-      .attr("id", "chart-hover-card-selected-name")
-      .attr("class", "chart-hover-card-name");
+      const hoverCardName = hoverCard
+        .append("td")
+        .attr("class", "chart-hover-card-selected-name")
+        .attr("class", "chart-hover-card-name")
+        .attr("id", `name-${countryName.replace(/\s+/g, "_")}`)
+        .text(countryName);
 
-    const hoverCardSelectedValue = hoverCardSelected
-      .append("td")
-      .attr("id", "chart-hover-card-selected-value")
-      .attr("class", "chart-hover-card-value");
-
-    const hoverCardHigh = hoverCardTable
-      .append("tr")
-      .attr("id", "chart-hover-card-high");
-
-    const hoverCardHighIcon = hoverCardHigh
-      .append("td")
-      .attr("id", "chart-hover-card-high-icon")
-      .attr("class", "chart-hover-card-icon-text")
-      .text("High");
-
-    const hoverCardHighName = hoverCardHigh
-      .append("td")
-      .attr("id", "chart-hover-card-high-name")
-      .attr("class", "chart-hover-card-name");
-
-    const hoverCardHighValue = hoverCardHigh
-      .append("td")
-      .attr("id", "chart-hover-card-high-value")
-      .attr("class", "chart-hover-card-value");
-
-    const hoverCardLow = hoverCardTable
-      .append("tr")
-      .attr("id", "chart-hover-card-low");
-
-    const hoverCardLowIcon = hoverCardLow
-      .append("td")
-      .attr("id", "chart-hover-card-low-icon")
-      .attr("class", "chart-hover-card-icon-text")
-      .text("Low");
-
-    const hoverCardLowName = hoverCardLow
-      .append("td")
-      .attr("id", "chart-hover-card-low-name")
-      .attr("class", "chart-hover-card-name");
-
-    const hoverCardLowValue = hoverCardLow
-      .append("td")
-      .attr("id", "chart-hover-card-low-value")
-      .attr("class", "chart-hover-card-value");
+      const hoverCardValue = hoverCard
+        .append("td")
+        .attr("class", "chart-hover-card-selected-value")
+        .attr("class", "chart-hover-card-value")
+        .attr("id", `value-${countryName.replace(/\s+/g, "_")}`)
+        .text("");
+    });
 
     const dataByDate = new Map<string, { place_id: string; value: number }[]>();
-    const selectedDataByDate = new Map<string, number>();
-
-    data.forEach((regionalTrend) => {
-      const trendValues = trendLine(regionalTrend);
+    data.forEach((countryTrend) => {
+      const trendValues = trendLine(countryTrend);
 
       trendValues.forEach((trendValue) => {
-        if (regionalTrend.place_id === selectedRegion.place_id) {
-          selectedDataByDate.set(trendValue.date, trendValue.value);
+        if (dataByDate.has(trendValue.date)) {
+          dataByDate.get(trendValue.date).push({
+            place_id: countryTrend.place_id,
+            value: trendValue.value,
+          });
         } else {
-          if (dataByDate.has(trendValue.date)) {
-            dataByDate.get(trendValue.date).push({
-              place_id: regionalTrend.place_id,
-              value: trendValue.value,
-            });
-          } else {
-            dataByDate.set(trendValue.date, [
-              { place_id: regionalTrend.place_id, value: trendValue.value },
-            ]);
-          }
+          dataByDate.set(trendValue.date, [
+            { place_id: countryTrend.place_id, value: trendValue.value },
+          ]);
         }
       });
     });
@@ -271,51 +190,22 @@
 
       hoverCardDate.text(formatDateForDisplay(closestDate));
 
-      const selectedValue: number = selectedDataByDate.get(
-        formatDateForStorage(closestDate)
-      );
-
-      displayRow(
-        hoverCardSelected,
-        hoverCardSelectedName,
-        hoverCardSelectedValue,
-        getRegionName(selectedRegion),
-        selectedValue
-      );
-
       if (dataByDate.size > 0) {
         const placeValues: { place_id: string; value: number }[] =
           dataByDate.get(formatDateForStorage(closestDate));
-        const { min, max } = findMinAndMax(placeValues);
-        const minPlaceId: string = min?.place_id;
-        const minRegion: Region = regionsByPlaceId.get(minPlaceId);
-        const minRegionName: string = getRegionName(minRegion);
-        const minValue: number = min?.value;
-        const maxPlaceId: string = max?.place_id;
-        const maxRegion: Region = regionsByPlaceId.get(maxPlaceId);
-        const maxRegionName: string = getRegionName(maxRegion);
-        const maxValue: number = max?.value;
-
-        displayRow(
-          hoverCardHigh,
-          hoverCardHighName,
-          hoverCardHighValue,
-          maxRegionName,
-          maxValue
-        );
-        displayRow(
-          hoverCardLow,
-          hoverCardLowName,
-          hoverCardLowValue,
-          minRegionName,
-          minValue
-        );
-      } else {
-        hoverCardHigh.style("display", "none");
-        hoverCardLow.style("display", "none");
+        country_list.forEach((countryName) => {
+          let the_value = placeValues.find(
+            (placeValue) =>
+              placeValue.place_id == countryNameToPlaceId.get(countryName)
+          );
+          let value_cell = document.getElementById(
+            `value-${countryName.replace(/\s+/g, "_")}`
+          );
+          value_cell.textContent = the_value ? the_value.value.toString() : "-";
+        });
       }
 
-      const mediabreakpoint = 600;
+      const mediabreakpoint = 600 - 210;
       if (window.innerWidth > mediabreakpoint) {
         // Determine which side of the vertical line the hover card should be on and calculate the overall position.
         const hoverCardRect = hoverCardElement.getBoundingClientRect();
@@ -348,41 +238,6 @@
     chartAreaHoverElement.addEventListener("mouseenter", chartMouseEnter);
     chartAreaHoverElement.addEventListener("mouseleave", chartMouseLeave);
     chartAreaHoverElement.addEventListener("mousemove", chartMouseMove);
-  }
-
-  function displayRow(
-    row: d3.Selection<any, any, any, any>,
-    rowName: d3.Selection<any, any, any, any>,
-    rowValue: d3.Selection<any, any, any, any>,
-    name: string,
-    value: number
-  ) {
-    if (name && value !== undefined) {
-      row.style("display", "table-row");
-      rowName.text(name);
-      rowValue.text(Math.round(value));
-    } else {
-      row.style("display", "none");
-    }
-  }
-
-  function findMinAndMax(placeValues: { place_id: string; value: number }[]) {
-    let min: { place_id: string; value: number };
-    let max: { place_id: string; value: number };
-
-    placeValues?.forEach((placeValue) => {
-      if (!isNaN(placeValue.value)) {
-        if (!min || placeValue.value < min.value) {
-          min = placeValue;
-        }
-
-        if (!max || placeValue.value > max.value) {
-          max = placeValue;
-        }
-      }
-    });
-
-    return { min, max };
   }
 
   type HtmlSelection = d3.Selection<HTMLElement, any, any, any>;
@@ -449,45 +304,7 @@
         .attr("y2", chartBounds.height - margin.bottom);
     }
 
-    let data: RegionalTrends[] = Array.from(
-      regionalTrendsByPlaceId.values()
-    ).filter((t) => {
-      const region = regionsByPlaceId.get(t.place_id);
-      if (region) {
-        let inSelectedRegion: boolean;
-        const isSelectedRegion = region.place_id === selectedRegion.place_id;
-
-        if (selectedRegion.sub_region_3) {
-          // Zipcode is selected.
-          return isSelectedRegion;
-        }
-        if (
-          selectedRegion.sub_region_2 ||
-          selectedRegion.sub_region_1_code === "US-DC"
-        ) {
-          // County is selected, want component zipcodes.
-          inSelectedRegion =
-            region.sub_region_2 === selectedRegion.sub_region_2 &&
-            region.sub_region_1 === selectedRegion.sub_region_1;
-        } else if (selectedRegion.sub_region_1) {
-          // State is selected, want component counties.
-          inSelectedRegion =
-            !region.sub_region_3 &&
-            region.sub_region_1_code === selectedRegion.sub_region_1_code;
-        } else if (selectedRegion.country_region) {
-          // Country is selected, want component states.
-          inSelectedRegion =
-            !region.sub_region_3 &&
-            !region.sub_region_2 &&
-            region.country_region_code === selectedRegion.country_region_code;
-        }
-
-        return inSelectedRegion || isSelectedRegion;
-      } else {
-        console.log("Place ID not found in regions mapping: ", t.place_id);
-        return false;
-      }
-    });
+    let data: RegionalTrends[] = Array.from(globalTrendsByPlaceId.values());
 
     // A superset of dates for shown trendlines.
     // TODO(patankar): Efficiency.
@@ -561,9 +378,9 @@
           .attr("font-family", "Roboto")
           .attr("font-size", 12)
       );
-    if (chartContainerElement){
-      scaleChartText();
-    }
+
+    scaleChartText();
+
     generateChartLegend();
     generateChartHoverCard(data, dates, xScale);
 
@@ -579,18 +396,17 @@
       .data(data, (d: RegionalTrends) => d.place_id)
       .join("path")
       .sort((a, b) => {
-        if (a.place_id != selectedRegion.place_id) {
-          return -1;
-        }
-        return 1;
+        return -1;
       })
       .attr("id", (d) => d.place_id)
       .attr("class", (regionalTrend) => {
-        if (regionalTrend.place_id === selectedRegion.place_id) {
-          return `trendline trendline-selected ${id}`;
-        } else {
-          return "trendline";
-        }
+        let countryName = [...countryNameToPlaceId].find(
+          ([key, val]) => val === regionalTrend.place_id
+        )[0];
+        return `trendline trendline-selected ${countryName.replace(
+          /\s+/g,
+          "_"
+        )}`;
       })
       .attr("d", (d) => lineFn(trendLine(d)));
   }
@@ -599,7 +415,6 @@
     // as per d3
     const padding: number = 3;
     const tickSize: number = 6;
-
     if (chartContainerElement){
       const chartAreaContainerElement: SVGElement =
         chartContainerElement.querySelector(".chart-area-container");
@@ -634,45 +449,90 @@
     }
   }
 
+  function onCountrySelectHandler(): void {
+    var selectedCountryName = this.getAttribute("data-countryName");
+    if (selectedCountryName) {
+      let selectedCountryID = countryNameToPlaceId.get(selectedCountryName);
+      if (selectedCountryID != undefined) {
+        params.update((p) => {
+          if (selectedCountryID !== p.placeId) {
+            p.placeId = selectedCountryID;
+            p.updateHistory = true;
+          }
+          return p;
+        });
+      }
+    }
+  }
+
   onMount(async () => {
     params.subscribe((param) => {
       placeId = param.placeId;
-      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId && chartContainerElement) {
-        selectedRegion = regionsByPlaceId.get(placeId);
+    });
 
+    if (!placeId) {
+      country_list = fetchCountryNames();
+      country_list.forEach((countryName) => {
+        let country_metadata = fetchCountryMetaData(countryName)[0];
+        countryNameToPlaceId.set(countryName, country_metadata.placeId);
+      });
+      let menu, item, div;
+
+      globalTrendsByPlaceId = await fetchGlobalTrendsData();
+
+      menu = document.getElementById("menu");
+      country_list.forEach((countryName) => {
+        // Row
+        item = document.createElement("a");
+        item.classList.add("menu-item");
+        item.setAttribute("data-countryName", countryName);
+        item.addEventListener("click", onCountrySelectHandler, false);
+        menu.appendChild(item);
+
+        // Color
+        div = document.createElement("div");
+        div.setAttribute(
+          "class",
+          `country-picker-icon chart-hover-card-selected-icon ${countryName.replace(
+            /\s+/g,
+            "_"
+          )}`
+        );
+        item.appendChild(div);
+
+        // Label
+        div = document.createElement("div");
+        div.appendChild(document.createTextNode(countryName));
+        item.appendChild(div);
+      });
+
+      if (globalTrendsByPlaceId ) {
         generateChart();
       }
-    });
-    if (chartContainerElement){
+
       window.addEventListener("resize", scaleChartText);
     }
   });
 </script>
 
 <div bind:this={chartContainerElement}>
-  <div class="chart-header">
-    <h3>{title}</h3>
-    <div
-      class="info-button chart-info-button"
-      on:click={(e) => {
-        handleInfoPopup(e, `#info-popup-${id}`);
-      }}
-    >
-      <span class="material-icons-outlined">info</span>
+  <div class="world-picker">
+    <div class="menu">
+      <div class="menu-title">Countries</div>
+      <div class="menu-list" id="menu"/>
+      <div class="menu-info">Select a country to see more insights</div>
     </div>
-    <div id="info-popup-{id}" class="info-popup">
-      <h3 class="info-header">
-        {title}
-      </h3>
-      <slot />
-      <p>
-        <a href="#about" class="info-link">Learn more</a>
-      </p>
+
+    <div class="chart">
+      <div class="chart-top">
+        <div class="chart-title">COVID-19 vaccination searches</div>
+        <div class="chart-y-axis-name">Interest</div>
+      </div>
+      <div class="chart-area-hover">
+        <svg class="chart-area-container" />
+        <div class="chart-hover-card inactive" />
+      </div>
+      <div class="chart-graph" id="chart" />
     </div>
-  </div>
-  <div class="chart-legend-container" />
-  <div class="chart-area-hover">
-    <svg class="chart-area-container" />
-    <div class="chart-hover-card inactive" />
   </div>
 </div>
