@@ -18,6 +18,7 @@ import { parse, ParseResult } from "papaparse";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
 import { getCountyFipsCodeGb } from "./zcta-county";
+import { getCountryJson } from "./get_country_json_data";
 
 export interface Region {
   country_region: string;
@@ -230,6 +231,24 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
   } else {
     let results: Promise<CountryTrendLine[]> = new Promise(
       (resolve, reject) => {
+        const json_data = Promise.resolve(getCountryJson('../data/US.json'))
+        .then((data) => {
+          for (let level of data ) {
+            console.log("level is ")
+            console.log(level)
+            if (level.hasOwnProperty("country")) {
+              console.log(`Load Global Trend Data with ${level["country"][0].length} rows`);
+              console.log(level["country"][0])
+              globalTrendLines = level["country"][0];
+              return globalTrendLines;
+            }
+            else {
+              console.log("ingoring this level");
+            }
+          }
+        })
+        resolve(json_data)
+        /*
         parse("./data/" + GLOBAL_TRENDS_FILENAME, {
           download: true,
           header: true,
@@ -260,6 +279,7 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
             resolve(mappedData);
           },
         });
+        */
       }
     );
     return results;

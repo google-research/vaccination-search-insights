@@ -19,8 +19,8 @@ import { handle_promise } from "svelte/internal";
 /* This function returns the JSON from a given url.
  * The JSON is an array of country, state, and county values.
 */
-export async function getCountryJson(loc: RequestInfo): Promise<any> {
-    return await fetch(loc)
+export function getCountryJson(loc: RequestInfo): Promise<any> {
+    return fetch(loc)
     .then((res) => {
         return res.json() 
         })
@@ -37,4 +37,4 @@ function test() {
     console.log(promise);
 }
 
-test();
+//test();
