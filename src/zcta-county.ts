@@ -24,6 +24,10 @@ export function getCountyFipsCodeGb(county_name: string) {
     return gbCountryFipsCodeMap.get(county_name);
 }
 
-export function getCountyZctas(fipsCode: string){
-    return countyZctaMap.get(fipsCode);
+export function getCountyZctas(fipsCode: string, countryCode: string){
+    if (countryCode == "US") {
+        return countyZctaMap.get(fipsCode);
+    } else if (countryCode == "GB") {
+        return countyZctaMapGb.get(fipsCode);
+    }
 }

@@ -22,9 +22,11 @@ import {
   dcCountyFipsCode,
   dcStateFipsCode,
   fipsCodeFromElementId,
+  levelNameFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
-  getAtlas
+  getAtlas,
+  getGbPostalCentroids
 } from "./geo-utils";
 import * as d3 from "d3";
 import {
@@ -251,6 +253,18 @@ function generateRegionToTrendDataForDateSlice(): void {
   );
 }
 
+
+// Create GB Albers projection for the map 
+// Require to create two objects, one for postal centroids, on for map shapes
+function getGBprojection(): d3.GeoConicProjection {
+  return d3.geoAlbers()
+    .center([3, 8.7])
+    .rotate([0, 4])
+    .parallels([50, 20])
+    .scale(4000)
+    .translate([mapBounds.width / 2, mapBounds.height / 2]);
+}
+
 //
 // Map drawing routines
 //
@@ -270,6 +284,7 @@ function initializeMap() {
   g.append("g").attr("id", "zip");
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
+  g.append("g").attr("id", "gb_postal_centroids");
   
   const topology = getAtlas(selectedCountryCode);
 
@@ -287,14 +302,7 @@ function initializeMap() {
   );
 
   if (selectedCountryCode == "GB") {
-    var projection = d3.geoAlbers()
-      .center([3, 8.7])
-      .rotate([0, 4])
-      .parallels([50, 20])
-      .scale(4000)
-      .translate([mapBounds.width / 2, mapBounds.height / 2]);
-
-    path = path.projection(projection);
+    path = path.projection(getGBprojection());
   } else {
     path = d3.geoPath();
   }
@@ -371,7 +379,7 @@ function colorizeMap() {
     });
 
   drawLegend(colorScale);
-  if (currentGeoLevel == GeoLevel.SubRegion2 && selectedCountryCode == "US") {
+  if (currentGeoLevel == GeoLevel.SubRegion2) {
     drawZipData(currentGeoId);
   }
 }
@@ -408,7 +416,7 @@ function zoomToBounds(d) {
           )
         )
         .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
-    );
+    ); // TODO(jelenako) - check if makes sense to change min to 60
 }
 
 /**
@@ -587,9 +595,7 @@ function activateSelectedCounty(fipsCode, zoom = true) {
   if (zoom) {
     zoomToBounds(mapSvg.select("#county").select(`#fips-${fipsCode}`).datum());
   }
-  if (selectedCountryCode == "US") {
-    drawZipData(fipsCode);
-  }
+  drawZipData(fipsCode);
 }
 
 let setLastSelectedCounty: string;
@@ -607,7 +613,7 @@ function resetLastSelectedCountyFill() {
 
 function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];
-  const zipsForCounty = new Set(getCountyZctas(fipsCode));
+  const zipsForCounty = new Set(getCountyZctas(fipsCode, selectedCountryCode));
   const zipTrends: Map<String, RegionalTrendLine> = trendData
     .filter(
       (t) =>
@@ -620,52 +626,103 @@ function drawZipData(fipsCode) {
       return acc;
     }, new Map<string, RegionalTrendLine>());
 
-  d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
-
   setLastSelectedCounty = fipsCode;
+  
+  if (selectedCountryCode == "US") {
+    d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
 
-  fetchZipData(fipsCode)
-    .then((zipData) => {
-      zipData.features.forEach((f) => {
-        f.properties.name = `Zip code ${f.properties.GEOID10}`;
+    fetchZipData(fipsCode)
+      .then((zipData) => {
+        zipData.features.forEach((f) => {
+          f.properties.name = `Zip code ${f.properties.GEOID10}`;
+        });
+
+        d3.select("#zip")
+          .selectAll("path")
+          .data(zipData.features)
+          .join("path")
+          .attr("class", "sub-region-3")
+          .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
+          .attr("d", path)
+          .attr("fill", (d: any) => {
+            const colorScale = colorScales.get(selectedTrend as TrendValueType);
+            const trend = zipTrends.get(d.properties.GEOID10);
+            const trendValue = getTrendValue(selectedTrend, trend);
+            if (trendValue && trendValue != 0) {
+              return colorScale(trendValue);
+            } else {
+              return unknownColor;
+            }
+          })
+          .attr("stroke", "white")
+          .attr("stroke-width", 1)
+          .attr("vector-effect", "non-scaling-stroke")
+          .on("mouseenter", enterCountyBoundsHandler)
+          .on("mouseleave", leaveCountyBoundsHandler)
+          .on("mousemove", movementHandler(zipTrends));
+      })
+      .catch((err) => {
+        console.log(
+          `No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`
+        );
+        removeZipData();
       });
+  } else if (selectedCountryCode == "GB") {
+    d3.selectAll(`#fips-${fipsCode}`).on("mouseleave", null);
+    d3.selectAll(`#fips-${fipsCode}`).on("mouseenter", null);
+    d3.selectAll(`#fips-${fipsCode}`).on("mousemove", null);
 
-      d3.select("#zip")
-        .selectAll("path")
-        .data(zipData.features)
-        .join("path")
-        .attr("class", "sub-region-3")
-        .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
-        .attr("d", path)
-        .attr("fill", (d: any) => {
-          const colorScale = colorScales.get(selectedTrend as TrendValueType);
-          const trend = zipTrends.get(d.properties.GEOID10);
-          const trendValue = getTrendValue(selectedTrend, trend);
-          if (trendValue && trendValue != 0) {
-            return colorScale(trendValue);
-          } else {
-            return unknownColor;
-          }
-        })
-        .attr("stroke", "white")
-        .attr("stroke-width", 1)
-        .attr("vector-effect", "non-scaling-stroke")
-        .on("mouseenter", enterCountyBoundsHandler)
-        .on("mouseleave", leaveCountyBoundsHandler)
-        .on("mousemove", movementHandler(zipTrends));
-    })
-    .catch((err) => {
-      console.log(
-        `No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`
-      );
-      removeZipData();
-    });
+    drawGbPostalCodes(getGbPostalCentroids(fipsCode), zipTrends, fipsCode);
+  }
 }
+
+
+function drawGbPostalCodes(postalCentroits, zipTrends, fipsCode) {
+  const postalFeatures = feature(
+    postalCentroits,
+    postalCentroits.objects.postal as GeometryCollection
+  );
+
+  // Calculate the centroid radius
+  const [[x0, y0], [x1, y1]] = path.bounds(mapSvg.select("#county").select(`#fips-${fipsCode}`).datum());
+  var length = ((x1 - x0)/ mapBounds.width) + ((y1 - y0)/ mapBounds.height) * 20;
+  var radius = Math.max(length, 0.3);
+
+  var post_path = d3.geoPath()
+    .projection(getGBprojection().rotate([7.145, -45.78, -3.95]))
+    .pointRadius(radius);
+
+  d3.select("#gb_postal_centroids")
+    .selectAll("path")
+    .data(postalFeatures.features.filter((t) => zipTrends.get(t.properties["name"])))
+    .join("path")
+    .attr("class", "postcode")
+    .attr("id", (z: any) => `postcode-${z.properties.name}`)
+    .attr("d", post_path)
+    .attr("fill", (d: any) => {
+      const colorScale = colorScales.get(selectedTrend as TrendValueType);
+      const trend = zipTrends.get(d.properties.name);
+      const trendValue = getTrendValue(selectedTrend, trend);
+      if (trendValue && trendValue != 0) {
+        return colorScale(trendValue);
+      } else {
+        return unknownColor;
+      }
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 3)
+    .attr("vector-effect", "non-scaling-stroke")
+    .on("mouseenter", enterCountyBoundsHandler)
+    .on("mouseleave", leaveCountyBoundsHandler)
+    .on("mousemove", movementHandler(zipTrends));
+}
+
 
 function removeZipData() {
   resetLastSelectedCountyFill();
 
   d3.select("#zip").selectAll("path").remove();
+  d3.select("#gb_postal_centroids").selectAll("path").remove();
 }
 
 function addRegionHighlight(regionId: string): void {
@@ -753,9 +810,8 @@ function showMapCallout(data, event, d): void {
   // set the callout title text
   callout.select("#map-callout-title").text(d.properties.name);
 
-  // Hide the drilldown message for US zip level, and for GB county level
-  if (d.properties.GEOID10 ||
-     (selectedCountryCode == "GB" && !gbStateIds.includes(d.id))) {
+  // Hide the drilldown message for zip/postcode level
+  if (["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1) {
     d3.select("#map-callout-drilldown-msg").style("display", "none");
   } else {
     d3.select("#map-callout-drilldown-msg").style("display", null);

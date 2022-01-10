@@ -17,6 +17,7 @@
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
 import * as gb from "../public/geo/gb-counties-albers.json";
+import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
 
 let regionCodesToPlaceId: Map<string, string>;
@@ -96,7 +97,12 @@ export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): st
 }
 
 export function fipsCodeFromElementId(id: string): string {
-  return id.slice(5);
+  return id.split("-")[1];
+}
+
+// Get the name of the level from element ID (if "postcode-E14", returns "postcode")
+export function levelNameFromElementId(id: string): string {
+  return id.split("-")[0];
 }
 
 export function getAtlas(countryCode: string): UsAtlas {
@@ -105,6 +111,10 @@ export function getAtlas(countryCode: string): UsAtlas {
   } else if (countryCode == "GB") {
     return gb as unknown as UsAtlas;
   }
+}
+
+export function getGbPostalCentroids(geoid: string) {
+  return gb_postal_albers;
 }
 
 export function buildRegionCodeToPlaceIdMapping(
