@@ -805,8 +805,9 @@ function showMapCallout(data, event, d): void {
   // set the callout title text
   callout.select("#map-callout-title").text(d.properties.name);
 
-  // Hide the drilldown message for zip/postcode level
-  if (["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1) {
+  // Hide the drilldown message for zip/postcode level, and current selected county
+  if ((["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1)
+      || setLastSelectedCounty == elemFipsCode) {
     d3.select("#map-callout-drilldown-msg").style("display", "none");
   } else {
     d3.select("#map-callout-drilldown-msg").style("display", null);
