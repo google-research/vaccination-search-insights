@@ -494,14 +494,12 @@
     </TimeSeries>
   {/if}
   
-  {#if selectedCountryName == "United States"}
-    <TopQueries
-      {regionsByPlaceId}
-      covid_vaccination_button_title={covid_vaccination_title}
-      vaccination_intent_button_title={vaccination_intent_title}
-      safety_side_effects_button_title={safety_side_effects_title}
-    />
-  {/if}
+  <TopQueries
+    {regionsByPlaceId}
+    covid_vaccination_button_title={covid_vaccination_title}
+    vaccination_intent_button_title={vaccination_intent_title}
+    safety_side_effects_button_title={safety_side_effects_title}
+  />
 
   <a id="about" class="about-anchor">
     <!-- Empty - keep to avoid warnings on empty anchor -->

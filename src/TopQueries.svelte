@@ -24,7 +24,7 @@
     } from "./data";
     import type { Region, Query } from "./data";
     import { params } from "./stores";
-    import { getCountryName, handleInfoPopup } from "./utils";
+    import { getCountryCode, handleInfoPopup } from "./utils";
     import { dateRangeString } from "./choropleth";
 
     const MINIMUM_DATE_INDEX = 0;
@@ -140,10 +140,6 @@
                 return;
             }
 
-            if (getCountryName(regionsByPlaceId.get(placeId)) !== "United States") {
-                return;
-            }
-
             let newRegion: Region = regionsByPlaceId.get(placeId);
             let newSubRegion: string = newRegion.sub_region_1;
 
@@ -161,7 +157,7 @@
                 loading = true;
                 Promise.resolve(
                     fetchQueriesFile(
-                        `US_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
+                        `${getCountryCode(newRegion)}_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
                     )
                 ).then(function (newCountyData) {
                     countyData = newCountyData;
