@@ -254,8 +254,7 @@ function generateRegionToTrendDataForDateSlice(): void {
 }
 
 
-// Create GB Albers projection for the map 
-// Require to create two objects, one for postal centroids, on for map shapes
+// Create GB only Albers projection for the map 
 function getGBprojection(): d3.GeoConicProjection {
   return d3.geoAlbers()
     .center([3, 8.7])
@@ -668,10 +667,6 @@ function drawZipData(fipsCode) {
         removeZipData();
       });
   } else if (selectedCountryCode == "GB") {
-    d3.selectAll(`#fips-${fipsCode}`).on("mouseleave", null);
-    d3.selectAll(`#fips-${fipsCode}`).on("mouseenter", null);
-    d3.selectAll(`#fips-${fipsCode}`).on("mousemove", null);
-
     drawGbPostalCodes(getGbPostalCentroids(fipsCode), zipTrends, fipsCode);
   }
 }
