@@ -81,6 +81,7 @@ let selectedDateIndex: number;
 let regionCodesToPlaceId;
 let selectionCallback;
 let mapTimeoutRef;
+let last_zoom: number = 0;
 
 //
 // Exports for clients
@@ -90,6 +91,11 @@ export const mapBounds = {
   height: 610,
   margin: 30,
 };
+
+// GB postal code geo path with projection
+const gb_postal_path = d3.geoPath()
+  .projection(getGBprojection().rotate([7.145, -45.78, -3.95]));
+
 
 export function createMap(
   mapData: RegionalTrendLine[],
@@ -385,6 +391,15 @@ function colorizeMap() {
 
 function zoomHandler({ transform }) {
   d3.select("#transformer").attr("transform", transform);
+
+  // Change diameter for postal code centroids in GB
+  if (last_zoom != transform.k && selectedCountryCode == "GB") {
+    last_zoom = transform.k;
+    d3.select("#gb_postal_centroids")
+      .selectAll("path")
+        .attr("d", gb_postal_path.pointRadius(Math.min(11/transform.k, 4)))
+      .attr("filter", "drop-shadow(0 0 " + 1/transform.k + "px rgba(0, 0, 0, 0.5))");
+  }
 }
 
 function resetZoom() {
@@ -406,7 +421,7 @@ function zoomToBounds(d) {
         .translate(mapBounds.width / 2, mapBounds.height / 2)
         .scale(
           Math.min(
-            25,
+            60,
             0.95 /
               Math.max(
                 (x1 - x0) / mapBounds.width,
@@ -415,7 +430,7 @@ function zoomToBounds(d) {
           )
         )
         .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
-    ); // TODO(jelenako) - check if makes sense to change min to 60
+    );
 }
 
 /**
@@ -613,21 +628,22 @@ function resetLastSelectedCountyFill() {
 function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];
   const zipsForCounty = new Set(getCountyZctas(fipsCode, selectedCountryCode));
-  const zipTrends: Map<String, RegionalTrendLine> = trendData
-    .filter(
-      (t) =>
-        zipsForCounty.has(t.sub_region_3_code) &&
-        t.date == currentDate &&
-        getTrendValue(selectedTrend, t) != 0
-    )
-    .reduce((acc, trend) => {
-      acc.set(trend.sub_region_3_code, trend);
-      return acc;
-    }, new Map<string, RegionalTrendLine>());
 
   setLastSelectedCounty = fipsCode;
   
   if (selectedCountryCode == "US") {
+    const zipTrends: Map<String, RegionalTrendLine> = trendData
+      .filter(
+        (t) =>
+          zipsForCounty.has(t.sub_region_3_code) &&
+          t.date == currentDate &&
+          getTrendValue(selectedTrend, t) != 0
+      )
+      .reduce((acc, trend) => {
+        acc.set(trend.sub_region_3_code, trend);
+        return acc;
+      }, new Map<string, RegionalTrendLine>());
+    
     d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
 
     fetchZipData(fipsCode)
@@ -667,36 +683,39 @@ function drawZipData(fipsCode) {
         removeZipData();
       });
   } else if (selectedCountryCode == "GB") {
-    drawGbPostalCodes(getGbPostalCentroids(fipsCode), zipTrends, fipsCode);
+    drawGbPostalCodes(getGbPostalCentroids(fipsCode), currentDate);
   }
 }
 
 
-function drawGbPostalCodes(postalCentroits, zipTrends, fipsCode) {
+// Draw postal code centroids for the UK
+function drawGbPostalCodes(postalCentroits, currentDate) {
+  const postalTrends: Map<String, RegionalTrendLine> = trendData
+    .filter(
+      (t) =>
+        t.date == currentDate &&
+        getTrendValue(selectedTrend, t) != 0
+    )
+    .reduce((acc, trend) => {
+      acc.set(trend.sub_region_3_code, trend);
+      return acc;
+    }, new Map<string, RegionalTrendLine>());
+  
   const postalFeatures = feature(
     postalCentroits,
     postalCentroits.objects.postal as GeometryCollection
   );
 
-  // Calculate the centroid radius
-  const [[x0, y0], [x1, y1]] = path.bounds(mapSvg.select("#county").select(`#fips-${fipsCode}`).datum());
-  var length = ((x1 - x0)/ mapBounds.width) + ((y1 - y0)/ mapBounds.height) * 20;
-  var radius = Math.max(length, 0.3);
-
-  var post_path = d3.geoPath()
-    .projection(getGBprojection().rotate([7.145, -45.78, -3.95]))
-    .pointRadius(radius);
-
   d3.select("#gb_postal_centroids")
     .selectAll("path")
-    .data(postalFeatures.features.filter((t) => zipTrends.get(t.properties["name"])))
+    .data(postalFeatures.features)
     .join("path")
     .attr("class", "postcode")
     .attr("id", (z: any) => `postcode-${z.properties.name}`)
-    .attr("d", post_path)
+    .attr("d", gb_postal_path)
     .attr("fill", (d: any) => {
       const colorScale = colorScales.get(selectedTrend as TrendValueType);
-      const trend = zipTrends.get(d.properties.name);
+      const trend = postalTrends.get(d.properties.name);
       const trendValue = getTrendValue(selectedTrend, trend);
       if (trendValue && trendValue != 0) {
         return colorScale(trendValue);
@@ -705,11 +724,11 @@ function drawGbPostalCodes(postalCentroits, zipTrends, fipsCode) {
       }
     })
     .attr("stroke", "white")
-    .attr("stroke-width", 3)
+    .attr("stroke-width", 1.7)
     .attr("vector-effect", "non-scaling-stroke")
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(zipTrends));
+    .on("mousemove", movementHandler(postalTrends));
 }
 
 
@@ -725,7 +744,11 @@ function addRegionHighlight(regionId: string): void {
 }
 
 function removeRegionHighlight(regionId: string): void {
-  d3.select("#" + regionId).attr("stroke-width", 1);
+  if (levelNameFromElementId(regionId) == "postcode") {
+    d3.select("#" + regionId).attr("stroke-width", 1.7);
+  } else {
+    d3.select("#" + regionId).attr("stroke-width", 1);
+  }
 }
 
 //
