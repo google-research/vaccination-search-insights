@@ -97,10 +97,11 @@
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
-        selectedCountryName = getCountryName(selectedRegion);
-        if (!selectedCountryMetadata) {
-          selectedCountryMetadata =
-            fetchCountryMetaData(selectedCountryName)[0];
+        // avoid fetching country metadata if country name didn't change
+        let newCountryName = getCountryName(selectedRegion);
+        if (selectedCountryName !== newCountryName){
+          selectedCountryName = newCountryName;
+          selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
         }
       }
 
