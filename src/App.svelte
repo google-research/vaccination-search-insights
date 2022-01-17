@@ -195,7 +195,6 @@
           <div class="header-search-container">
             <AutoComplete
               items={fetchCountryNames()}
-              bind:selectedItem={selectedCountry}
               placeholder={"Select a country"}
               onChange={onCountrySelectHandler}
               inputClassName={"header-search-box"}
