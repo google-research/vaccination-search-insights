@@ -2,16 +2,10 @@
 // For the US, converted CSV at
 // http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_county_rel_10.txt
 import zctaCounty from "../public/geo/zcta-county-us.json";
-import zctaCountyGb from "../public/geo/zcta-county-gb.json";
 import gbCountryFipsCode from "../public/geo/gb_counties_fips.json";
 
 const countyZctaMap = zctaCounty.reduce((acc,r)=> {
     acc.set(r.geoid,r.zcta)
-    return acc;
-}, new Map<string, Array<string>>());
-
-const countyZctaMapGb = zctaCountyGb.reduce((acc, r) => {
-    acc.set(r.geoid, r.postal_codes)
     return acc;
 }, new Map<string, Array<string>>());
 
@@ -24,10 +18,6 @@ export function getCountyFipsCodeGb(county_name: string) {
     return gbCountryFipsCodeMap.get(county_name);
 }
 
-export function getCountyZctas(fipsCode: string, countryCode: string){
-    if (countryCode == "US") {
-        return countyZctaMap.get(fipsCode);
-    } else if (countryCode == "GB") {
-        return countyZctaMapGb.get(fipsCode);
-    }
+export function getCountyZctas(fipsCode: string){
+    return countyZctaMap.get(fipsCode);
 }

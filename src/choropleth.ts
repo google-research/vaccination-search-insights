@@ -81,7 +81,7 @@ let selectedDateIndex: number;
 let regionCodesToPlaceId;
 let selectionCallback;
 let mapTimeoutRef;
-let last_zoom: number = 0;
+let lastZoom: number = 0;
 
 //
 // Exports for clients
@@ -393,12 +393,12 @@ function zoomHandler({ transform }) {
   d3.select("#transformer").attr("transform", transform);
 
   // Change diameter for postal code centroids in GB
-  if (last_zoom != transform.k && selectedCountryCode == "GB") {
-    last_zoom = transform.k;
+  if (lastZoom != transform.k && selectedCountryCode == "GB") {
+    lastZoom = transform.k;
     d3.select("#gb_postal_centroids")
       .selectAll("path")
         .attr("d", gb_postal_path.pointRadius(Math.min(11/transform.k, 4)))
-      .attr("filter", "drop-shadow(0 0 " + 1/transform.k + "px rgba(0, 0, 0, 0.5))");
+        .attr("filter", "drop-shadow(0 0 " + 1/transform.k + "px rgba(0, 0, 0, 0.5))");
   }
 }
 
@@ -626,12 +626,11 @@ function resetLastSelectedCountyFill() {
 
 
 function drawZipData(fipsCode) {
-  const currentDate = dateList[selectedDateIndex];
-  const zipsForCounty = new Set(getCountyZctas(fipsCode, selectedCountryCode));
-
+  const currentDate = dateList[selectedDateIndex];  
   setLastSelectedCounty = fipsCode;
   
   if (selectedCountryCode == "US") {
+    const zipsForCounty = new Set(getCountyZctas(fipsCode));
     const zipTrends: Map<String, RegionalTrendLine> = trendData
       .filter(
         (t) =>
