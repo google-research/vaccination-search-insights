@@ -57,9 +57,6 @@ const unknownColor = "#DADCE0"; //material grey 300
 const alaskaFipsCode: string = "02";
 const northernIrelandFipsCode: string = "N";
 
-// In GB, only showing the drill down message for state level
-const gbStateIds: string[] = ["E", "W", "S", "N"];
-
 let path = d3.geoPath();
 
 // currently resetting to the US
@@ -93,7 +90,7 @@ export const mapBounds = {
 };
 
 // GB postal code geo path with projection
-const gb_postal_path = d3.geoPath()
+const gbPostalPath = d3.geoPath()
   .projection(getGBprojection().rotate([7.145, -45.78, -3.95]));
 
 
@@ -289,7 +286,7 @@ function initializeMap() {
   g.append("g").attr("id", "zip");
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
-  g.append("g").attr("id", "gb_postal_centroids");
+  g.append("g").attr("id", "gbPostalCentroids");
   
   const topology = getAtlas(selectedCountryCode);
 
@@ -395,9 +392,9 @@ function zoomHandler({ transform }) {
   // Change diameter for postal code centroids in GB
   if (lastZoom != transform.k && selectedCountryCode == "GB") {
     lastZoom = transform.k;
-    d3.select("#gb_postal_centroids")
+    d3.select("#gbPostalCentroids")
       .selectAll("path")
-        .attr("d", gb_postal_path.pointRadius(Math.min(11/transform.k, 4)))
+      .attr("d", gbPostalPath.pointRadius(Math.min(11/transform.k, 4)))
         .attr("filter", "drop-shadow(0 0 " + 1/transform.k + "px rgba(0, 0, 0, 0.5))");
   }
 }
@@ -705,13 +702,13 @@ function drawGbPostalCodes(postalCentroits, currentDate) {
     postalCentroits.objects.postal as GeometryCollection
   );
 
-  d3.select("#gb_postal_centroids")
+  d3.select("#gbPostalCentroids")
     .selectAll("path")
     .data(postalFeatures.features)
     .join("path")
     .attr("class", "postcode")
     .attr("id", (z: any) => `postcode-${z.properties.name}`)
-    .attr("d", gb_postal_path)
+    .attr("d", gbPostalPath)
     .attr("fill", (d: any) => {
       const colorScale = colorScales.get(selectedTrend as TrendValueType);
       const trend = postalTrends.get(d.properties.name);
@@ -735,7 +732,7 @@ function removeZipData() {
   resetLastSelectedCountyFill();
 
   d3.select("#zip").selectAll("path").remove();
-  d3.select("#gb_postal_centroids").selectAll("path").remove();
+  d3.select("#gbPostalCentroids").selectAll("path").remove();
 }
 
 function addRegionHighlight(regionId: string): void {
