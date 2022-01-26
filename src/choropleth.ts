@@ -41,6 +41,8 @@ import {
   TrendValueType
 } from "./data";
 import { getCountyZctas } from "./zcta-county";
+import { fetchZipTrendLines } from "./zip_files";
+import { fetchCountryMetaData } from "./metadata";
 
 enum GeoLevel {
   Country = 1,
@@ -79,6 +81,8 @@ let selectedDateIndex: number;
 let regionCodesToPlaceId;
 let selectionCallback;
 let mapTimeoutRef;
+//used to make sure we only download the zip data once
+let isZipsDownloaded = false;
 
 //
 // Exports for clients
@@ -542,6 +546,8 @@ function buildSafetyColorScale(domain=[1.5, 2.8, 4.1, 5.4, 6.7, 8]) {
 //
 function activateSelectedState(fipsCode, zoom = true) {
   removeZipData();
+  console.log("Hopefully getting zipsdata...");
+  getZipsData();
   mapSvg
     .select("#county")
     .selectAll("path")
@@ -608,6 +614,11 @@ function resetLastSelectedCountyFill() {
 function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];
   const zipsForCounty = new Set(getCountyZctas(fipsCode));
+  console.log(zipsForCounty);
+  console.log(`in drawZipData, length of trendData is: ${trendData.length}`)
+  console.log(`current date is ${currentDate}`)
+  let test = trendData.filter( (t) => t.sub_region_3 == 'postal_code')
+  console.log(test);
   const zipTrends: Map<String, RegionalTrendLine> = trendData
     .filter(
       (t) =>
@@ -619,6 +630,7 @@ function drawZipData(fipsCode) {
       acc.set(trend.sub_region_3_code, trend);
       return acc;
     }, new Map<string, RegionalTrendLine>());
+  console.log(zipTrends)
 
   d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
 
@@ -876,4 +888,20 @@ function mapOnMouseLeaveHandler(event, d) {
     mapTimeoutRef = "";
   }
   hideMapCallout(event, d);
+}
+
+async function getZipsData(){
+  if (isZipsDownloaded == false) {
+    console.log(`selected country metadata zipsfile is: something`);
+    console.log(`trends data length is: ${trendData.length}`)
+    let zipsData = await fetchZipTrendLines();
+    console.log(zipsData)
+    trendData = [].concat(trendData, zipsData);
+    console.log(`new length of trends data is ${trendData.length}`)
+    console.log(trendData);
+    isZipsDownloaded = true;
+  }
+  else {
+    console.log("zips file already downloaded")
+  }
 }
