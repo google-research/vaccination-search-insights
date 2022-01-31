@@ -89,6 +89,20 @@ export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
     ["GB-SCT", "S"],
     ["GB-WLS", "W"],
     ["GB-NIR", "N"]])],
+  ['CA', new Map([
+    ["CA-BC", "59"],
+    ["CA-AB", "48"],
+    ["CA-SK", "47"],
+    ["CA-MB", "46"],
+    ["CA-ON", "35"],
+    ["CA-QC", "24"],
+    ["CA-NB", "13"],
+    ["CA-NS", "12"],
+    ["CA-PE", "11"],
+    ["CA-NL", "10"],
+    ["CA-YU", "60"],
+    ["CA-NW", "61"],
+    ["CA-NV", "62"]])],
   ['IE', new Map([
     ["IE-DL", "1"],
     ["IE-LK", "2"],
@@ -141,7 +155,10 @@ export function getAtlas(countryCode: string): UsAtlas {
     return gb as unknown as UsAtlas;
   } else if (countryCode == "IE") {
     return ie as unknown as UsAtlas;
-  }
+  } else if (countryCode == "CA") {
+    //TODO: add CA atlas
+    return null as unknown as UsAtlas;
+  } 
 }
 
 export function getGbPostalCentroids(geoid: string) {

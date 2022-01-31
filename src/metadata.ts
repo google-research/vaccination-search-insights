@@ -26,26 +26,5 @@ export function fetchCountryNames() {
     // TODO: we can add some logic here and in the metadata.json to filter for a valid country tag.
     var countryList = [];
     metadata.forEach((country) => countryList.push(country.countryName));
-    // TODO: remove filter CA or IE when it is ready for launch
-    return countryList.filter(c => c != "Canada");
+    return countryList;
 }
-
-// TODO: Remove these tests once we are satisfied this component does its job.
-/*
-function _testCountryMetaData(){
-    const countries = ["Canada", "United Kingdom", "United States"]
-    countries.forEach(country => {
-       console.log("testing "+country);
-       console.log(fetchCountryMetaData(country))
-       console.log("done with "+country)
-       
-   });
-}
-
-function _testCountryList(){
-    var myCountries = fetchCountryNames();
-    console.log(myCountries);
-}
- _testCountryMetaData();
- _testCountryList();
- */
