@@ -22,7 +22,6 @@ Global_l0_vaccination_search_insights.csv: US_vaccination_search_insights.csv GB
 	cat $(SRC_DIR)/$(word 3,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'length($$4) < 1' >> $(SRC_DIR)/$@
 	cat $(SRC_DIR)/$(word 4,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'length($$4) < 1' >> $(SRC_DIR)/$@
 
-
 gb_regions.csv: $(SRC_DIR)/gb_regions.csv
 
 regions.csv: US_vaccination_search_insights.csv gb_regions.csv CA_vaccination_search_insights.csv IE_vaccination_search_insights.csv
