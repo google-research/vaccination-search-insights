@@ -110,7 +110,10 @@ export function getAtlas(countryCode: string): UsAtlas {
     return us as unknown as UsAtlas;
   } else if (countryCode == "GB") {
     return gb as unknown as UsAtlas;
-  }
+  } else if (countryCode == "CA") {
+    //TODO: add CA atlas
+    return null as unknown as UsAtlas;
+  } 
 }
 
 export function getGbPostalCentroids(geoid: string) {

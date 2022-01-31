@@ -4,12 +4,12 @@
         "countryName":"Canada",
         "displayLevels":[0,1,3],
         "locales":["en-CA", "fr-CA"],
-        "shapeFileLegal":"lorem ipsum Canada",
         "subRegion1Title": "Provinces",
         "subRegion2Title": "",
         "subRegion3Title": "Postcodes",
         "vaccineTooltipExample": "vaccine tracker",
         "intentTooltipExample": "covid vaccine ontario",
+        "shapeFileLegal": "lorem ipsum Canada",
         "placeId":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk"
     },
     {   "countryCode":"GB",
