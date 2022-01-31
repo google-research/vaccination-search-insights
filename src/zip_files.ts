@@ -1,5 +1,7 @@
+import { zip } from "d3";
 import { parse, ParseResult } from "papaparse";
-import type { RegionalTrendLine } from "./data";
+import { fetchRegionalTrendsData, RegionalTrendLine } from "./data";
+import { mapData, regionalTrends } from "./stores";
 
 let rTL: RegionalTrendLine[];
 
@@ -56,4 +58,39 @@ export function fetchZipTrendLines(): Promise<RegionalTrendLine[]> {
     );
     return results;
   }
+}
+/*
+export async function getZipsData(){
+  if (isZipsDownloaded == false) {
+    console.log(`selected country metadata zipsfile is: something`);
+    console.log(`trends data length is: ${trendData.length}`)
+    let zipsData = fetchZipTrendLines();
+    console.log(zipsData)
+    trendData = [].concat(trendData, await zipsData);
+    console.log(`new length of trends data is ${trendData.length}`)
+    isZipsDownloaded = true;
+  }
+  else {
+    console.log("zips file already downloaded")
+  }
+}
+*/
+export async function getZipsData(){
+    let zipsTrendLineData = fetchZipTrendLines();
+    zipsTrendLineData.then((zTLD) => {
+    mapData.update((m) => m.concat(zTLD));
+    let regT;
+    regionalTrends.subscribe((rt) => regT = rt)
+    console.log("printing regT");
+    console.log(regT);
+    let RegionalTrendZipData = fetchRegionalTrendsData(zipsTrendLineData)
+    RegionalTrendZipData.then((rTZD) => {
+      console.log(`length of rTZD is ${rTZD.size}`)
+      for (let [k,v] of rTZD) {
+        regionalTrends.update((rt) => rt.set(k,v));
+      }
+    });
+    console.log(regT);
+
+  });
 }

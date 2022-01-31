@@ -19,10 +19,14 @@
  */
 
 import { writable } from "svelte/store";
+import type { RegionalTrends } from "./data";
+
+let rt = new Map<string, RegionalTrends>();
 
 type Params = {
   placeId: string;
   updateHistory: boolean;
+  isZipsDownloaded: boolean;
 };
 
 // TODO(patankar): Make browser back/forward update params after refactor.
@@ -35,6 +39,7 @@ function loadParams(): Params {
   return {
     placeId,
     updateHistory: true,
+    isZipsDownloaded: false,
   };
 }
 
@@ -55,3 +60,7 @@ window.onpopstate = function (event) {
     return p;
   });
 };
+
+export const mapData = writable([]);
+
+export const regionalTrends = writable(rt);

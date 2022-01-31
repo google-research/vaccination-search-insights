@@ -21,7 +21,7 @@
     TrendValue,
   } from "./data";
   import { onMount } from "svelte";
-  import { params } from "./stores";
+  import { params, regionalTrends} from "./stores";
   import { 
     getRegionName,
     handleInfoPopup,
@@ -474,6 +474,7 @@
           inSelectedRegion =
             !region.sub_region_3 &&
             region.sub_region_1_code === selectedRegion.sub_region_1_code;
+            //console.log(`state level data length is: ${data.length}`)
         } else if (selectedRegion.country_region) {
           // Country is selected, want component states.
           inSelectedRegion =
@@ -635,10 +636,13 @@
   }
 
   onMount(async () => {
+
+    regionalTrends.subscribe((v) => regionalTrendsByPlaceId = v);
     params.subscribe((param) => {
       placeId = param.placeId;
-      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId && chartContainerElement) {
+      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
+      
 
         generateChart();
       }

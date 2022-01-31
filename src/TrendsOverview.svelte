@@ -23,7 +23,7 @@
     RegionType,
   } from "./data";
   import { onMount } from "svelte";
-  import { params } from "./stores";
+  import { params, mapData, regionalTrends } from "./stores";
   import { getRegionName, getCountryName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
@@ -35,9 +35,11 @@
     setSelectedCounty,
     setSelectedState,
   } from "./choropleth.js";
+  import { fetchZipTrendLines, getZipsData } from "./zip_files"
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
+import App from "./App.svelte";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -45,7 +47,7 @@
   let placeId: string;
   let selectedRegionName: string;
   let selectedCountryName: string;
-  let regionalTrends: Map<string, RegionalTrends>;
+  //let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
   let vaccineTooltip: string = `
@@ -59,8 +61,11 @@
     scaled value that you can compare across regions, times, or topics.
   `;
 
-  let mapData: Promise<RegionalTrendLine[]>;
+  //let mapData: Promise<RegionalTrendLine[]>;
   let isMapInitialized: boolean = false;
+  //let isZipsDownloaded: boolean = false;
+  //let rtd: Promise<Map<string, RegionalTrends>>;
+
 
   export let covid_vaccination_title: string;
   export let vaccination_intent_title: string;
@@ -102,6 +107,7 @@
         if (selectedCountryName !== newCountryName){
           selectedCountryName = newCountryName;
           selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
+          param.isZipsDownloaded = false;
         }
       }
 
@@ -115,18 +121,24 @@
     setParentRegionButton();
 
     if (selectedCountryMetadata) {
-      mapData = fetchRegionalTrendLines(selectedCountryMetadata);
+      let temp_mapData = fetchRegionalTrendLines(selectedCountryMetadata);
 
-      mapData.then((mapData) => {
-        createMap(mapData, selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
+      temp_mapData.then((mD) => {
+        $mapData = mD;
+        console.log(`mapData length is: ${$mapData.length}`)
+        createMap(selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
         isMapInitialized = true;
         if (selectedRegion) {
           setMapSelection(selectedRegion);
         }
       });
       
-      regionalTrends = await fetchRegionalTrendsData(mapData);
+      let rtd = fetchRegionalTrendsData(temp_mapData);
 
+      rtd.then((rtd_data) => {
+        $regionalTrends = rtd_data
+      });
+      
       vaccineTooltip = `${vaccineTooltip}
         For example, “when can i get the covid vaccine” or 
         “${selectedCountryMetadata.vaccineTooltipExample}”. A scaled
@@ -153,7 +165,17 @@
       });
 
       if (isMapInitialized) {
-        setMapSelection(selectedRegion);
+        params.subscribe((p) => {
+        console.log(`isZipsDownloaded is: ${p.isZipsDownloaded}`)
+        if (p.isZipsDownloaded == false) { 
+          let zipData = getZipsData();
+          zipData.then((zD) => {
+            console.log(`mapdata length is now: ${$mapData.length}`)
+            $params.isZipsDownloaded = true;
+            setMapSelection(selectedRegion);
+          });
+        }
+      });
       }
     }
   }
@@ -447,11 +469,11 @@
       <a href="#about" class="info-link">Learn more</a>
     </p>
   </div>
-  {#if regionalTrends}
+  {#if $regionalTrends}
     <TimeSeries
       id="covid-19-vaccination"
       {regionsByPlaceId}
-      regionalTrendsByPlaceId={regionalTrends}
+      regionalTrendsByPlaceId={$regionalTrends}
       trendLine={(t) => {
         return t.trends.covid19_vaccination;
       }}
@@ -468,7 +490,7 @@
     <TimeSeries
       id="vaccination-intent"
       {regionsByPlaceId}
-      regionalTrendsByPlaceId={regionalTrends}
+      regionalTrendsByPlaceId={$regionalTrends}
       trendLine={(t) => {
         return t.trends.vaccination_intent;
       }}
@@ -482,7 +504,7 @@
     <TimeSeries
       id="safety-side-effects"
       {regionsByPlaceId}
-      regionalTrendsByPlaceId={regionalTrends}
+      regionalTrendsByPlaceId={$regionalTrends}
       trendLine={(t) => {
         return t.trends.safety_side_effects;
       }}
@@ -494,7 +516,6 @@
     </p>
     </TimeSeries>
   {/if}
-  
   {#if selectedCountryName == "United States"}
     <TopQueries
       {regionsByPlaceId}
