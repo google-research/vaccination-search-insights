@@ -1,5 +1,8 @@
 country_region,country_region_code,sub_region_1,sub_region_1_code,sub_region_2,sub_region_2_code,sub_region_3,sub_region_3_code,place_id
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d814f3f (Append CA regions)
 United States,US,Alabama,US-AL,Autauga County,01001,,,ChIJg9z7ewWPjogRA_8QrB0va7o
 United States,US,Alabama,US-AL,Baldwin County,,postal_code,36507,ChIJ3akDs6tYmogRFHKwBJj7yg0
 United States,US,Alabama,US-AL,Baldwin County,,postal_code,36511,ChIJ70fghJEamogR38KOUdxjpkA
@@ -17844,8 +17847,11 @@ United Kingdom,GB,Wales,GB-WLS,Wrexham Principal Area,W06000006,postal_code,LL13
 United Kingdom,GB,Wales,GB-WLS,Wrexham Principal Area,W06000006,postal_code,LL14,ChIJXTc5V9C1ekgRJsyWAH0r-Pk
 United Kingdom,GB,Wales,GB-WLS,Wrexham Principal Area,W06000006,,,ChIJxcQKOQS4ekgRUKGZ1COLDQM
 country_region,country_region_code,sub_region_1,sub_region_1_code,sub_region_2,sub_region_2_code,sub_region_3,sub_region_3_code,place_id
+<<<<<<< HEAD
 =======
 >>>>>>> d398b7d (Adding CA back)
+=======
+>>>>>>> d814f3f (Append CA regions)
 Canada,CA,Alberta,CA-AB,,,postal_code,T0A,ChIJOUISuAyYplMR8FPDsrnwoJk
 Canada,CA,Alberta,CA-AB,,,postal_code,T0B,ChIJL5qHQcxGClMRc074NhVbRh0
 Canada,CA,Alberta,CA-AB,,,postal_code,T0C,ChIJfaK732wpC1MRARtQ5325kBU
