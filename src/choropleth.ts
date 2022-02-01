@@ -80,8 +80,6 @@ let selectedDateIndex: number;
 let regionCodesToPlaceId;
 let selectionCallback;
 let mapTimeoutRef;
-//used to make sure we only download the zip data once
-let isZipsDownloaded = false;
 
 //
 // Exports for clients
@@ -882,4 +880,12 @@ function mapOnMouseLeaveHandler(event, d) {
     mapTimeoutRef = "";
   }
   hideMapCallout(event, d);
+}
+
+export function updateMap() {
+  mapSvg.exit().remove();
+  mapSvg.enter();
+  console.log("updating map")
+  initializeMap();
+
 }

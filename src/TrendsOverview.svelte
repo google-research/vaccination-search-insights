@@ -129,8 +129,11 @@ import App from "./App.svelte";
         createMap(selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
         isMapInitialized = true;
         if (selectedRegion) {
+          console.log(`selectedRegion is...`)
+          console.log(selectedRegion)
           setMapSelection(selectedRegion);
         }
+        mapInitialized();
       });
       
       let rtd = fetchRegionalTrendsData(temp_mapData);
@@ -153,6 +156,19 @@ import App from "./App.svelte";
     }
   });
 
+  function mapInitialized(): void {
+    params.subscribe((p) => {
+      console.log(`isZipsDownloaded is: ${p.isZipsDownloaded}`)
+      if (p.isZipsDownloaded == false) { 
+        let zipData = getZipsData();
+        zipData.then((zD) => {
+          console.log(`mapdata length is now: ${$mapData.length}`)
+          $params.isZipsDownloaded = true;
+        });
+      }
+    });
+  }
+
   function onChangeHandler(selectedRegion: Region): void {
     if (selectedRegion != undefined) {
       params.update((p) => {
@@ -165,17 +181,7 @@ import App from "./App.svelte";
       });
 
       if (isMapInitialized) {
-        params.subscribe((p) => {
-        console.log(`isZipsDownloaded is: ${p.isZipsDownloaded}`)
-        if (p.isZipsDownloaded == false) { 
-          let zipData = getZipsData();
-          zipData.then((zD) => {
-            console.log(`mapdata length is now: ${$mapData.length}`)
-            $params.isZipsDownloaded = true;
-            setMapSelection(selectedRegion);
-          });
-        }
-      });
+        setMapSelection(selectedRegion);
       }
     }
   }
