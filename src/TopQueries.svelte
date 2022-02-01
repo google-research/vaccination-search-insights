@@ -232,7 +232,7 @@
             </button>
         </div>
         <div
-            class="info-button"
+            class="info-button info-button-top-queries"
             on:click={(e) =>
                 handleInfoPopup(e, `#info-popup-${selectedListId}`)}
         >
