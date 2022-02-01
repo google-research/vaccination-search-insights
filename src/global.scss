@@ -117,7 +117,6 @@ sup {
   top: 80px;
   left: 0;
   width: 100%;
-  z-index: 1;
 }
 
 .header-topbar {
@@ -127,7 +126,6 @@ sup {
   flex-wrap: wrap;
   align-items: center;
   background: white;
-  padding-bottom: 40px;
 }
 
 .header-topbar-glue-logo {
@@ -936,9 +934,9 @@ div.next-steps-item > h3 {
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width: 408px) {
   .container-header {
-    top: 100px;
+    top: 90px;
   }
 }
 
