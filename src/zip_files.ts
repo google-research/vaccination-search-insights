@@ -76,21 +76,33 @@ export async function getZipsData(){
 }
 */
 export async function getZipsData(){
-    let zipsTrendLineData = fetchZipTrendLines();
-    zipsTrendLineData.then((zTLD) => {
+  let zipsTrendLineData = fetchZipTrendLines();
+  let zipsOutput = zipsTrendLineData.then((zTLD) => {
     mapData.update((m) => m.concat(zTLD));
     let regT;
     regionalTrends.subscribe((rt) => regT = rt)
-    console.log("printing regT");
-    console.log(regT);
     let RegionalTrendZipData = fetchRegionalTrendsData(zipsTrendLineData)
     RegionalTrendZipData.then((rTZD) => {
-      console.log(`length of rTZD is ${rTZD.size}`)
       for (let [k,v] of rTZD) {
         regionalTrends.update((rt) => rt.set(k,v));
       }
     });
-    console.log(regT);
-
+    return [zTLD, RegionalTrendZipData]
   });
+  return zipsOutput
+}
+
+export async function updateWithZipsData(){
+  let zipsTrendLineData = fetchZipTrendLines();
+  let zTLD = await zipsTrendLineData;
+  mapData.update((m) => m.concat(zTLD));
+  let regT;
+  regionalTrends.subscribe((rt) => regT = rt)
+  let RegionalTrendZipData = fetchRegionalTrendsData(zipsTrendLineData)
+  RegionalTrendZipData.then((rTZD) => {
+    for (let [k,v] of rTZD) {
+      regionalTrends.update((rt) => rt.set(k,v));
+    }
+  });
+  return [zTLD, RegionalTrendZipData]
 }

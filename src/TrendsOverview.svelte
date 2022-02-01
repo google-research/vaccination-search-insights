@@ -35,7 +35,7 @@
     setSelectedCounty,
     setSelectedState,
   } from "./choropleth.js";
-  import { fetchZipTrendLines, getZipsData } from "./zip_files"
+  import { fetchZipTrendLines, getZipsData, updateWithZipsData } from "./zip_files"
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
@@ -157,14 +157,26 @@ import App from "./App.svelte";
   });
 
   function mapInitialized(): void {
-    params.subscribe((p) => {
+    params.subscribe(async (p) => {
       console.log(`isZipsDownloaded is: ${p.isZipsDownloaded}`)
+      console.log(`selected Region is: ...`)
+      console.log(selectedRegion)
       if (p.isZipsDownloaded == false) { 
-        let zipData = getZipsData();
+        let zipData = await updateWithZipsData();
+        /*
         zipData.then((zD) => {
           console.log(`mapdata length is now: ${$mapData.length}`)
+          console.log(`zipData length is ${zD}`)
           $params.isZipsDownloaded = true;
-        });
+
+        }).then(() => setMapSelection(selectedRegion))
+        */
+       if (zipData) {
+        console.log(`mapdata length is now: ${$mapData.length}`)
+        console.log(`zipData length is ${zipData.length}`)
+        $params.isZipsDownloaded = true;
+        setMapSelection(selectedRegion)
+       }
       }
     });
   }
