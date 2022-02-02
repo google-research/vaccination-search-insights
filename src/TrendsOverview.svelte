@@ -399,7 +399,9 @@
 
     <!-- Map body -->
     <div id="map" />
-
+    {#if !isMapInitialized}
+      <div class="map-loading">Loading data...</div>
+    {/if}
     <!-- Map attribution line -->
     <div class="map-attribution">
       <p class="map-attribution-text">

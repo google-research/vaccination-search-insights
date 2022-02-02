@@ -429,6 +429,15 @@ svg.map-svg path {
   margin-top: 20px;
 }
 
+.map-loading {
+  text-align: center;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 80px;
+  font-family: 'Google Sans';
+  color: #80868b;
+}
+
 .date-nav-control {
   align-items: center;
   display: flex;
