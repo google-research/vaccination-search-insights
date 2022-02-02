@@ -400,7 +400,7 @@
     <!-- Map body -->
     <div id="map" />
     {#if !isMapInitialized}
-      <div class="map-loading">LOADING...</div>
+      <div class="map-loading">Loading data...</div>
     {/if}
     <!-- Map attribution line -->
     <div class="map-attribution">
