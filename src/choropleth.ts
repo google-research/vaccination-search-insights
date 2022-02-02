@@ -52,6 +52,7 @@ enum GeoLevel {
 }
 
 const unknownColor = "#DADCE0"; //material grey 300
+const mobileScreenWidth = 450; //material grey 300
 
 // Using different styling for areas with no borders with the main map
 const alaskaFipsCode: string = "02";
@@ -392,10 +393,11 @@ function zoomHandler({ transform }) {
   // Change diameter for postal code centroids in GB
   if (lastZoom != transform.k && selectedCountryCode == "GB") {
     lastZoom = transform.k;
+    var rad = window.innerWidth > mobileScreenWidth ? 11 : 21;
     d3.select("#gbPostalCentroids")
       .selectAll("path")
-      .attr("d", gbPostalPath.pointRadius(Math.min(11/transform.k, 4)))
-        .attr("filter", "drop-shadow(0 0 " + 1/transform.k + "px rgba(0, 0, 0, 0.5))");
+      .attr("d", gbPostalPath.pointRadius(Math.min(rad/transform.k, 4)))
+      .attr("filter", "drop-shadow(0 0 " + 1/transform.k + "px rgba(0, 0, 0, 0.5))");
   }
 }
 
@@ -834,9 +836,19 @@ function showMapCallout(data, event, d): void {
 
   callout.style("display", "block");
   const boundingRect: DOMRect = callout.node().getBoundingClientRect();
-  callout
-    .style("left", event.pageX - boundingRect.width / 2 + "px")
-    .style("top", event.pageY - boundingRect.height - 20 + "px");
+
+  // Base callout location on the screen dimenstions
+  if (window.innerWidth > mobileScreenWidth) {
+    callout
+      .style("left", Math.min(Math.max(event.pageX - boundingRect.width / 2, 0),
+                              window.innerWidth - 300) + "px")
+      .style("top", event.pageY - boundingRect.height - 20 + "px");
+  } else {
+    // on mobile
+    callout
+      .style("left", "auto")
+      .style("top", "auto");
+  }
 }
 
 function hideMapCallout(event, d) {
