@@ -947,6 +947,12 @@ div.next-steps-item > h3 {
   .container-header {
     top: 90px;
   }
+
+  .info-button-top-queries {
+    right: 21px;
+    margin-top: -155px;
+    position: absolute;
+  }
 }
 
 @media (min-width: g.$media-breakpoint) {
