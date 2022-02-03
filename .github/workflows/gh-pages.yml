@@ -6,6 +6,7 @@ on:
       - main
   schedule:
     # Weekly on Thursdays at 3pm PST (UTC-08).
+    # Note: github runs the cron from the default branch, in our case "dev".
     - cron:  '0 23 * * 4'
   workflow_dispatch:
 
@@ -14,6 +15,9 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Always deploy from the "main" branch.
+          ref: main
 
       - name: Install
         run: npm ci

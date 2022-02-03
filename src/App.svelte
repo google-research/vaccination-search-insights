@@ -54,7 +54,8 @@
     const popup = document.getElementById("header-download-popup");
 
     const downloadCenterX: number = downloadRect.left + downloadRect.width / 2;
-    const popupLeft: number = downloadCenterX - 10 - 312 / 2;
+    // if small screen, then left = 0, otherwise calculate
+    const popupLeft: number = downloadCenterX > 170? downloadCenterX - 10 - 312 / 2 : 0;
 
     popup.style.left = popupLeft + "px";
     popup.style.display = "inline";
@@ -195,7 +196,6 @@
           <div class="header-search-container">
             <AutoComplete
               items={fetchCountryNames()}
-              bind:selectedItem={selectedCountry}
               placeholder={"Select a country"}
               onChange={onCountrySelectHandler}
               inputClassName={"header-search-box"}

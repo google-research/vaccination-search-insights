@@ -97,10 +97,11 @@
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
         selectedRegionName = getRegionName(selectedRegion);
-        selectedCountryName = getCountryName(selectedRegion);
-        if (!selectedCountryMetadata) {
-          selectedCountryMetadata =
-            fetchCountryMetaData(selectedCountryName)[0];
+        // avoid fetching country metadata if country name didn't change
+        let newCountryName = getCountryName(selectedRegion);
+        if (selectedCountryName !== newCountryName){
+          selectedCountryName = newCountryName;
+          selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
         }
       }
 
@@ -398,7 +399,9 @@
 
     <!-- Map body -->
     <div id="map" />
-
+    {#if !isMapInitialized}
+      <div class="map-loading">Loading data...</div>
+    {/if}
     <!-- Map attribution line -->
     <div class="map-attribution">
       <p class="map-attribution-text">
