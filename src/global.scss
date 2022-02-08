@@ -125,6 +125,7 @@ sup {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+  background: white;
 }
 
 .header-topbar-glue-logo {
@@ -210,7 +211,7 @@ sup {
   left: 10px;
   top: 10px;
   z-index: 500;
-  width: 370px;
+  max-width: 370px;
   padding: 22px 20px;
   box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3),
     0px 2px 6px 2px rgba(60, 64, 67, 0.15);
@@ -426,6 +427,15 @@ svg.map-svg path {
 .map-legend-no-data {
   height: 20px;
   margin-top: 20px;
+}
+
+.map-loading {
+  text-align: center;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 80px;
+  font-family: 'Google Sans';
+  color: #80868b;
 }
 
 .date-nav-control {
@@ -933,9 +943,15 @@ div.next-steps-item > h3 {
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width: 408px) {
   .container-header {
-    top: 100px;
+    top: 90px;
+  }
+
+  .info-button-top-queries {
+    right: 21px;
+    margin-top: -155px;
+    position: absolute;
   }
 }
 
