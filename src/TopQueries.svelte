@@ -125,10 +125,11 @@
         string,
         Region
     >();
+    export let selectedCountryCode: string;
 
     // runs after component is first rendered to the DOM
     onMount(async () => {
-        topLevelData = await fetchTopLevelQueries();
+        topLevelData = await fetchTopLevelQueries(selectedCountryCode);
         dateList = createDateList([...topLevelData.keys()]);
         selectedDateIndex = dateList.length - 1;
         setDate(selectedDateIndex);
