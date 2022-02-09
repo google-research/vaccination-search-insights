@@ -660,8 +660,12 @@ p.info-text + p.info-text {
   stroke: g.$pink-600;
 }
 
-.trendline-selected.Canada {
+.trendline-selected.Australia {
   stroke: g.$blue-600;
+}
+
+.trendline-selected.Canada {
+  stroke: g.$cyan-600;
 }
 
 .trendline-selected.United_Kingdom {
@@ -705,8 +709,12 @@ p.info-text + p.info-text {
   fill: g.$pink-600;
 }
 
-.chart-legend-rect.Canada {
+.chart-legend-rect.Australia {
   fill: g.$blue-600;
+}
+
+.chart-legend-rect.Canada {
+  fill: g.$cyan-600;
 }
 
 .chart-legend-rect.United_Kingdom {
@@ -776,8 +784,12 @@ p.info-text + p.info-text {
   background: g.$pink-600;
 }
 
-.chart-hover-card-selected-icon.Canada {
+.chart-hover-card-selected-icon.Australia {
   background: g.$blue-600;
+}
+
+.chart-hover-card-selected-icon.Canada {
+  background: g.$cyan-600;
 }
 
 .chart-hover-card-selected-icon.United_Kingdom {

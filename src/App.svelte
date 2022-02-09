@@ -164,6 +164,14 @@
       </p>
       <h4 class="header-download-popup-subtitle">Download dataset</h4>
       <p class="header-download-popup-link-list">
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/AU_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon"
+            >file_download</span
+          >Australia</a
+        >
         <!-- <a
           class="header-download-popup-link"
           href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv"

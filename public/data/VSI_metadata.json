@@ -1,4 +1,18 @@
  [
+    {
+        "countryCode": "AU",
+        "dataFile": "AU_vaccination_search_insights.csv",
+        "countryName": "Australia",
+        "displayLevels": [0,1,2,3],
+        "locales": ["en-AU"],
+        "shapeFileLegal": "lorem ipsum",
+        "subRegion1Title": "States",
+        "subRegion2Title": "Counties",
+        "subRegion3Title": "Postcodes",
+        "vaccineTooltipExample": "lorem ipsum",
+        "intentTooltipExample": "lorem ipsum",
+        "placeId": "au"
+    },
     {  "countryCode": "CA",
         "dataFile":"CA_vaccination_search_insights.csv",
         "countryName":"Canada",
