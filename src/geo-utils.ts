@@ -18,6 +18,7 @@ import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
 import * as gb from "../public/geo/gb-counties-albers.json";
 import * as ie from "../public/geo/ie-counties-albers.json";
+import * as ca from "../public/geo/ca-counties-albers.json";
 import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
 
@@ -156,8 +157,7 @@ export function getAtlas(countryCode: string): UsAtlas {
   } else if (countryCode == "IE") {
     return ie as unknown as UsAtlas;
   } else if (countryCode == "CA") {
-    //TODO: add CA atlas
-    return null as unknown as UsAtlas;
+    return ca as unknown as UsAtlas;
   } 
 }
 
