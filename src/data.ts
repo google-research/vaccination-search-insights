@@ -517,8 +517,10 @@ export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
 /**
  * Reads all L0 and L1 TopQueries csv files and merges them into a single map.
  */
-export function fetchTopLevelQueries(): Promise<Map<string, Query[]>> {
-  let topQueriesFiles = ["US_l0_vaccination_trending_searches.csv", "US_l1_vaccination_trending_searches.csv"];
+export function fetchTopLevelQueries(selectedCountryCode): Promise<Map<string, Query[]>> {
+  let topQueriesFiles = [
+    selectedCountryCode + "_l0_vaccination_trending_searches.csv",
+    selectedCountryCode + "_l1_vaccination_trending_searches.csv"];
   let topQueriesData: Promise<Map<string, Query[]>> =
     Promise.all(topQueriesFiles.map((file) =>
       fetchQueriesFile(file)

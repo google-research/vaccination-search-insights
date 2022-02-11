@@ -497,12 +497,13 @@
     </TimeSeries>
   {/if}
   
-  {#if selectedCountryName == "United States"}
+  {#if selectedCountryMetadata}
     <TopQueries
       {regionsByPlaceId}
       covid_vaccination_button_title={covid_vaccination_title}
       vaccination_intent_button_title={vaccination_intent_title}
       safety_side_effects_button_title={safety_side_effects_title}
+      selectedCountryCode={selectedCountryMetadata.countryCode}
     />
   {/if}
 

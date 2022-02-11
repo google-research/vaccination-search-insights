@@ -24,7 +24,7 @@
     } from "./data";
     import type { Region, Query } from "./data";
     import { params } from "./stores";
-    import { getCountryName, handleInfoPopup } from "./utils";
+    import { getCountryCode, handleInfoPopup } from "./utils";
     import { dateRangeString } from "./choropleth";
 
     const MINIMUM_DATE_INDEX = 0;
@@ -125,10 +125,11 @@
         string,
         Region
     >();
+    export let selectedCountryCode: string;
 
     // runs after component is first rendered to the DOM
     onMount(async () => {
-        topLevelData = await fetchTopLevelQueries();
+        topLevelData = await fetchTopLevelQueries(selectedCountryCode);
         dateList = createDateList([...topLevelData.keys()]);
         selectedDateIndex = dateList.length - 1;
         setDate(selectedDateIndex);
@@ -137,10 +138,6 @@
         params.subscribe((newParams) => {
             placeId = newParams.placeId;
             if (!placeId || !regionsByPlaceId) {
-                return;
-            }
-
-            if (getCountryName(regionsByPlaceId.get(placeId)) !== "United States") {
                 return;
             }
 
@@ -161,7 +158,7 @@
                 loading = true;
                 Promise.resolve(
                     fetchQueriesFile(
-                        `US_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
+                        `${getCountryCode(newRegion)}_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
                     )
                 ).then(function (newCountyData) {
                     countyData = newCountyData;
