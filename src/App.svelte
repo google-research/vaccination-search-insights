@@ -23,13 +23,6 @@
   import CountryPicker from "./CountryPicker.svelte";
   import {CASE_STUDIES} from './case-studies';
 
-  import {
-    _,
-    addMessages,
-    init,
-    locale,
-  } from "svelte-i18n";
-
   import en from "../public/lang/en.json";
   import fr from "../public/lang/fr.json";
 
@@ -38,6 +31,13 @@ import { e } from "mathjs";
 
   addMessages("en", en);
   addMessages("fr", fr);
+
+  import {
+    _,
+    addMessages,
+    init,
+    locale,
+  } from "svelte-i18n";
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
