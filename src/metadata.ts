@@ -18,7 +18,6 @@
 import metadata from '../public/data/VSI_metadata.json';
  
 export function fetchCountryMetaData(countryNameString: string) {
-    //const countryData = metadata;
     return metadata.filter(c => c.countryName === countryNameString);
 }
 
