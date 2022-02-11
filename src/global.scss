@@ -660,18 +660,6 @@ p.info-text + p.info-text {
   stroke: g.$pink-600;
 }
 
-.trendline-selected.Canada {
-  stroke: g.$blue-600;
-}
-
-.trendline-selected.United_Kingdom {
-  stroke: g.$orange-600;
-}
-
-.trendline-selected.United_States {
-  stroke: g.$pink-600;
-}
-
 .chart-header {
   display: flex;
   flex-direction: row;
@@ -702,18 +690,6 @@ p.info-text + p.info-text {
 }
 
 .chart-legend-rect.safety-side-effects {
-  fill: g.$pink-600;
-}
-
-.chart-legend-rect.Canada {
-  fill: g.$blue-600;
-}
-
-.chart-legend-rect.United_Kingdom {
-  fill: g.$orange-600;
-}
-
-.chart-legend-rect.United_States {
   fill: g.$pink-600;
 }
 
