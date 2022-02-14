@@ -20,14 +20,14 @@
   import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
 
   import TrendsOverview from "./TrendsOverview.svelte";
-  import TopQueries from "./TopQueries.svelte";
   import CountryPicker from "./CountryPicker.svelte";
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
   const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
 
-  let selectedCountry: string;
+  const COUNTRY_LIST = fetchCountryNames();
+
   let selectedCountryID: string;
   let placeId: string;
   let selectedCountryMetadata;
@@ -164,30 +164,16 @@
       </p>
       <h4 class="header-download-popup-subtitle">Download dataset</h4>
       <p class="header-download-popup-link-list">
-        <!-- <a
-          class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv"
-          on:click={(e) => closeDownloadPopup()}
-          ><span class="material-icons-outlined header-download-popup-icon"
-            >file_download</span
-          >Canada</a
-        > -->
-        <a
-          class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv"
-          on:click={(e) => closeDownloadPopup()}
-          ><span class="material-icons-outlined header-download-popup-icon"
-            >file_download</span
-          >United Kingdom</a
-        >
-        <a
-          class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/US_vaccination_search_insights.csv"
-          on:click={(e) => closeDownloadPopup()}
-          ><span class="material-icons-outlined header-download-popup-icon"
-            >file_download</span
-          >United States</a
-        >
+        {#each COUNTRY_LIST as countryName}
+          <a
+            class="header-download-popup-link"
+            href={"https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/" +
+              fetchCountryMetaData(countryName)[0].countryCode + "_vaccination_search_insights.csv"}
+            on:click={(e) => closeDownloadPopup()}
+            ><span class="material-icons-outlined header-download-popup-icon">file_download</span>
+            {countryName}
+          </a>
+        {/each}
       </p>
     </div>
     {#if !placeId}
@@ -228,6 +214,7 @@
         />
       {:else}
         <CountryPicker
+          COUNTRY_LIST={COUNTRY_LIST}
           trendLine={(t) => {
             return t.trends.covid19_vaccination;
           }}
