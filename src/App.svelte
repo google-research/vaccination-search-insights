@@ -32,8 +32,6 @@
 
   import en from "../public/lang/en.json";
   import fr from "../public/lang/fr.json";
-//import { setupI18n } from "./localize";
-  import LocaleSelector from "./localeSwitcher.svelte"
 import { set, values } from "d3-collection";
 import { e } from "mathjs";
 
@@ -185,7 +183,7 @@ import { e } from "mathjs";
           >
         </div>
         <div class="link-item">
-          <div class="link-item-anchor">
+          <div class="header-language-picker">
             <select on:change={handleLocaleChange}>
               <option value="en">English</option>
               <option value="fr">Français</option>
