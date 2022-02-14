@@ -26,8 +26,8 @@ export function fetchCountryNames() {
     // TODO: we can add some logic here and in the metadata.json to filter for a valid country tag.
     var countryList = [];
     metadata.forEach((country) => countryList.push(country.countryName));
-    // TODO: remove filter CA when it is ready for launch
-    return countryList.filter(c => c != "Canada");
+    // TODO: remove filter CA or IE when it is ready for launch
+    return countryList.filter(c => c != "Canada" && c != "Ireland");
 }
 
 // TODO: Remove these tests once we are satisfied this component does its job.
