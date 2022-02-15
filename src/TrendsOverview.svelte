@@ -399,7 +399,9 @@
 
     <!-- Map body -->
     <div id="map" />
-
+    {#if !isMapInitialized}
+      <div class="map-loading">Loading data...</div>
+    {/if}
     <!-- Map attribution line -->
     <div class="map-attribution">
       <p class="map-attribution-text">
@@ -495,12 +497,13 @@
     </TimeSeries>
   {/if}
   
-  {#if selectedCountryName == "United States"}
+  {#if selectedCountryMetadata && selectedCountryMetadata.countryCode != "IE"}
     <TopQueries
       {regionsByPlaceId}
       covid_vaccination_button_title={covid_vaccination_title}
       vaccination_intent_button_title={vaccination_intent_title}
       safety_side_effects_button_title={safety_side_effects_title}
+      selectedCountryCode={selectedCountryMetadata.countryCode}
     />
   {/if}
 

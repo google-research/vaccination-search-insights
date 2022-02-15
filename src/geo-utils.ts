@@ -17,6 +17,8 @@
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
 import * as gb from "../public/geo/gb-counties-albers.json";
+import * as ie from "../public/geo/ie-counties-albers.json";
+import * as ca from "../public/geo/ca-counties-albers.json";
 import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
 
@@ -86,6 +88,39 @@ export const regionOneToFipsCode: Map<string, string> = new Map([
   ["GB-SCT", "S"],
   ["GB-WLS", "W"],
   ["GB-NIR", "N"],
+  ["IE-DL", "1"],
+  ["IE-LK", "2"],
+  ["IE-KE", "3"],
+  ["IE-WD", "4"],
+  ["IE-D", "5"],
+  ["IE-WH", "6"],
+  ["IE-MN", "7"],
+  ["IE-WW", "8"],
+  ["IE-CO", "9"],
+  ["IE-KY", "10"],
+  ["IE-RN", "11"],
+  ["IE-WX", "12"],
+  ["IE-LD", "13"],
+  ["IE-MH", "14"],
+  ["IE-CN", "15"],
+  ["IE-CW", "16"],
+  ["IE-MO", "17"],
+  ["IE-LH", "18"],
+  ["IE-SO", "19"],
+  ["IE-LM", "20"],
+  ["IE-KK", "21"],
+  ["IE-OY", "22"],
+  ["IE-LS", "23"],
+  ["IE-G", "24"],
+  ["IE-TA", "25"],
+  ["CA-NL", "10"],
+  ["CA-PE", "11"],
+  ["CA-NS", "12"],
+  ["CA-ON", "35"],
+  ["CA-MB", "46"],
+  ["CA-SK", "47"],
+  ["CA-AB", "48"],
+  ["CA-BC", "59"]
 ]);
 
 export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
@@ -106,14 +141,18 @@ export function levelNameFromElementId(id: string): string {
 }
 
 export function getAtlas(countryCode: string): UsAtlas {
-  if (countryCode == "US") {
-    return us as unknown as UsAtlas;
-  } else if (countryCode == "GB") {
-    return gb as unknown as UsAtlas;
-  } else if (countryCode == "CA") {
-    //TODO: add CA atlas
-    return null as unknown as UsAtlas;
-  } 
+  switch (countryCode) {
+    case "US":
+      return us as unknown as UsAtlas;
+    case "GB":
+      return gb as unknown as UsAtlas;
+    case "CA":
+      return ca as unknown as UsAtlas;
+    case "IE":
+      return ie as unknown as UsAtlas;
+    default:
+      console.log("Country atlas not found");
+  }
 }
 
 export function getGbPostalCentroids(geoid: string) {
