@@ -113,6 +113,7 @@ export const regionOneToFipsCode: Map<string, string> = new Map([
   ["IE-LS", "23"],
   ["IE-G", "24"],
   ["IE-TA", "25"],
+  ["IE-CE", "26"],
   ["CA-NL", "10"],
   ["CA-PE", "11"],
   ["CA-NS", "12"],
