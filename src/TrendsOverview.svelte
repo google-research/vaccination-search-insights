@@ -497,7 +497,7 @@
     </TimeSeries>
   {/if}
   
-  {#if selectedCountryMetadata}
+  {#if selectedCountryMetadata && selectedCountryMetadata.countryCode != "IE"}
     <TopQueries
       {regionsByPlaceId}
       covid_vaccination_button_title={covid_vaccination_title}

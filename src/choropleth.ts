@@ -58,6 +58,10 @@ const mobileScreenWidth = 450; //material grey 300
 const alaskaFipsCode: string = "02";
 const northernIrelandFipsCode: string = "N";
 
+const STATE_LEVEL = 1;
+const COUNTY_LEVEL = 2;
+const POSTCODE_LEVEL = 3
+
 let path = d3.geoPath();
 
 // currently resetting to the US
@@ -80,6 +84,7 @@ let regionCodesToPlaceId;
 let selectionCallback;
 let mapTimeoutRef;
 let lastZoom: number = 0;
+let displayLevels: number[];
 
 //
 // Exports for clients
@@ -104,6 +109,7 @@ export function createMap(
 ) {
   resetNavigationPlaceId = selectedCountryMetadata.placeId;
   selectedCountryCode = selectedCountryMetadata.countryCode;
+  displayLevels = selectedCountryMetadata.displayLevels;
   trendData = mapData;
   
   selectedTrend = trend;
@@ -117,7 +123,6 @@ export function createMap(
 
   // generate the region to trend data for a given date slice
   generateRegionToTrendDataForDateSlice();
-
   regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions);
   selectionCallback = selectionFn;
 
@@ -229,7 +234,9 @@ export function resetToCountryLevel() {
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", movementHandler(latestCountyData));
-  mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
+  if (displayLevels.includes(COUNTY_LEVEL)) {
+    mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
+  }
   resetZoom();
   selectionCallback(resetNavigationPlaceId);
 }
@@ -288,27 +295,27 @@ function initializeMap() {
   g.append("g").attr("id", "county");
   g.append("g").attr("id", "state");
   g.append("g").attr("id", "gbPostalCentroids");
-  
+
+  if (selectedCountryCode == "GB") {
+    path = path.projection(getGBprojection());
+  } else if (selectedCountryCode == "IE") {
+    const ie_projection = d3.geoAlbers()
+      .center([-4, 53.5])
+      .rotate([4.4, 0])
+      .parallels([50, 60])
+      .scale(8800)
+      .translate([mapBounds.width / 2, mapBounds.height / 2])
+    path = path.projection(ie_projection);
+  } else {
+    path = d3.geoPath();
+  }
+
   const topology = getAtlas(selectedCountryCode);
 
-  const countyFeatures = feature(
-    topology,
-    topology.objects.counties as GeometryCollection
-  );
-  const stateFeatures = feature(
-    topology,
-    topology.objects.states as GeometryCollection
-  );
   const nationFeatures = feature(
     topology,
     topology.objects.nation as GeometryCollection
   );
-
-  if (selectedCountryCode == "GB") {
-    path = path.projection(getGBprojection());
-  } else {
-    path = d3.geoPath();
-  }
 
   d3.select("#nation")
     .selectAll("path")
@@ -317,34 +324,47 @@ function initializeMap() {
     .attr("d", path)
     .attr("fill", "#f1f3f4");
 
-  d3.select("#county")
-    .selectAll("path")
-    .data(countyFeatures.features)
-    .join("path")
-    .attr("id", (d) => `fips-${d.id}`)
-    .attr("class", (d) => `state-${stateFipsCodeFromCounty(d.id as string, selectedCountryCode)}`)
-    .attr("d", path)
-    .attr("fill", "none")
-    .attr("stroke", "white")
-    .attr("stroke-width", 0)
-    .attr("vector-effect", "non-scaling-stroke");
+  if (displayLevels.includes(COUNTY_LEVEL)) {
+    const countyFeatures = feature(
+      topology,
+      topology.objects.counties as GeometryCollection
+    );
 
-  d3.select("#state")
-    .selectAll("path")
-    .data(stateFeatures.features)
-    .join("path")
-    .attr("id", (d) => `fips-${d.id}`)
-    .attr("class", "state")
-    .attr("d", path)
-    .attr("fill", "transparent")
-    .attr("stroke", (d) => ([alaskaFipsCode, northernIrelandFipsCode].includes(d.id as string) ? "#e8eaed" : "white"))
-    .attr("stroke-width", 1)
-    .attr("vector-effect", "non-scaling-stroke")
-    .on("mouseenter", enterStateBoundsHandler)
-    .on("mouseleave", leaveStateBoundsHandler)
-    .on("mousemove", inStateMovementHandler)
-    .on("click", stateSelectionOnClickHandler);
+    d3.select("#county")
+      .selectAll("path")
+      .data(countyFeatures.features)
+      .join("path")
+      .attr("id", (d) => `fips-${d.id}`)
+      .attr("class", (d) => `state-${stateFipsCodeFromCounty(d.id as string, selectedCountryCode)}`)
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", 0)
+      .attr("vector-effect", "non-scaling-stroke");
+  }
 
+  if (displayLevels.includes(STATE_LEVEL)) {
+    const stateFeatures = feature(
+      topology,
+      topology.objects.states as GeometryCollection
+    );
+
+    d3.select("#state")
+      .selectAll("path")
+      .data(stateFeatures.features)
+      .join("path")
+      .attr("id", (d) => `fips-${d.id}`)
+      .attr("class", "state")
+      .attr("d", path)
+      .attr("fill", "transparent")
+      .attr("stroke", (d) => ([alaskaFipsCode, northernIrelandFipsCode].includes(d.id as string) ? "#e8eaed" : "white"))
+      .attr("stroke-width", 1)
+      .attr("vector-effect", "non-scaling-stroke")
+      .on("mouseenter", enterStateBoundsHandler)
+      .on("mouseleave", leaveStateBoundsHandler)
+      .on("mousemove", inStateMovementHandler)
+      .on("click", stateSelectionOnClickHandler);
+  }
   mapZoom = d3.zoom().scaleExtent([1, 250]).on("zoom", zoomHandler);
   mapSvg.call(mapZoom);
 
@@ -355,6 +375,8 @@ function getFillColor(fipsCode) {
   let data;
   if (fipsCode == dcCountyFipsCode) {
     data = latestStateData.get(stateFipsCodeFromCounty(fipsCode, selectedCountryCode));
+  } else if (!displayLevels.includes(COUNTY_LEVEL)) {
+    data = latestStateData.get(fipsCode);
   } else {
     data = latestCountyData.get(fipsCode);
   }
@@ -373,7 +395,8 @@ function getFillColor(fipsCode) {
 
 function colorizeMap() {
   const colorScale = colorScales.get(selectedTrend as TrendValueType);
-  d3.select("#county")
+  
+  d3.select(displayLevels.includes(COUNTY_LEVEL) ? "#county" : "#state")
     .selectAll("path")
     .join("path")
     .attr("fill", function (d) {
@@ -581,9 +604,11 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", movementHandler(latestCountyData));
 
-  // disable any active state selection, then activate
-  mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
-  mapSvg.select("#state").select(`path#fips-${fipsCode}`).attr("fill", "none");
+  if (displayLevels.includes(COUNTY_LEVEL)) {
+    // disable any active state selection, then activate
+    mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
+    mapSvg.select("#state").select(`path#fips-${fipsCode}`).attr("fill", "none");
+  }
 
   if (zoom) {
     zoomToBounds(
@@ -828,7 +853,8 @@ function showMapCallout(data, event, d): void {
 
   // Hide the drilldown message for zip/postcode level, and current selected county
   if ((["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1)
-      || setLastSelectedCounty == elemFipsCode) {
+      || setLastSelectedCounty == elemFipsCode
+      || ![COUNTY_LEVEL, POSTCODE_LEVEL].every(level => displayLevels.includes(level))) {
     d3.select("#map-callout-drilldown-msg").style("display", "none");
   } else {
     d3.select("#map-callout-drilldown-msg").style("display", null);
@@ -944,11 +970,15 @@ function selectedCountyOnClickHandler(event, d) {
     .on("mouseenter", null)
     .on("mouseleave", null)
     .on("mousemove", null);
-  mapSvg
-    .select("#state")
-    .selectAll("path")
-    .attr("fill", "transparent")
-    .attr("stroke-width", 1.0);
+  
+  if (displayLevels.includes(COUNTY_LEVEL)) {
+    mapSvg
+      .select("#state")
+      .selectAll("path")
+      .attr("fill", "transparent")
+      .attr("stroke-width", 1.0);
+  }
+
   resetZoom();
   selectionCallback(resetNavigationPlaceId);
 }
