@@ -300,7 +300,7 @@ function initializeMap() {
     path = path.projection(getGBprojection());
   } else if (selectedCountryCode == "IE") {
     const ie_projection = d3.geoAlbers()
-      .center([-4, 53.5])
+      .center([-4, 53.4])
       .rotate([4.4, 0])
       .parallels([50, 60])
       .scale(8800)
@@ -493,7 +493,9 @@ function drawLegend(color) {
     .data(color.domain())
     .join("div")
     .classed("map-legend-scale-number", true)
-    .text((d: number, i) => maxDomain < 10 ? d.toFixed(0):d.toFixed(1));
+    .text((d: number, i) => {
+      return maxDomain < 10 || d > 100 ? d.toFixed(0) : d.toFixed(1)
+    });
 
   d3.select("svg#map-legend-swatch-bar")
     .selectAll("rect")
