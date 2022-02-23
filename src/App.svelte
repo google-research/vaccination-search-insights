@@ -121,7 +121,7 @@
 </script>
 
 <svelte:head>
-  <title>COVID-19 Vaccine Search Insights</title>
+  <title>COVID-19 Vaccination Search Insights</title>
 </svelte:head>
 
 <main>
@@ -134,7 +134,7 @@
           </svg>
         </a>
         <a href="?" class="header-topbar-text">
-          COVID-19 Vaccine Search Insights
+          COVID-19 Vaccination Search Insights
         </a>
       </div>
       <div class="header-topbar-menu">
@@ -196,7 +196,7 @@
 
   <div class="content-area">
     <div class="content-body">
-      <h1>COVID-19 Vaccine Search Insights</h1>
+      <h1>COVID-19 Vaccination Search Insights</h1>
       <p>
         Explore searches for COVID-19 vaccination topics by region. This
         aggregated and anonymized data helps you understand and compare
