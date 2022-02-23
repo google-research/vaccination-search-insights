@@ -1,7 +1,8 @@
 //Create a simple license report html page
 var checker = require("license-checker");
 var fs = require("fs");
-var marked = require("marked");
+
+var template = fs.readFileSync("license-report-template.html").toString();
 
 checker.init(
   {
@@ -12,22 +13,21 @@ checker.init(
       console.log(err);
     } else {
       var report = "";
-      //Use simple markdown to create each entry
       for (package in packages) {
         let package_info = packages[package];
         let licenseText = fs.readFileSync(package_info.licenseFile);
         let entry =
-          `# [${package}](package_info.repository)\n` +
-          `Publisher: ${package_info.publisher}\n` +
-          `License:${package_info.licenses}\n` +
-          `## License Text\n` +
-          licenseText.toString() +
-          "\n";
+          `<h2><a href="${package_info.repository}">${package}</a></h2>` +
+          (package_info.publisher
+            ? `<p>Publisher: ${package_info.publisher}</p>`
+            : "") +
+          `<p>License: ${package_info.licenses}</p>` +
+          `<h3>License Text</h3>` +
+          `<p><pre>${licenseText.toString()}</pre></p>`;
         report += entry;
       }
-      //then render the markdown to html
-      let html_report = marked.parse(report);
-      console.log(html_report);
+      let output = template.replace("{{content}}", report);
+      console.log(output);
     }
   }
 );
