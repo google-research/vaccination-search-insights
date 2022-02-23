@@ -27,7 +27,7 @@ export function fetchCountryNames() {
     var countryList = [];
     metadata.forEach((country) => countryList.push(country.countryName));
     // TODO: remove filter CA or IE when it is ready for launch
-    return countryList.filter(c => c != "Canada" && c != "Ireland");
+    return countryList.filter(c => c != "Canada");
 }
 
 // TODO: Remove these tests once we are satisfied this component does its job.
