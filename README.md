@@ -78,7 +78,7 @@ Then create the release branch from dev and push it as a new PR. Say you want to
 ```bash
 $ git checkout dev
 $ git pull --all
-$ git branch -b release-v1.2.3 origin/dev
+$ git checkout -b release-v1.2.3 origin/dev
 $ git push -u origin release-v1.2.3
 $ release-it 1.2.3
 ```
