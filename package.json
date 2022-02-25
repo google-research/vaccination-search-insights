@@ -1,10 +1,10 @@
 {
   "name": "vaccination-search-insights",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "postinstall": "make data",
+    "postinstall": "make data; node license-report.js > public/license_report.html",
     "start": "sirv public --no-clear",
     "validate": "svelte-check",
     "predeploy": "npm run build",
@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "ansi-regex": "^6.0.1",
+    "license-checker": "^25.0.1",
     "sirv-cli": "^1.0.0"
   },
   "lint-staged": {

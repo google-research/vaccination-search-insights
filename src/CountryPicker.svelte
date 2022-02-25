@@ -28,10 +28,10 @@
   } from "./utils";
 
   export let trendLine: (trends: RegionalTrends) => TrendValue[];
+  export let COUNTRY_LIST;
 
   let globalTrendsByPlaceId: Map<string, RegionalTrends>;
   let placeId: string;
-  let country_list;
   let chartContainerElement: HTMLElement;
   let countryNameToPlaceId = new Map();
 
@@ -39,6 +39,14 @@
     width: 480,
     height: 294,
   };
+
+  // Please follow the colouring sequance from go/chart-spectrum
+  const COUNTRY_COLOR_MAP = {
+    "Canada": "#1a73e8",
+    "Ireland": "#12b5cb",
+    "United Kingdom": "#e52592",
+    "United States": "#e8710a"
+  }
 
   //https://observablehq.com/@d3/margin-convention?collection=@d3/d3-axis
   const margin = { top: 10, bottom: 30, left: 0, right: 30 };
@@ -49,14 +57,14 @@
 
     d3.select(legendContainerElement).selectAll("*").remove();
 
-    country_list.forEach((countryName) => {
+    COUNTRY_LIST.forEach((countryName) => {
       d3.select(legendContainerElement)
         .append("div")
         .attr("class", "chart-legend-rect-container")
         .append("svg")
         .append("g")
         .append("rect")
-        .attr("class", `chart-legend-rect ${countryName.replace(/\s+/g, "_")}`)
+        .style("fill", COUNTRY_COLOR_MAP[countryName])
         .attr("width", 16)
         .attr("height", 4);
 
@@ -103,7 +111,7 @@
       .append("table")
       .attr("class", "chart-hover-card-table");
 
-    country_list.forEach((countryName) => {
+    COUNTRY_LIST.forEach((countryName) => {
       const hoverCard = hoverCardTable
         .append("tr")
         .attr("class", "chart-hover-card-selected")
@@ -113,10 +121,7 @@
         .append("td")
         .append("div")
         .attr("class", "chart-hover-card-selected-icon")
-        .attr(
-          "class",
-          `chart-hover-card-selected-icon ${countryName.replace(/\s+/g, "_")}`
-        );
+        .style("background", COUNTRY_COLOR_MAP[countryName])
 
       const hoverCardName = hoverCard
         .append("td")
@@ -193,7 +198,7 @@
       if (dataByDate.size > 0) {
         const placeValues: { place_id: string; value: number }[] =
           dataByDate.get(formatDateForStorage(closestDate));
-        country_list.forEach((countryName) => {
+        COUNTRY_LIST.forEach((countryName) => {
           let the_value = placeValues.find(
             (placeValue) =>
               placeValue.place_id == countryNameToPlaceId.get(countryName)
@@ -399,14 +404,12 @@
         return -1;
       })
       .attr("id", (d) => d.place_id)
-      .attr("class", (regionalTrend) => {
+      .attr("class", "trendline trendline-selected")
+      .style("stroke", (regionalTrend) => {
         let countryName = [...countryNameToPlaceId].find(
           ([key, val]) => val === regionalTrend.place_id
         )[0];
-        return `trendline trendline-selected ${countryName.replace(
-          /\s+/g,
-          "_"
-        )}`;
+        return COUNTRY_COLOR_MAP[countryName];
       })
       .attr("d", (d) => lineFn(trendLine(d)));
   }
@@ -470,9 +473,8 @@
       placeId = param.placeId;
     });
 
-    if (!placeId) {
-      country_list = fetchCountryNames();
-      country_list.forEach((countryName) => {
+    if (!placeId && COUNTRY_LIST) {
+      COUNTRY_LIST.forEach((countryName) => {
         let country_metadata = fetchCountryMetaData(countryName)[0];
         countryNameToPlaceId.set(countryName, country_metadata.placeId);
       });
@@ -481,7 +483,7 @@
       globalTrendsByPlaceId = await fetchGlobalTrendsData();
 
       menu = document.getElementById("menu");
-      country_list.forEach((countryName) => {
+      COUNTRY_LIST.forEach((countryName) => {
         // Row
         item = document.createElement("a");
         item.classList.add("menu-item");
@@ -491,13 +493,8 @@
 
         // Color
         div = document.createElement("div");
-        div.setAttribute(
-          "class",
-          `country-picker-icon chart-hover-card-selected-icon ${countryName.replace(
-            /\s+/g,
-            "_"
-          )}`
-        );
+        div.setAttribute("class","country-picker-icon chart-hover-card-selected-icon");
+        div.style.background = COUNTRY_COLOR_MAP[countryName];
         item.appendChild(div);
 
         // Label
