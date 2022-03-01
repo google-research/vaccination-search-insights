@@ -184,7 +184,7 @@ import { e } from "mathjs";
         </div>
         <div class="link-item">
           <div class="header-language-picker">
-            <select on:change={handleLocaleChange}>
+            <select on:blur={handleLocaleChange}>
               <option value="en">English</option>
               <option value="fr">Français</option>
             </select>
