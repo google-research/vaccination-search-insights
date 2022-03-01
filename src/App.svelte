@@ -31,10 +31,7 @@
 
   import en from "../public/lang/en.json";
   import fr from "../public/lang/fr.json";
-<<<<<<< HEAD
 
-=======
->>>>>>> 6fa2f6d ( Committer: Steve Herskovits <iamsteve@google.com>)
 import { set, values } from "d3-collection";
 import { e } from "mathjs";
 
@@ -187,12 +184,9 @@ import { e } from "mathjs";
           >
         </div>
         <div class="link-item">
-<<<<<<< HEAD
           <div class="link-item-anchor">
-            <!-- svelte-ignore a11y-no-onchange -->
-=======
           <div class="header-language-picker">
->>>>>>> 6fa2f6d ( Committer: Steve Herskovits <iamsteve@google.com>)
+            <!-- svelte-ignore a11y-no-onchange -->
             <select on:change={handleLocaleChange}>
               <option value="en">English</option>
               <option value="fr">Français</option>
