@@ -152,7 +152,7 @@ import { e } from "mathjs";
 </script>
 
 <svelte:head>
-  <title>COVID-19 Vaccine Search Insights</title>
+  <title>COVID-19 Vaccination Search Insights</title>
 </svelte:head>
 
 <main>
@@ -165,7 +165,7 @@ import { e } from "mathjs";
           </svg>
         </a>
         <a href="?" class="header-topbar-text">
-          COVID-19 Vaccine Search Insights
+          COVID-19 Vaccination Search Insights
         </a>
       </div>
       <div class="header-topbar-menu">
@@ -235,7 +235,7 @@ import { e } from "mathjs";
 
   <div class="content-area">
     <div class="content-body">
-      <h1>COVID-19 Vaccine Search Insights</h1>
+      <h1>COVID-19 Vaccination Search Insights</h1>
       <p>
         { @html $_('content.app_overview', {values: {
           aboutUrl: "#about"

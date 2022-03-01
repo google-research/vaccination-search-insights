@@ -96,11 +96,11 @@ export const mapBounds = {
 };
 
 const IE_PROJECTION = d3.geoAlbers()
-  .center([-4, 53.5])
+  .center([-4, 53.4])
   .rotate([4.4, 0])
   .parallels([50, 60])
   .scale(8800)
-  .translate([mapBounds.width / 2, mapBounds.height / 2]);
+  .translate([mapBounds.width / 2, mapBounds.height / 2])
 
 const CA_PROJECTION = d3.geoAlbers()
   .parallels([30, 77])
@@ -317,7 +317,7 @@ function initializeMap() {
     case "IE":
       path = path.projection(IE_PROJECTION);
       break;
-    case "CA":    
+    case "CA":
       path = path.projection(CA_PROJECTION);
       break;
     case "US":
@@ -511,7 +511,9 @@ function drawLegend(color) {
     .data(color.domain())
     .join("div")
     .classed("map-legend-scale-number", true)
-    .text((d: number, i) => maxDomain < 10 ? d.toFixed(0):d.toFixed(1));
+    .text((d: number, i) => {
+      return maxDomain < 10 || d > 100 ? d.toFixed(0) : d.toFixed(1)
+    });
 
   d3.select("svg#map-legend-swatch-bar")
     .selectAll("rect")
