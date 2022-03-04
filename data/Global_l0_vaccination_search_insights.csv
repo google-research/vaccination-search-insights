@@ -1,12 +1,4 @@
 date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_region_2,sub_region_2_code,sub_region_3,sub_region_3_code,place_id,sni_covid19_vaccination,sni_vaccination_intent,sni_safety_side_effects
-2021-01-04,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,53.694,19.203,8.406
-2021-01-11,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,68.252,28.211,8.266
-2021-01-18,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,60.840,25.219,7.378
-2021-01-25,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,61.072,24.518,7.711
-2021-02-01,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,56.989,23.223,7.750
-2021-02-08,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,66.057,30.287,10.835
-2021-02-15,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,62.342,28.564,11.488
-2021-02-22,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,70.689,32.243,12.336
 2021-03-01,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,87.899,43.236,14.896
 2021-03-08,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,100.000,48.223,17.290
 2021-03-15,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,93.347,42.402,17.673
@@ -58,6 +50,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-01-31,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,16.941,2.380,1.870
 2022-02-07,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,14.793,2.350,1.802
 2022-02-14,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,12.571,2.142,1.473
+2022-02-21,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,10.355,1.773,1.210
 2021-01-04,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,67.078,8.562,8.871
 2021-01-11,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,60.296,9.536,8.327
 2021-01-18,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,54.432,8.003,7.847
@@ -117,6 +110,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-01-31,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,27.543,4.672,1.885
 2022-02-07,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,24.809,4.627,1.822
 2022-02-14,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,19.628,4.129,1.562
+2022-02-21,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,16.848,4.199,1.371
 2021-01-04,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,59.158,2.887,8.731
 2021-01-11,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,57.181,3.162,6.252
 2021-01-18,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,36.133,2.568,4.408
@@ -176,3 +170,4 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-01-31,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,34.042,5.363,1.910
 2022-02-07,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,25.940,4.624,1.963
 2022-02-14,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,22.253,4.314,1.931
+2022-02-21,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,20.249,5.192,1.383
