@@ -17,6 +17,8 @@
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
 import * as gb from "../public/geo/gb-counties-albers.json";
+import * as ie from "../public/geo/ie-counties-albers.json";
+import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
 
 let regionCodesToPlaceId: Map<string, string>;
@@ -85,6 +87,32 @@ export const regionOneToFipsCode: Map<string, string> = new Map([
   ["GB-SCT", "S"],
   ["GB-WLS", "W"],
   ["GB-NIR", "N"],
+  ["IE-DL", "1"],
+  ["IE-LK", "2"],
+  ["IE-KE", "3"],
+  ["IE-WD", "4"],
+  ["IE-D", "5"],
+  ["IE-WH", "6"],
+  ["IE-MN", "7"],
+  ["IE-WW", "8"],
+  ["IE-CO", "9"],
+  ["IE-KY", "10"],
+  ["IE-RN", "11"],
+  ["IE-WX", "12"],
+  ["IE-LD", "13"],
+  ["IE-MH", "14"],
+  ["IE-CN", "15"],
+  ["IE-CW", "16"],
+  ["IE-MO", "17"],
+  ["IE-LH", "18"],
+  ["IE-SO", "19"],
+  ["IE-LM", "20"],
+  ["IE-KK", "21"],
+  ["IE-OY", "22"],
+  ["IE-LS", "23"],
+  ["IE-G", "24"],
+  ["IE-TA", "25"],
+  ["IE-CE", "26"]
 ]);
 
 export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
@@ -96,7 +124,12 @@ export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): st
 }
 
 export function fipsCodeFromElementId(id: string): string {
-  return id.slice(5);
+  return id.split("-")[1];
+}
+
+// Get the name of the level from element ID (if "postcode-E14", returns "postcode")
+export function levelNameFromElementId(id: string): string {
+  return id.split("-")[0];
 }
 
 export function getAtlas(countryCode: string): UsAtlas {
@@ -104,7 +137,13 @@ export function getAtlas(countryCode: string): UsAtlas {
     return us as unknown as UsAtlas;
   } else if (countryCode == "GB") {
     return gb as unknown as UsAtlas;
+  } else if (countryCode == "IE") {
+    return ie as unknown as UsAtlas;
   }
+}
+
+export function getGbPostalCentroids(geoid: string) {
+  return gb_postal_albers;
 }
 
 export function buildRegionCodeToPlaceIdMapping(
