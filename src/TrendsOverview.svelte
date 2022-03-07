@@ -23,7 +23,7 @@
     RegionType,
   } from "./data";
   import { onMount } from "svelte";
-  import { params, mapData, regionalTrends } from "./stores";
+  import { params, mapData, regionalTrends, isZipsDownloaded} from "./stores";
   import { getRegionName, getCountryName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
@@ -107,7 +107,7 @@ import App from "./App.svelte";
         if (selectedCountryName !== newCountryName){
           selectedCountryName = newCountryName;
           selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
-          param.isZipsDownloaded = false;
+          $isZipsDownloaded = false;
         }
       }
 
@@ -121,6 +121,7 @@ import App from "./App.svelte";
     setParentRegionButton();
 
     if (selectedCountryMetadata) {
+      console.log("this should only appear once!!!!!");
       let temp_mapData = fetchRegionalTrendLines(selectedCountryMetadata);
 
       temp_mapData.then((mD) => {
@@ -131,9 +132,10 @@ import App from "./App.svelte";
         if (selectedRegion) {
           console.log(`selectedRegion is...`)
           console.log(selectedRegion)
-          setMapSelection(selectedRegion);
+          //setMapSelection(selectedRegion);
+          mapInitialized();
         }
-        mapInitialized();
+        //mapInitialized();
       });
       
       let rtd = fetchRegionalTrendsData(temp_mapData);
@@ -156,29 +158,28 @@ import App from "./App.svelte";
     }
   });
 
-  function mapInitialized(): void {
-    params.subscribe(async (p) => {
-      console.log(`isZipsDownloaded is: ${p.isZipsDownloaded}`)
-      console.log(`selected Region is: ...`)
-      console.log(selectedRegion)
-      if (p.isZipsDownloaded == false) { 
-        let zipData = await updateWithZipsData();
-        /*
-        zipData.then((zD) => {
-          console.log(`mapdata length is now: ${$mapData.length}`)
-          console.log(`zipData length is ${zD}`)
-          $params.isZipsDownloaded = true;
-
-        }).then(() => setMapSelection(selectedRegion))
-        */
-       if (zipData) {
+  async function mapInitialized(): Promise<void> {  
+    console.log(`isZipsDownloaded is: ${$isZipsDownloaded}`)
+    console.log(`selected Region is: ...`)
+    console.log(selectedRegion)
+    if (!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") { 
+      let zipData = await updateWithZipsData();
+      /*
+      zipData.then((zD) => {
         console.log(`mapdata length is now: ${$mapData.length}`)
-        console.log(`zipData length is ${zipData.length}`)
+        console.log(`zipData length is ${zD}`)
         $params.isZipsDownloaded = true;
-        setMapSelection(selectedRegion)
-       }
-      }
-    });
+
+      }).then(() => setMapSelection(selectedRegion))
+      */
+    if (zipData) {
+      console.log(`mapdata length is now: ${$mapData.length}`)
+      console.log(`zipData length is ${zipData.length}`)
+      $isZipsDownloaded = true;
+      setMapSelection(selectedRegion)
+    }
+    }
+    else {setMapSelection(selectedRegion)}
   }
 
   function onChangeHandler(selectedRegion: Region): void {

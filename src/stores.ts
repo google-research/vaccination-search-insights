@@ -18,15 +18,16 @@
  * @fileoverview The state of the application persisted to query parameters
  */
 
+import { boolean } from "mathjs";
 import { writable } from "svelte/store";
 import type { RegionalTrends } from "./data";
 
 let rt = new Map<string, RegionalTrends>();
+let updateZip = boolean;
 
 type Params = {
   placeId: string;
   updateHistory: boolean;
-  isZipsDownloaded: boolean;
 };
 
 // TODO(patankar): Make browser back/forward update params after refactor.
@@ -39,7 +40,6 @@ function loadParams(): Params {
   return {
     placeId,
     updateHistory: true,
-    isZipsDownloaded: false,
   };
 }
 
@@ -64,3 +64,6 @@ window.onpopstate = function (event) {
 export const mapData = writable([]);
 
 export const regionalTrends = writable(rt);
+
+export const isZipsDownloaded = writable(false);
+

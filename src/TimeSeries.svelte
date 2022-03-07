@@ -52,8 +52,10 @@
   const margin = { top: 10, bottom: 30, left: 0, right: 30 };
 
   function getLegendComponentText(): string {
-    if (selectedRegion.sub_region_3) {
-      return "";
+    if (selectedCountryMetadata.countryCode != "IE") {
+      if (selectedRegion.sub_region_3) {
+        return "";
+      }
     }
     if (
       selectedRegion.sub_region_2 ||
@@ -640,7 +642,7 @@
     regionalTrends.subscribe((v) => regionalTrendsByPlaceId = v);
     params.subscribe((param) => {
       placeId = param.placeId;
-      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
+      if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
       
 
