@@ -44,6 +44,8 @@
   let selectedRegion: Region;
   let chartContainerElement: HTMLElement;
 
+  let isChartReady = false;
+
   const chartBounds = {
     width: 684,
     height: 276,
@@ -392,6 +394,8 @@
   type ElementSection = HtmlSelection | SvgSelection;
 
   function generateChart() {
+    if (isChartReady) {
+    console.log("generating time series chart");
     const chartAreaContainerElement: SVGElement =
       chartContainerElement.querySelector(".chart-area-container");
     const chartAreaElement: SVGGElement =
@@ -597,6 +601,7 @@
       })
       .attr("d", (d) => lineFn(trendLine(d)));
   }
+}
 
   function scaleChartText() {
     // as per d3
@@ -638,12 +643,22 @@
   }
 
   onMount(async () => {
-
-    regionalTrends.subscribe((v) => regionalTrendsByPlaceId = v);
+    //console.log(`placeId ${placeId} && regionsByPLaceId size ${regionsByPlaceId.size} > 0 && regionalTrendsByPlaceId size ${regionalTrendsByPlaceId.size} > 0 && chartContainerElement ${chartContainerElement}`);
+    regionalTrends.subscribe((regionalTrends_store) => {
+      console.log(`regional trends store length is: ${regionalTrends_store.size}`);
+      console.log(`placeId ${placeId} && regionsByPLaceId size ${regionsByPlaceId.size} > 0 && regionalTrendsByPlaceId size ${regionalTrendsByPlaceId.size} > 0 && chartContainerElement ${chartContainerElement}`);
+      regionalTrendsByPlaceId = regionalTrends_store;
+      if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement && !isChartReady) {
+        isChartReady = true;
+        generateChart();
+      }
+    });
     params.subscribe((param) => {
       placeId = param.placeId;
       if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
+        console.log("does this just print once?")
+        isChartReady = true;
       
 
         generateChart();
@@ -652,6 +667,8 @@
     if (chartContainerElement){
       window.addEventListener("resize", scaleChartText);
     }
+    //generateChart();
+
   });
 </script>
 

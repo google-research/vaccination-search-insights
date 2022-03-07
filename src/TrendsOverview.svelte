@@ -40,6 +40,7 @@
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
 import App from "./App.svelte";
+import { dataset_dev } from "svelte/internal";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -76,6 +77,8 @@ import App from "./App.svelte";
   let covid19VaccinationChartContainer: HTMLElement;
   let vaccinationIntentChartContainer: HTMLElement;
   let safetySideEffectsChartContainer: HTMLElement;
+
+  let regionalTrendsData; 
 
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
@@ -121,7 +124,6 @@ import App from "./App.svelte";
     setParentRegionButton();
 
     if (selectedCountryMetadata) {
-      console.log("this should only appear once!!!!!");
       let temp_mapData = fetchRegionalTrendLines(selectedCountryMetadata);
 
       temp_mapData.then((mD) => {
@@ -132,17 +134,22 @@ import App from "./App.svelte";
         if (selectedRegion) {
           console.log(`selectedRegion is...`)
           console.log(selectedRegion)
-          //setMapSelection(selectedRegion);
-          mapInitialized();
+          setMapSelection(selectedRegion);
+          //mapInitialized();
         }
         //mapInitialized();
       });
       
+      /*
       let rtd = fetchRegionalTrendsData(temp_mapData);
 
       rtd.then((rtd_data) => {
         $regionalTrends = rtd_data
       });
+      */
+      regionalTrendsData = await fetchRegionalTrendsData(temp_mapData);
+
+      $regionalTrends = regionalTrendsData
       
       vaccineTooltip = `${vaccineTooltip}
         For example, “when can i get the covid vaccine” or 
@@ -163,6 +170,7 @@ import App from "./App.svelte";
     console.log(`selected Region is: ...`)
     console.log(selectedRegion)
     if (!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") { 
+      console.log(`selectedRegion.sub_region_2 is ${selectedRegion.sub_region_2}`)
       let zipData = await updateWithZipsData();
       /*
       zipData.then((zD) => {
@@ -204,6 +212,15 @@ import App from "./App.svelte";
       setSelectedCounty(selectedRegion.sub_region_2_code);
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
+      if(!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
+        $isZipsDownloaded = true;
+        console.log("looking at state level now!")
+        let zipData = updateWithZipsData();
+        zipData.then((zD) => {
+        console.log(`mapdata length is now: ${$mapData.length}`)
+        console.log(`zipData length is ${zD.length}`)
+        }).then(() => setMapSelection(selectedRegion));
+      }
     } else {
       resetToCountryLevel();
     }
@@ -490,7 +507,7 @@ import App from "./App.svelte";
       <a href="#about" class="info-link">Learn more</a>
     </p>
   </div>
-  {#if $regionalTrends}
+  {#if $regionalTrends.size > 0}
     <TimeSeries
       id="covid-19-vaccination"
       {regionsByPlaceId}
@@ -535,8 +552,8 @@ import App from "./App.svelte";
     <p class="info-text">
       {safetyTooltip}
     </p>
-    </TimeSeries>
-  {/if}
+    </TimeSeries> 
+ {/if}
   
   {#if selectedCountryMetadata}
     <TopQueries
