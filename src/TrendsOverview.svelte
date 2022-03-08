@@ -147,9 +147,9 @@ import { dataset_dev } from "svelte/internal";
         $regionalTrends = rtd_data
       });
       */
-      regionalTrendsData = await fetchRegionalTrendsData(temp_mapData);
-
-      $regionalTrends = regionalTrendsData
+      let regionalTrendsData_temp = await fetchRegionalTrendsData(temp_mapData);
+      $regionalTrends = regionalTrendsData_temp;
+     
       
       vaccineTooltip = `${vaccineTooltip}
         For example, “when can i get the covid vaccine” or 
@@ -164,31 +164,6 @@ import { dataset_dev } from "svelte/internal";
       `;
     }
   });
-
-  async function mapInitialized(): Promise<void> {  
-    console.log(`isZipsDownloaded is: ${$isZipsDownloaded}`)
-    console.log(`selected Region is: ...`)
-    console.log(selectedRegion)
-    if (!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") { 
-      console.log(`selectedRegion.sub_region_2 is ${selectedRegion.sub_region_2}`)
-      let zipData = await updateWithZipsData();
-      /*
-      zipData.then((zD) => {
-        console.log(`mapdata length is now: ${$mapData.length}`)
-        console.log(`zipData length is ${zD}`)
-        $params.isZipsDownloaded = true;
-
-      }).then(() => setMapSelection(selectedRegion))
-      */
-    if (zipData) {
-      console.log(`mapdata length is now: ${$mapData.length}`)
-      console.log(`zipData length is ${zipData.length}`)
-      $isZipsDownloaded = true;
-      setMapSelection(selectedRegion)
-    }
-    }
-    else {setMapSelection(selectedRegion)}
-  }
 
   function onChangeHandler(selectedRegion: Region): void {
     if (selectedRegion != undefined) {
@@ -210,6 +185,15 @@ import { dataset_dev } from "svelte/internal";
   function setMapSelection(selectedRegion: Region): void {
     if (selectedRegion.sub_region_2_code) {
       setSelectedCounty(selectedRegion.sub_region_2_code);
+      if(!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
+        $isZipsDownloaded = true;
+        console.log("looking at state county level now!")
+        let zipData = updateWithZipsData();
+        zipData.then((zD) => {
+        console.log(`mapdata length is now: ${$mapData.length}`)
+        console.log(`zipData length is ${zD.length}`)
+        }).then(() => setMapSelection(selectedRegion));
+      }
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
       if(!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
@@ -507,7 +491,7 @@ import { dataset_dev } from "svelte/internal";
       <a href="#about" class="info-link">Learn more</a>
     </p>
   </div>
-  {#if $regionalTrends.size > 0}
+  {#if $regionalTrends.size > 0  }
     <TimeSeries
       id="covid-19-vaccination"
       {regionsByPlaceId}

@@ -14,6 +14,7 @@ export function coerceNumber(u: unknown) {
 }
 
 export function fetchZipTrendLines(): Promise<RegionalTrendLine[]> {
+  // TODO(iamsteve): remove this if statement - it's not needed based on how this function is called.
   if (rTL && rTL[0].country_region_code == 'US'){ //selectedCountryMetadata.countryCode) {
     return Promise.resolve(rTL);
   } else {//if (selectedCountryMetadata) {
@@ -79,8 +80,8 @@ export async function getZipsData(){
   let zipsTrendLineData = fetchZipTrendLines();
   let zipsOutput = zipsTrendLineData.then((zTLD) => {
     mapData.update((m) => m.concat(zTLD));
-    let regT;
-    regionalTrends.subscribe((rt) => regT = rt)
+    //let regT = regionalTrends;
+    //regionalTrends.subscribe((rt) => regT = rt)
     let RegionalTrendZipData = fetchRegionalTrendsData(zipsTrendLineData)
     RegionalTrendZipData.then((rTZD) => {
       for (let [k,v] of rTZD) {
@@ -97,12 +98,15 @@ export async function updateWithZipsData(){
   let zTLD = await zipsTrendLineData;
   mapData.update((m) => m.concat(zTLD));
   let regT;
-  regionalTrends.subscribe((rt) => regT = rt)
+  regionalTrends.subscribe((map) => {regT = map});
+  console.log(regT)
+  //regionalTrends.subscribe((rt) => regT = rt)
   let RegionalTrendZipData = fetchRegionalTrendsData(zipsTrendLineData)
   RegionalTrendZipData.then((rTZD) => {
     for (let [k,v] of rTZD) {
-      regionalTrends.update((rt) => rt.set(k,v));
+      regT.set(k,v);
     }
+    regionalTrends.set(regT);
   });
   return [zTLD, RegionalTrendZipData]
 }

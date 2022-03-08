@@ -648,9 +648,12 @@
       console.log(`regional trends store length is: ${regionalTrends_store.size}`);
       console.log(`placeId ${placeId} && regionsByPLaceId size ${regionsByPlaceId.size} > 0 && regionalTrendsByPlaceId size ${regionalTrendsByPlaceId.size} > 0 && chartContainerElement ${chartContainerElement}`);
       regionalTrendsByPlaceId = regionalTrends_store;
-      if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement && !isChartReady) {
+      if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         isChartReady = true;
         generateChart();
+      }
+      else {
+        isChartReady = false;
       }
     });
     params.subscribe((param) => {
