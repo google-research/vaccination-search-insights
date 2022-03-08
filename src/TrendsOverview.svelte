@@ -132,21 +132,9 @@ import { dataset_dev } from "svelte/internal";
         createMap(selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
         isMapInitialized = true;
         if (selectedRegion) {
-          console.log(`selectedRegion is...`)
-          console.log(selectedRegion)
           setMapSelection(selectedRegion);
-          //mapInitialized();
         }
-        //mapInitialized();
       });
-      
-      /*
-      let rtd = fetchRegionalTrendsData(temp_mapData);
-
-      rtd.then((rtd_data) => {
-        $regionalTrends = rtd_data
-      });
-      */
       let regionalTrendsData_temp = await fetchRegionalTrendsData(temp_mapData);
       $regionalTrends = regionalTrendsData_temp;
      

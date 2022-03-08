@@ -4,8 +4,7 @@ $(SRC_DIR):
 	mkdir -p $@
 
 US_vaccination_search_insights.csv: $(SRC_DIR)
-	curl https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/US_vaccination_search_insights.csv |\
-	grep -v "2021\-0[12]" > $(SRC_DIR)/US_vaccination_search_insights.csv
+	curl -o $(SRC_DIR)/US_vaccination_search_insights.csv https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/US_vaccination_search_insights.csv
 
 GB_vaccination_search_insights.csv: $(SRC_DIR)
 	curl -o $(SRC_DIR)/GB_vaccination_search_insights.csv https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv
