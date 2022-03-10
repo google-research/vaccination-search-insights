@@ -44,8 +44,6 @@
   let selectedRegion: Region;
   let chartContainerElement: HTMLElement;
 
-  let isChartReady = false;
-
   const chartBounds = {
     width: 684,
     height: 276,
@@ -394,212 +392,210 @@
   type ElementSection = HtmlSelection | SvgSelection;
 
   function generateChart() {
-    if (isChartReady) {
-      const chartAreaContainerElement: SVGElement =
-        chartContainerElement.querySelector(".chart-area-container");
-      const chartAreaElement: SVGGElement =
-        chartAreaContainerElement.querySelector("g");
-      const xElement: SVGGElement =
-        chartContainerElement.querySelector(".x.axis");
-      const yElement: SVGGElement =
-        chartContainerElement.querySelector(".y.axis");
-      const pathsElement: SVGGElement =
-        chartContainerElement.querySelector(".paths");
-      const verticalLineElement: SVGGElement =
-        chartContainerElement.querySelector(".chart-vertical-line");
-      let chartArea: SvgSelection;
-      let x: SvgSelection;
-      let y: SvgSelection;
-      let paths: SvgSelection;
-      let verticalLine: SvgSelection;
+    const chartAreaContainerElement: SVGElement =
+      chartContainerElement.querySelector(".chart-area-container");
+    const chartAreaElement: SVGGElement =
+      chartAreaContainerElement.querySelector("g");
+    const xElement: SVGGElement =
+      chartContainerElement.querySelector(".x.axis");
+    const yElement: SVGGElement =
+      chartContainerElement.querySelector(".y.axis");
+    const pathsElement: SVGGElement =
+      chartContainerElement.querySelector(".paths");
+    const verticalLineElement: SVGGElement =
+      chartContainerElement.querySelector(".chart-vertical-line");
+    let chartArea: SvgSelection;
+    let x: SvgSelection;
+    let y: SvgSelection;
+    let paths: SvgSelection;
+    let verticalLine: SvgSelection;
 
-      if (chartAreaElement) {
-        chartArea = d3.select(chartAreaElement);
+    if (chartAreaElement) {
+      chartArea = d3.select(chartAreaElement);
+    } else {
+      chartArea = d3
+        .select(chartAreaContainerElement)
+        .attr(
+          "viewBox",
+          [0, 0, chartBounds.width, chartBounds.height].join(" ")
+        )
+        .append("g");
+    }
+
+    if (xElement) {
+      x = d3.select(xElement);
+    } else {
+      x = chartArea.append("g").attr("class", "x axis");
+    }
+
+    if (yElement) {
+      y = d3.select(yElement);
+    } else {
+      y = chartArea.append("g").attr("class", "y axis");
+    }
+
+    if (pathsElement) {
+      paths = d3.select(pathsElement);
+    } else {
+      paths = chartArea.append("g").attr("class", "paths");
+    }
+
+    if (verticalLineElement) {
+      verticalLine = d3.select(verticalLineElement);
+    } else {
+      verticalLine = chartArea
+        .append("g")
+        .append("line")
+        .attr("class", "chart-vertical-line inactive")
+        .attr("y1", margin.top)
+        .attr("y2", chartBounds.height - margin.bottom);
+    }
+
+    let data: RegionalTrends[] = Array.from(
+      regionalTrendsByPlaceId.values()
+    ).filter((t) => {
+      const region = regionsByPlaceId.get(t.place_id);
+      if (region) {
+        let inSelectedRegion: boolean;
+        const isSelectedRegion = region.place_id === selectedRegion.place_id;
+
+        if (selectedRegion.sub_region_3) {
+          // Zipcode is selected.
+          return isSelectedRegion;
+        }
+        if (
+          selectedRegion.sub_region_2 ||
+          selectedRegion.sub_region_1_code === "US-DC"
+        ) {
+          // County is selected, want component zipcodes.
+          inSelectedRegion =
+            region.sub_region_2 === selectedRegion.sub_region_2 &&
+            region.sub_region_1 === selectedRegion.sub_region_1;
+        } else if (selectedRegion.sub_region_1) {
+          // State is selected, want component counties.
+          inSelectedRegion =
+            !region.sub_region_3 &&
+            region.sub_region_1_code === selectedRegion.sub_region_1_code;
+            //console.log(`state level data length is: ${data.length}`)
+        } else if (selectedRegion.country_region) {
+          // Country is selected, want component states.
+          inSelectedRegion =
+            !region.sub_region_3 &&
+            !region.sub_region_2 &&
+            region.country_region_code === selectedRegion.country_region_code;
+        }
+
+        return inSelectedRegion || isSelectedRegion;
       } else {
-        chartArea = d3
-          .select(chartAreaContainerElement)
-          .attr(
-            "viewBox",
-            [0, 0, chartBounds.width, chartBounds.height].join(" ")
-          )
-          .append("g");
+        console.log("Place ID not found in regions mapping: ", t.place_id);
+        return false;
       }
+    });
 
-      if (xElement) {
-        x = d3.select(xElement);
-      } else {
-        x = chartArea.append("g").attr("class", "x axis");
-      }
+    // A superset of dates for shown trendlines.
+    // TODO(patankar): Efficiency.
+    const dates: Date[] = [];
+    data.forEach((regionalTrends) => {
+      const regionalTrendValues = trendLine(regionalTrends);
 
-      if (yElement) {
-        y = d3.select(yElement);
-      } else {
-        y = chartArea.append("g").attr("class", "y axis");
-      }
+      regionalTrendValues.forEach((regionalTrendValue) => {
+        const date = convertStorageDate(regionalTrendValue.date);
 
-      if (pathsElement) {
-        paths = d3.select(pathsElement);
-      } else {
-        paths = chartArea.append("g").attr("class", "paths");
-      }
-
-      if (verticalLineElement) {
-        verticalLine = d3.select(verticalLineElement);
-      } else {
-        verticalLine = chartArea
-          .append("g")
-          .append("line")
-          .attr("class", "chart-vertical-line inactive")
-          .attr("y1", margin.top)
-          .attr("y2", chartBounds.height - margin.bottom);
-      }
-
-      let data: RegionalTrends[] = Array.from(
-        regionalTrendsByPlaceId.values()
-      ).filter((t) => {
-        const region = regionsByPlaceId.get(t.place_id);
-        if (region) {
-          let inSelectedRegion: boolean;
-          const isSelectedRegion = region.place_id === selectedRegion.place_id;
-
-          if (selectedRegion.sub_region_3) {
-            // Zipcode is selected.
-            return isSelectedRegion;
-          }
-          if (
-            selectedRegion.sub_region_2 ||
-            selectedRegion.sub_region_1_code === "US-DC"
-          ) {
-            // County is selected, want component zipcodes.
-            inSelectedRegion =
-              region.sub_region_2 === selectedRegion.sub_region_2 &&
-              region.sub_region_1 === selectedRegion.sub_region_1;
-          } else if (selectedRegion.sub_region_1) {
-            // State is selected, want component counties.
-            inSelectedRegion =
-              !region.sub_region_3 &&
-              region.sub_region_1_code === selectedRegion.sub_region_1_code;
-              //console.log(`state level data length is: ${data.length}`)
-          } else if (selectedRegion.country_region) {
-            // Country is selected, want component states.
-            inSelectedRegion =
-              !region.sub_region_3 &&
-              !region.sub_region_2 &&
-              region.country_region_code === selectedRegion.country_region_code;
-          }
-
-          return inSelectedRegion || isSelectedRegion;
-        } else {
-          console.log("Place ID not found in regions mapping: ", t.place_id);
-          return false;
+        if (!dates.includes(date)) {
+          dates.push(date);
         }
       });
+    });
 
-      // A superset of dates for shown trendlines.
-      // TODO(patankar): Efficiency.
-      const dates: Date[] = [];
-      data.forEach((regionalTrends) => {
-        const regionalTrendValues = trendLine(regionalTrends);
+    let xScale = d3
+      .scaleTime()
+      .range([margin.left, chartBounds.width - margin.right])
+      .domain(d3.extent(dates));
+    let xAxis: d3.Axis<Date | d3.NumberValue> = d3
+      .axisBottom(xScale)
+      .ticks(5)
+      .tickSizeOuter(0);
 
-        regionalTrendValues.forEach((regionalTrendValue) => {
-          const date = convertStorageDate(regionalTrendValue.date);
+    let max = d3.max(
+      data.flatMap((region) => trendLine(region).map((trend) => trend.value))
+    );
 
-          if (!dates.includes(date)) {
-            dates.push(date);
-          }
-        });
-      });
+    let yScale = d3
+      .scaleLinear()
+      .range([chartBounds.height - margin.bottom, margin.top])
+      .domain([0, max]);
+    let yAxis = d3
+      .axisRight(yScale)
+      .ticks(5)
+      .tickSize(chartBounds.width - margin.right);
 
-      let xScale = d3
-        .scaleTime()
-        .range([margin.left, chartBounds.width - margin.right])
-        .domain(d3.extent(dates));
-      let xAxis: d3.Axis<Date | d3.NumberValue> = d3
-        .axisBottom(xScale)
-        .ticks(5)
-        .tickSizeOuter(0);
-
-      let max = d3.max(
-        data.flatMap((region) => trendLine(region).map((trend) => trend.value))
+    // TODO(patankar): Define constants for styling.
+    x.call(xAxis)
+      .attr("transform", `translate(0,${chartBounds.height - margin.bottom})`)
+      .call((g) =>
+        g.select(".domain").attr("stroke-width", 1).attr("stroke", "#80868B")
+      )
+      .call((g) =>
+        g
+          .selectAll(".tick line")
+          .attr("stroke-width", 1)
+          .attr("stroke", "#80868B")
+      )
+      .call((g) =>
+        g
+          .selectAll(".tick text")
+          .attr("color", "#5F6368")
+          .attr("font-family", "Roboto")
+          .attr("font-size", 12)
       );
-
-      let yScale = d3
-        .scaleLinear()
-        .range([chartBounds.height - margin.bottom, margin.top])
-        .domain([0, max]);
-      let yAxis = d3
-        .axisRight(yScale)
-        .ticks(5)
-        .tickSize(chartBounds.width - margin.right);
-
-      // TODO(patankar): Define constants for styling.
-      x.call(xAxis)
-        .attr("transform", `translate(0,${chartBounds.height - margin.bottom})`)
-        .call((g) =>
-          g.select(".domain").attr("stroke-width", 1).attr("stroke", "#80868B")
-        )
-        .call((g) =>
-          g
-            .selectAll(".tick line")
-            .attr("stroke-width", 1)
-            .attr("stroke", "#80868B")
-        )
-        .call((g) =>
-          g
-            .selectAll(".tick text")
-            .attr("color", "#5F6368")
-            .attr("font-family", "Roboto")
-            .attr("font-size", 12)
-        );
-      y.call(yAxis)
-        //.attr("transform",`translate(${chartBounds.width-margin.right},0)`)
-        .call((g) => g.select(".domain").remove())
-        .call((g) =>
-          g
-            .selectAll(".tick line")
-            .attr("stroke-width", 1)
-            .attr("stroke", "#DADCE0")
-        )
-        .call((g) =>
-          g
-            .selectAll(".tick text")
-            .attr("color", "#5F6368")
-            .attr("font-family", "Roboto")
-            .attr("font-size", 12)
-        );
-      if (chartContainerElement){
-        scaleChartText();
-      }
-      generateChartLegend();
-      generateChartHoverCard(data, dates, xScale);
-
-      let lineFn = d3
-        .line<TrendValue>()
-        .defined((d) => !isNaN(d.value))
-        .x((d) => xScale(new Date(d.date)))
-        .y((d) => yScale(d.value))
-        .curve(d3.curveLinear);
-
-      paths
-        .selectAll("path")
-        .data(data, (d: RegionalTrends) => d.place_id)
-        .join("path")
-        .sort((a, b) => {
-          if (a.place_id != selectedRegion.place_id) {
-            return -1;
-          }
-          return 1;
-        })
-        .attr("id", (d) => d.place_id)
-        .attr("class", (regionalTrend) => {
-          if (regionalTrend.place_id === selectedRegion.place_id) {
-            return `trendline trendline-selected ${id}`;
-          } else {
-            return "trendline";
-          }
-        })
-        .attr("d", (d) => lineFn(trendLine(d)));
+    y.call(yAxis)
+      //.attr("transform",`translate(${chartBounds.width-margin.right},0)`)
+      .call((g) => g.select(".domain").remove())
+      .call((g) =>
+        g
+          .selectAll(".tick line")
+          .attr("stroke-width", 1)
+          .attr("stroke", "#DADCE0")
+      )
+      .call((g) =>
+        g
+          .selectAll(".tick text")
+          .attr("color", "#5F6368")
+          .attr("font-family", "Roboto")
+          .attr("font-size", 12)
+      );
+    if (chartContainerElement){
+      scaleChartText();
     }
+    generateChartLegend();
+    generateChartHoverCard(data, dates, xScale);
+
+    let lineFn = d3
+      .line<TrendValue>()
+      .defined((d) => !isNaN(d.value))
+      .x((d) => xScale(new Date(d.date)))
+      .y((d) => yScale(d.value))
+      .curve(d3.curveLinear);
+
+    paths
+      .selectAll("path")
+      .data(data, (d: RegionalTrends) => d.place_id)
+      .join("path")
+      .sort((a, b) => {
+        if (a.place_id != selectedRegion.place_id) {
+          return -1;
+        }
+        return 1;
+      })
+      .attr("id", (d) => d.place_id)
+      .attr("class", (regionalTrend) => {
+        if (regionalTrend.place_id === selectedRegion.place_id) {
+          return `trendline trendline-selected ${id}`;
+        } else {
+          return "trendline";
+        }
+      })
+      .attr("d", (d) => lineFn(trendLine(d)));
   }
 
   function scaleChartText() {
@@ -645,18 +641,13 @@
     regionalTrends.subscribe((regionalTrends_store) => {
       regionalTrendsByPlaceId = regionalTrends_store;
       if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
-        isChartReady = true;
         generateChart();
-      }
-      else {
-        isChartReady = false;
       }
     });
     params.subscribe((param) => {
       placeId = param.placeId;
       if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
-        isChartReady = true;
       
         generateChart();
       }
