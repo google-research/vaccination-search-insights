@@ -368,7 +368,7 @@
           >
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="/license_report.html"
+          <a class="link-item-anchor" href="license_report.html"
             >Third Party Notices</a
           >
         </li>
