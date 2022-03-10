@@ -15,12 +15,11 @@
    * limitations under the License.
    */
   import AutoComplete from "simple-svelte-autocomplete";
-  import type { Region, RegionalTrends, RegionalTrendLine } from "./data";
+  import type { Region } from "./data";
   import {
     fetchRegionData,
     fetchRegionalTrendsData,
     fetchRegionalTrendLines,
-    RegionType,
   } from "./data";
   import { onMount } from "svelte";
   import { params, mapData, regionalTrends, isZipsDownloaded} from "./stores";
@@ -35,20 +34,16 @@
     setSelectedCounty,
     setSelectedState,
   } from "./choropleth.js";
-  import { fetchZipTrendLines, getZipsData, updateWithZipsData } from "./zip_files"
+  import { updateWithZipsData } from "./zip_data"
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
-import App from "./App.svelte";
-import { dataset_dev } from "svelte/internal";
 
   let selectedRegion: Region;
   let regions: Region[];
   let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   let placeId: string;
-  let selectedRegionName: string;
   let selectedCountryName: string;
-  //let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
   let vaccineTooltip: string = `
@@ -62,10 +57,7 @@ import { dataset_dev } from "svelte/internal";
     scaled value that you can compare across regions, times, or topics.
   `;
 
-  //let mapData: Promise<RegionalTrendLine[]>;
   let isMapInitialized: boolean = false;
-  //let isZipsDownloaded: boolean = false;
-  //let rtd: Promise<Map<string, RegionalTrends>>;
 
 
   export let covid_vaccination_title: string;
@@ -78,7 +70,6 @@ import { dataset_dev } from "svelte/internal";
   let vaccinationIntentChartContainer: HTMLElement;
   let safetySideEffectsChartContainer: HTMLElement;
 
-  let regionalTrendsData; 
 
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
@@ -104,7 +95,6 @@ import { dataset_dev } from "svelte/internal";
       placeId = param.placeId;
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
-        selectedRegionName = getRegionName(selectedRegion);
         // avoid fetching country metadata if country name didn't change
         let newCountryName = getCountryName(selectedRegion);
         if (selectedCountryName !== newCountryName){
@@ -128,15 +118,14 @@ import { dataset_dev } from "svelte/internal";
 
       temp_mapData.then((mD) => {
         $mapData = mD;
-        console.log(`mapData length is: ${$mapData.length}`)
         createMap(selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
         isMapInitialized = true;
         if (selectedRegion) {
           setMapSelection(selectedRegion);
         }
       });
-      let regionalTrendsData_temp = await fetchRegionalTrendsData(temp_mapData);
-      $regionalTrends = regionalTrendsData_temp;
+      let regionalTrendsData_promise = await fetchRegionalTrendsData(temp_mapData);
+      $regionalTrends = regionalTrendsData_promise;
      
       
       vaccineTooltip = `${vaccineTooltip}
@@ -178,8 +167,6 @@ import { dataset_dev } from "svelte/internal";
         console.log("looking at state county level now!")
         let zipData = updateWithZipsData();
         zipData.then((zD) => {
-        console.log(`mapdata length is now: ${$mapData.length}`)
-        console.log(`zipData length is ${zD.length}`)
         }).then(() => setMapSelection(selectedRegion));
       }
     } else if (selectedRegion.sub_region_1_code) {
@@ -189,8 +176,6 @@ import { dataset_dev } from "svelte/internal";
         console.log("looking at state level now!")
         let zipData = updateWithZipsData();
         zipData.then((zD) => {
-        console.log(`mapdata length is now: ${$mapData.length}`)
-        console.log(`zipData length is ${zD.length}`)
         }).then(() => setMapSelection(selectedRegion));
       }
     } else {
