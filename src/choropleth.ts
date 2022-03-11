@@ -114,8 +114,13 @@ export function createMap(
   mapData.subscribe((v) => trendData = v)
   console.log(`trend data at create is: ${trendData.length}`)
   displayLevels = selectedCountryMetadata.displayLevels;
+<<<<<<< HEAD
   // trendData = mapData; //note this line came from accepting both from merge conflict
   
+=======
+  trendData = mapData;
+
+>>>>>>> 5e4d1977c45f9c00bd7470856323b51a3fe4c4ba
   selectedTrend = trend;
 
   // build in-order list of available dates
@@ -127,7 +132,8 @@ export function createMap(
 
   // generate the region to trend data for a given date slice
   generateRegionToTrendDataForDateSlice();
-  regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions);
+  regionCodesToPlaceId = buildRegionCodeToPlaceIdMapping(regions,
+                                                         selectedCountryCode);
   selectionCallback = selectionFn;
 
   initializeMap();
@@ -170,7 +176,7 @@ function calculateColorScales(trendData: RegionalTrendLine[], date: string):
  * @returns An array of `numBuckets` between 10P and 90P inclusive
  */
 function calculateDomain(a: number[]): number[]{
-  const domain = quantileSeq(a,DOMAIN_PERCENTILES) as number[];  
+  const domain = quantileSeq(a,DOMAIN_PERCENTILES) as number[];
   
   return domain;
 }
@@ -190,7 +196,8 @@ const DOMAIN_PERCENTILES: number[] = function(){
 export function setSelectedState(regionOneCode) {
   currentGeoLevel = GeoLevel.SubRegion1;
   currentGeoId = regionOneCode;
-  setSelectedStateByFipsCode(regionOneToFipsCode.get(regionOneCode));
+  setSelectedStateByFipsCode(
+      regionOneToFipsCode.get(selectedCountryCode).get(regionOneCode));
 }
 
 export function setSelectedCounty(fipsCode) {
@@ -257,7 +264,8 @@ function generateRegionToTrendDataForDateSlice(): void {
     );
   const fipsCodedStateData: Map<string, RegionalTrendAggregate> = new Map();
   stateData.forEach((value, key) => {
-    fipsCodedStateData.set(regionOneToFipsCode.get(key), value);
+    fipsCodedStateData.set(regionOneToFipsCode.get(
+        selectedCountryCode).get(key), value);
   });
   latestStateData = fipsCodedStateData;
 
