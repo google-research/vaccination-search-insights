@@ -52,10 +52,8 @@
   const margin = { top: 10, bottom: 30, left: 0, right: 30 };
 
   function getLegendComponentText(): string {
-    if (selectedCountryMetadata.countryCode != "IE") {
-      if (selectedRegion.sub_region_3) {
-        return "";
-      }
+    if (selectedRegion.sub_region_3) {
+      return "";
     }
     if (
       selectedRegion.sub_region_2 ||

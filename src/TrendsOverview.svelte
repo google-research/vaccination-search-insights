@@ -114,9 +114,9 @@
     setParentRegionButton();
 
     if (selectedCountryMetadata) {
-      let temp_mapData = fetchRegionalTrendLines(selectedCountryMetadata);
+      let fetchRegTrendLine_result = fetchRegionalTrendLines(selectedCountryMetadata);
 
-      temp_mapData.then((mD) => {
+      fetchRegTrendLine_result.then((mD) => {
         $mapData = mD;
         createMap(selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
         isMapInitialized = true;
@@ -124,9 +124,8 @@
           setMapSelection(selectedRegion);
         }
       });
-      let regionalTrendsData_promise = await fetchRegionalTrendsData(temp_mapData);
-      $regionalTrends = regionalTrendsData_promise;
-     
+
+      $regionalTrends = await fetchRegionalTrendsData(fetchRegTrendLine_result);
       
       vaccineTooltip = `${vaccineTooltip}
         For example, “when can i get the covid vaccine” or 
