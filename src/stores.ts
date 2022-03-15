@@ -19,6 +19,9 @@
  */
 
 import { writable } from "svelte/store";
+import type { RegionalTrends } from "./data";
+
+let rt = new Map<string, RegionalTrends>();
 
 type Params = {
   placeId: string;
@@ -48,10 +51,24 @@ function saveParams(param: Params) {
 
 export const params = writable(loadParams());
 params.subscribe(saveParams);
-window.onpopstate = function (event) {
+window.onpopstate = function () {
   params.update((p) => {
     p = loadParams();
     p.updateHistory = false;
     return p;
   });
 };
+
+// Using stores to keep the data to be used for the map visual.
+// This allows the data to be updated in cases where we load additional data later.
+// i.e. US zip codes.
+export const mapData = writable([]);
+// Using stores to keep the data to be used for the time series visuals.
+// This allows the data to be updated in cases where we load additional data later.
+// i.e. US zip codes.
+export const regionalTrends = writable(rt);
+
+// A parameter to track whether the zipcodes file has been downloaded.
+// This helps prevent repeatedly fetching the large file.
+export const isZipsDownloaded = writable(false);
+
