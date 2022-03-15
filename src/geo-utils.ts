@@ -150,15 +150,18 @@ export function levelNameFromElementId(id: string): string {
 }
 
 export function getAtlas(countryCode: string): UsAtlas {
-  if (countryCode == "US") {
-    return us as unknown as UsAtlas;
-  } else if (countryCode == "GB") {
-    return gb as unknown as UsAtlas;
-  } else if (countryCode == "IE") {
-    return ie as unknown as UsAtlas;
-  } else if (countryCode == "CA") {
-    return ca as unknown as UsAtlas;
-  } 
+  switch (countryCode) {
+    case "US":
+      return us as unknown as UsAtlas;
+    case "GB":
+      return gb as unknown as UsAtlas;
+    case "CA":
+      return ca as unknown as UsAtlas;
+    case "IE":
+      return ie as unknown as UsAtlas;
+    default:
+      console.log("Country atlas not found");
+  }
 }
 
 export function getGbPostalCentroids(geoid: string) {
