@@ -31,8 +31,6 @@
 
   import en from "../public/lang/en.json";
   import fr from "../public/lang/fr.json";
-import { set, values } from "d3-collection";
-import { e } from "mathjs";
 
   addMessages("en", en);
   addMessages("fr", fr);
@@ -334,6 +332,11 @@ import { e } from "mathjs";
         <li class="link-item">
           <a class="link-item-anchor" href="https://policies.google.com/terms"
             >{$_('navigation.footer.terms')}</a
+          >
+        </li>
+        <li class="link-item">
+          <a class="link-item-anchor" href="license_report.html"
+            >Third Party Notices</a
           >
         </li>
       </ul>
