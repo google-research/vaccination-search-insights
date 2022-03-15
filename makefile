@@ -31,8 +31,7 @@ US_initial.csv: US_vaccination_search_insights.csv
 US_zips.csv: US_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk 'NR==1' > $(SRC_DIR)/$@
 	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) == "postal_code"' >> $(SRC_DIR)/$@
-
-remove: US_vaccination_search_insights.csv
 	rm -f $(SRC_DIR)/$(word 1,$^)
+
 
 data: Global_l0_vaccination_search_insights.csv GB_vaccination_search_insights.csv regions.csv IE_vaccination_search_insights.csv US_initial.csv US_zips.csv
