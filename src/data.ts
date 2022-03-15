@@ -534,3 +534,69 @@ export function fetchTopLevelQueries(selectedCountryCode): Promise<Map<string, Q
     );
   return topQueriesData;
 }
+
+export interface ClusterRow {
+  date: string;
+  country_region: string;
+  country_region_code: string;
+  sub_region_1: string;
+  sub_region_1_code: string;
+  sub_region_2: string;
+  sub_region_2_code: string;
+  sub_region_3: string;
+  sub_region_3_code: string;
+  place_id: string;
+  query_type: string;
+  query: string;
+  rank: number;
+  sni: number;
+  history: string;
+  members: string;
+  num_members: number;
+  category: string;
+}
+
+export interface Cluster {
+  query: string;
+  sni: number;
+  rank: number;
+  history: number[];
+  members: string[];
+}
+
+function createCluster(clusterRow: ClusterRow): Cluster {
+  const historyList = clusterRow.history.split("|").map(value => parseInt(value));
+  const membersList = clusterRow.members.split("|");
+  return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, history: historyList, members: membersList };
+}
+
+/**
+ * Reads a given csv file and returns a Promise that holds a map that has keys created
+ * based on the location, date, query type, and category of an associated list of 
+ * queries.
+ */
+ export function fetchClustersFile(file: string): Promise<Map<string, Cluster[]>> {
+  let clustersPromise: Promise<Map<string, Cluster[]>> = new Promise<Map<string, Cluster[]>>(
+    (resolve, reject) => {
+      parse(`./data/${file}`, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results: ParseResult<ClusterRow>) {
+          console.log(`Received top queries data with ${results.data.length} rows`);
+          const clusters = results.data.reduce((accMap, row) => {
+            topQueriesDates.add(row.date);
+            let key = createSerialisedQueryKey(row.place_id, row.date, row.query_type, row.category);
+            let query = createCluster(row);
+            if (!accMap.has(key)) {
+              accMap.set(key, []);
+            }
+            accMap.set(key, [...accMap.get(key), query]);
+            return accMap;
+          }, new Map<string, Cluster[]>());
+          resolve(clusters);
+        },
+      });
+    });
+  return clustersPromise;
+}
