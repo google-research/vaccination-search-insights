@@ -236,7 +236,7 @@
         <AutoComplete
           items={filterDropdownItems(regions)}
           bind:selectedItem={selectedRegion}
-          placeholder={"United States"}
+          placeholder={selectedCountryName}
           labelFunction={getRegionName}
           onChange={onChangeHandler}
           inputClassName={"header-search-box"}
