@@ -50,3 +50,53 @@ $header-search-bar-height: 70px;
 $footer-height: 120px;
 $minimum-body-margin: 20px;
 $media-breakpoint: 600px;
+
+// Mobile
+$xSmallMaxScreenSize: 599px;
+
+// Tablet
+$smallMinScreenSize: 600px;
+$smallMaxScreenSize: 1239px;
+
+// Laptop
+$mediumMinScreenSize: 1240px;
+$mediumMaxScreenSize: 1599px;
+
+// Desktop
+$largeMinScreenSize: 1600px;
+
+/**
+ * Media Queries
+ *
+ * Example usage:
+ * ```
+ *     .my-div {
+ *       width: 100%; // Desktop
+ *     }
+ *
+ *     @include laptopMaxMediaQuery {
+ *        width: 200px; // Laptop
+ *     }
+ *
+ *     @include mobileMaxMediaQuery {
+ *        width: 100px; // Mobile
+ *     }
+ * ```
+ */
+@mixin laptopMaxMediaQuery {
+    @media only screen and (max-width: $mediumMaxScreenSize) {
+      @content;
+    }
+}
+  
+@mixin tabletMaxMediaQuery {
+    @media only screen and (max-width: $smallMaxScreenSize) {
+        @content;
+    }
+}
+
+@mixin mobileMaxMediaQuery {
+    @media only screen and (max-width: $xSmallMaxScreenSize) {
+        @content;
+    }
+}
