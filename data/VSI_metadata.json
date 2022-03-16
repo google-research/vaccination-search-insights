@@ -40,7 +40,8 @@
         "placeId":"ChIJqZHHQhE7WgIReiWIMkOg-MQ"
     },
     {   "countryCode":"US",
-        "dataFile":"US_vaccination_search_insights.csv",
+        "dataFile": "US_initial.csv", 
+        "zipsFile": "US_zips.csv",
         "countryName":"United States",
         "displayLevels":[0,1,2,3],
         "locales":["en-US"],
