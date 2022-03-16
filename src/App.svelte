@@ -39,17 +39,6 @@ import { e } from "mathjs";
     locale,
   } from "svelte-i18n";
 
-<<<<<<< HEAD
-=======
-  import en from "../public/lang/en.json";
-  import fr from "../public/lang/fr.json";
-import { set, values } from "d3-collection";
-import { e } from "mathjs";
-
-  addMessages("en", en);
-  addMessages("fr", fr);
-
->>>>>>> 6fa2f6d ( Committer: Steve Herskovits <iamsteve@google.com>)
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
   const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
