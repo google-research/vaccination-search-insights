@@ -27,7 +27,6 @@ let regionCodesToPlaceId: Map<string, string>;
 export const dcStateFipsCode: string = "11";
 export const dcCountyFipsCode: string = "11001";
 
-<<<<<<< HEAD
 export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
   ['US', new Map([
     ["US-AL", "01"],
@@ -132,104 +131,6 @@ export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
     ["IE-G", "24"],
     ["IE-TA", "25"],
     ["IE-CE", "26"]])]]);
-=======
-export const regionOneToFipsCode: Map<string, string> = new Map([
-  ["US-AL", "01"],
-  ["US-AK", "02"],
-  ["US-AZ", "04"],
-  ["US-AR", "05"],
-  ["US-CA", "06"],
-  ["US-CO", "08"],
-  ["US-CT", "09"],
-  ["US-DE", "10"],
-  ["US-DC", "11"],
-  ["US-FL", "12"],
-  ["US-GA", "13"],
-  ["US-HI", "15"],
-  ["US-ID", "16"],
-  ["US-IL", "17"],
-  ["US-IN", "18"],
-  ["US-IA", "19"],
-  ["US-KS", "20"],
-  ["US-KY", "21"],
-  ["US-LA", "22"],
-  ["US-ME", "23"],
-  ["US-MD", "24"],
-  ["US-MA", "25"],
-  ["US-MI", "26"],
-  ["US-MN", "27"],
-  ["US-MS", "28"],
-  ["US-MO", "29"],
-  ["US-MT", "30"],
-  ["US-NE", "31"],
-  ["US-NV", "32"],
-  ["US-NH", "33"],
-  ["US-NJ", "34"],
-  ["US-NM", "35"],
-  ["US-NY", "36"],
-  ["US-NC", "37"],
-  ["US-ND", "38"],
-  ["US-OH", "39"],
-  ["US-OK", "40"],
-  ["US-OR", "41"],
-  ["US-PA", "42"],
-  ["US-RI", "44"],
-  ["US-SC", "45"],
-  ["US-SD", "46"],
-  ["US-TN", "47"],
-  ["US-TX", "48"],
-  ["US-UT", "49"],
-  ["US-VT", "50"],
-  ["US-VA", "51"],
-  ["US-WA", "53"],
-  ["US-WV", "54"],
-  ["US-WI", "55"],
-  ["US-WY", "56"],
-  ["US-AS", "60"],
-  ["US-GU", "66"],
-  ["US-MP", "69"],
-  ["US-PR", "72"],
-  ["US-VI", "78"],
-  ["GB-ENG", "E"],
-  ["GB-SCT", "S"],
-  ["GB-WLS", "W"],
-  ["GB-NIR", "N"],
-  ["IE-DL", "1"],
-  ["IE-LK", "2"],
-  ["IE-KE", "3"],
-  ["IE-WD", "4"],
-  ["IE-D", "5"],
-  ["IE-WH", "6"],
-  ["IE-MN", "7"],
-  ["IE-WW", "8"],
-  ["IE-CO", "9"],
-  ["IE-KY", "10"],
-  ["IE-RN", "11"],
-  ["IE-WX", "12"],
-  ["IE-LD", "13"],
-  ["IE-MH", "14"],
-  ["IE-CN", "15"],
-  ["IE-CW", "16"],
-  ["IE-MO", "17"],
-  ["IE-LH", "18"],
-  ["IE-SO", "19"],
-  ["IE-LM", "20"],
-  ["IE-KK", "21"],
-  ["IE-OY", "22"],
-  ["IE-LS", "23"],
-  ["IE-G", "24"],
-  ["IE-TA", "25"],
-  ["IE-CE", "26"],
-  ["CA-NL", "10"],
-  ["CA-PE", "11"],
-  ["CA-NS", "12"],
-  ["CA-ON", "35"],
-  ["CA-MB", "46"],
-  ["CA-SK", "47"],
-  ["CA-AB", "48"],
-  ["CA-BC", "59"]
-]);
->>>>>>> d3bb557 (Fixing accidental removal)
 
 export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
   if (countryCode == "US") {
@@ -253,16 +154,10 @@ export function getAtlas(countryCode: string): UsAtlas {
     return us as unknown as UsAtlas;
   } else if (countryCode == "GB") {
     return gb as unknown as UsAtlas;
-<<<<<<< HEAD
   } else if (countryCode == "IE") {
     return ie as unknown as UsAtlas;
   } else if (countryCode == "CA") {
     return ca as unknown as UsAtlas;
-=======
-  } else if (countryCode == "CA") {
-    //TODO: add CA atlas
-    return null as unknown as UsAtlas;
->>>>>>> d398b7d (Adding CA back)
   } 
 }
 
