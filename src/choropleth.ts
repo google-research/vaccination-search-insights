@@ -40,9 +40,10 @@ import {
   subRegionTwoCode,
   fetchZipData,
   getTrendValue,
-  TrendValueType
+  TrendValueType,
 } from "./data";
 import { getCountyZctas } from "./zcta-county";
+import { mapData } from "./stores";
 
 enum GeoLevel {
   Country = 1,
@@ -101,7 +102,6 @@ const gbPostalPath = d3.geoPath()
 
 
 export function createMap(
-  mapData: RegionalTrendLine[],
   trend: string,
   regions,
   selectionFn,
@@ -109,9 +109,10 @@ export function createMap(
 ) {
   resetNavigationPlaceId = selectedCountryMetadata.placeId;
   selectedCountryCode = selectedCountryMetadata.countryCode;
+  mapData.subscribe((v) => trendData = v)
+  console.log(`trend data at create is: ${trendData.length}`)
   displayLevels = selectedCountryMetadata.displayLevels;
-  trendData = mapData;
-
+  
   selectedTrend = trend;
 
   // build in-order list of available dates
@@ -591,6 +592,7 @@ function buildSafetyColorScale(domain=[1.5, 2.8, 4.1, 5.4, 6.7, 8]) {
 //
 function activateSelectedState(fipsCode, zoom = true) {
   removeZipData();
+
   mapSvg
     .select("#county")
     .selectAll("path")
@@ -994,4 +996,12 @@ function mapOnMouseLeaveHandler(event, d) {
     mapTimeoutRef = "";
   }
   hideMapCallout(event, d);
+}
+
+export function updateMap() {
+  mapSvg.exit().remove();
+  mapSvg.enter();
+  console.log("updating map")
+  initializeMap();
+
 }
