@@ -196,16 +196,6 @@ import { e } from "mathjs";
             >{$_('navigation.documentation')}</a
           >
         </div>
-        <div class="link-item">
-          <div class="link-item-anchor">
-          <div class="header-language-picker">
-            <!-- svelte-ignore a11y-no-onchange -->
-            <select on:change={handleLocaleChange}>
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-            </select>
-          </div>
-        </div>
       </div>
     </div>
     <div id="header-download-popup" class="header-download-popup">
