@@ -9,6 +9,12 @@ US_vaccination_search_insights.csv: $(SRC_DIR)
 GB_vaccination_search_insights.csv: $(SRC_DIR)
 	curl -o $(SRC_DIR)/GB_vaccination_search_insights.csv https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv
 
+CA_vaccination_search_insights.csv: $(SRC_DIR)
+	curl -o $(SRC_DIR)/CA_temp.csv https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv
+	cat $(SRC_DIR)/CA_temp.csv | awk 'NR==1' > $(SRC_DIR)/$@
+	cat $(SRC_DIR)/CA_temp.csv | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'NR>1 { print $$1,$$2,$$3,$$4,$$5,$$9,$$9,"","",$$10,$$11,$$12,$$13 }' >> $(SRC_DIR)/$@
+	rm -f $(SRC_DIR)/CA_temp.csv
+
 IE_vaccination_search_insights.csv: $(SRC_DIR)
 	curl -o $(SRC_DIR)/IE_vaccination_search_insights.csv https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/IE_vaccination_search_insights.csv
 

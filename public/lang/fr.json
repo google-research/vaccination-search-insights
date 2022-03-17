@@ -1,5 +1,9 @@
 {
+    "project_title": "Statistiques de recherche sur le vaccin contre la COVID-19",
     "content": {
+        "COVID_19_VACCINATION_TITLE": "Recherches sur la vaccination contre la COVID-19",
+        "SAFETY_SIDE_EFFECTS_TITLE": "Recherches sur l'innocuité et les effets secondaires",
+        "VACCINATION_INTENT_TITLE": "Recherches sur les intentions de vaccination",
         "app_overview": "Explorez les recherches de sujets sur la vaccination contre la COVID-19 par région. Ces données agrégées et anonymisées vous aident à comprendre ainsi qu'à comparer les besoins d'information des communautés. Nous publions ces données pour éclairer les efforts de santé publique en matière de confiance dans les vaccins. <a href=\"{aboutUrl}\">En savoir plus</a>",
         "about_data_title": "À propos de ces données",
         "about_data_content": "Vous pouvez utiliser ces données pour comparer la popularité des recherches parmi les sujets liés à la vaccination contre la COVID-19 et voir quels sujets sont populaires ou en hausse. La valeur qui représente la popularité des recherches n'est pas un nombre absolu de recherches, mais une valeur représentant la popularité relative que nous mettons à l'échelle pour faciliter la comparaison des régions entre elles ou d'une même région au fil du temps. Si vous voulez en savoir plus sur notre calcul et notre traitement, consultez nos <a href=\"{aboutDataUrl}\">documents techniques.</a>",
@@ -9,7 +13,7 @@
         "proctecting_privacy_content": "<p>Nous avons développé les statistiques de recherche sur le vaccin pour rendre service tout en adhérant à nos rigoureux protocoles de confidentialité pour les données de recherche. Les requêtes de recherche individuelles ou d'autres informations d'ordre personnel ne sont jamais rendues disponibles. Pour ces données, nous utilisons la <a href=\"{diffPrivacyUrl}\">confidentialité différentielle,</a> qui ajoute du bruit artificiel à nos données tout en permettant des résultats de haute qualité sans identifier une personne en particulier. De plus, nous n'affichons pas de données pour les régions dont l'étendue est inférieure à trois kilomètres<sup>2</sup>.</p><p>Pour en savoir plus sur les méthodes de confidentialité utilisées pour générer les données, veuillez lire la <a href=\"{anonymizationUrl}\">description du traitement d'anonymisation</a>.</p>",
         "case_studies_title": "Études De Cas",
         "availability_title": "Disponibilité et mises à jour",
-        "availability_content": "<p>Pour télécharger ou utiliser les données ou les statistiques, vous devez accepter les <a href=\"{tosUrl\"}>conditions d'utilisation de Google</a>.</p><p>Nous mettrons à jour les données chaque semaine. Vous pouvez vérifier les dates dans les graphiques pour consulter la journée la plus récente dans les données. Si vous téléchargez le fichier CSV, n'oubliez pas d'obtenir une version mise à jour chaque semaine.</p><p>Nous continuerons de mettre à jour ce produit tant que les experts en santé publique le trouveront utile dans leurs efforts de vaccination contre la COVID-19. Nos données publiées resteront accessibles au public pour soutenir la recherche et l'évaluation à long terme.</p>",
+        "availability_content": "<p>Pour télécharger ou utiliser les données ou les statistiques, vous devez accepter les <a href=\"{tosUrl}\">conditions d'utilisation de Google</a>.</p><p>Nous mettrons à jour les données chaque semaine. Vous pouvez vérifier les dates dans les graphiques pour consulter la journée la plus récente dans les données. Si vous téléchargez le fichier CSV, n'oubliez pas d'obtenir une version mise à jour chaque semaine.</p><p>Nous continuerons de mettre à jour ce produit tant que les experts en santé publique le trouveront utile dans leurs efforts de vaccination contre la COVID-19. Nos données publiées resteront accessibles au public pour soutenir la recherche et l'évaluation à long terme.</p>",
         "next_steps": {
             "query_dataset_title": "Interroger l'ensemble de données avec SQL",
             "query_dataset_content": "Obtenez des statistiques à l'aide de BigQuery de Google Cloud. Analysez avec SQL, générez des rapports ou appelez l'API à partir de votre code.",
@@ -20,6 +24,15 @@
             "feedback_title": "Parlez-nous de votre projet",
             "feedback_content": "Nous aimerions en savoir plus sur la façon dont vous utilisez les données. Envoyez des commentaires en utilisant notre formulaire.",
             "feedback_link": "<a href=\"{feedBackUrl}\">Commentaires</a>"
+        },
+        "download_popup": {
+            "terms": "Pour télécharger ou utiliser les données ou les statistiques, vous devez accepter les <a href=\"{toDownloadsUrl}\">conditions d'utilisationde</a> Google.",
+                "download_dataset": "TÉLÉCHARGER L'ENSEMBLE DE DONNÉES",
+                "countries": {
+                    "canada": "Canada",
+                    "uk": "Royaume-Uni",
+                    "usa": "États-Unis"
+                }
         }
     },
     "navigation": {
@@ -36,6 +49,7 @@
     },
     "hints": {
         "country_selector": "Sélectionnez un pays pour voir plus de statistiques",
-        "no_data": "Les données sont insuffisantes"
+        "no_data": "Les données sont insuffisantes",
+        "loading_data": "Chargement des données en cours…"
     }
 }
