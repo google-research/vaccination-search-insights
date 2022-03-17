@@ -1,5 +1,9 @@
 {
+    "project_title": "COVID-19 Vaccine Search Insights",
     "content": {
+        "COVID_19_VACCINATION_TITLE": "COVID-19 vaccination searches",
+        "SAFETY_SIDE_EFFECTS_TITLE": "Safety and side effect searches",
+        "VACCINATION_INTENT_TITLE": "Vaccination intent searches",
         "app_overview": "Explore searches for COVID-19 vaccination topics by region. This aggregated and anonymized data helps you understand and compare communities' information needs. We’re releasing this data to inform public health vaccine-confidence efforts.  <a href=\"{aboutUrl}\">Learn more</a>",
         "about_data_title": "About this data",
         "about_data_content": "You can use this data to compare search interest between topics related to COVID-19 vaccination and see what topics are popular or rising. The value for search interest isn’t an absolute number of searches—it’s a value representing relative interest which we scale to make it easier to compare regions with one another, or the same region over time. If you’d like to know more about our calculation and process, see our <a href=\"{aboutDataUrl}\">technical docs.</a>",
@@ -8,7 +12,7 @@
         "protecting_privacy_title": "Protecting privacy",
         "proctecting_privacy_content": "<p>We developed the Vaccine Search Insights to be helpful while adhering to our stringent privacy protocols for search data. No individual search queries or other personally identifiable information are made available at any point. For this data, we use <a href=\"{diffPrivacyUrl}\"> differential privacy,</a> which adds artificial noise to our data while enabling high quality results without identifying any individual person. Additionally, we don’t show data for regions that are smaller than 3 km<sup>2</sup>.</p><p>To learn more about the privacy methods used to generate the data, read the <a href=\"{anonymizationUrl}\">anonymization process description</a>.</p>",
         "availability_title": "Availability and updates",
-        "availability_content": "<p>To download or use the data or insights, you must agree to the <a href=\"{tosUrl\"}>Google Terms of Service</a>.</p><p>We’ll update the data each week. You can check the dates in the charts to see the most recent day in the data. If you download the CSV, remember to get an updated version each week.</p><p>We'll continue to update this product while public health experts find it useful in their COVID-19 vaccination efforts. Our published data will remain publicly available to support long-term research and evaluation.</p>",
+        "availability_content": "<p>To download or use the data or insights, you must agree to the <a href=\"{tosUrl}\">Google Terms of Service</a>.</p><p>We’ll update the data each week. You can check the dates in the charts to see the most recent day in the data. If you download the CSV, remember to get an updated version each week.</p><p>We'll continue to update this product while public health experts find it useful in their COVID-19 vaccination efforts. Our published data will remain publicly available to support long-term research and evaluation.</p>",
         "next_steps": {
             "query_dataset_title": "Query the dataset with SQL",
             "query_dataset_content": "Get insights using Google Cloud’s BigQuery. Analyze with SQL, generate reports, or call the API from your code.",
@@ -19,6 +23,15 @@
             "feedback_title": "Tell us about your project",
             "feedback_content": "We’d love to hear more about how you’re using the data. Send feedback using our form.",
             "feedback_link": "<a href=\"{feedBackUrl}\">Feedback</a>"
+        },
+        "download_popup": {
+            "terms": "In order to download or use the data or insights, you must agree to the Google <a href=\"{toDownloadsUrl}\">Terms of Service.</a>",
+            "download_dataset": "DOWNLOAD DATASET",
+            "countries": {
+                "canada": "Canada",
+                "uk": "United Kingdom",
+                "usa": "United States"
+            }
         }
     },
     "navigation": {
@@ -35,6 +48,7 @@
     },
     "hints": {
         "country_selector": "Select a country to see more insights",
-        "no_data": "Not enough data"
+        "no_data": "Not enough data",
+        "loading_data": "Loading data..."
     }
 }

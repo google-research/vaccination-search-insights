@@ -35,16 +35,6 @@
   addMessages("en", en);
   addMessages("fr", fr);
 
-  const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
-  const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
-  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
-
-  const COUNTRY_LIST = fetchCountryNames();
-
-  let selectedCountryID: string;
-  let placeId: string;
-  let selectedCountryMetadata;
-
   init({
     initialLocale: "getLocaleFromNavigator()",
     fallbackLocale: "en"
@@ -54,6 +44,16 @@
   locale.subscribe((newLocale) => {console.log("Locale Subscribed")});
 
   locale.set("en");
+
+  let COVID_19_VACCINATION_TITLE = $_('content.COVID_19_VACCINATION_TITLE'); //"COVID-19 vaccination searches";
+  let VACCINATION_INTENT_TITLE = $_('content.VACCINATION_INTENT_TITLE'); //"Vaccination intent searches";
+  let SAFETY_SIDE_EFFECTS_TITLE = $_('content.SAFETY_SIDE_EFFECTS_TITLE'); //"Safety and side effect searches";
+
+  const COUNTRY_LIST = fetchCountryNames();
+
+  let selectedCountryID: string;
+  let placeId: string;
+  let selectedCountryMetadata;
 
   const handleLocaleChange = e => {
     e.preventDefault();
@@ -163,7 +163,7 @@
           </svg>
         </a>
         <a href="?" class="header-topbar-text">
-          COVID-19 Vaccination Search Insights
+          {$_('project_title')}
         </a>
       </div>
       <div class="header-topbar-menu">
@@ -180,28 +180,17 @@
             >{$_('navigation.documentation')}</a
           >
         </div>
-        <div class="link-item">
-          <div class="link-item-anchor">
-          <div class="header-language-picker">
-            <!-- svelte-ignore a11y-no-onchange -->
-            <select on:change={handleLocaleChange}>
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-            </select>
-          </div>
-        </div>
       </div>
     </div>
     <div id="header-download-popup" class="header-download-popup">
       <h3 class="header-downlod-popup-title">
-        Covid-19 Vaccination Search Insights
+        {$_('project_title')}
       </h3>
       <p class="header-download-popup-body">
-        In order to download or use the data or insights, you must agree to the
-        Google
-        <a href="https://policies.google.com/terms">Terms of Service</a>.
+        {@html $_('content.download_popup.terms', {values: {
+          toDownloadsUrl: "https://policies.google.com/terms"}})}
       </p>
-      <h4 class="header-download-popup-subtitle">Download dataset</h4>
+      <h4 class="header-download-popup-subtitle">{$_('content.download_popup.download_dataset')}</h4>
       <p class="header-download-popup-link-list">
         <a
           class="header-download-popup-link"
@@ -209,7 +198,7 @@
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
-          >Canada</a
+          >{$_('content.download_popup.countries.canada')}</a
         >
         <a
           class="header-download-popup-link"
@@ -217,7 +206,7 @@
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
-          >United Kingdom</a
+          >{$_('content.download_popup.countries.uk')}</a
         >
         <a
           class="header-download-popup-link"
@@ -225,7 +214,7 @@
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
-          >United States</a
+          >{$_('content.download_popup.countries.usa')}</a
         >
       </p>
     </div>
@@ -249,7 +238,7 @@
 
   <div class="content-area">
     <div class="content-body">
-      <h1>COVID-19 Vaccination Search Insights</h1>
+      <h1>{$_('project_title')}</h1>
       <p>
         { @html $_('content.app_overview', {values: {
           aboutUrl: "#about"
@@ -259,9 +248,9 @@
       {#if placeId}
         <TrendsOverview
           {selectedCountryMetadata}
-          covid_vaccination_title={COVID_19_VACCINATION_TITLE}
-          vaccination_intent_title={VACCINATION_INTENT_TITLE}
-          safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}
+          covid_vaccination_title={$_('content.COVID_19_VACCINATION_TITLE')}
+          vaccination_intent_title={$_('content.VACCINATION_INTENT_TITLE')}
+          safety_side_effects_title={$_('content.SAFETY_SIDE_EFFECTS_TITLE')}
         />
       {:else}
         <CountryPicker
@@ -354,6 +343,13 @@
           <a class="link-item-anchor" href="license_report.html"
             >Third Party Notices</a
           >
+        </li>
+        <li class="link-item">
+          <!-- svelte-ignore a11y-no-onchange -->
+          <select on:change={handleLocaleChange} class="language-picker">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+          </select>
         </li>
       </ul>
     </div>

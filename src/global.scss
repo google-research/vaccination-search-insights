@@ -1032,3 +1032,19 @@ div.next-steps-item > h3 {
   justify-content: space-between;
   margin-top: 60px;
 }
+
+.language-picker {
+  align-items: center;
+  display: inline-block;
+  right: 10px;
+  font-size: 16px;
+  background-color: transparent;
+  color: #80868b;
+}
+
+select.language-picker {
+  background: transparent;
+  background-color: transparent;
+  color: #80868b;
+  border-color: transparent;
+}
