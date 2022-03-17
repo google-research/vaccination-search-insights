@@ -1093,3 +1093,19 @@ a.card {
   font-size: 14px;
   margin: 0;
 }
+
+.language-picker {
+  align-items: center;
+  display: inline-block;
+  right: 10px;
+  font-size: 16px;
+  background-color: transparent;
+  color: #80868b;
+}
+
+select.language-picker {
+  background: transparent;
+  background-color: transparent;
+  color: #80868b;
+  border-color: transparent;
+}
