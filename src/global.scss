@@ -1021,3 +1021,64 @@ div.next-steps-item > h3 {
   justify-content: space-between;
   margin-top: 60px;
 }
+
+// Card Styles
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+
+  @include g.mobileMaxMediaQuery {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.card {
+  border: 1px solid g.$grey-300;
+  border-radius: 8px;
+  font-size: 14px;
+
+  &:active {
+    border-color: g.$blue-600;
+  }
+}
+
+a.card {
+  outline: none;
+
+  &:hover {
+    border-color: g.$blue-600;
+  }
+
+  &:focus {
+    border-color: g.$blue-600;
+  }
+}
+
+.card-title {
+  color: g.$grey-700;
+  font-size: 14px;
+  line-height: 24px;
+  margin: 0;
+  padding: 12px;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding: 0 12px 12px;
+}
+
+.card-logo {
+  height: 64px;
+  flex-shrink: 0;
+  width: 64px;
+}
+
+.card-description {
+  color: g.$grey-900;
+  flex-grow: 1;
+  font-size: 14px;
+  margin: 0;
+}
