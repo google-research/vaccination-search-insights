@@ -63,6 +63,7 @@ import { e } from "mathjs";
     e.preventDefault();
     locale.set(e.target.value);
     console.log(`locale is now ${$locale}`)
+    params.update((p) => { return p});
   };
 
   onMount(async () => {
@@ -162,7 +163,7 @@ import { e } from "mathjs";
 </script>
 
 <svelte:head>
-  <title>COVID-19 Vaccination Search Insights</title>
+  <title>{$_('project_title')}</title>
 </svelte:head>
 
 <main>

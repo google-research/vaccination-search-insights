@@ -32,6 +32,7 @@
   } from "./utils";
 
   import * as d3 from "d3";
+  import { _ } from "svelte-i18n";
 
   export let id: string;
   export let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
@@ -116,7 +117,7 @@
       .append("div")
       .attr("class", "chart-legend-text-container chart-axis-label")
       .append("text")
-      .text("INTEREST");
+      .text($_('legend.interest'));
   }
 
   function generateChartHoverCard(
@@ -176,7 +177,7 @@
       .append("td")
       .attr("id", "chart-hover-card-high-icon")
       .attr("class", "chart-hover-card-icon-text")
-      .text("High");
+      .text($_('legend.hi'));
 
     const hoverCardHighName = hoverCardHigh
       .append("td")
@@ -196,7 +197,7 @@
       .append("td")
       .attr("id", "chart-hover-card-low-icon")
       .attr("class", "chart-hover-card-icon-text")
-      .text("Low");
+      .text($_('legend.lo'));
 
     const hoverCardLowName = hoverCardLow
       .append("td")
@@ -673,7 +674,7 @@
       </h3>
       <slot />
       <p>
-        <a href="#about" class="info-link">Learn more</a>
+        <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
       </p>
     </div>
   </div>
