@@ -390,12 +390,6 @@ import { e } from "mathjs";
           >
         </li>
         <li class="link-item">
-          <a
-            class="link-item-anchor"
-            href="https://www.google.com/about/products">{$_('navigation.footer.products')}</a
-          >
-        </li>
-        <li class="link-item">
           <a class="link-item-anchor" href="https://policies.google.com/privacy"
             >{$_('navigation.footer.privacy')}</a
           >
@@ -407,7 +401,7 @@ import { e } from "mathjs";
         </li>
         <li class="link-item">
           <a class="link-item-anchor" href="license_report.html"
-            >Third Party Notices</a
+            >{$_('navigation.footer.third_party_notices')}</a
           >
         </li>
         <li class="link-item">
