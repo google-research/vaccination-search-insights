@@ -9,7 +9,10 @@
         "subRegion3Title": "",
         "vaccineTooltipExample": "vaccine tracker",
         "intentTooltipExample": "covid vaccine ontario",
+        "vaccineTooltipExample_fr": "traqueur de vaccins",
+        "intentTooltipExample_fr": "vaccin covid québec",
         "shapeFileLegal": "lorem ipsum Canada",
+        "shapeFileLegal_fr": "lorem ipsum Canada French",
         "placeId":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk"
     },
     {

@@ -50,7 +50,33 @@
     },
     "hints": {
         "country_selector": "Sélectionnez un pays pour voir plus de statistiques",
+        "loading_data": "Chargement des données en cours…",
+        "click_to_drill": "Click to drill down"
+    },
+    "tooltips": {
+        "learn_more": "En savoir plus",
+        "parent_tooltip": "Cette catégorie parente inclut les recherches des deux autres sous-catégories.",
+        "vaccine_tooltip": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. Par exemple, « quand puis-je recevoir le vaccin contre la covid » ou « suivi des vaccins ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
+        "vaccine_preamble": "Popularité des recherches sur n'importe quel aspect de la vaccination contre la COVID-19.",
+        "vaccine_example": "Par exemple, « quand puis-je recevoir le vaccin contre la covid » ou ",
+        "scaled_tooltip": "Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
+        "intent_preamble": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. ",
+        "intent_example": "Par exemple, « vaccin covid près de chez moi » ou ",
+        "intent_tooltip": "Popularité des recherches sur n'importe quel aspect de la vaccination contre la COVID-19. Par exemple, « vaccin covid près de chez moi » ou « vaccin covid ontario ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
+        "safety_tooltip": "Popularité des recherches sur l'innocuité et les effets secondaires des vaccins contre la COVID-19. Par exemple, « le vaccin contre la covid est-il sûr » ou « effets secondaires du vaccin pfizer ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
+        "vaccine_top_query": "Recherches les plus courantes liées à n'importe quel aspect de la vaccination contre le COVID-19, répertoriées par ordre de fréquence.",
+        "safety_top_query": "Recherches les plus courantes liées à la sécurité et aux effets secondaires des vaccins COVID-19, répertoriées par ordre de fréquence.",
+        "intent_top_query": "Recherches les plus courantes liées à l'éligibilité, la disponibilité et l'accessibilité des vaccins COVID-19, répertoriées par ordre de fréquence."
+    },
+    "legend": {
         "no_data": "Les données sont insuffisantes",
-        "loading_data": "Chargement des données en cours…"
-    }
+        "interest": "Popularité",
+        "hi": "Haut",
+        "lo": "Bas"
+    },
+    "quote": {
+        "start": "« ",
+        "end": " »"
+    } 
+
 }

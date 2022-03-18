@@ -50,7 +50,32 @@
     },
     "hints": {
         "country_selector": "Select a country to see more insights",
+        "loading_data": "Loading data...",
+        "click_to_drill": "Click to drill down"
+    },
+    "tooltips": {
+        "learn_more": "Learn more",
+        "parent_tooltip": "This parent category includes searches from the other two subcategories.",
+        "vaccine_tooltip": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “when can i get the covid vaccine” or “vaccine tracker”. A scaled value that you can compare across regions, times, or topics.",
+        "vaccine_preamble": "Search interest in any aspect of COVID-19 vaccination.",
+        "vaccine_example": "For example, “when can i get the covid vaccine” or ",
+        "scaled_tooltip": "A scaled value that you can compare across regions, times, or topics.",
+        "intent_preamble": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. ",
+        "intent_example": "For example, “covid vaccine near me” or ",
+        "intent_tooltip": "Search interest in any aspect of COVID-19 vaccination. For example, “covid vaccine near me” or “covid vaccine ontario”. A scaled value that you can compare across regions, times, or topics.",
+        "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions, times, or topics.",
+        "vaccine_top_query": "Most common searches related to any aspect of COVID-19 vaccination, listed in order of frequency.",
+        "safety_top_query": "Most common searches related to the safety and side effects of COVID-19 vaccines, listed in order of frequency.",
+        "intent_top_query": "Most common searches related to the eligibility, availability, and accessibility of COVID-19 vaccines, listed in order of frequency."
+    },
+    "legend": {
         "no_data": "Not enough data",
-        "loading_data": "Loading data..."
+        "interest": "Interest",
+        "hi": "High",
+        "lo": "Low"
+    },
+    "quote": {
+        "start": "\"",
+        "end": "\""
     }
 }
