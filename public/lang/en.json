@@ -4,6 +4,8 @@
         "COVID_19_VACCINATION_TITLE": "COVID-19 vaccination searches",
         "SAFETY_SIDE_EFFECTS_TITLE": "Safety and side effect searches",
         "VACCINATION_INTENT_TITLE": "Vaccination intent searches",
+        "select_country": "Select a country to see more insights",
+        "countries": "Countries",
         "app_overview": "Explore searches for COVID-19 vaccination topics by region. This aggregated and anonymized data helps you understand and compare communities' information needs. We’re releasing this data to inform public health vaccine-confidence efforts.  <a href=\"{aboutUrl}\">Learn more</a>",
         "about_data_title": "About this data",
         "about_data_content": "You can use this data to compare search interest between topics related to COVID-19 vaccination and see what topics are popular or rising. The value for search interest isn't an absolute number of searches—it's a value representing relative interest which we scale to make it easier to compare regions with one another, or the same region over time. If you'd like to know more about our calculation and process, see our <a href=\"{aboutDataUrl}\">technical docs.</a>",
@@ -33,6 +35,12 @@
                 "uk": "United Kingdom",
                 "usa": "United States"
             }
+        },
+        "top_queries": {
+            "top_searches": "Top Searches",
+            "info": "info",
+            "done": "done",
+            "Rising": "Rising"
         }
     },
     "navigation": {
@@ -56,14 +64,14 @@
     "tooltips": {
         "learn_more": "Learn more",
         "parent_tooltip": "This parent category includes searches from the other two subcategories.",
-        "vaccine_tooltip": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “when can i get the covid vaccine” or “vaccine tracker”. A scaled value that you can compare across regions, times, or topics.",
         "vaccine_preamble": "Search interest in any aspect of COVID-19 vaccination.",
         "vaccine_example": "For example, “when can i get the covid vaccine” or ",
         "scaled_tooltip": "A scaled value that you can compare across regions, times, or topics.",
         "intent_preamble": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. ",
         "intent_example": "For example, “covid vaccine near me” or ",
-        "intent_tooltip": "Search interest in any aspect of COVID-19 vaccination. For example, “covid vaccine near me” or “covid vaccine ontario”. A scaled value that you can compare across regions, times, or topics.",
-        "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions, times, or topics.",
+        "vaccine_tooltip": "Search interest in any aspect of COVID-19 vaccination. For example, \"when can i get the covid vaccine\" or \"cdc vaccine tracker\". A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories.",
+        "intent_tooltip": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, \"covid vaccine near me\" or \"safeway covid vaccine\". A scaled value that you can compare across regions and times.",
+        "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, \"is the covid vaccine safe\" or \"pfizer vaccine side effects\". A scaled value that you can compare across regions, times, or topics.",
         "vaccine_top_query": "Most common searches related to any aspect of COVID-19 vaccination, listed in order of frequency.",
         "safety_top_query": "Most common searches related to the safety and side effects of COVID-19 vaccines, listed in order of frequency.",
         "intent_top_query": "Most common searches related to the eligibility, availability, and accessibility of COVID-19 vaccines, listed in order of frequency."
