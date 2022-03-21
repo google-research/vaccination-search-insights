@@ -188,7 +188,7 @@
                 {#if selectedListId == "covid19_vaccination"}
                     <div class="map-trend-icon-container">
                         <span class="material-icons map-trend-selected-icon"
-                            >done</span
+                            >{$_('content.top_queries.done')}</span
                         >
                     </div>
                 {/if}
@@ -205,7 +205,7 @@
                 {#if selectedListId == "vaccination_intent"}
                     <div class="map-trend-icon-container">
                         <span class="material-icons map-trend-selected-icon"
-                            >done</span
+                            >{$_('content.top_queries.done')}</span
                         >
                     </div>
                 {/if}
@@ -222,7 +222,7 @@
                 {#if selectedListId == "safety_side_effects"}
                     <div class="map-trend-icon-container">
                         <span class="material-icons map-trend-selected-icon"
-                            >done</span
+                            >{$_('content.top_queries.done')}</span
                         >
                     </div>
                 {/if}
@@ -234,7 +234,7 @@
             on:click={(e) =>
                 handleInfoPopup(e, `#info-popup-${selectedListId}`)}
         >
-            <span class="material-icons-outlined">info</span>
+            <span class="material-icons-outlined">{$_('content.top_queries.info')}</span>
         </div>
     </div>
     <div class="queries-lists">

@@ -53,7 +53,7 @@ import { i } from "mathjs";
     COVID-19 vaccines. `;
   let vaccineTooltip: string = `
     Search interest in any aspect of COVID-19 vaccination. `;
-  let safetyTooltip: string = $_('tooltips.safety_tooltip');
+  let safetyTooltip: string = $_("tooltips.safety_tooltip");
 
   let isMapInitialized: boolean = false;
 
@@ -117,8 +117,6 @@ import { i } from "mathjs";
     }
 
     setParentRegionButton();
-
-    
 
     if (selectedCountryMetadata) {
       let fetchRegTrendLine_result = fetchRegionalTrendLines(
@@ -369,9 +367,9 @@ import { i } from "mathjs";
       </div>
       <div class="map-callout-tip">
         <span id="not-enough-data-message" style="display: none;"
-          >* {$_('legend.no_data')}</span
+          >* {$_("legend.no_data")}</span
         >
-        <span id="map-callout-drilldown-msg">{$_('hints.click_to_drill')}</span>
+        <span id="map-callout-drilldown-msg">{$_("hints.click_to_drill")}</span>
       </div>
     </div>
 
@@ -380,7 +378,7 @@ import { i } from "mathjs";
     <!-- Map header section with controls and legend -->
     <div class="map-header-container">
       <div class="map-legend">
-        <div class="map-legend-label">{$_('legend.interest')}</div>
+        <div class="map-legend-label">{$_("legend.interest")}</div>
         <div class="map-legend-scale">
           <div id="map-legend-scale-breaks" class="map-legend-scale-top">
             <!-- breaks added by drawLegend routine -->
@@ -392,7 +390,7 @@ import { i } from "mathjs";
           </div>
         </div>
         <div class="map-legend-label map-legend-no-data-label">
-          {$_('legend.no_data')}
+          {$_("legend.no_data")}
         </div>
         <div style="display:flex">
           <div class="map-legend-scale">
@@ -440,7 +438,7 @@ import { i } from "mathjs";
     <!-- Map body -->
     <div id="map" />
     {#if !isMapInitialized}
-      <div class="map-loading">{$_('hints.loading_data')}.</div>
+      <div class="map-loading">{$_("hints.loading_data")}.</div>
     {/if}
     <!-- Map attribution line -->
     <div class="map-attribution">
@@ -461,10 +459,10 @@ import { i } from "mathjs";
       {vaccineTooltip}
     </p>
     <p class="info-text">
-      {$_('tooltips.parent_tooltip')}
+      {$_("tooltips.parent_tooltip")}
     </p>
     <p>
-      <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
+      <a href="#about" class="info-link">{$_("tooltips.learn_more")}</a>
     </p>
   </div>
   <div id="info-popup-intent" class="info-popup">
@@ -475,7 +473,7 @@ import { i } from "mathjs";
       {intentTooltip}
     </p>
     <p>
-      <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
+      <a href="#about" class="info-link">{$_("tooltips.learn_more")}</a>
     </p>
   </div>
   <div id="info-popup-safety" class="info-popup">
@@ -486,7 +484,7 @@ import { i } from "mathjs";
       {safetyTooltip}
     </p>
     <p>
-      <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
+      <a href="#about" class="info-link">{$_("tooltips.learn_more")}</a>
     </p>
   </div>
   {#if $regionalTrends.size > 0}
@@ -500,12 +498,12 @@ import { i } from "mathjs";
       title={covid_vaccination_title}
       {selectedCountryMetadata}
     >
-    <p class="info-text">
-      {vaccineTooltip}
-    </p>
-    <p class="info-text">
-      {$_('tooltips.parent_tooltip')}
-    </p>
+      <p class="info-text">
+        {vaccineTooltip}
+      </p>
+      <p class="info-text">
+        {$_("tooltips.parent_tooltip")}
+      </p>
     </TimeSeries>
     <TimeSeries
       id="vaccination-intent"
