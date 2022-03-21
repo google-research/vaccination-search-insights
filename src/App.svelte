@@ -163,7 +163,10 @@
             <use xlink:href="glue/glue-icons.svg#google-color-logo" />
           </svg>
         </a>
-        <a href="?" class="header-topbar-text">
+        <a href="?" class={$locale == "en"
+        ? "header-topbar-text"
+        : "header-topbar-text-fr"
+        }>
           {$_('project_title')}
         </a>
       </div>
@@ -320,22 +323,34 @@
       </div>
       <ul class="footer-items">
         <li class="link-item">
-          <a class="link-item-anchor" href="https://www.google.com/about"
+          <a class={$locale == "en"
+            ? "link-item-anchor"
+            : "link-item-anchor-fr"
+            } href="https://www.google.com/about"
             >{$_('navigation.footer.about')}</a
           >
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="https://policies.google.com/privacy"
+          <a class={$locale == "en"
+          ? "link-item-anchor"
+          : "link-item-anchor-fr"
+          } href="https://policies.google.com/privacy"
             >{$_('navigation.footer.privacy')}</a
           >
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="https://policies.google.com/terms"
+          <a class={$locale == "en"
+          ? "link-item-anchor"
+          : "link-item-anchor-fr"
+          } href="https://policies.google.com/terms"
             >{$_('navigation.footer.terms')}</a
           >
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="license_report.html"
+          <a class={$locale == "en"
+          ? "link-item-anchor"
+          : "link-item-anchor-fr"
+          } href="license_report.html"
             >{$_('navigation.footer.third_party_notices')}</a
           >
         </li>

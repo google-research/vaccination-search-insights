@@ -183,12 +183,12 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
+                title={$_('tooltips.vaccine_tooltip')}
             >
                 {#if selectedListId == "covid19_vaccination"}
                     <div class="map-trend-icon-container">
                         <span class="material-icons map-trend-selected-icon"
-                            >done</span
+                            >{$_('content.top_queries.done')}</span
                         >
                     </div>
                 {/if}
@@ -200,12 +200,12 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
+                title={$_('tooltips.intent_tooltip')}
             >
                 {#if selectedListId == "vaccination_intent"}
                     <div class="map-trend-icon-container">
                         <span class="material-icons map-trend-selected-icon"
-                            >done</span
+                            >{$_('content.top_queries.done')}</span
                         >
                     </div>
                 {/if}
@@ -217,12 +217,12 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
+                title={$_('tooltips.safety_tooltip')}
             >
                 {#if selectedListId == "safety_side_effects"}
                     <div class="map-trend-icon-container">
                         <span class="material-icons map-trend-selected-icon"
-                            >done</span
+                            >{$_('content.top_queries.done')}</span
                         >
                     </div>
                 {/if}
@@ -234,12 +234,12 @@
             on:click={(e) =>
                 handleInfoPopup(e, `#info-popup-${selectedListId}`)}
         >
-            <span class="material-icons-outlined">info</span>
+            <span class="material-icons-outlined">{$_('content.top_queries.info')}</span>
         </div>
     </div>
     <div class="queries-lists">
         <div class="top-searches">
-            <div class="query-list-title">Top searches</div>
+            <div class="query-list-title">{$_('content.top_queries.top_searches')}</div>
             <ul class="bullet-list">
                 {#if loading}
                     <div class="no-queries">{$_('hints.loading_data')}</div>
@@ -247,13 +247,13 @@
                     {#each topQueriesList as query}
                         <li class="bullet-list-text">{query.query}</li>
                     {:else}
-                        <div class="no-queries">Not enough data</div>
+                        <div class="no-queries">{$_('legend.no_data')}</div>
                     {/each}
                 {/if}
             </ul>
         </div>
         <div class="rising-searches">
-            <div class="query-list-title">Rising</div>
+            <div class="query-list-title">{$_('content.top_queries.rising')}</div>
             <div class="date-nav-control">
                 <div id="map-legend-date" class="date-nav-display">
                     {dateRange}
@@ -286,7 +286,7 @@
                     {#each risingQueriesList as query}
                         <li class="bullet-list-text">{query.query}</li>
                     {:else}
-                        <div class="no-queries">Not enough data</div>
+                        <div class="no-queries">{$_('legend.no_data')}</div>
                     {/each}
                 {/if}
             </ul>
