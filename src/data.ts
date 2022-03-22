@@ -564,9 +564,13 @@ export interface Cluster {
   members: string[];
 }
 
+function removeDuplicate(clusterQuery: string, members: string[]): string[] {
+  return members.filter(member => member != clusterQuery)
+}
+
 function createCluster(clusterRow: ClusterRow): Cluster {
-  const historyList = clusterRow.history.split("|").map(value => parseInt(value));
-  const membersList = clusterRow.members.split("|");
+  const historyList = clusterRow.history === "" ? [] : clusterRow.history.split("|").map(value => parseInt(value));
+  const membersList = clusterRow.members === "" ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
   return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, history: historyList, members: membersList };
 }
 

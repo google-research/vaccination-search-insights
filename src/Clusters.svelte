@@ -43,6 +43,17 @@
     let topQueriesList = [];
     let risingQueriesList = [];
     let currentSubRegion: string = "";
+
+    function capitaliseFirstLetter(str: string): string {
+        return str[0].toUpperCase() + str.slice(1);
+    }
+
+    function formatMembersList(stringArray: string[]): string {
+        if (stringArray.length === 0) { return "" }
+        return stringArray.map(
+            member => capitaliseFirstLetter(member)).join(', ')
+    }
+
     /**
      * Changes selectedListId so that the selected button becomes active and
      * updates the Top Queries and Rising Queries lists associated with the selectedListId.
@@ -264,12 +275,12 @@
                 <div class="cluster">
                     <div class="cluster-text-box">
                         <div class="cluster-text">
-                            <span class="cluster-emphasis">{query.query}</span>,
-                            {query.members.join(', ')}
+                            <span class="cluster-emphasis">{query.members.length === 0 ? query.query : query.query + "," }</span>
+                            {formatMembersList(query.members)}
                         </div>
                     </div>
-                    <div class="sni">{Math.round(query.sni * 100) / 100}</div>
-                    <div class="change">0%</div>
+                    <div class="sni">{(Math.round(query.sni * 100) / 100).toFixed(2)}</div>
+                    <div class="change">{query.history.length === 0 ? "-" : "%"}</div>
                 </div>
                 {:else}
                     <div class="no-queries">Not enough data</div>
@@ -315,12 +326,12 @@
                 <div class="cluster">
                     <div class="cluster-text-box">
                         <div class="cluster-text">
-                            <span class="cluster-emphasis">{query.query}</span>,
-                            {query.members.join(', ')}
+                            <span class="cluster-emphasis">{query.members.length === 0 ? query.query : query.query + "," }</span>
+                            {formatMembersList(query.members)}
                         </div>
                     </div>
-                    <div class="sni">{Math.round(query.sni * 100) / 100}</div>
-                    <div class="change">0%</div>
+                    <div class="sni">{(Math.round(query.sni * 100) / 100).toFixed(2)}</div>
+                    <div class="change">{query.history.length === 0 ? "-" : "%"}</div>
                 </div>
                 {:else}
                     <div class="no-queries">Not enough data</div>
