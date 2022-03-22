@@ -73,10 +73,14 @@
         if (history.length === 0) {
             return "-";
         }
+        var changeStr = change.toLocaleString("en", {
+            notation: "compact",
+            compactDisplay: "short"
+        });
         if (change >= 0) {
-            return `+${change}%`;
+            return `+${changeStr}%`;
         } else if (change <= 0) {
-            return `${change}%`;
+            return `${changeStr}%`;
         } else {
             return "0";
         }

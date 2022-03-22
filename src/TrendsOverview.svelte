@@ -38,6 +38,7 @@
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
+  import Clusters from "./Clusters.svelte";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -496,15 +497,24 @@
     </p>
     </TimeSeries>
   {/if}
-  
   {#if selectedCountryMetadata}
-    <TopQueries
-      {regionsByPlaceId}
-      covid_vaccination_button_title={covid_vaccination_title}
-      vaccination_intent_button_title={vaccination_intent_title}
-      safety_side_effects_button_title={safety_side_effects_title}
-      selectedCountryCode={selectedCountryMetadata.countryCode}
-    />
+    {#if selectedCountryMetadata.countryCode == "US"}
+      <Clusters
+        {regionsByPlaceId}
+        covid_vaccination_button_title={covid_vaccination_title}
+        vaccination_intent_button_title={vaccination_intent_title}
+        safety_side_effects_button_title={safety_side_effects_title}
+        selectedCountryCode={selectedCountryMetadata.countryCode}
+      />
+    {:else}
+      <TopQueries
+        {regionsByPlaceId}
+        covid_vaccination_button_title={covid_vaccination_title}
+        vaccination_intent_button_title={vaccination_intent_title}
+        safety_side_effects_button_title={safety_side_effects_title}
+        selectedCountryCode={selectedCountryMetadata.countryCode}
+      />
+    {/if}
   {/if}
 
   <a id="about" class="about-anchor">
