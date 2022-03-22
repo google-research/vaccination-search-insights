@@ -569,7 +569,7 @@ function removeDuplicate(clusterQuery: string, members: string[]): string[] {
 }
 
 function createCluster(clusterRow: ClusterRow): Cluster {
-  const historyList = clusterRow.history === "" ? [] : clusterRow.history.split("|").map(value => parseInt(value));
+  const historyList = clusterRow.history === "" ? [] : clusterRow.history.split("|").map(value => Number(value));
   const membersList = clusterRow.members === "" ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
   return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, history: historyList, members: membersList };
 }

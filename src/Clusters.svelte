@@ -30,6 +30,11 @@
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
     const RISING_QUERY_TYPE = "rising";
+    const NO_CHANGE_COLOR = "#202124";
+    const POSITIVE_CHANGE_COLOR = "#1e8e3e";
+    const NEGATIVE_CHANGE_COLOR = "#d93025";
+    const PERCENTAGE: number = 100;
+    const PREVIOUS_SNI = -1;
 
     let loading: boolean = true;
     let selectedListId: string = "covid19_vaccination";
@@ -43,15 +48,38 @@
     let topQueriesList = [];
     let risingQueriesList = [];
     let currentSubRegion: string = "";
+    let typeChangeColor = "";
+    let changeValue: number;
 
     function capitaliseFirstLetter(str: string): string {
         return str[0].toUpperCase() + str.slice(1);
     }
 
     function formatMembersList(stringArray: string[]): string {
-        if (stringArray.length === 0) { return "" }
-        return stringArray.map(
-            member => capitaliseFirstLetter(member)).join(', ')
+        if (stringArray.length === 0) {
+            return "";
+        }
+        return stringArray
+            .map((member) => capitaliseFirstLetter(member))
+            .join(", ");
+    }
+
+    function calculateChange(history: number[], current: number) {
+        const previous = history.at(PREVIOUS_SNI);
+        return Math.round(((current - previous) / previous) * PERCENTAGE);
+    }
+
+    function formatChange(change: number): string {
+        if (history.length === 0) {
+            return "-";
+        }
+        if (change >= 0) {
+            return `+${change}%`;
+        } else if (change <= 0) {
+            return `${change}%`;
+        } else {
+            return "0";
+        }
     }
 
     /**
@@ -272,16 +300,47 @@
                 <div class="no-queries">Loading data...</div>
             {:else}
                 {#each topQueriesList as query}
-                <div class="cluster">
-                    <div class="cluster-text-box">
-                        <div class="cluster-text">
-                            <span class="cluster-emphasis">{query.members.length === 0 ? query.query : query.query + "," }</span>
-                            {formatMembersList(query.members)}
+                    <div class="cluster">
+                        <div class="cluster-text-box">
+                            <div class="cluster-text">
+                                <span class="cluster-emphasis"
+                                    >{query.members.length === 0
+                                        ? query.query
+                                        : query.query + ","}</span
+                                >
+                                {formatMembersList(query.members)}
+                            </div>
                         </div>
+                        <div class="sni">
+                            {(Math.round(query.sni * 100) / 100).toFixed(2)}
+                        </div>
+                        <!--TODO(mhkshum): fix repetitive change calculation-->
+                        {#if query.history.length === 0}
+                            <div class="change">-</div>
+                        {:else if calculateChange(query.history, query.sni) > 0}
+                            <div
+                                class="change"
+                                style="color:{POSITIVE_CHANGE_COLOR}"
+                            >
+                                {formatChange(
+                                    calculateChange(query.history, query.sni)
+                                )}
+                            </div>
+                        {:else if calculateChange(query.history, query.sni) < 0}
+                            <div
+                                class="change"
+                                style="color:{NEGATIVE_CHANGE_COLOR}"
+                            >
+                                {formatChange(
+                                    calculateChange(query.history, query.sni)
+                                )}
+                            </div>
+                        {:else}
+                            <div class="change" style="color:{NO_CHANGE_COLOR}">
+                                0
+                            </div>
+                        {/if}
                     </div>
-                    <div class="sni">{(Math.round(query.sni * 100) / 100).toFixed(2)}</div>
-                    <div class="change">{query.history.length === 0 ? "-" : "%"}</div>
-                </div>
                 {:else}
                     <div class="no-queries">Not enough data</div>
                 {/each}
@@ -323,16 +382,47 @@
                 <div class="no-queries">Loading data...</div>
             {:else}
                 {#each risingQueriesList as query}
-                <div class="cluster">
-                    <div class="cluster-text-box">
-                        <div class="cluster-text">
-                            <span class="cluster-emphasis">{query.members.length === 0 ? query.query : query.query + "," }</span>
-                            {formatMembersList(query.members)}
+                    <div class="cluster">
+                        <div class="cluster-text-box">
+                            <div class="cluster-text">
+                                <span class="cluster-emphasis"
+                                    >{query.members.length === 0
+                                        ? query.query
+                                        : query.query + ","}</span
+                                >
+                                {formatMembersList(query.members)}
+                            </div>
                         </div>
+                        <div class="sni">
+                            {(Math.round(query.sni * 100) / 100).toFixed(2)}
+                        </div>
+                        <!--TODO(mhkshum): fix repetitive change calculation-->
+                        {#if query.history.length === 0}
+                            <div class="change">-</div>
+                        {:else if calculateChange(query.history, query.sni) > 0}
+                            <div
+                                class="change"
+                                style="color:{POSITIVE_CHANGE_COLOR}"
+                            >
+                                {formatChange(
+                                    calculateChange(query.history, query.sni)
+                                )}
+                            </div>
+                        {:else if calculateChange(query.history, query.sni) < 0}
+                            <div
+                                class="change"
+                                style="color:{NEGATIVE_CHANGE_COLOR}"
+                            >
+                                {formatChange(
+                                    calculateChange(query.history, query.sni)
+                                )}
+                            </div>
+                        {:else}
+                            <div class="change" style="color:{NO_CHANGE_COLOR}">
+                                0
+                            </div>
+                        {/if}
                     </div>
-                    <div class="sni">{(Math.round(query.sni * 100) / 100).toFixed(2)}</div>
-                    <div class="change">{query.history.length === 0 ? "-" : "%"}</div>
-                </div>
                 {:else}
                     <div class="no-queries">Not enough data</div>
                 {/each}
