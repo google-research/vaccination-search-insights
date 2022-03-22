@@ -21,7 +21,7 @@
     TrendValue,
   } from "./data";
   import { onMount } from "svelte";
-  import { params } from "./stores";
+  import { params, regionalTrends} from "./stores";
   import { 
     getRegionName,
     handleInfoPopup,
@@ -635,17 +635,24 @@
   }
 
   onMount(async () => {
+    regionalTrends.subscribe((regionalTrends_store) => {
+      regionalTrendsByPlaceId = regionalTrends_store;
+      if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
+        generateChart();
+      }
+    });
     params.subscribe((param) => {
       placeId = param.placeId;
-      if (placeId && regionsByPlaceId && regionalTrendsByPlaceId && chartContainerElement) {
+      if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
-
+      
         generateChart();
       }
     });
     if (chartContainerElement){
       window.addEventListener("resize", scaleChartText);
     }
+
   });
 </script>
 

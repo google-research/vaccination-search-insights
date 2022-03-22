@@ -15,15 +15,14 @@
    * limitations under the License.
    */
   import AutoComplete from "simple-svelte-autocomplete";
-  import type { Region, RegionalTrends, RegionalTrendLine } from "./data";
+  import type { Region } from "./data";
   import {
     fetchRegionData,
     fetchRegionalTrendsData,
     fetchRegionalTrendLines,
-    RegionType,
   } from "./data";
   import { onMount } from "svelte";
-  import { params } from "./stores";
+  import { params, mapData, regionalTrends, isZipsDownloaded} from "./stores";
   import { getRegionName, getCountryName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
@@ -35,6 +34,7 @@
     setSelectedCounty,
     setSelectedState,
   } from "./choropleth.js";
+  import { updateWithZipsData } from "./zip_data"
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
@@ -44,9 +44,7 @@
   let regions: Region[];
   let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   let placeId: string;
-  let selectedRegionName: string;
   let selectedCountryName: string;
-  let regionalTrends: Map<string, RegionalTrends>;
   let selectedMapTrendId: string = "vaccination";
 
   let vaccineTooltip: string = `
@@ -60,8 +58,8 @@
     scaled value that you can compare across regions, times, or topics.
   `;
 
-  let mapData: Promise<RegionalTrendLine[]>;
   let isMapInitialized: boolean = false;
+
 
   export let covid_vaccination_title: string;
   export let vaccination_intent_title: string;
@@ -72,6 +70,7 @@
   let covid19VaccinationChartContainer: HTMLElement;
   let vaccinationIntentChartContainer: HTMLElement;
   let safetySideEffectsChartContainer: HTMLElement;
+
 
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
@@ -97,12 +96,12 @@
       placeId = param.placeId;
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
-        selectedRegionName = getRegionName(selectedRegion);
         // avoid fetching country metadata if country name didn't change
         let newCountryName = getCountryName(selectedRegion);
         if (selectedCountryName !== newCountryName){
           selectedCountryName = newCountryName;
           selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
+          $isZipsDownloaded = false;
         }
       }
 
@@ -116,18 +115,19 @@
     setParentRegionButton();
 
     if (selectedCountryMetadata) {
-      mapData = fetchRegionalTrendLines(selectedCountryMetadata);
+      let fetchRegTrendLine_result = fetchRegionalTrendLines(selectedCountryMetadata);
 
-      mapData.then((mapData) => {
-        createMap(mapData, selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
+      fetchRegTrendLine_result.then((mD) => {
+        $mapData = mD;
+        createMap(selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
         isMapInitialized = true;
         if (selectedRegion) {
           setMapSelection(selectedRegion);
         }
       });
-      
-      regionalTrends = await fetchRegionalTrendsData(mapData);
 
+      $regionalTrends = await fetchRegionalTrendsData(fetchRegTrendLine_result);
+      
       vaccineTooltip = `${vaccineTooltip}
         For example, “when can i get the covid vaccine” or 
         “${selectedCountryMetadata.vaccineTooltipExample}”. A scaled
@@ -162,8 +162,22 @@
   function setMapSelection(selectedRegion: Region): void {
     if (selectedRegion.sub_region_2_code) {
       setSelectedCounty(selectedRegion.sub_region_2_code);
+      if(!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
+        $isZipsDownloaded = true;
+        console.log("looking at state county level now!")
+        let zipData = updateWithZipsData();
+        zipData.then((zD) => {
+        }).then(() => setMapSelection(selectedRegion));
+      }
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
+      if(!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
+        $isZipsDownloaded = true;
+        console.log("looking at state level now!")
+        let zipData = updateWithZipsData();
+        zipData.then((zD) => {
+        }).then(() => setMapSelection(selectedRegion));
+      }
     } else {
       resetToCountryLevel();
     }
@@ -450,11 +464,11 @@
       <a href="#about" class="info-link">Learn more</a>
     </p>
   </div>
-  {#if regionalTrends}
+  {#if $regionalTrends.size > 0  }
     <TimeSeries
       id="covid-19-vaccination"
       {regionsByPlaceId}
-      regionalTrendsByPlaceId={regionalTrends}
+      regionalTrendsByPlaceId={$regionalTrends}
       trendLine={(t) => {
         return t.trends.covid19_vaccination;
       }}
@@ -471,7 +485,7 @@
     <TimeSeries
       id="vaccination-intent"
       {regionsByPlaceId}
-      regionalTrendsByPlaceId={regionalTrends}
+      regionalTrendsByPlaceId={$regionalTrends}
       trendLine={(t) => {
         return t.trends.vaccination_intent;
       }}
@@ -485,7 +499,7 @@
     <TimeSeries
       id="safety-side-effects"
       {regionsByPlaceId}
-      regionalTrendsByPlaceId={regionalTrends}
+      regionalTrendsByPlaceId={$regionalTrends}
       trendLine={(t) => {
         return t.trends.safety_side_effects;
       }}
@@ -497,6 +511,7 @@
     </p>
     </TimeSeries>
   {/if}
+
   {#if selectedCountryMetadata}
     {#if selectedCountryMetadata.countryCode == "US"}
       <Clusters
