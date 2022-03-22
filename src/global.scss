@@ -117,7 +117,6 @@ sup {
   top: 80px;
   left: 0;
   width: 100%;
-  z-index: 100;
 }
 
 .header-topbar {
@@ -942,6 +941,10 @@ div.next-steps-item > h3 {
   }
 }
 
+#top-queries {
+  z-index: -1;
+}
+
 .queries-lists{
   align-items: flex-start;
   display: flex;
@@ -1061,6 +1064,7 @@ div.next-steps-item > h3 {
   font-size: 14px;
   font-weight: 500;
   color: #202124;
+  z-index: -1;
 }
 
 .cluster-text-box {
