@@ -26,7 +26,7 @@ regions.csv: US_vaccination_search_insights.csv gb_regions.csv IE_vaccination_se
 	cat $(SRC_DIR)/$(word 3,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'NR>1 { print $$2,$$3,$$4,$$5,$$6,$$7,$$8,$$9,$$10 }' | uniq >> $(SRC_DIR)/$@
 
 US_initial.csv: US_vaccination_search_insights.csv
-	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) != "postal_code"' >> $(SRC_DIR)/$@
+	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) != "postal_code"' > $(SRC_DIR)/$@
 
 US_zips.csv: US_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk 'NR==1' > $(SRC_DIR)/$@
