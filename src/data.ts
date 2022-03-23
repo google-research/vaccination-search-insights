@@ -93,6 +93,7 @@ export interface RegionalTrends {
 }
 
 const GLOBAL_TRENDS_FILENAME = "Global_l0_vaccination_search_insights.csv";
+const PERCENTAGE: number = 100;
 
 let regions: Map<string, Region>;
 let regionalTrends: Map<string, RegionalTrends>;
@@ -560,7 +561,7 @@ export interface Cluster {
   query: string;
   sni: number;
   rank: number;
-  history: number[];
+  change: number;
   members: string[];
 }
 
@@ -568,10 +569,19 @@ function removeDuplicate(clusterQuery: string, members: string[]): string[] {
   return members.filter(member => member != clusterQuery)
 }
 
+function calculateChange(history: number[], current: number) {
+  if(history.length === 0) {
+    return null
+  }
+  const previous = history[history.length - 1];
+  return Math.round(((current - previous) / previous) * PERCENTAGE);
+}
+
 function createCluster(clusterRow: ClusterRow): Cluster {
   const historyList = clusterRow.history === "" ? [] : clusterRow.history.split("|").map(value => Number(value));
   const membersList = clusterRow.members === "" ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
-  return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, history: historyList, members: membersList };
+  const clusterChange = calculateChange(historyList, clusterRow.sni);
+  return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, change: clusterChange, members: membersList };
 }
 
 /**

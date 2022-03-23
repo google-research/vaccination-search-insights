@@ -33,8 +33,6 @@
     const NO_CHANGE_COLOR = "#202124";
     const POSITIVE_CHANGE_COLOR = "#1e8e3e";
     const NEGATIVE_CHANGE_COLOR = "#d93025";
-    const PERCENTAGE: number = 100;
-    const PREVIOUS_SNI = -1;
 
     let loading: boolean = true;
     let selectedListId: string = "covid19_vaccination";
@@ -48,8 +46,6 @@
     let topQueriesList = [];
     let risingQueriesList = [];
     let currentSubRegion: string = "";
-    let typeChangeColor = "";
-    let changeValue: number;
 
     function capitaliseFirstLetter(str: string): string {
         return str[0].toUpperCase() + str.slice(1);
@@ -64,22 +60,20 @@
             .join(", ");
     }
 
-    function calculateChange(history: number[], current: number) {
-        const previous = history.at(PREVIOUS_SNI);
-        return Math.round(((current - previous) / previous) * PERCENTAGE);
-    }
-
     function formatChange(change: number): string {
-        if (history.length === 0) {
+        if (change === null) {
             return "-";
+        }
+        if (change === Infinity) {
+            return "NEW";
         }
         var changeStr = change.toLocaleString("en", {
             notation: "compact",
             compactDisplay: "short"
         });
-        if (change >= 0) {
+        if (change > 0) {
             return `+${changeStr}%`;
-        } else if (change <= 0) {
+        } else if (change < 0) {
             return `${changeStr}%`;
         } else {
             return "0";
@@ -307,41 +301,24 @@
                     <div class="cluster">
                         <div class="cluster-text-box">
                             <div class="cluster-text">
-                                <span class="cluster-emphasis"
-                                    >{query.members.length === 0
-                                        ? query.query
-                                        : query.query + ","}</span
-                                >
+                                <span class="cluster-emphasis">
+                                    {query.members.length === 0 ? query.query: query.query + ","}
+                                </span>
                                 {formatMembersList(query.members)}
                             </div>
                         </div>
                         <div class="sni">
                             {(Math.round(query.sni * 100) / 100).toFixed(2)}
                         </div>
-                        <!--TODO(mhkshum): fix repetitive change calculation-->
-                        {#if query.history.length === 0}
-                            <div class="change">-</div>
-                        {:else if calculateChange(query.history, query.sni) > 0}
-                            <div
-                                class="change"
-                                style="color:{POSITIVE_CHANGE_COLOR}"
-                            >
-                                {formatChange(
-                                    calculateChange(query.history, query.sni)
-                                )}
-                            </div>
-                        {:else if calculateChange(query.history, query.sni) < 0}
-                            <div
-                                class="change"
-                                style="color:{NEGATIVE_CHANGE_COLOR}"
-                            >
-                                {formatChange(
-                                    calculateChange(query.history, query.sni)
-                                )}
+                        {#if query.change === null || query.change === 0}
+                            <div class="change" style="color:{NO_CHANGE_COLOR}">{formatChange(query.change)}</div>
+                        {:else if query.change > 0}
+                            <div class="change"style="color:{POSITIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
                             </div>
                         {:else}
-                            <div class="change" style="color:{NO_CHANGE_COLOR}">
-                                0
+                            <div class="change" style="color:{NEGATIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
                             </div>
                         {/if}
                     </div>
@@ -389,41 +366,24 @@
                     <div class="cluster">
                         <div class="cluster-text-box">
                             <div class="cluster-text">
-                                <span class="cluster-emphasis"
-                                    >{query.members.length === 0
-                                        ? query.query
-                                        : query.query + ","}</span
-                                >
+                                <span class="cluster-emphasis">
+                                    {query.members.length === 0 ? query.query: query.query + ","}
+                                </span>
                                 {formatMembersList(query.members)}
                             </div>
                         </div>
                         <div class="sni">
                             {(Math.round(query.sni * 100) / 100).toFixed(2)}
                         </div>
-                        <!--TODO(mhkshum): fix repetitive change calculation-->
-                        {#if query.history.length === 0}
-                            <div class="change">-</div>
-                        {:else if calculateChange(query.history, query.sni) > 0}
-                            <div
-                                class="change"
-                                style="color:{POSITIVE_CHANGE_COLOR}"
-                            >
-                                {formatChange(
-                                    calculateChange(query.history, query.sni)
-                                )}
-                            </div>
-                        {:else if calculateChange(query.history, query.sni) < 0}
-                            <div
-                                class="change"
-                                style="color:{NEGATIVE_CHANGE_COLOR}"
-                            >
-                                {formatChange(
-                                    calculateChange(query.history, query.sni)
-                                )}
+                        {#if query.change === null || query.change === 0}
+                            <div class="change" style="color:{NO_CHANGE_COLOR}">{formatChange(query.change)}</div>
+                        {:else if query.change > 0}
+                            <div class="change"style="color:{POSITIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
                             </div>
                         {:else}
-                            <div class="change" style="color:{NO_CHANGE_COLOR}">
-                                0
+                            <div class="change" style="color:{NEGATIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
                             </div>
                         {/if}
                     </div>
