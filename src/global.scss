@@ -117,6 +117,7 @@ sup {
   top: 80px;
   left: 0;
   width: 100%;
+  z-index: 100;
 }
 
 .header-topbar {
@@ -989,6 +990,7 @@ div.next-steps-item > h3 {
 }
 
 .bullet-list-text {
+  position: relative;
   color: #202124;
   font-family: Google Sans;
   font-size: 18px;
@@ -999,6 +1001,7 @@ div.next-steps-item > h3 {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  z-index: 0;
 } 
 
 .no-queries {
@@ -1020,4 +1023,23 @@ div.next-steps-item > h3 {
   display: flex;
   justify-content: space-between;
   margin-top: 60px;
+}
+
+.query-hover-card {
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  position: absolute; 
+  z-index: 50;
+}
+
+.bar-chart :global(div) {
+  font: 10px sans-serif;
+  background-color: #4285F4;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
 }
