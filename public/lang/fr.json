@@ -4,8 +4,9 @@
         "COVID_19_VACCINATION_TITLE": "Recherches sur la vaccination contre la COVID-19",
         "SAFETY_SIDE_EFFECTS_TITLE": "Recherches sur l'innocuité et les effets secondaires",
         "VACCINATION_INTENT_TITLE": "Recherches sur les intentions de vaccination",
-        "select_country": "Sélectionnez un pays pour voir plus d'informations",
-        "countries": "Des Pays",
+        "select_country": "Sélectionnez un pays pour voir plus de statistiques",
+        "countries": "Pays",
+        "region_name": "Nom de la région",
         "app_overview": "Explorez les recherches de sujets sur la vaccination contre la COVID-19 par région. Ces données agrégées et anonymisées vous aident à comprendre ainsi qu'à comparer les besoins d'information des communautés. Nous publions ces données pour éclairer les efforts de santé publique en matière de confiance dans les vaccins. <a href=\"{aboutUrl}\">En savoir plus</a>",
         "about_data_title": "À propos de ces données",
         "about_data_content": "Vous pouvez utiliser ces données pour comparer la popularité des recherches parmi les sujets liés à la vaccination contre la COVID-19 et voir quels sujets sont populaires ou en hausse. La valeur qui représente la popularité des recherches n'est pas un nombre absolu de recherches, mais une valeur représentant la popularité relative que nous mettons à l'échelle pour faciliter la comparaison des régions entre elles ou d'une même région au fil du temps. Si vous voulez en savoir plus sur notre calcul et notre traitement, consultez nos <a href=\"{aboutDataUrl}\">documents techniques.</a>",
@@ -37,10 +38,16 @@
                 }
         },
         "top_queries": {
-            "top_searches": "Top recherches",
-            "info": "info",
-            "done": "done",
-            "rising": "En hausse"
+            "top_searches": "Recherches les plus fréquentes",
+            "info": "Renseignements",
+            "done": "Terminé",
+            "rising": "En hausse",
+            "related": "Requêtes connexes"
+        },
+        "case_studies": {
+            "title": "Études de cas",
+            "bipoc_study": "Utiliser les statistiques de recherche de Google relatives au vaccin pour augmenter la confiance dans les vaccins parmi les communautés PANDC",
+            "augmenting_intel": "Améliorer les renseignements sur les lieux à potentiel élevé pour la sensibilisation à la vaccination"
         }
     },
     "navigation": {
@@ -53,13 +60,13 @@
             "products": "Produits Google",
             "privacy": "Confidentialité",
             "terms": "Conditions d'utilisation",
-            "third_party_notices": "Avis de tiers"
+            "third_party_notices": "Avis tiers"
         }
     },
     "hints": {
         "country_selector": "Sélectionnez un pays pour voir plus de statistiques",
         "loading_data": "Chargement des données en cours…",
-        "click_to_drill": "Cliquez pour explorer"
+        "click_to_drill": "Cliquez pour faire un zoom avant"
     },
     "tooltips": {
         "learn_more": "En savoir plus",
@@ -69,18 +76,19 @@
         "scaled_tooltip": "Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
         "intent_preamble": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. ",
         "intent_example": "Par exemple, « vaccin covid près de chez moi » ou ",
-        "vaccine_tooltip": "Intérêt de recherche pour n'importe quel aspect de la vaccination COVID-19. Par exemple, « quand puis-je obtenir le vaccin covid » ou « suivi du vaccin cdc ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les moments. deux autres sous-catégories.",
-        "intent_tooltip": "Popularité des recherches sur n'importe quel aspect de la vaccination contre la COVID-19. Par exemple, « vaccin covid près de chez moi » ou « vaccin covid quebec ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
-        "safety_tooltip": "Popularité des recherches sur l'innocuité et les effets secondaires des vaccins contre la COVID-19. Par exemple, « le vaccin contre la covid est-il sûr » ou « effets secondaires du vaccin pfizer ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
-        "vaccine_top_query": "Recherches les plus courantes liées à n'importe quel aspect de la vaccination contre le COVID-19, répertoriées par ordre de fréquence.",
-        "safety_top_query": "Recherches les plus courantes liées à la sécurité et aux effets secondaires des vaccins COVID-19, répertoriées par ordre de fréquence.",
-        "intent_top_query": "Recherches les plus courantes liées à l'éligibilité, la disponibilité et l'accessibilité des vaccins COVID-19, répertoriées par ordre de fréquence."
+        "vaccine_tooltip": "Popularité des recherches sur n'importe quel aspect de la vaccination contre la COVID-19. Par exemple, « quand puis-je recevoir le vaccin contre la covid » ou « suivi des vaccins du cdc ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes. Cette catégorie parente inclut les recherches des deux autres sous-catégories.",
+        "intent_tooltip": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. Par exemple, « vaccin covid près de chez moi » ou « vaccin covid quebec ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes.",
+        "safety_tooltip": "Popularité des recherches sur l'innocuité et les effets secondaires des vaccins contre la COVID-19. Par exemple, « le vaccin contre la covid est-il sûr » ou « effets secondaires du vaccin pfizer ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes.",
+        "vaccine_top_query": "Recherches les plus courantes sur n'importe quel aspect de la vaccination contre la COVID-19, répertoriées par ordre de fréquence.",
+        "safety_top_query": "Recherches les plus courantes sur l'innocuité et les effets secondaires des vaccins contre la COVID-19, répertoriées par ordre de fréquence.",
+        "intent_top_query": "Recherches les plus courantes sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19, répertoriées par ordre de fréquence."
     },
     "legend": {
         "no_data": "Les données sont insuffisantes",
         "interest": "Popularité",
         "hi": "Haut",
-        "lo": "Bas"
+        "lo": "Bas",
+        "change": "Modification"
     },
     "quote": {
         "start": "« ",
