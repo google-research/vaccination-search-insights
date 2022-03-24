@@ -289,14 +289,16 @@
     <div class="queries-lists">
         <div class="top-searches">
             <div class="query-list-title">Top searches</div>
-            <div class="clusters-sub-header">
-                <div class="related-queries-header">Related Queries</div>
-                <div class="interest-header">Interest</div>
-                <div class="change-header">Change</div>
-            </div>
             {#if loading}
                 <div class="no-queries">Loading data...</div>
             {:else}
+                {#if topQueriesList.length !== 0}
+                    <div class="clusters-sub-header">
+                        <div class="related-queries-header">Related Queries</div>
+                        <div class="interest-header">Interest</div>
+                        <div class="change-header">Change</div>
+                    </div>
+                {/if}
                 {#each topQueriesList as query}
                     <div class="cluster">
                         <div class="cluster-text-box">
@@ -354,14 +356,17 @@
                     >
                 </div>
             </div>
-            <div class="clusters-sub-header">
-                <div class="related-queries-header">Related Queries</div>
-                <div class="interest-header">Interest</div>
-                <div class="change-header">Change</div>
-            </div>
+            
             {#if loading}
                 <div class="no-queries">Loading data...</div>
             {:else}
+                {#if risingQueriesList.length !== 0}
+                    <div class="clusters-sub-header">
+                        <div class="related-queries-header">Related Queries</div>
+                        <div class="interest-header">Interest</div>
+                        <div class="change-header">Change</div>
+                    </div>
+                {/if}
                 {#each risingQueriesList as query}
                     <div class="cluster">
                         <div class="cluster-text-box">
