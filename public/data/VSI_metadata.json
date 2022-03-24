@@ -11,8 +11,8 @@
         "intentTooltipExample": "covid vaccine ontario",
         "vaccineTooltipExample_fr": "traqueur de vaccins",
         "intentTooltipExample_fr": "vaccin covid québec",
-        "shapeFileLegal": "lorem ipsum Canada",
-        "shapeFileLegal_fr": "lorem ipsum Canada French",
+        "shapeFileLegal": "Chart includes boundary files from Statistics Canada",
+        "shapeFileLegal_fr": "Le graphique comprend les fichiers des limites de Statistique Canada",
         "placeId":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk"
     },
     {

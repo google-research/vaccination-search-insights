@@ -39,6 +39,7 @@
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
   import { _, locale } from "svelte-i18n";
+import { i } from "mathjs";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -535,6 +536,8 @@
   {/if}
 
   {#if selectedCountryMetadata}
+  <!-- TODO include logic for other countries for clusters vs top queries -->
+  {#if selectedCountryName != "Canada"} 
     <TopQueries
       {regionsByPlaceId}
       covid_vaccination_button_title={covid_vaccination_title}
@@ -542,6 +545,7 @@
       safety_side_effects_button_title={safety_side_effects_title}
       selectedCountryCode={selectedCountryMetadata.countryCode}
     />
+    {/if}
   {/if}
 
   <a id="about" class="about-anchor">
