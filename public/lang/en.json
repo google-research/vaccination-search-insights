@@ -1,5 +1,5 @@
 {
-    "project_title": "COVID-19 Vaccine Search Insights",
+    "project_title": "COVID-19 Vaccination Search Insights",
     "content": {
         "COVID_19_VACCINATION_TITLE": "COVID-19 vaccination searches",
         "SAFETY_SIDE_EFFECTS_TITLE": "Safety and side effect searches",
@@ -33,7 +33,8 @@
             "countries": {
                 "canada": "Canada",
                 "uk": "United Kingdom",
-                "usa": "United States"
+                "usa": "United States",
+                "ireland": "Ireland"
             }
         },
         "top_queries": {
