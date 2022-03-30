@@ -1,4 +1,5 @@
 country_region,country_region_code,sub_region_1,sub_region_1_code,sub_region_2,sub_region_2_code,sub_region_3,sub_region_3_code,place_id
+<<<<<<< HEAD
 United States,US,Alabama,US-AL,Autauga County,01001,,,ChIJg9z7ewWPjogRA_8QrB0va7o
 United States,US,Alabama,US-AL,Baldwin County,,postal_code,36507,ChIJ3akDs6tYmogRFHKwBJj7yg0
 United States,US,Alabama,US-AL,Baldwin County,,postal_code,36511,ChIJ70fghJEamogR38KOUdxjpkA
@@ -17843,6 +17844,8 @@ United Kingdom,GB,Wales,GB-WLS,Wrexham Principal Area,W06000006,postal_code,LL13
 United Kingdom,GB,Wales,GB-WLS,Wrexham Principal Area,W06000006,postal_code,LL14,ChIJXTc5V9C1ekgRJsyWAH0r-Pk
 United Kingdom,GB,Wales,GB-WLS,Wrexham Principal Area,W06000006,,,ChIJxcQKOQS4ekgRUKGZ1COLDQM
 country_region,country_region_code,sub_region_1,sub_region_1_code,sub_region_2,sub_region_2_code,sub_region_3,sub_region_3_code,place_id
+=======
+>>>>>>> d398b7d (Adding CA back)
 Canada,CA,Alberta,CA-AB,,,postal_code,T0A,ChIJOUISuAyYplMR8FPDsrnwoJk
 Canada,CA,Alberta,CA-AB,,,postal_code,T0B,ChIJL5qHQcxGClMRc074NhVbRh0
 Canada,CA,Alberta,CA-AB,,,postal_code,T0C,ChIJfaK732wpC1MRARtQ5325kBU
@@ -18869,6 +18872,7 @@ Canada,CA,Saskatchewan,CA-SK,,,postal_code,S9V,ChIJbeEWdaayCVMR579z5IDJ9oU
 Canada,CA,Saskatchewan,CA-SK,,,postal_code,S9X,ChIJO4jg77crqFMRxdJn3qV4uLE
 Canada,CA,Saskatchewan,CA-SK,,,,,ChIJL3ZlI7Fx-FIRK-HCklcrNBU
 Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk
+<<<<<<< HEAD
 Ireland,IE,County Carlow,IE-CW,,,,,ChIJZ7N-axJaXUgRMAGA8azHABg
 Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg
 Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg
@@ -18896,3 +18900,5 @@ Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg
 Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg
 Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg
 Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8
+=======
+>>>>>>> d398b7d (Adding CA back)
