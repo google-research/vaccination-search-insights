@@ -110,7 +110,6 @@ export function createMap(
   resetNavigationPlaceId = selectedCountryMetadata.placeId;
   selectedCountryCode = selectedCountryMetadata.countryCode;
   mapData.subscribe((v) => trendData = v)
-  console.log(`trend data at create is: ${trendData.length}`)
   displayLevels = selectedCountryMetadata.displayLevels;
   
   selectedTrend = trend;
