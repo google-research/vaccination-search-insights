@@ -196,27 +196,6 @@ import { e } from "mathjs";
             >{$_('navigation.documentation')}</a
           >
         </div>
-<<<<<<< HEAD
-        <div class="link-item">
-<<<<<<< HEAD
-          <div class="link-item-anchor">
-          <div class="header-language-picker">
-<<<<<<< HEAD
-            <!-- svelte-ignore a11y-no-onchange -->
-=======
-          <div class="header-language-picker">
->>>>>>> 6fa2f6d ( Committer: Steve Herskovits <iamsteve@google.com>)
-            <select on:change={handleLocaleChange}>
-=======
-            <select on:blur={handleLocaleChange}>
->>>>>>> 5beb479 ( Committer: Steve Herskovits <iamsteve@google.com>)
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-            </select>
-          </div>
-        </div>
-=======
->>>>>>> d9f6dfd ( Committer: Steve Herskovits <iamsteve@google.com>)
       </div>
     </div>
     <div id="header-download-popup" class="header-download-popup">

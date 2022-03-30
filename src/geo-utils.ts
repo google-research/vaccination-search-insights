@@ -18,11 +18,9 @@ import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
 import * as gb from "../public/geo/gb-counties-albers.json";
 import * as ie from "../public/geo/ie-counties-albers.json";
-import * as ca from "../public/geo/ca-counties-albers.json";
+import * as ca from "../public/geo/ca-albers.json";
 import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
-
-let regionCodesToPlaceId: Map<string, string>;
 
 export const dcStateFipsCode: string = "11";
 export const dcCountyFipsCode: string = "11001";
