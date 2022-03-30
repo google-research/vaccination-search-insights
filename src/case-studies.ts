@@ -30,17 +30,17 @@ export interface CaseStudy {
  */
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    title: "The Public Good Projects",
+    title: "PGP: The Public Good Projects",
     description: "Using Google’s Vaccine Search Insights to increase vaccine confidence among BIPOC communities",
-    logoImgSrc: 'https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/pdf/vsi-3p-logos/PGP_64px.png',
-    logoImgSrc2x: 'https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/pdf/vsi-3p-logos/PGP_128px.png',
-    caseStudyHref: 'https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/pdf/The%20Public%20Good%20Projects%20Case%20Study.pdf',
+    logoImgSrc: 'https://gstatic.com/vsi/images/pgp-logo.png',
+    logoImgSrc2x: 'https://gstatic.com/vsi/images/pgp-logo_2x.png',
+    caseStudyHref:  'https://gstatic.com/vsi/pdf/pgp-case-study.pdf',
   },
   {
     title: "Grapevine Health",
     description: "Augmenting intelligence about high yield locations for vaccination outreach",
-    logoImgSrc: 'https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/pdf/vsi-3p-logos/GrapevineHealth_64px.png',
-    logoImgSrc2x: 'https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/pdf/vsi-3p-logos/GrapevineHealth_128px.png',
-    caseStudyHref: 'https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/pdf/Grapevine%20Health%20Case%20Study.pdf',
+    logoImgSrc: 'https://gstatic.com/vsi/images/grapevine-health-logo.png',
+    logoImgSrc2x: 'https://gstatic.com/vsi/images/grapevine-health-logo_2x.png',
+    caseStudyHref:  'https://gstatic.com/vsi/pdf/grapevine-health-case-study.pdf',
   },
 ];
