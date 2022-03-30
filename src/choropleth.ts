@@ -96,6 +96,20 @@ export const mapBounds = {
   margin: 30,
 };
 
+const IE_PROJECTION = d3.geoAlbers()
+  .center([-4, 53.4])
+  .rotate([4.4, 0])
+  .parallels([50, 60])
+  .scale(8800)
+  .translate([mapBounds.width / 2, mapBounds.height / 2])
+
+const CA_PROJECTION = d3.geoAlbers()
+  .parallels([30, 77])
+  .rotate([96, 0, 0])
+  .center([87, 37])
+  .translate([mapBounds.width / 2, mapBounds.height / 2])
+  .scale(840);
+  
 // GB postal code geo path with projection
 const gbPostalPath = d3.geoPath()
   .projection(getGBprojection().rotate([7.145, -45.78, -3.95]));
@@ -299,18 +313,22 @@ function initializeMap() {
   g.append("g").attr("id", "state");
   g.append("g").attr("id", "gbPostalCentroids");
 
-  if (selectedCountryCode == "GB") {
-    path = path.projection(getGBprojection());
-  } else if (selectedCountryCode == "IE") {
-    const ie_projection = d3.geoAlbers()
-      .center([-4, 53.4])
-      .rotate([4.4, 0])
-      .parallels([50, 60])
-      .scale(8800)
-      .translate([mapBounds.width / 2, mapBounds.height / 2])
-    path = path.projection(ie_projection);
-  } else {
-    path = d3.geoPath();
+  switch (selectedCountryCode) {
+    case "GB":
+      path = path.projection(getGBprojection());
+      break;
+    case "IE":
+      path = path.projection(IE_PROJECTION);
+      break;
+    case "CA":
+      path = path.projection(CA_PROJECTION);
+      break;
+    case "US":
+      path = d3.geoPath();
+      break;
+    default:
+      console.log("Projection not specified");
+      break;
   }
 
   const topology = getAtlas(selectedCountryCode);
