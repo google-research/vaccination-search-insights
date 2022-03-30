@@ -26,9 +26,6 @@
   import en from "../public/lang/en.json";
   import fr from "../public/lang/fr.json";
 
-import { set, values } from "d3-collection";
-import { e } from "mathjs";
-
   addMessages("en", en);
   addMessages("fr", fr);
 

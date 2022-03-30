@@ -16,8 +16,8 @@
 
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
-import * as gb from "../public/geo/gb-counties-albers.json";
-import * as ie from "../public/geo/ie-counties-albers.json";
+import * as gb from "../public/geo/gb-albers.json";
+import * as ie from "../public/geo/ie-albers.json";
 import * as ca from "../public/geo/ca-albers.json";
 import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
@@ -135,7 +135,7 @@ export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): st
     return countyFipsCode.slice(0, 2);
   } else if (countryCode == "GB") {
     return countyFipsCode.slice(0, 1);
-  }
+  } 
 }
 
 export function fipsCodeFromElementId(id: string): string {
@@ -148,15 +148,18 @@ export function levelNameFromElementId(id: string): string {
 }
 
 export function getAtlas(countryCode: string): UsAtlas {
-  if (countryCode == "US") {
-    return us as unknown as UsAtlas;
-  } else if (countryCode == "GB") {
-    return gb as unknown as UsAtlas;
-  } else if (countryCode == "IE") {
-    return ie as unknown as UsAtlas;
-  } else if (countryCode == "CA") {
-    return ca as unknown as UsAtlas;
-  } 
+  switch (countryCode) {
+    case "US":
+      return us as unknown as UsAtlas;
+    case "GB":
+      return gb as unknown as UsAtlas;
+    case "CA":
+      return ca as unknown as UsAtlas;
+    case "IE":
+      return ie as unknown as UsAtlas;
+    default:
+      console.log("Country atlas not found");
+  }
 }
 
 export function getGbPostalCentroids(geoid: string) {
