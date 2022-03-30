@@ -154,10 +154,16 @@ export function getAtlas(countryCode: string): UsAtlas {
     return us as unknown as UsAtlas;
   } else if (countryCode == "GB") {
     return gb as unknown as UsAtlas;
+<<<<<<< HEAD
   } else if (countryCode == "IE") {
     return ie as unknown as UsAtlas;
   } else if (countryCode == "CA") {
     return ca as unknown as UsAtlas;
+=======
+  } else if (countryCode == "CA") {
+    //TODO: add CA atlas
+    return null as unknown as UsAtlas;
+>>>>>>> d398b7d (Adding CA back)
   } 
 }
 
