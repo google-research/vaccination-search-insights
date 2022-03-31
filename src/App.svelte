@@ -221,7 +221,7 @@ import { e } from "mathjs";
         >
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/IE_vaccination_search_insights.csv"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
@@ -388,14 +388,14 @@ import { e } from "mathjs";
             >{$_('navigation.footer.third_party_notices')}</a
           >
         </li>
-        <li class="link-item">
-          <!-- svelte-ignore a11y-no-onchange -->
-          <select on:change={handleLocaleChange} class="language-picker">
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-          </select>
-        </li>
       </ul>
+      <div>
+        <!-- svelte-ignore a11y-no-onchange -->
+        <select on:change={handleLocaleChange} class="language-picker">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
     </div>
   </footer>
 </main>
