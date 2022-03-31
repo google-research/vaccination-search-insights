@@ -47,8 +47,10 @@
         },
         "case_studies": {
             "title": "Études de cas",
-            "bipoc_study": "Utiliser les statistiques de recherche de Google relatives au vaccin pour augmenter la confiance dans les vaccins parmi les communautés PANDC",
-            "augmenting_intel": "Améliorer les renseignements sur les lieux à potentiel élevé pour la sensibilisation à la vaccination"
+            "pgp_title": "The Public Good Projects",
+            "grapevine_title": "Grapevine Health",
+            "pgp_desc": "Utiliser les statistiques de recherche de Google relatives au vaccin pour augmenter la confiance dans les vaccins parmi les communautés PANDC",
+            "grapevine_desc": "Améliorer les renseignements sur les lieux à potentiel élevé pour la sensibilisation à la vaccination"
         }
     },
     "navigation": {

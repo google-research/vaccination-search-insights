@@ -47,8 +47,10 @@
         },
         "case_studies": {
             "title": "Case Studies",
-            "bipoc_study": "Using Google's Vaccine Search Insights to increase vaccine confidence among BIPOC communities",
-            "augmenting_intel": "Augmenting intelligence about high yield locations for vaccination outreach"
+            "pgp_title": "The Public Good Projects",
+            "grapevine_title": "Grapevine Health",
+            "pgp_desc": "Using Google's Vaccine Search Insights to increase vaccine confidence among BIPOC communities",
+            "grapevine_desc": "Augmenting intelligence about high yield locations for vaccination outreach"
         }
     },
     "navigation": {

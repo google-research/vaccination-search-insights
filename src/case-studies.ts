@@ -19,9 +19,7 @@
  */
 export interface CaseStudy {
   title: string;
-  title_fr: string;
   description: string;
-  description_fr: string;
   logoImgSrc: string;
   logoImgSrc2x: string;
   caseStudyHref: string;
@@ -32,19 +30,15 @@ export interface CaseStudy {
  */
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    title: "The Public Good Projects",
-    title_fr: "The Public Good Projects",
-    description: "Using Google’s Vaccine Search Insights to increase vaccine confidence among BIPOC communities",
-    description_fr: "Utiliser les statistiques de recherche de Google relatives au vaccin pour augmenter la confiance dans les vaccins parmi les communautés PANDC",
+    title: "pgp_title",
+    description: "pgp_desc",
     logoImgSrc: 'https://gstatic.com/vsi/images/pgp-logo.png',
     logoImgSrc2x: 'https://gstatic.com/vsi/images/pgp-logo_2x.png',
     caseStudyHref:  'https://gstatic.com/vsi/pdf/pgp-case-study.pdf',
   },
   {
-    title: "Grapevine Health",
-    title_fr: "Grapevine Health",
-    description: "Augmenting intelligence about high yield locations for vaccination outreach",
-    description_fr: "Améliorer les renseignements sur les lieux à potentiel élevé pour la sensibilisation à la vaccination",
+    title: "grapevine_title",
+    description: "grapevine_desc",
     logoImgSrc: 'https://gstatic.com/vsi/images/grapevine-health-logo.png',
     logoImgSrc2x: 'https://gstatic.com/vsi/images/grapevine-health-logo_2x.png',
     caseStudyHref:  'https://gstatic.com/vsi/pdf/grapevine-health-case-study.pdf',

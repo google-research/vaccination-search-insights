@@ -41,13 +41,14 @@ import { e } from "mathjs";
 
   init({
     initialLocale: "getLocaleFromNavigator()",
-    fallbackLocale: "en"
+    fallbackLocale: "en",
   });
+  console.log(`locale is ${locale}`);
 
   // Interacting with the locale
   locale.subscribe((newLocale) => {console.log("Locale Subscribed")});
 
-  locale.set("en");
+  //locale.set("en");
 
   let COVID_19_VACCINATION_TITLE = $_('content.COVID_19_VACCINATION_TITLE'); //"COVID-19 vaccination searches";
   let VACCINATION_INTENT_TITLE = $_('content.VACCINATION_INTENT_TITLE'); //"Vaccination intent searches";
@@ -303,9 +304,7 @@ import { e } from "mathjs";
             target="_blank"
           >
             <h3 class="card-title">
-              {#if $locale == "en" }{caseStudy.title}
-              {:else}{caseStudy.title_fr}
-              {/if}
+              {$_(`content.case_studies.${caseStudy.title}`)}
             </h3>
 
             <div class="card-content">
@@ -315,11 +314,7 @@ import { e } from "mathjs";
                 alt="" 
               />
               <p class="card-description">
-                {#if $locale == "en"}
-                {caseStudy.description}
-                {:else}
-                {caseStudy.description_fr}
-                {/if}
+                {$_(`content.case_studies.${caseStudy.description}`)}
               </p>
             </div>
           </a>
