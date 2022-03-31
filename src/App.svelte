@@ -21,6 +21,7 @@
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import CountryPicker from "./CountryPicker.svelte";
+  import {CASE_STUDIES} from './case-studies';
 
   const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
   const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
@@ -46,6 +47,14 @@
       selectedCountryID = placeId;
     }
   });
+
+  /** Returns a srcset used for Img elements that contains source images for regular and high-density screens. */
+  function getSrcSet(
+    imageSrc1x: string, 
+    imageSrc2x: string,
+  ): string {
+    return `${imageSrc1x} 1x, ${imageSrc2x} 2x`;
+  }
 
   function handleDownloadPopup(event): void {
     const downloadRect: DOMRect = document
@@ -254,6 +263,32 @@
         effects because there’s increased interest in the safety and side
         effects category.
       </p>
+
+      <h2>Case Studies</h2>
+
+      <div class="card-container">
+        {#each CASE_STUDIES as caseStudy}
+          <a 
+            class="card"
+            href="{caseStudy.caseStudyHref}"
+            target="_blank"
+          >
+            <h3 class="card-title">{caseStudy.title}</h3>
+
+            <div class="card-content">
+              <img 
+                class="card-logo" 
+                srcset="{getSrcSet(caseStudy.logoImgSrc, caseStudy.logoImgSrc2x)}" 
+                alt="" 
+              />
+              <p class="card-description">
+                {caseStudy.description}
+              </p>
+            </div>
+          </a>
+        {/each}
+      </div>
+
       <h2>Protecting privacy</h2>
       <p>
         We developed the Vaccine Search Insights to be helpful while adhering to

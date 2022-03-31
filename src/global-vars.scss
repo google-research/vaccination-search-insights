@@ -50,3 +50,24 @@ $header-search-bar-height: 70px;
 $footer-height: 120px;
 $minimum-body-margin: 20px;
 $media-breakpoint: 600px;
+
+/**
+ * Media Queries
+ *
+ * Example usage:
+ * ```
+ *     .my-div {
+ *       width: 100%; // Desktop
+ *     }
+ *
+ *     @include mobileMaxMediaQuery {
+ *        width: 100px; // Mobile
+ *     }
+ * ```
+ */
+
+@mixin mobileMaxMediaQuery {
+    @media only screen and (max-width: $media-breakpoint) {
+        @content;
+    }
+}
