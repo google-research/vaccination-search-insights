@@ -43,12 +43,9 @@ import { e } from "mathjs";
     initialLocale: "getLocaleFromNavigator()",
     fallbackLocale: "en",
   });
-  console.log(`locale is ${locale}`);
 
   // Interacting with the locale
   locale.subscribe((newLocale) => {console.log("Locale Subscribed")});
-
-  //locale.set("en");
 
   let COVID_19_VACCINATION_TITLE = $_('content.COVID_19_VACCINATION_TITLE'); //"COVID-19 vaccination searches";
   let VACCINATION_INTENT_TITLE = $_('content.VACCINATION_INTENT_TITLE'); //"Vaccination intent searches";
@@ -176,10 +173,7 @@ import { e } from "mathjs";
             <use xlink:href="glue/glue-icons.svg#google-color-logo" />
           </svg>
         </a>
-        <a href="?" class={$locale == "en"
-        ? "header-topbar-text"
-        : "header-topbar-text-fr"
-        }>
+        <a href="?" class="header-topbar-text">
           {$_('project_title')}
         </a>
       </div>
@@ -371,34 +365,26 @@ import { e } from "mathjs";
       </div>
       <ul class="footer-items">
         <li class="link-item">
-          <a class={$locale == "en"
-            ? "link-item-anchor"
-            : "link-item-anchor-fr"
-            } href="https://www.google.com/about"
+          <a class="link-item-anchor" 
+          href="https://www.google.com/about"
             >{$_('navigation.footer.about')}</a
           >
         </li>
         <li class="link-item">
-          <a class={$locale == "en"
-          ? "link-item-anchor"
-          : "link-item-anchor-fr"
-          } href="https://policies.google.com/privacy"
+          <a class="link-item-anchor" 
+          href="https://policies.google.com/privacy"
             >{$_('navigation.footer.privacy')}</a
           >
         </li>
         <li class="link-item">
-          <a class={$locale == "en"
-          ? "link-item-anchor"
-          : "link-item-anchor-fr"
-          } href="https://policies.google.com/terms"
+          <a class="link-item-anchor"
+          href="https://policies.google.com/terms"
             >{$_('navigation.footer.terms')}</a
           >
         </li>
         <li class="link-item">
-          <a class={$locale == "en"
-          ? "link-item-anchor"
-          : "link-item-anchor-fr"
-          } href="license_report.html"
+          <a class="link-item-anchor"
+          href="license_report.html"
             >{$_('navigation.footer.third_party_notices')}</a
           >
         </li>
