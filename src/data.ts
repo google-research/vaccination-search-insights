@@ -17,7 +17,7 @@
 import { parse, ParseResult } from "papaparse";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
-import { getCountyFipsCodeGb } from "./zcta-county";
+import { getCountyFipsCode } from "./zcta-county";
 
 export interface Region {
   country_region: string;
@@ -130,7 +130,7 @@ export function fetchRegionData(): Promise<Map<string, Region>> {
             if (region.sub_region_3_code) {
               region.region_type = RegionType.SubRegionThree;
               region.parent_region_type = RegionType.SubRegionTwo;
-            } else if (region.sub_region_2_code) {
+            } else if (region.sub_region_2) {
               region.region_type = RegionType.SubRegionTwo;
               region.parent_region_type = RegionType.SubRegionOne;
             } else if (region.sub_region_1_code) {
@@ -373,7 +373,7 @@ export function subRegionTwoCode(region: RegionalTrendLine): string {
     return region.sub_region_2_code
   } else {
     // Get the code from lookup table, if not found, return empty string
-    return getCountyFipsCodeGb(region.sub_region_2) || "";
+    return getCountyFipsCode(region.sub_region_2, region.country_region_code) || "";
   }
 }
 

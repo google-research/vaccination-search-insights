@@ -16,7 +16,7 @@
 
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
-import * as au from "../public/geo/au-counties-albers.json";
+import * as au from "../public/geo/au-albers.json";
 import * as gb from "../public/geo/gb-counties-albers.json";
 import * as ie from "../public/geo/ie-counties-albers.json";
 import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
@@ -117,13 +117,25 @@ export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
     ["IE-G", "24"],
     ["IE-TA", "25"],
     ["IE-CE", "26"]])],
-  ['AU', new Map([])]
+  ['AU', new Map([
+    ["AU-NSW", "1"],
+    ["AU-VIC", "2"],
+    ["AU-QLD", "3"],
+    ["AU-SA", "4"],
+    ["AU-WA", "5"],
+    ["AU-TAS", "6"],
+    ["AU-NT", "7"],
+    ["AU-ACT", "8"],
+    ["AU-OT", "9"]
+  ])]
 ]);
 
 export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
   if (countryCode == "US") {
     return countyFipsCode.slice(0, 2);
   } else if (countryCode == "GB") {
+    return countyFipsCode.slice(0, 1);
+  } else if (countryCode == "AU") {
     return countyFipsCode.slice(0, 1);
   }
 }

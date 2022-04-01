@@ -310,6 +310,13 @@ function initializeMap() {
       .scale(8800)
       .translate([mapBounds.width / 2, mapBounds.height / 2])
     path = path.projection(ie_projection);
+  } else if (selectedCountryCode == "AU") {
+    const au_projection = d3.geoAlbers()
+        .scale(1000)
+        .rotate([-133, 50])
+        .center([0, 25])
+        .translate([mapBounds.width / 2, mapBounds.height / 2])
+      path = path.projection(au_projection);
   } else {
     path = d3.geoPath();
   }
