@@ -11,8 +11,7 @@
         "intentTooltipExample": "covid vaccine ontario",
         "vaccineTooltipExample_fr": "traqueur de vaccins",
         "intentTooltipExample_fr": "vaccin covid québec",
-        "shapeFileLegal": "Chart includes boundary files from Statistics Canada",
-        "shapeFileLegal_fr": "Le graphique comprend les fichiers des limites de Statistique Canada",
+        "shapeFileLegal": "ca",
         "placeId":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk"
     },
     {
@@ -26,7 +25,7 @@
         "subRegion3Title": "",
         "vaccineTooltipExample": "HSE covid vaccine",
         "intentTooltipExample": "book HSE covid vaccine",
-        "shapeFileLegal": "Chart includes data from Ordnance Survey Ireland licensed under CC:BY 4.0",
+        "shapeFileLegal": "ie",
         "placeId": "ChIJ-ydAXOS6WUgRCPTbzjQSfM8"
     },
     {   "countryCode":"GB",
@@ -39,7 +38,7 @@
         "subRegion3Title": "Postcodes",
         "vaccineTooltipExample": "NHS covid vaccine",
         "intentTooltipExample": "book NHS covid vaccine",
-        "shapeFileLegal":"Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
+        "shapeFileLegal":"gb",
         "placeId":"ChIJqZHHQhE7WgIReiWIMkOg-MQ"
     },
     {   "countryCode":"US",
@@ -53,7 +52,7 @@
         "subRegion3Title": "Zipcodes",
         "vaccineTooltipExample": "cdc vaccine tracker",
         "intentTooltipExample": "safeway covid vaccine",
-        "shapeFileLegal":"Chart includes data from the US Census Bureau",
+        "shapeFileLegal":"us",
         "placeId":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
     }
 ]

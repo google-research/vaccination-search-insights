@@ -144,11 +144,11 @@ import { i } from "mathjs";
   function changeTooltips(): void {
     if (selectedCountryMetadata) {
       if (selectedCountryName == "Canada" && $locale == "fr") {
-        countryLegal = selectedCountryMetadata.shapeFileLegal_fr;
+        //countryLegal = selectedCountryMetadata.shapeFileLegal_fr;
         vaccineTooltipConcat = selectedCountryMetadata.vaccineTooltipExample_fr;
         intentTooltipConcat = selectedCountryMetadata.intentTooltipExample_fr;
       } else {
-        countryLegal = selectedCountryMetadata.shapeFileLegal;
+        //countryLegal = selectedCountryMetadata.shapeFileLegal;
         vaccineTooltipConcat = selectedCountryMetadata.vaccineTooltipExample;
         intentTooltipConcat = selectedCountryMetadata.intentTooltipExample;
       }
@@ -444,7 +444,7 @@ import { i } from "mathjs";
     <div class="map-attribution">
       <p class="map-attribution-text">
         {#if selectedCountryMetadata}
-          {countryLegal}
+          {$_(`map_license.${selectedCountryMetadata.shapeFileLegal}`)}
         {/if}
       </p>
     </div>

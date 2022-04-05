@@ -96,5 +96,11 @@
     "quote": {
         "start": "\"",
         "end": "\""
+    },
+    "map_license": {
+        "us": "Chart includes data from the US Census Bureau",
+        "gb": "Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
+        "ie": "Chart includes data from Ordnance Survey Ireland licensed under CC:BY 4.0",
+        "ca": "Chart includes data adapted from Statistics Canada, Boundary Files 2016. This does not constitute an endorsement by Statistics Canada of this product."
     }
 }

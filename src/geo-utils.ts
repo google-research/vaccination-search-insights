@@ -99,9 +99,9 @@ export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
     ["CA-NS", "12"],
     ["CA-PE", "11"],
     ["CA-NL", "10"],
-    ["CA-YU", "60"],
-    ["CA-NW", "61"],
-    ["CA-NV", "62"]])],
+    ["CA-YT", "60"],
+    ["CA-NT", "61"],
+    ["CA-NU", "62"]])],
   ['IE', new Map([
     ["IE-DL", "1"],
     ["IE-LK", "2"],
