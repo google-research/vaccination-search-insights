@@ -23,12 +23,13 @@ Global_l0_vaccination_search_insights.csv: US_vaccination_search_insights.csv GB
 	cat $(SRC_DIR)/$(word 4,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'length($$4) < 1' >> $(SRC_DIR)/$@
 
 gb_regions.csv: $(SRC_DIR)/gb_regions.csv
+au_regions.csv: $(SRC_DIR)/au_regions.csv
 
-regions.csv: US_vaccination_search_insights.csv gb_regions.csv IE_vaccination_search_insights.csv AU_vaccination_search_insights.csv
+regions.csv: US_vaccination_search_insights.csv gb_regions.csv IE_vaccination_search_insights.csv au_regions.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '{ print $$2,$$3,$$4,$$5,$$6,$$7,$$8,$$9,$$10 }' | uniq > $(SRC_DIR)/$@
 	cat $(SRC_DIR)/$(word 2,$^) | awk 'NR>1' >> $(SRC_DIR)/$@
 	cat $(SRC_DIR)/$(word 3,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'NR>1 { print $$2,$$3,$$4,$$5,$$6,$$7,$$8,$$9,$$10 }' | uniq >> $(SRC_DIR)/$@
-	cat $(SRC_DIR)/$(word 4,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'NR>1 { print $$2,$$3,$$4,$$5,$$6,$$7,$$8,$$9,$$10 }' | uniq >> $(SRC_DIR)/$@
+	cat $(SRC_DIR)/$(word 4,$^) | awk 'NR>1' >> $(SRC_DIR)/$@
 
 US_initial.csv: US_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) != "postal_code"' > $(SRC_DIR)/$@
@@ -39,4 +40,4 @@ US_zips.csv: US_vaccination_search_insights.csv
 	rm -f $(SRC_DIR)/$(word 1,$^)
 
 
-data: Global_l0_vaccination_search_insights.csv GB_vaccination_search_insights.csv regions.csv IE_vaccination_search_insights.csv US_initial.csv US_zips.csv AU_vaccination_search_insights.csv
+data: Global_l0_vaccination_search_insights.csv GB_vaccination_search_insights.csv regions.csv IE_vaccination_search_insights.csv US_initial.csv US_zips.csv AU_vaccination_search_insights.csv au_regions.csv
