@@ -895,7 +895,9 @@ function showMapCallout(data, event, d): void {
     d3.select("div#map-callout");
 
   // set the callout title text
-  callout.select("#map-callout-title").text(d.properties.name);
+  console.log(d)
+  // Add a rule to include some text for Canadian FSAs on the card for Canada
+  callout.select("#map-callout-title").text((selectedCountryCode == "CA" && d.id != d.properties.prID) ? (d.properties.prname+" FSA: "+d.properties.name) : d.properties.name);
 
   // Hide the drilldown message for zip/postcode level, and current selected county
   if ((["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1)

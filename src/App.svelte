@@ -37,10 +37,11 @@ import { e } from "mathjs";
     addMessages,
     init,
     locale,
+    getLocaleFromNavigator
   } from "svelte-i18n";
 
   init({
-    initialLocale: "getLocaleFromNavigator()",
+    initialLocale: getLocaleFromNavigator(),
     fallbackLocale: "en",
   });
 
