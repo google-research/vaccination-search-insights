@@ -392,7 +392,7 @@ import { e } from "mathjs";
       </ul>
       <div>
         <!-- svelte-ignore a11y-no-onchange -->
-        <select on:change={handleLocaleChange} class="language-picker">
+        <select bind:value={$locale} on:change={handleLocaleChange} class="language-picker">
           <option value="en">English</option>
           <option value="fr">Français</option>
         </select>

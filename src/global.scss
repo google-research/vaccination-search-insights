@@ -920,7 +920,7 @@ div.next-steps-item > h3 {
   }
 
   .footer-referencebar {
-    max-width: 442px;
+    max-width: g.$media-breakpoint;
     width: 100%;
     display: grid;
     grid-template-columns: 20% 50% 30%;
@@ -936,7 +936,7 @@ div.next-steps-item > h3 {
 
   .footer-items {
     display: grid;
-    grid-template: repeat(1, 1fr)/ repeat(4, 1fr);
+    grid-template: repeat(4, 1fr)/ repeat(1 1fr);
     grid-gap: 5px 5px;
     grid-auto-flow: rows;
     padding: 5px;

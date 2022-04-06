@@ -101,6 +101,6 @@
         "us": "Chart includes data from the US Census Bureau",
         "gb": "Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
         "ie": "Chart includes data from Ordnance Survey Ireland licensed under CC:BY 4.0",
-        "ca": "Le graphique comprend des données adaptées de Statistique Canada, Fichiers des limites 2016. Cela ne constitue pas une approbation par Statistique Canada de ce produit."
+        "ca": "Le graphique comprend des données adaptées à partir des fichiers de limites de 2016 de Statistique Canada. Cette utilisation ne constitue pas une approbation de ce produit par Statistique Canada."
     }
 }

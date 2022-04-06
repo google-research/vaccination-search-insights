@@ -441,8 +441,6 @@ function colorizeMap() {
     .attr("fill", function (d) {
 
       let id = fipsCodeFromElementId((this as Element).id);
-      console.log(`Element: ${id} fill color is: ${getFillColor(id)}`);
-
       return getFillColor(id);
     });
 
