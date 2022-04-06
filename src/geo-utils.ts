@@ -147,19 +147,19 @@ export function levelNameFromElementId(id: string): string {
   return id.split("-")[0];
 }
 
-export function getAtlas(countryCode: string): UsAtlas {
-  switch (countryCode) {
-    case "US":
-      return us as unknown as UsAtlas;
-    case "GB":
-      return gb as unknown as UsAtlas;
-    case "CA":
-      return ca as unknown as UsAtlas;
-    case "IE":
-      return ie as unknown as UsAtlas;
-    default:
-      console.log("Country atlas not found");
-  }
+enum countryCode {
+  US = "us",
+  GB = "gb",
+  IE = "ie",
+  CA = "ca"
+}
+
+/** Atls data indexed by countryCode */
+export const ATLAS_BY_COUNTRY_CODE: Record<countryCode, UsAtlas> = {
+  US: us,
+  Gb: gb,
+  IE: ie,
+  CA: ca
 }
 
 export function getGbPostalCentroids(geoid: string) {

@@ -25,7 +25,7 @@ import {
   levelNameFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
-  getAtlas,
+  ATLAS_BY_COUNTRY_CODE,
   getGbPostalCentroids,
 } from "./geo-utils";
 import * as d3 from "d3";
@@ -332,7 +332,9 @@ function initializeMap() {
       break;
   }
 
-  const topology = getAtlas(selectedCountryCode);
+  const topology = ATLAS_BY_COUNTRY_CODE[selectedCountryCode]
+  // check to ensure country is valid ATLAS
+  if ( !topology ) { console.log("Country atlas not found")};
 
   const nationFeatures = feature(
     topology,
@@ -895,7 +897,6 @@ function showMapCallout(data, event, d): void {
     d3.select("div#map-callout");
 
   // set the callout title text
-  console.log(d)
   // Add a rule to include some text for Canadian FSAs on the card for Canada
   callout.select("#map-callout-title").text((selectedCountryCode == "CA" && d.id != d.properties.prID) ? (d.properties.prname+" FSA: "+d.properties.name) : d.properties.name);
 

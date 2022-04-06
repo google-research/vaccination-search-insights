@@ -23,7 +23,5 @@ export function fetchCountryMetaData(countryNameString: string) {
 
 export function fetchCountryNames() {
     // TODO: we can add some logic here and in the metadata.json to filter for a valid country tag.
-    var countryList = [];
-    metadata.forEach((country) => countryList.push(country.countryName));
-    return countryList;
+    return metadata.map(({countryName}) => countryName)
 }
