@@ -9,6 +9,7 @@ US_vaccination_search_insights.csv: $(SRC_DIR)
 GB_vaccination_search_insights.csv: $(SRC_DIR)
 	curl -o $(SRC_DIR)/GB_vaccination_search_insights.csv https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv
 
+# modifying the contents of CA_vaccination_search_insights.csv to move the FSAs up to county level so simplify data visualization processing and leaving the original data for download unchanged.
 CA_vaccination_search_insights.csv: $(SRC_DIR)
 	curl -o $(SRC_DIR)/CA_temp.csv https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv
 	cat $(SRC_DIR)/CA_temp.csv | awk 'NR==1' > $(SRC_DIR)/$@
