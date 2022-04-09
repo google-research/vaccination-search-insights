@@ -963,8 +963,15 @@ div.next-steps-item > h3 {
 }
 
 .top-searches{
+  display: flex;
   flex: 1;
+  flex-wrap: wrap;
+  justify-content: space-between;
   overflow: hidden;
+}
+
+.top-searches .date-nav-control {
+  visibility: hidden;
 }
 
 .rising-searches{
@@ -1109,4 +1116,26 @@ div.next-steps-item > h3 {
   font-size: 14px;
   font-weight: 500;
   text-align: right;
+}
+
+@media (max-width: 800px) {
+  .queries-lists {
+    flex-direction: column;
+  }
+
+  .top-searches {
+    width: 100%;
+  }
+
+  .no-queries {
+    width: 100%;
+  }
+
+  .top-searches .date-nav-control {
+    visibility: visible;
+  }
+
+  .rising-searches .date-nav-control {
+    visibility: hidden;
+  }
 }
