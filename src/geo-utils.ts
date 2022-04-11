@@ -157,7 +157,7 @@ enum countryCode {
 /** Atls data indexed by countryCode */
 export const ATLAS_BY_COUNTRY_CODE: Record<countryCode, UsAtlas> = {
   US: us,
-  Gb: gb,
+  GB: gb,
   IE: ie,
   CA: ca
 }

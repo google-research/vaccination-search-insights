@@ -40,6 +40,7 @@
   import TopQueries from "./TopQueries.svelte";
   import { _, locale } from "svelte-i18n";
 import { i } from "mathjs";
+import { html } from "d3";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -141,31 +142,11 @@ import { i } from "mathjs";
     }
   });
 
-  function changeTooltips(): void {
+  export function changeTooltips(): void {
     if (selectedCountryMetadata) {
-      if (selectedCountryName == "Canada" && $locale == "fr") {
-        //countryLegal = selectedCountryMetadata.shapeFileLegal_fr;
-        vaccineTooltipConcat = selectedCountryMetadata.vaccineTooltipExample_fr;
-        intentTooltipConcat = selectedCountryMetadata.intentTooltipExample_fr;
-      } else {
-        //countryLegal = selectedCountryMetadata.shapeFileLegal;
-        vaccineTooltipConcat = selectedCountryMetadata.vaccineTooltipExample;
-        intentTooltipConcat = selectedCountryMetadata.intentTooltipExample;
-      }
+      vaccineTooltip = `${$_("tooltips.vaccine_preamble")}${$_("quote.start")}${$_(`tooltips.vaccine_country_example.${selectedCountryMetadata.countryCode}`)}${$_("quote.end")}. ${$_("tooltips.scaled_tooltip")}`;
 
-      vaccineTooltip = `${$_("tooltips.vaccine_preamble")}
-        ${$_("tooltips.vaccine_example")}
-        ${$_("quote.start")}${vaccineTooltipConcat}${$_("quote.end")}. ${$_(
-        "tooltips.scaled_tooltip"
-      )}
-      `;
-
-      intentTooltip = `${$_("tooltips.intent_preamble")}
-        ${$_("tooltips.intent_example")}
-        ${$_("quote.start")}${intentTooltipConcat}${$_("quote.end")}. ${$_(
-        "tooltips.scaled_tooltip"
-      )}
-      `;
+      intentTooltip = `${$_("tooltips.intent_preamble")}${$_("quote.start")}${$_(`tooltips.intent_country_example.${selectedCountryMetadata.countryCode}`)}${$_("quote.end")}. ${$_("tooltips.scaled_tooltip")}`;
 
       safetyTooltip = $_("tooltips.safety_tooltip");
     }
@@ -283,7 +264,7 @@ import { i } from "mathjs";
           ? "map-trend-selector-button map-trend-selector-selected"
           : "map-trend-selector-button"}
         on:click={onChangeMapTrend}
-        title={$_("tooltips.vaccine_tooltip")}
+        title={vaccineTooltip}
       >
         {#if selectedMapTrendId == "vaccination"}
           <div class="map-trend-icon-container">
@@ -298,7 +279,7 @@ import { i } from "mathjs";
           ? "map-trend-selector-button map-trend-selector-selected"
           : "map-trend-selector-button"}
         on:click={onChangeMapTrend}
-        title={$_("tooltips.intent_tooltip")}
+        title={intentTooltip}
       >
         {#if selectedMapTrendId == "intent"}
           <div class="map-trend-icon-container">
@@ -313,7 +294,7 @@ import { i } from "mathjs";
           ? "map-trend-selector-button map-trend-selector-selected"
           : "map-trend-selector-button"}
         on:click={onChangeMapTrend}
-        title={$_("tooltips.safety_tooltip")}
+        title={safetyTooltip}
       >
         {#if selectedMapTrendId == "safety"}
           <div class="map-trend-icon-container">
@@ -544,6 +525,9 @@ import { i } from "mathjs";
       vaccination_intent_button_title={vaccination_intent_title}
       safety_side_effects_button_title={safety_side_effects_title}
       selectedCountryCode={selectedCountryMetadata.countryCode}
+      intentTooltip={intentTooltip}
+      vaccineTooltip={vaccineTooltip}
+      safetypTooltip={safetyTooltip}
     />
     {/if}
   {/if}

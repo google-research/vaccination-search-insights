@@ -74,11 +74,21 @@
     "tooltips": {
         "learn_more": "En savoir plus",
         "parent_tooltip": "Cette catégorie parente inclut les recherches des deux autres sous-catégories.",
-        "vaccine_preamble": "Popularité des recherches sur n'importe quel aspect de la vaccination contre la COVID-19.",
-        "vaccine_example": "Par exemple, « quand puis-je recevoir le vaccin contre la covid » ou ",
+        "vaccine_preamble": "Popularité des recherches sur n'importe quel aspect de la vaccination contre la COVID-19. Par exemple, « quand puis-je recevoir le vaccin contre la covid » ou ",
+        "intent_preamble": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. Par exemple, « vaccin covid près de chez moi » ou ",
+        "vaccine_country_example": {
+            "CA": "traqueur de vaccins",
+            "IE": "Vaccin covid HSE",
+            "GB": "Vaccin covid NHS",
+            "US": "traqueur de vaccins cdc"
+        },
+        "intent_country_example": {
+            "CA": "vaccin covid québec",
+            "IE": "réserver vaccin HSE covid",
+            "GB": "réserver vaccin NHS covid",
+            "US": "vaccin covid safeway"
+        },
         "scaled_tooltip": "Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
-        "intent_preamble": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. ",
-        "intent_example": "Par exemple, « vaccin covid près de chez moi » ou ",
         "vaccine_tooltip": "Popularité des recherches sur n'importe quel aspect de la vaccination contre la COVID-19. Par exemple, « quand puis-je recevoir le vaccin contre la covid » ou « suivi des vaccins du cdc ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes. Cette catégorie parente inclut les recherches des deux autres sous-catégories.",
         "intent_tooltip": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. Par exemple, « vaccin covid près de chez moi » ou « vaccin covid quebec ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes.",
         "safety_tooltip": "Popularité des recherches sur l'innocuité et les effets secondaires des vaccins contre la COVID-19. Par exemple, « le vaccin contre la covid est-il sûr » ou « effets secondaires du vaccin pfizer ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes.",

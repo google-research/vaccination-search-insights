@@ -44,6 +44,13 @@
     let topQueriesList = [];
     let risingQueriesList = [];
     let currentSubRegion: string = "";
+
+    /* Export tooltips to be available in trendsOverview for modifcation */
+    export let vaccineTooltip: string = $_("tooltips.vaccine_tooltip");
+    export let intentTooltip = $_("tooltips.intent_tooltip");
+    export let safetypTooltip: string = $_("tooltips.safety_tooltip");
+
+
     /**
      * Changes selectedListId so that the selected button becomes active and
      * updates the Top Queries and Rising Queries lists associated with the selectedListId.
@@ -183,7 +190,7 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title={$_('tooltips.vaccine_tooltip')}
+                title={vaccineTooltip}
             >
                 {#if selectedListId == "covid19_vaccination"}
                     <div class="map-trend-icon-container">
@@ -200,7 +207,7 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title={$_('tooltips.intent_tooltip')}
+                title={intentTooltip}
             >
                 {#if selectedListId == "vaccination_intent"}
                     <div class="map-trend-icon-container">
@@ -217,7 +224,7 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title={$_('tooltips.safety_tooltip')}
+                title={safetypTooltip}
             >
                 {#if selectedListId == "safety_side_effects"}
                     <div class="map-trend-icon-container">

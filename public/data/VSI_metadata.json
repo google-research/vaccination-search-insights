@@ -7,10 +7,6 @@
         "subRegion1Title": "Provinces",
         "subRegion2Title": "FSAs",
         "subRegion3Title": "",
-        "vaccineTooltipExample": "vaccine tracker",
-        "intentTooltipExample": "covid vaccine ontario",
-        "vaccineTooltipExample_fr": "traqueur de vaccins",
-        "intentTooltipExample_fr": "vaccin covid québec",
         "shapeFileLegal": "ca",
         "placeId":"ChIJ2WrMN9MDDUsRpY9Doiq3aJk"
     },
@@ -23,8 +19,6 @@
         "subRegion1Title": "Counties",
         "subRegion2Title": "",
         "subRegion3Title": "",
-        "vaccineTooltipExample": "HSE covid vaccine",
-        "intentTooltipExample": "book HSE covid vaccine",
         "shapeFileLegal": "ie",
         "placeId": "ChIJ-ydAXOS6WUgRCPTbzjQSfM8"
     },
@@ -36,8 +30,6 @@
         "subRegion1Title": "UK countries",
         "subRegion2Title": "Regions",
         "subRegion3Title": "Postcodes",
-        "vaccineTooltipExample": "NHS covid vaccine",
-        "intentTooltipExample": "book NHS covid vaccine",
         "shapeFileLegal":"gb",
         "placeId":"ChIJqZHHQhE7WgIReiWIMkOg-MQ"
     },
@@ -50,8 +42,6 @@
         "subRegion1Title": "States",
         "subRegion2Title": "Counties",
         "subRegion3Title": "Zipcodes",
-        "vaccineTooltipExample": "cdc vaccine tracker",
-        "intentTooltipExample": "safeway covid vaccine",
         "shapeFileLegal":"us",
         "placeId":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
     }

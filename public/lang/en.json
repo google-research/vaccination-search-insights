@@ -74,11 +74,21 @@
     "tooltips": {
         "learn_more": "Learn more",
         "parent_tooltip": "This parent category includes searches from the other two subcategories.",
-        "vaccine_preamble": "Search interest in any aspect of COVID-19 vaccination.",
-        "vaccine_example": "For example, “when can i get the covid vaccine” or ",
+        "vaccine_preamble": "Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or ",
+        "intent_preamble": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or ",
+        "vaccine_country_example": {
+            "CA": "vaccine tracker",
+            "IE": "HSE covid vaccine",
+            "GB": "NHS covid vaccine",
+            "US": "cdc vaccine tracker"
+        },
+        "intent_country_example": {
+            "CA": "covid vaccine ontario",
+            "IE": "book HSE covid vaccine",
+            "GB": "book NHS covid vaccine",
+            "US": "safeway covid vaccine"
+        },
         "scaled_tooltip": "A scaled value that you can compare across regions, times, or topics.",
-        "intent_preamble": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. ",
-        "intent_example": "For example, “covid vaccine near me” or ",
         "vaccine_tooltip": "Search interest in any aspect of COVID-19 vaccination. For example, \"when can i get the covid vaccine\" or \"cdc vaccine tracker\". A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories.",
         "intent_tooltip": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, \"covid vaccine near me\" or \"safeway covid vaccine\". A scaled value that you can compare across regions and times.",
         "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, \"is the covid vaccine safe\" or \"pfizer vaccine side effects\". A scaled value that you can compare across regions, times, or topics.",
