@@ -46,9 +46,9 @@
     let currentSubRegion: string = "";
 
     /* Export tooltips to be available in trendsOverview for modifcation */
-    export let vaccineTooltip: string = $_("tooltips.vaccine_tooltip");
-    export let intentTooltip = $_("tooltips.intent_tooltip");
-    export let safetypTooltip: string = $_("tooltips.safety_tooltip");
+    export let vaccineTooltip: string = "";
+    export let intentTooltip = "";
+    export let safetypTooltip: string = "";
 
 
     /**

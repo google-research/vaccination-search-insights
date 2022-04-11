@@ -89,8 +89,6 @@
             "US": "safeway covid vaccine"
         },
         "scaled_tooltip": "A scaled value that you can compare across regions, times, or topics.",
-        "vaccine_tooltip": "Search interest in any aspect of COVID-19 vaccination. For example, \"when can i get the covid vaccine\" or \"cdc vaccine tracker\". A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories.",
-        "intent_tooltip": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, \"covid vaccine near me\" or \"safeway covid vaccine\". A scaled value that you can compare across regions and times.",
         "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, \"is the covid vaccine safe\" or \"pfizer vaccine side effects\". A scaled value that you can compare across regions, times, or topics.",
         "vaccine_top_query": "Most common searches related to any aspect of COVID-19 vaccination, listed in order of frequency.",
         "safety_top_query": "Most common searches related to the safety and side effects of COVID-19 vaccines, listed in order of frequency.",
