@@ -1,9 +1,8 @@
 country_region,country_region_code,sub_region_1,sub_region_1_code,sub_region_2,sub_region_2_code,sub_region_3,sub_region_3_code,place_id
 Australia,AU,Australian Capital Territory,AU-ACT,,,,,ChIJSxCboN9MFmsRA3huXDhEWOc
-Australia,AU,New South Wales,AU-NSW,Armidale Dumaresq Council,10180,,,ChIJPXdpvMSnn2sRamkBGce1LIM
+Australia,AU,New South Wales,AU-NSW,Armidale Regional Council,10180,,,ChIJr-0PW0URn2sRGy0iBY1dk_s
 Australia,AU,New South Wales,AU-NSW,Ballina Shire Council,10250,,,ChIJGSMhcwKCkGsRWLKq2JtdcD0
 Australia,AU,New South Wales,AU-NSW,Balranald Shire Council,10300,,,ChIJ34xFpn2I3WoRFj4XZB_sU28
-Australia,AU,New South Wales,AU-NSW,Bankstown City Council,#N/A,,,ChIJBUCbNJ6-EmsRKjYZthGxB6w
 Australia,AU,New South Wales,AU-NSW,Bathurst Regional Council,10470,postal_code,2795,ChIJ8bgYLEsYEGsRwCrTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Bathurst Regional Council,10470,,,ChIJX9HZN_boEWsR2XS1xfFaJRs
 Australia,AU,New South Wales,AU-NSW,Bayside Council,10500,postal_code,2018,ChIJbcQ4yKexEmsRUIm6P2t9ARw
@@ -41,8 +40,6 @@ Australia,AU,New South Wales,AU-NSW,Blue Mountains City Council,10900,postal_cod
 Australia,AU,New South Wales,AU-NSW,Blue Mountains City Council,10900,postal_code,2786,ChIJfwcJo85wEmsRwJq6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Blue Mountains City Council,10900,,,ChIJY0PVRG96EmsRNFJja1O7WIk
 Australia,AU,New South Wales,AU-NSW,Bogan Shire Council,10950,,,ChIJXTKgR0z1A2sRmuJkt0_JI-U
-Australia,AU,New South Wales,AU-NSW,Bombala Council,#N/A,,,ChIJcZm8jeKCPGsRP3NHpsT1F24
-Australia,AU,New South Wales,AU-NSW,Boorowa Council,13910B,,,ChIJXzmqkcfOEGsRl7RVOcjNSmY
 Australia,AU,New South Wales,AU-NSW,Bourke Shire Council,11150,,,ChIJDZQEC4nQ_2oR5JjOuOg1IaE
 Australia,AU,New South Wales,AU-NSW,Broken Hill City Council,11250,,,ChIJ05vCeHuu7moRt5SUOJuE2DA
 Australia,AU,New South Wales,AU-NSW,Byron Shire Council,11350,,,ChIJ6bc5ArOOkGsR6SOBwJwRST0
@@ -52,8 +49,8 @@ Australia,AU,New South Wales,AU-NSW,Camden Council,11450,postal_code,2567,ChIJS0
 Australia,AU,New South Wales,AU-NSW,Camden Council,11450,postal_code,2570,ChIJXZEj4jBEEmsRUJm6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Camden Council,11450,,,ChIJ2x-Hx4PxEmsRw6mpOyYhgGY
 Australia,AU,New South Wales,AU-NSW,Campbelltown City Council,11500,,,ChIJO9s-6t3uEmsRmDDk_5-6CIo
-Australia,AU,New South Wales,AU-NSW,Canterbury City Council,11570,,,ChIJww7FgzW6EmsRAhn8AfiQpdM
 Australia,AU,New South Wales,AU-NSW,Carrathool Shire Council,11600,,,ChIJww8ifxXh4WoRxuonBA1AZq0
+Australia,AU,New South Wales,AU-NSW,Central Coast (NSW),11650,,,ChIJ0fMBYjkzDWsRXIrb6MU5og0
 Australia,AU,New South Wales,AU-NSW,Cessnock City Council,11720,postal_code,2325,ChIJE2qeU4nYDGsRoAHTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Cessnock City Council,11720,postal_code,2326,ChIJvX2wliM2c2sRYIO6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Cessnock City Council,11720,postal_code,2327,ChIJq_gx8c43c2sREIO6P2t9ARw
@@ -79,6 +76,7 @@ Australia,AU,New South Wales,AU-NSW,City of Canada Bay Council,11520,postal_code
 Australia,AU,New South Wales,AU-NSW,City of Canada Bay Council,11520,postal_code,2137,ChIJ5T2LfdS6EmsR4I66P2t9ARw
 Australia,AU,New South Wales,AU-NSW,City of Canada Bay Council,11520,postal_code,2138,ChIJUc-39ISvEmsRwI66P2t9ARw
 Australia,AU,New South Wales,AU-NSW,City of Canada Bay Council,11520,,,ChIJkcdwokGlEmsRpT9rZWITGcg
+Australia,AU,New South Wales,AU-NSW,City of Canterbury-Bankstown,11570,,,ChIJg6H0gQC8EmsRDxvjeWNkiXA
 Australia,AU,New South Wales,AU-NSW,City of Lake Macquarie,14650,postal_code,2264,ChIJeUFfq9XWcmsRkIS6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,City of Lake Macquarie,14650,postal_code,2265,ChIJC0k-ZFYuc2sRMIO6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,City of Lake Macquarie,14650,postal_code,2267,ChIJcWCmX34mc2sRYIK6P2t9ARw
@@ -135,7 +133,6 @@ Australia,AU,New South Wales,AU-NSW,Coffs Harbour City Council,11800,postal_code
 Australia,AU,New South Wales,AU-NSW,Coffs Harbour City Council,11800,postal_code,2456,ChIJNyJtZrH1m2sREDbTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Coffs Harbour City Council,11800,,,ChIJLZJAg2QInGsRYzM5OCwva5M
 Australia,AU,New South Wales,AU-NSW,Coolamon Shire Council,12000,,,ChIJxZCFpoXZGGsRvqx7_8_0_MI
-Australia,AU,New South Wales,AU-NSW,Cooma-Monaro Council,17040,,,ChIJ89PVjpAJPWsRildtsWuikmw
 Australia,AU,New South Wales,AU-NSW,Coonamble Shire Council,12150,,,ChIJWwLPYNDWB2sRUisjLXDJhWg
 Australia,AU,New South Wales,AU-NSW,Cootamundra-Gundagai Regional Council,12160,postal_code,2590,ChIJY0E0RFG2GWsR0BzTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Cootamundra-Gundagai Regional Council,12160,postal_code,2722,ChIJc3elceQ5GGsRACfTzLcJBhw
@@ -146,7 +143,7 @@ Australia,AU,New South Wales,AU-NSW,Cowra Shire Council,12350,postal_code,2794,C
 Australia,AU,New South Wales,AU-NSW,Cowra Shire Council,12350,postal_code,2805,ChIJU_Vv1O6AEGsRACzTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Cowra Shire Council,12350,,,ChIJI1WJJoDzEGsRiGLNz-q51Eo
 Australia,AU,New South Wales,AU-NSW,Cumberland Council,12380,,,ChIJ3Wj2blO9EmsRg1QU6eGF7Sg
-Australia,AU,New South Wales,AU-NSW,Dubbo City Council,12390,,,ChIJm-1W6PZyD2sRSmWLbcNIGDg
+Australia,AU,New South Wales,AU-NSW,Dubbo Regional Council,12390,,,ChIJee-zhi0KD2sRVvYtdJmityo
 Australia,AU,New South Wales,AU-NSW,Dungog Shire Council,12700,,,ChIJedoNF1ejdGsRYFlLoJo-NBU
 Australia,AU,New South Wales,AU-NSW,Edward River Council,12730,postal_code,2710,ChIJ6YpXuxYa32oRkCXTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Edward River Council,12730,,,ChIJFf6zVSg932oR7IEf49NlsbY
@@ -158,6 +155,7 @@ Australia,AU,New South Wales,AU-NSW,Eurobodalla Shire Council,12750,,,ChIJM0B33S
 Australia,AU,New South Wales,AU-NSW,Fairfield City Council,12850,,,ChIJpVme8fOWEmsRuC6XImfst8Y
 Australia,AU,New South Wales,AU-NSW,Forbes Shire Council,12900,postal_code,2871,ChIJNdd6xR34GmsRIDPTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Forbes Shire Council,12900,,,ChIJDfmkztDwGmsRV7E50gWjpLY
+Australia,AU,New South Wales,AU-NSW,Georges River Council,12930,,,ChIJz7aSUK65EmsRvmVLUGh60FU
 Australia,AU,New South Wales,AU-NSW,Gilgandra Shire Council,12950,,,ChIJ16KWgk22CGsRAQrMfJHyPTw
 Australia,AU,New South Wales,AU-NSW,Glen Innes Severn Shire Council,13010,,,ChIJscC2x37cmGsRrv3UegA1Xxk
 Australia,AU,New South Wales,AU-NSW,Goulburn Mulwaree Council,13310,postal_code,2579,ChIJK2m_OKHwE2sRYBvTzLcJBhw
@@ -169,9 +167,7 @@ Australia,AU,New South Wales,AU-NSW,Griffith City Council,13450,,,ChIJ-wyMwgKwH2
 Australia,AU,New South Wales,AU-NSW,Gunnedah Shire Council,13550,postal_code,2380,ChIJY1cCpRsNCmsRIAnTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Gunnedah Shire Council,13550,postal_code,2381,ChIJ26ce4G45CmsRMAnTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Gunnedah Shire Council,13550,,,ChIJB3I0dWERCmsR_mSy89QA4nw
-Australia,AU,New South Wales,AU-NSW,Guyra Shire Council,#N/A,,,ChIJnVZDFKJqn2sRGD_s71kPOcU
 Australia,AU,New South Wales,AU-NSW,Gwydir Shire Council,13660,,,ChIJ8ZlSAfXUo2sRQ2KHsO9BfVs
-Australia,AU,New South Wales,AU-NSW,Harden Shire Council,13910H,,,ChIJFwLK961hF2sRpj4wceo_CvE
 Australia,AU,New South Wales,AU-NSW,Hawkesbury City Council,13800,postal_code,2753,ChIJ0VYLMGydEmsRwH-6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Hawkesbury City Council,13800,postal_code,2754,ChIJ6WpbY_t8DWsR8H-6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Hawkesbury City Council,13800,postal_code,2756,ChIJZYNnIAttDWsRIJW6P2t9ARw
@@ -180,7 +176,7 @@ Australia,AU,New South Wales,AU-NSW,Hawkesbury City Council,13800,postal_code,27
 Australia,AU,New South Wales,AU-NSW,Hawkesbury City Council,13800,postal_code,2775,ChIJNdGLPBQ9DWsR4CjTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Hawkesbury City Council,13800,,,ChIJFwozjJBtDWsRpmJo5NK4W6Y
 Australia,AU,New South Wales,AU-NSW,Hay Shire Council,13850,,,ChIJGe24nU6Q4GoRgzLm-mUNfZw
-Australia,AU,New South Wales,AU-NSW,Hurstville City Council,12930,,,ChIJv44EThe5EmsR_opVefoa5ZM
+Australia,AU,New South Wales,AU-NSW,Hilltops Council,13910,,,ChIJp2PweFW1EGsRAoYXWuk3inA
 Australia,AU,New South Wales,AU-NSW,Inner West Council,14170,postal_code,2040,ChIJG0EIidivEmsRUIu6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Inner West Council,14170,postal_code,2044,ChIJ15RJKWuwEmsR8Im6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Inner West Council,14170,postal_code,2131,ChIJV0VtxZe6EmsREIu6P2t9ARw
@@ -190,13 +186,11 @@ Australia,AU,New South Wales,AU-NSW,Inverell Shire Council,14220,postal_code,236
 Australia,AU,New South Wales,AU-NSW,Inverell Shire Council,14220,postal_code,2361,ChIJbUn8Rst2omsRkAfTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Inverell Shire Council,14220,postal_code,2403,ChIJ8QBQjaGFoWsRIAvTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Inverell Shire Council,14220,,,ChIJ7RGrT2FromsRsYW-NyBfpjQ
-Australia,AU,New South Wales,AU-NSW,Jerilderie Shire Council,#N/A,,,ChIJ5T_SoD9mIGsR23iIMisgdPU
 Australia,AU,New South Wales,AU-NSW,Junee Shire Council,14300,,,ChIJzQ7f0RL4GGsRynTxvdZrA94
 Australia,AU,New South Wales,AU-NSW,Kempsey Shire Council,14350,postal_code,2431,ChIJNeB03W_OnWsRIA7TzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Kempsey Shire Council,14350,postal_code,2440,ChIJy1LPt5ZlnmsRADnTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Kempsey Shire Council,14350,postal_code,2441,ChIJF9-tUWyAnmsR8A7TzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Kempsey Shire Council,14350,,,ChIJC_lFZoF6nmsRB9kFRSpUP8Y
-Australia,AU,New South Wales,AU-NSW,Kogarah City Council,#N/A,,,ChIJjWcQmq25EmsRbnzh9Na8PUE
 Australia,AU,New South Wales,AU-NSW,Ku-ring-gai Council,14500,postal_code,2069,ChIJ74klU_CoEmsRIIi6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Ku-ring-gai Council,14500,postal_code,2070,ChIJ8aU9ff2lEmsRMIi6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Ku-ring-gai Council,14500,postal_code,2071,ChIJi4beAbuoEmsRUJC6P2t9ARw
@@ -216,6 +210,7 @@ Australia,AU,New South Wales,AU-NSW,Lismore City Council,14850,postal_code,2480,
 Australia,AU,New South Wales,AU-NSW,Lismore City Council,14850,,,ChIJPeYNfDeekGsRV-QdCC4pfHg
 Australia,AU,New South Wales,AU-NSW,Lithgow City Council,14870,postal_code,2790,ChIJq3vxDKSjDWsRoCnTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Lithgow City Council,14870,postal_code,2845,ChIJIX6LEe4HEmsR4DDTzLcJBhw
+Australia,AU,New South Wales,AU-NSW,Lithgow City Council,14870,postal_code,2846,ChIJ0VJOzyjADWsREDHTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Lithgow City Council,14870,postal_code,2847,ChIJjfAhzRj5DWsRIDHTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Lithgow City Council,14870,,,ChIJ51L5V-ryDWsRJmDLb5f8Dmw
 Australia,AU,New South Wales,AU-NSW,Liverpool Plains Shire Council,14920,,,ChIJDS6tUD1SCmsRw83Wk_5v1jw
@@ -239,8 +234,8 @@ Australia,AU,New South Wales,AU-NSW,Moree Plains Shire Council,15300,postal_code
 Australia,AU,New South Wales,AU-NSW,Moree Plains Shire Council,15300,postal_code,2409,ChIJBSjDvpwOo2sRsAvTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Moree Plains Shire Council,15300,,,ChIJJ9Yod_YdpGsRqJ0Jnl_cAoU
 Australia,AU,New South Wales,AU-NSW,Mosman Municipal Council,15350,,,ChIJNe9GzhGsEmsRpsRKvYIKxnw
-Australia,AU,New South Wales,AU-NSW,Murray Shire Council,#N/A,,,ChIJedhXMVTU2GoRbt65wbMpwPw
-Australia,AU,New South Wales,AU-NSW,Murrumbidgee Shire Council,15560,,,ChIJ0U8vuAf3H2sR5MGzwZ-iTzM
+Australia,AU,New South Wales,AU-NSW,Murray River Council,15520,,,ChIJkRbPUXwt2WoRMoTQxxIIQxA
+Australia,AU,New South Wales,AU-NSW,Murrumbidgee Council,15560,,,ChIJhaNPRA4fIGsRdX079S_0NIc
 Australia,AU,New South Wales,AU-NSW,Muswellbrook Shire Council,15650,postal_code,2328,ChIJsUjhxQdiDGsRwAHTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Muswellbrook Shire Council,15650,postal_code,2333,ChIJOwPRAn-EDGsRkALTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Muswellbrook Shire Council,15650,,,ChIJB27NoeCODGsR-e9kHSLlS2A
@@ -291,7 +286,6 @@ Australia,AU,New South Wales,AU-NSW,Northern Beaches Council,15990,,,ChIJqxuhvfB
 Australia,AU,New South Wales,AU-NSW,Oberon Council,16100,postal_code,2787,ChIJ5eMhnAYnEmsRkDjTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Oberon Council,16100,,,ChIJWf9vTXOIEWsRlQ6EG4XG0bQ
 Australia,AU,New South Wales,AU-NSW,Orange City Council,16150,,,ChIJ0fTFOKPSEWsRfnBRaAcZIFw
-Australia,AU,New South Wales,AU-NSW,Palerang Council,#N/A,,,ChIJ56h39zNwFmsRRxXs5iZ4IrY
 Australia,AU,New South Wales,AU-NSW,Parkes Shire Council,16200,postal_code,2869,ChIJN3QBcPlpBWsRsDLTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Parkes Shire Council,16200,postal_code,2870,ChIJV8Y2HrKpGmsR4DLTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Parkes Shire Council,16200,postal_code,2875,ChIJk5KIBCjWGmsRUDPTzLcJBhw
@@ -309,7 +303,7 @@ Australia,AU,New South Wales,AU-NSW,Port Stephens Council,16400,postal_code,2318
 Australia,AU,New South Wales,AU-NSW,Port Stephens Council,16400,postal_code,2319,ChIJ2yhOKmt5c2sRcHu6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Port Stephens Council,16400,postal_code,2324,ChIJz5CQMH58c2sRoDfTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Port Stephens Council,16400,,,ChIJ0Tt7ebB6c2sREnSb-VieKEg
-Australia,AU,New South Wales,AU-NSW,Queanbeyan City Council,16490,,,ChIJ95fCZKZJFmsRNKGDarWkyPU
+Australia,AU,New South Wales,AU-NSW,Queanbeyan–Palerang Regional Council,16490,,,ChIJDw-stf5vFmsRqXZNJM6XJoI
 Australia,AU,New South Wales,AU-NSW,Randwick City Council,16550,,,ChIJfQeMKtGzEmsR3i4XKq6p-l4
 Australia,AU,New South Wales,AU-NSW,Richmond Valley Council,16610,postal_code,2470,ChIJWW06Z68FmmsRoBLTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Richmond Valley Council,16610,postal_code,2471,ChIJZznXKc1smmsRwBLTzLcJBhw
@@ -319,7 +313,8 @@ Australia,AU,New South Wales,AU-NSW,Richmond Valley Council,16610,,,ChIJC9YxlEkR
 Australia,AU,New South Wales,AU-NSW,Shellharbour City Council,16900,,,ChIJUY2DyasSE2sRMC6q_pANFOU
 Australia,AU,New South Wales,AU-NSW,Singleton Shire Council,17000,postal_code,2330,ChIJY02e3iWVDGsRQDjTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Singleton Shire Council,17000,,,ChIJK_mqZreVDGsRoPbcp__Zsm8
-Australia,AU,New South Wales,AU-NSW,Snowy River Shire Council,#N/A,,,ChIJzbdcgPPePGsRZOQK7yEuXiY
+Australia,AU,New South Wales,AU-NSW,Snowy Monaro Regional Council,17040,,,ChIJqcRjPZDvPGsRcODM2U-xYFQ
+Australia,AU,New South Wales,AU-NSW,Snowy Valleys Council,17080,,,ChIJy2bTydTWImsRhGavBFiB0_c
 Australia,AU,New South Wales,AU-NSW,Strathfield Municipal Council,17100,,,ChIJt5OKGRS7EmsReUbCyAhWCZs
 Australia,AU,New South Wales,AU-NSW,Sutherland Shire,17150,,,ChIJz18KO-_GEmsRe3usN31cxv0
 Australia,AU,New South Wales,AU-NSW,Tamworth Regional Council,17310,postal_code,2340,ChIJd5s_oVSRCmsRIATTzLcJBhw
@@ -335,7 +330,6 @@ Australia,AU,New South Wales,AU-NSW,Tenterfield Shire Council,17400,,,ChIJ6W2Zmc
 Australia,AU,New South Wales,AU-NSW,The Council of the Municipality of Hunters Hill,14100,,,ChIJg5dCOHevEmsRfc_jZGAPEJM
 Australia,AU,New South Wales,AU-NSW,The Council of the Municipality of Kiama,14400,,,ChIJFRo157FxE2sRMwfVc6Nyf3A
 Australia,AU,New South Wales,AU-NSW,The Council of the Shire of Hornsby,14000,,,ChIJDwr6tWJaDWsRXtdc3D6SOMo
-Australia,AU,New South Wales,AU-NSW,The Council of the Shire of Wakool,15520,,,ChIJu6QlIv8X3GoREb7OSnTPUuM
 Australia,AU,New South Wales,AU-NSW,The Hills Shire,17420,postal_code,2118,ChIJ14bc8oSjEmsR8I-6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,The Hills Shire,17420,postal_code,2125,ChIJrcXszj-hEmsRAJC6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,The Hills Shire,17420,postal_code,2151,ChIJwYMDn_ujEmsRUJS6P2t9ARw
@@ -345,8 +339,6 @@ Australia,AU,New South Wales,AU-NSW,The Hills Shire,17420,postal_code,2155,ChIJl
 Australia,AU,New South Wales,AU-NSW,The Hills Shire,17420,postal_code,2156,ChIJRU4aJldfDWsRsJS6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,The Hills Shire,17420,postal_code,2157,ChIJqe3QD55ZDWsR8JG6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,The Hills Shire,17420,,,ChIJlxNxTBteDWsRZ4vDrgj2qb0
-Australia,AU,New South Wales,AU-NSW,Tumbarumba Shire Council,17080,,,ChIJt2hsEDskI2sRG4MtQ48ieYA
-Australia,AU,New South Wales,AU-NSW,Tumut Council,#N/A,,,ChIJY6ZhC1iqImsR_jpWByapnDc
 Australia,AU,New South Wales,AU-NSW,Tweed Shire Council,17550,postal_code,2484,ChIJGbZwB4HlkGsRADbTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Tweed Shire Council,17550,postal_code,2485,ChIJj7VH4s4DkWsRoBXTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Tweed Shire Council,17550,postal_code,2486,ChIJeRSf7vv9kGsRsBXTzLcJBhw
@@ -376,7 +368,6 @@ Australia,AU,New South Wales,AU-NSW,Warrumbungle Shire Council,18020,,,ChIJDxLXu
 Australia,AU,New South Wales,AU-NSW,Waverley Council,18050,postal_code,2026,ChIJWTi8xgGyEmsRYIi6P2t9ARw
 Australia,AU,New South Wales,AU-NSW,Waverley Council,18050,,,ChIJg7-VbZatEmsRJQw1y1_6uBk
 Australia,AU,New South Wales,AU-NSW,Weddin Shire Council,18100,,,ChIJebCq9IYVGmsR7x_9d0N-pbU
-Australia,AU,New South Wales,AU-NSW,Wellington Council,#N/A,,,ChIJSyapa9quD2sRleRcfGS9QN4
 Australia,AU,New South Wales,AU-NSW,Wentworth Shire Council,18200,,,ChIJkdKNtsGYwmoR1sE8kTLvdS4
 Australia,AU,New South Wales,AU-NSW,Wingecarribee Shire Council,18350,postal_code,2575,ChIJLd_Oh5S6E2sRgBrTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Wingecarribee Shire Council,18350,postal_code,2576,ChIJD8aBGYmhE2sRcDbTzLcJBhw
@@ -393,11 +384,9 @@ Australia,AU,New South Wales,AU-NSW,Wollondilly Shire Council,18400,postal_code,
 Australia,AU,New South Wales,AU-NSW,Wollondilly Shire Council,18400,,,ChIJ0_6nGBlREmsRC45Pefpvc6c
 Australia,AU,New South Wales,AU-NSW,Wollongong City Council,18450,,,ChIJq88ZmCQcE2sRV6RG082xwM8
 Australia,AU,New South Wales,AU-NSW,Woollahra Municipal Council,18500,,,ChIJvd-UBsutEmsR-Y_wcrb_x0U
-Australia,AU,New South Wales,AU-NSW,Wyong Shire Council,11650W,,,ChIJmZCXEd7TcmsRr0qD8TT0naM
 Australia,AU,New South Wales,AU-NSW,Yass Valley Council,18710,postal_code,2582,ChIJB21BBvkNF2sRABzTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Yass Valley Council,18710,postal_code,2584,ChIJRSxWOc9BF2sRUBzTzLcJBhw
 Australia,AU,New South Wales,AU-NSW,Yass Valley Council,18710,,,ChIJWS4-TOcEF2sRNGakO9e2BIc
-Australia,AU,New South Wales,AU-NSW,Young Shire Council,13910Y,,,ChIJSyxQFSr4GWsR1HSW5rEt8OE
 Australia,AU,New South Wales,AU-NSW,,,,,ChIJDUte93TLDWsRLZ_EIhGvgBc
 Australia,AU,Northern Territory,AU-NT,Alice Springs Municipality,70200,,,ChIJB3MX8CscMisRt_xlRyflPuk
 Australia,AU,Northern Territory,AU-NT,Alyangula (Unincorporated),79399A,,,ChIJD-jkDG1i5GkRT3q8ZPWRWco
@@ -532,6 +521,7 @@ Australia,AU,Queensland,AU-QLD,Cassowary Coast Regional,32260,postal_code,4858,C
 Australia,AU,Queensland,AU-QLD,Cassowary Coast Regional,32260,postal_code,4859,ChIJKzCRU3TGeGkRYCoJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Cassowary Coast Regional,32260,postal_code,4860,ChIJCaaS2AzAeGkRoCoJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Cassowary Coast Regional,32260,,,ChIJKbCOxr-3fmkRVKikkXha1Ts
+Australia,AU,Queensland,AU-QLD,Central Highlands Regional,32270,postal_code,4709,ChIJpQ1-iDCHxWsRQCAJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Central Highlands Regional,32270,postal_code,4717,ChIJ-zE_G6DExWsRICEJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Central Highlands Regional,32270,postal_code,4720,ChIJy4p4FS27yGsRkCEJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Central Highlands Regional,32270,postal_code,4722,ChIJxxLBo6hKyGsRACIJ0_TuABw
@@ -797,6 +787,7 @@ Australia,AU,Queensland,AU-QLD,Townsville City,37010,,,ChIJmd5rpCB8fWkREnXy_ASjV
 Australia,AU,Queensland,AU-QLD,Weipa Town,37300,,,ChIJC1qiPFeuvWkRk5e0JqdmeBc
 Australia,AU,Queensland,AU-QLD,Western Downs Regional,37310,postal_code,4405,ChIJmw5oETDuvWsR0BIJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Western Downs Regional,37310,postal_code,4406,ChIJ86HQsU6uvWsR4BIJ0_TuABw
+Australia,AU,Queensland,AU-QLD,Western Downs Regional,37310,postal_code,4408,ChIJObDYatf6lWsRIBMJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Western Downs Regional,37310,postal_code,4410,ChIJbzFgeRvmvWsRQBMJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Western Downs Regional,37310,postal_code,4413,ChIJsQ3OXO9QvmsRsBMJ0_TuABw
 Australia,AU,Queensland,AU-QLD,Western Downs Regional,37310,postal_code,4415,ChIJIReBh1SUvmsR4BMJ0_TuABw
@@ -820,7 +811,6 @@ Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5132
 Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5134,ChIJU07ECKA1t2oRQAxRo1c2Axw
 Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5136,ChIJO12ktPRKt2oRUAxRo1c2Axw
 Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5137,ChIJi0HW2xs1t2oRYAxRo1c2Axw
-Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5138,ChIJPZUco0Y0t2oRcAxRo1c2Axw
 Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5140,ChIJF4UrEsvMsGoRkAxRo1c2Axw
 Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5141,ChIJoak24Wkzt2oRoAxRo1c2Axw
 Australia,AU,South Australia,AU-SA,Adelaide Hills Council,40120,postal_code,5142,ChIJBRfXjpM0t2oRsAxRo1c2Axw
@@ -966,7 +956,6 @@ Australia,AU,South Australia,AU-SA,District Council of Coober Pedy,41330,,,ChIJM
 Australia,AU,South Australia,AU-SA,District Council of Franklin Harbour,41960,,,ChIJN3H7AVRypWoRhxuFbE0rxzM
 Australia,AU,South Australia,AU-SA,District Council of Grant,42250,postal_code,5291,ChIJZzWVbUosnqoREBZRo1c2Axw
 Australia,AU,South Australia,AU-SA,District Council of Grant,42250,,,ChIJ8ZP97wounqoRZXvqKbOxKr8
-Australia,AU,South Australia,AU-SA,District Council of Karoonda East Murray,43080,,,ChIJ3zc4zyX2x2oRCNr7Jqu-7FQ
 Australia,AU,South Australia,AU-SA,District Council of Kimba,43220,,,ChIJ42J-7LbTpWoRVsRfa9xNquY
 Australia,AU,South Australia,AU-SA,District Council of Kingston,43360,,,ChIJk0N58Qd1ymoRcCNFXXS0J_4
 Australia,AU,South Australia,AU-SA,District Council of Lower Eyre Peninsula,43710,postal_code,5606,ChIJs-_2w8bDq2oRoCdRo1c2Axw
@@ -1006,7 +995,6 @@ Australia,AU,South Australia,AU-SA,Northern Areas Council,45120,,,ChIJce6YSh4KvG
 Australia,AU,South Australia,AU-SA,Port Augusta City Council,46090,postal_code,5700,ChIJqShZ1DsRvWoRwCVRo1c2Axw
 Australia,AU,South Australia,AU-SA,Port Augusta City Council,46090,postal_code,5710,ChIJV48zIcuuzioRICZRo1c2Axw
 Australia,AU,South Australia,AU-SA,Port Augusta City Council,46090,,,ChIJbfbp_TbovGoREbSgdTr7gxQ
-Australia,AU,South Australia,AU-SA,Port Pirie Regional Council,46450,postal_code,5464,ChIJAXOOHRbHu2oRgB5Ro1c2Axw
 Australia,AU,South Australia,AU-SA,Port Pirie Regional Council,46450,postal_code,5523,ChIJcVg5K7ucu2oRsCBRo1c2Axw
 Australia,AU,South Australia,AU-SA,Port Pirie Regional Council,46450,postal_code,5540,ChIJvwt7Xlx-u2oR4CBRo1c2Axw
 Australia,AU,South Australia,AU-SA,Port Pirie Regional Council,46450,,,ChIJmZlpZrmdu2oRLqeMMeJVEPk
@@ -1035,8 +1023,8 @@ Australia,AU,South Australia,AU-SA,The Rural City of Murray Bridge,45040,,,ChIJq
 Australia,AU,South Australia,AU-SA,Town of Gawler,42030,postal_code,5116,ChIJmy4mJl_-uWoRkAtRo1c2Axw
 Australia,AU,South Australia,AU-SA,Town of Gawler,42030,postal_code,5118,ChIJaQeSeNH-uWoRsAtRo1c2Axw
 Australia,AU,South Australia,AU-SA,Town of Gawler,42030,,,ChIJXRSkBUdVt2oR48RphwHGCBo
-Australia,AU,South Australia,AU-SA,Uia Whyalla,#N/A,,,ChIJCbmJnzNRu2oRCl29WCjnwxE
 Australia,AU,South Australia,AU-SA,Wattle Range Council,48340,,,ChIJEdK1gdDIymoRfKM2kVquR2U
+Australia,AU,South Australia,AU-SA,Whyalla,48540,,,ChIJE_pDrp9Ru2oRubThdNns8Jk
 Australia,AU,South Australia,AU-SA,Wudinna District Council,48640,,,ChIJRSOkuWfEp2oRE5xqgJumNHI
 Australia,AU,South Australia,AU-SA,Yorke Peninsula Council,48830,,,ChIJl272vw7VsWoReBS5KDaEp6g
 Australia,AU,South Australia,AU-SA,,,,,ChIJ88foW55Yp2oR2ND6PZl5fts
@@ -1045,9 +1033,9 @@ Australia,AU,Tasmania,AU-TAS,Brighton Council,60410,postal_code,7017,ChIJzQczXNY
 Australia,AU,Tasmania,AU-TAS,Brighton Council,60410,postal_code,7030,ChIJ31gfor7VcaoR4FisFlHJAxw
 Australia,AU,Tasmania,AU-TAS,Brighton Council,60410,,,ChIJXzGOTPQRbqoRuSeN1DuUZFM
 Australia,AU,Tasmania,AU-TAS,Burnie City Council,60610,,,ChIJL-vsX5a9e6oRtRsO6Ah-lpA
-Australia,AU,Tasmania,AU-TAS,Central Coast Council,11650C,postal_code,7315,ChIJp1lGPUOye6oR8FasFlHJAxw
-Australia,AU,Tasmania,AU-TAS,Central Coast Council,11650C,postal_code,7316,ChIJcSwqxli3e6oRIFesFlHJAxw
-Australia,AU,Tasmania,AU-TAS,Central Coast Council,11650C,,,ChIJVeL21kCxe6oRSXXwA09u2eM
+Australia,AU,Tasmania,AU-TAS,Central Coast (NSW),11650,postal_code,7315,ChIJ0fMBYjkzDWsRXIrb6MU5og0
+Australia,AU,Tasmania,AU-TAS,Central Coast (NSW),11650,postal_code,7316,ChIJ0fMBYjkzDWsRXIrb6MU5og0
+Australia,AU,Tasmania,AU-TAS,Central Coast (NSW),11650,,,ChIJ0fMBYjkzDWsRXIrb6MU5og0
 Australia,AU,Tasmania,AU-TAS,Central Highlands Council,61010,,,ChIJbWhiwEEicKoRdqBqlC-FhDc
 Australia,AU,Tasmania,AU-TAS,Circular Head Council,61210,,,ChIJ89gtQ95lfKoR3zwALLo1jOU
 Australia,AU,Tasmania,AU-TAS,Derwent Valley Council,61510,postal_code,7140,ChIJj_70XqQbcKoRME-sFlHJAxw
@@ -1242,7 +1230,6 @@ Australia,AU,Victoria,AU-VIC,Corangamite Shire,21830,postal_code,3266,ChIJYzagJ-
 Australia,AU,Victoria,AU-VIC,Corangamite Shire,21830,postal_code,3268,ChIJM6K9_Syy0moRIJpPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Corangamite Shire,21830,postal_code,3269,ChIJsxnnMdifgqoRMJpPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Corangamite Shire,21830,postal_code,3324,ChIJGfKW3bO002oRkJ5PaKd5BRw
-Australia,AU,Victoria,AU-VIC,Corangamite Shire,21830,postal_code,3325,ChIJedsUziZP0moRsJ5PaKd5BRw
 Australia,AU,Victoria,AU-VIC,Corangamite Shire,21830,postal_code,3361,ChIJWcKHTQox0moRoKBPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Corangamite Shire,21830,,,ChIJ1S4caGb60moRCKaNAI3i35w
 Australia,AU,Victoria,AU-VIC,Darebin City,21890,,,ChIJMbljvrRF1moRa1G6KbyRnl0
@@ -1414,7 +1401,6 @@ Australia,AU,Victoria,AU-VIC,Moyne Shire,25490,postal_code,3282,ChIJ24zfQItJzWoR
 Australia,AU,Victoria,AU-VIC,Moyne Shire,25490,postal_code,3283,ChIJExUw1Rs3zWoRUJtPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Moyne Shire,25490,postal_code,3284,ChIJnRuiwAgtzWoRcJtPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Moyne Shire,25490,postal_code,3286,ChIJHR0OIFInzWoRoJtPaKd5BRw
-Australia,AU,Victoria,AU-VIC,Moyne Shire,25490,postal_code,3287,ChIJk2kufNoVzWoRwJtPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Moyne Shire,25490,,,ChIJVQZLefFDzWoRpkkbnz-QEm4
 Australia,AU,Victoria,AU-VIC,Murrindindi Shire,25620,postal_code,3711,ChIJV9qYsbQRKGsRwLZPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Murrindindi Shire,25620,postal_code,3712,ChIJ_wta7zQNKGsR0LZPaKd5BRw
@@ -1429,7 +1415,6 @@ Australia,AU,Victoria,AU-VIC,Nillumbik Shire,25710,,,ChIJj9onUVLL12oRpVjfuPW0xeo
 Australia,AU,Victoria,AU-VIC,Northern Grampians Shire,25810,postal_code,3374,ChIJgeV_i2Xo0WoR9L6E1A1d-k8
 Australia,AU,Victoria,AU-VIC,Northern Grampians Shire,25810,postal_code,3380,ChIJHZwj5aXF0WoRoMRPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Northern Grampians Shire,25810,postal_code,3381,ChIJ47_cQlba0WoRIKJPaKd5BRw
-Australia,AU,Victoria,AU-VIC,Northern Grampians Shire,25810,postal_code,3385,ChIJgX5LD6EmzmoRUKJPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Northern Grampians Shire,25810,postal_code,3477,ChIJD9UXwHhE0GoRMzGC8UCiviY
 Australia,AU,Victoria,AU-VIC,Northern Grampians Shire,25810,postal_code,3478,ChIJsaHVCWhF0GoRYKhPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Northern Grampians Shire,25810,,,ChIJYxQW4HXS0WoRPk05iUErDq4
@@ -1484,7 +1469,6 @@ Australia,AU,Victoria,AU-VIC,Southern Grampians Shire,26260,postal_code,3289,ChI
 Australia,AU,Victoria,AU-VIC,Southern Grampians Shire,26260,postal_code,3294,ChIJzyvqYYK9zWoRUJxPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Southern Grampians Shire,26260,postal_code,3300,ChIJE593p5ECzWoRcJxPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Southern Grampians Shire,26260,postal_code,3301,ChIJwSkOzXrhzGoRkJxPaKd5BRw
-Australia,AU,Victoria,AU-VIC,Southern Grampians Shire,26260,postal_code,3314,ChIJF6qsyKXbzWoRcJ1PaKd5BRw
 Australia,AU,Victoria,AU-VIC,Southern Grampians Shire,26260,postal_code,3315,ChIJd-Zzqv9dzGoRwMVPaKd5BRw
 Australia,AU,Victoria,AU-VIC,Southern Grampians Shire,26260,,,ChIJSaxAtE2tzWoR18H9WKzIUh8
 Australia,AU,Victoria,AU-VIC,Stonnington City,26350,,,ChIJcbovqORp1moR9Z15BNtVA5A
@@ -1721,7 +1705,6 @@ Australia,AU,Western Australia,AU-WA,Shire of Beverley,50560,,,ChIJ2QTaRxILMyoRN
 Australia,AU,Western Australia,AU-WA,Shire of Boddington,50630,,,ChIJefavTq0yMioRXpDCJG8zlR4
 Australia,AU,Western Australia,AU-WA,Shire of Boyup Brook,50770,,,ChIJ46fWXIvzMCoRetl_Svxajlk
 Australia,AU,Western Australia,AU-WA,Shire of Bridgetown-Greenbushes,50840,,,ChIJfQYJJspCMCoRiCJQLNri3MA
-Australia,AU,Western Australia,AU-WA,Shire of Brookton,50910,,,ChIJ431EisKPMyoR-rFIUur625A
 Australia,AU,Western Australia,AU-WA,Shire of Broome,50980,postal_code,6725,ChIJAUtybGDweSwR8Ez2fDv2ABw
 Australia,AU,Western Australia,AU-WA,Shire of Broome,50980,postal_code,6726,ChIJMf83TAMveiwRAE32fDv2ABw
 Australia,AU,Western Australia,AU-WA,Shire of Broome,50980,,,ChIJ1e3HcKMjcCwRWAfrBssc2Jk
@@ -1832,6 +1815,15 @@ Australia,AU,Western Australia,AU-WA,Town of Cottesloe,52170,postal_code,6011,Ch
 Australia,AU,Western Australia,AU-WA,Town of Cottesloe,52170,,,ChIJxf2tdx-kMioRJOZpQ6GJ2hQ
 Australia,AU,Western Australia,AU-WA,Town of East Fremantle,53150,,,ChIJPezSROajMioRUF8IUFSZ96o
 Australia,AU,Western Australia,AU-WA,Town of Mosman Park,55740,,,ChIJ3augjAakMioRFhu6VRRanLY
+Australia,AU,Western Australia,AU-WA,Town of Narrogin,37570,,,ChIJ5X0DbMtSMSoR-wEK4IOitWo
+Australia,AU,Western Australia,AU-WA,Town of Port Hedland,57280,postal_code,6721,ChIJB8MMBFndiisRoEz2fDv2ABw
+Australia,AU,Western Australia,AU-WA,Town of Port Hedland,57280,postal_code,6722,ChIJx_-yakO3iisRwEz2fDv2ABw
+Australia,AU,Western Australia,AU-WA,Town of Port Hedland,57280,,,ChIJk9DO_Yoq9SsRX_KCepEBXlA
+Australia,AU,Western Australia,AU-WA,Town of Victoria Park,58510,postal_code,6100,ChIJaa3x2GC8MioRcKUUgLjwBBw
+Australia,AU,Western Australia,AU-WA,Town of Victoria Park,58510,postal_code,6101,ChIJN9Z2YGC8MioRIKUUgLjwBBw
+Australia,AU,Western Australia,AU-WA,Town of Victoria Park,58510,,,ChIJq7eDUJu7MioR86Tu9g2p2pQ
+Australia,AU,Western Australia,AU-WA,,,,,ChIJ0YTziS4qOSoRmaMAMt9KDm4
+Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM
 Australia,AU,Western Australia,AU-WA,Town of Narrogin,37570,,,ChIJ5X0DbMtSMSoR-wEK4IOitWo
 Australia,AU,Western Australia,AU-WA,Town of Port Hedland,57280,postal_code,6721,ChIJB8MMBFndiisRoEz2fDv2ABw
 Australia,AU,Western Australia,AU-WA,Town of Port Hedland,57280,postal_code,6722,ChIJx_-yakO3iisRwEz2fDv2ABw
