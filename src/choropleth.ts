@@ -663,7 +663,7 @@ function activateSelectedState(fipsCode, zoom = true) {
   }
 
   // special case Washington D.C.
-  if (fipsCode == dcStateFipsCode) {
+  if (fipsCode == dcStateFipsCode && selectedCountryCode == 'US') {
     activateSelectedCounty(dcCountyFipsCode, zoom);
   }
 }
