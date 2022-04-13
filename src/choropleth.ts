@@ -250,7 +250,7 @@ export function resetToCountryLevel() {
     .on("click", null)
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(latestCountyData));
+    .on("mousemove", inCountyMovementHandler);
   if (displayLevels.includes(COUNTY_LEVEL)) {
     mapSvg.select("#state").selectAll("path").attr("fill", (d) => (canadianTerritories.includes(d.id as string) ? getFillColor(d.id): "transparent"));
   }
@@ -638,7 +638,7 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("click", null)
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(latestCountyData));
+    .on("mousemove", inCountyMovementHandler);
 
   mapSvg
     .select("#county")
@@ -647,7 +647,7 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("click", countySelectionOnClickHandler)
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(latestCountyData));
+    .on("mousemove", inCountyMovementHandler);
 
   if (displayLevels.includes(COUNTY_LEVEL)) {
     // disable any active state selection, then activate
@@ -880,6 +880,7 @@ function drawMapCalloutInfo(data, fipsCode) {
   d3.select("div#callout-safety-value").text(renderValue(trendval));
 
   const hasNa = !Object.keys(trends).every((key) => trends[key] !== 0);
+
   if (hasNa) {
     d3.select("#not-enough-data-message").style("display", "inline-block");
   } else {
@@ -988,6 +989,21 @@ function handleZipMapTimeout(event, d) {
   if (d3.select("#map-callout").style("display") == "none") {
     showMapCallout(latestZipData, event, d);
   }
+}
+
+function handleCountyMapTimeout(event, d) {
+  mapTimeoutRef = "";
+  if (d3.select("#map-callout").style("display") == "none") {
+    showMapCallout(latestCountyData, event, d);
+  }
+}
+
+function inCountyMovementHandler(event, d) {
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
+  mapTimeoutRef = setTimeout(handleCountyMapTimeout, 200, event, d);
 }
 
 function handleMapTimeout(data) {

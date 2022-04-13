@@ -214,19 +214,19 @@ import { e } from "mathjs";
         >
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv"
-          on:click={(e) => closeDownloadPopup()}
-          ><span class="material-icons-outlined header-download-popup-icon"
-            >file_download</span
-          >{$_('content.download_popup.countries.uk')}</a
-        >
-        <a
-          class="header-download-popup-link"
           href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/IE_vaccination_search_insights.csv"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
           >{$_('content.download_popup.countries.ireland')}</a
+        >
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon"
+            >file_download</span
+          >{$_('content.download_popup.countries.uk')}</a
         >
         <a
           class="header-download-popup-link"
