@@ -25,8 +25,8 @@ import {
   levelNameFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
-  getAtlas,
-  getGbPostalCentroids
+  ATLAS_BY_COUNTRY_CODE,
+  getGbPostalCentroids,
 } from "./geo-utils";
 import * as d3 from "d3";
 import {
@@ -58,6 +58,7 @@ const mobileScreenWidth = 450; //material grey 300
 // Using different styling for areas with no borders with the main map
 const alaskaFipsCode: string = "02";
 const northernIrelandFipsCode: string = "N";
+const canadianTerritories: Array<string> = ["60", "61", "62"];
 
 const STATE_LEVEL = 1;
 const COUNTY_LEVEL = 2;
@@ -96,6 +97,26 @@ export const mapBounds = {
   margin: 30,
 };
 
+const AU_PROJECTION = d3.geoAlbers()
+  .scale(1000)
+  .rotate([-133, 50])
+  .center([0, 25])
+  .translate([mapBounds.width / 2, mapBounds.height / 2])
+
+const IE_PROJECTION = d3.geoAlbers()
+  .center([-4, 53.4])
+  .rotate([4.4, 0])
+  .parallels([50, 60])
+  .scale(8800)
+  .translate([mapBounds.width / 2, mapBounds.height / 2])
+
+const CA_PROJECTION = d3.geoAlbers()
+  .parallels([30, 77])
+  .rotate([96, 0, 0])
+  .center([87, 37])
+  .translate([mapBounds.width / 2, mapBounds.height / 2])
+  .scale(840);
+
 // GB postal code geo path with projection
 const gbPostalPath = d3.geoPath()
   .projection(getGBprojection().rotate([7.145, -45.78, -3.95]));
@@ -110,7 +131,6 @@ export function createMap(
   resetNavigationPlaceId = selectedCountryMetadata.placeId;
   selectedCountryCode = selectedCountryMetadata.countryCode;
   mapData.subscribe((v) => trendData = v)
-  console.log(`trend data at create is: ${trendData.length}`)
   displayLevels = selectedCountryMetadata.displayLevels;
   
   selectedTrend = trend;
@@ -236,9 +256,9 @@ export function resetToCountryLevel() {
     .on("click", null)
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(latestCountyData));
+    .on("mousemove", inCountyMovementHandler);
   if (displayLevels.includes(COUNTY_LEVEL)) {
-    mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
+    mapSvg.select("#state").selectAll("path").attr("fill", (d) => (canadianTerritories.includes(d.id as string) ? getFillColor(d.id): "transparent"));
   }
   resetZoom();
   selectionCallback(resetNavigationPlaceId);
@@ -300,28 +320,30 @@ function initializeMap() {
   g.append("g").attr("id", "state");
   g.append("g").attr("id", "gbPostalCentroids");
 
-  if (selectedCountryCode == "GB") {
-    path = path.projection(getGBprojection());
-  } else if (selectedCountryCode == "IE") {
-    const ie_projection = d3.geoAlbers()
-      .center([-4, 53.4])
-      .rotate([4.4, 0])
-      .parallels([50, 60])
-      .scale(8800)
-      .translate([mapBounds.width / 2, mapBounds.height / 2])
-    path = path.projection(ie_projection);
-  } else if (selectedCountryCode == "AU") {
-    const au_projection = d3.geoAlbers()
-      .scale(1000)
-      .rotate([-133, 50])
-      .center([0, 25])
-      .translate([mapBounds.width / 2, mapBounds.height / 2])
-    path = path.projection(au_projection);
-  } else {
-    path = d3.geoPath();
+  switch (selectedCountryCode) {
+    case "AU":
+      path = path.projection(AU_PROJECTION);
+      break;
+    case "GB":
+      path = path.projection(getGBprojection());
+      break;
+    case "IE":
+      path = path.projection(IE_PROJECTION);
+      break;
+    case "CA":
+      path = path.projection(CA_PROJECTION);
+      break;
+    case "US":
+      path = d3.geoPath();
+      break;
+    default:
+      console.log("Projection not specified");
+      break;
   }
 
-  const topology = getAtlas(selectedCountryCode);
+  const topology = ATLAS_BY_COUNTRY_CODE[selectedCountryCode]
+  // check to ensure country is valid ATLAS
+  if ( !topology ) { console.log("Country atlas not found")};
 
   const nationFeatures = feature(
     topology,
@@ -388,7 +410,9 @@ function getFillColor(fipsCode) {
     data = latestStateData.get(stateFipsCodeFromCounty(fipsCode, selectedCountryCode));
   } else if (!displayLevels.includes(COUNTY_LEVEL)) {
     data = latestStateData.get(fipsCode);
-  } else {
+  } else if (canadianTerritories.indexOf(fipsCode) > -1 ) {
+    data = latestStateData.get(fipsCode);
+  }else {
     data = latestCountyData.get(fipsCode);
   }
   if (data) {
@@ -414,6 +438,22 @@ function colorizeMap() {
       let id = fipsCodeFromElementId((this as Element).id);
       return getFillColor(id);
     });
+
+  if(selectedCountryCode == "CA") {
+    d3.select(displayLevels.includes(STATE_LEVEL) ? "#state" : null)
+    .selectAll("path")
+    .filter(function(p) {
+      let result = canadianTerritories.includes(p.id as string) 
+      return result
+      })
+    .join("path")
+    .attr("fill", function (d) {
+
+      let id = fipsCodeFromElementId((this as Element).id);
+      return getFillColor(id);
+    });
+
+  }
 
   drawLegend(colorScale);
   if (currentGeoLevel == GeoLevel.SubRegion2) {
@@ -607,7 +647,7 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("click", null)
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(latestCountyData));
+    .on("mousemove", inCountyMovementHandler);
 
   mapSvg
     .select("#county")
@@ -616,12 +656,13 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("click", countySelectionOnClickHandler)
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(latestCountyData));
+    .on("mousemove", inCountyMovementHandler);
 
   if (displayLevels.includes(COUNTY_LEVEL)) {
     // disable any active state selection, then activate
     mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
     mapSvg.select("#state").select(`path#fips-${fipsCode}`).attr("fill", "none");
+    
   }
 
   if (zoom) {
@@ -631,7 +672,7 @@ function activateSelectedState(fipsCode, zoom = true) {
   }
 
   // special case Washington D.C.
-  if (fipsCode == dcStateFipsCode) {
+  if (fipsCode == dcStateFipsCode && selectedCountryCode == 'US') {
     activateSelectedCounty(dcCountyFipsCode, zoom);
   }
 }
@@ -848,6 +889,7 @@ function drawMapCalloutInfo(data, fipsCode) {
   d3.select("div#callout-safety-value").text(renderValue(trendval));
 
   const hasNa = !Object.keys(trends).every((key) => trends[key] !== 0);
+
   if (hasNa) {
     d3.select("#not-enough-data-message").style("display", "inline-block");
   } else {
@@ -863,12 +905,14 @@ function showMapCallout(data, event, d): void {
     d3.select("div#map-callout");
 
   // set the callout title text
-  callout.select("#map-callout-title").text(d.properties.name);
+  // Add a rule to include some text for Canadian FSAs on the card for Canada
+  callout.select("#map-callout-title").text((selectedCountryCode == "CA" && d.id != d.properties.prID) ? (d.properties.prname+" FSA: "+d.properties.name) : d.properties.name);
 
   // Hide the drilldown message for zip/postcode level, and current selected county
   if ((["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1)
       || setLastSelectedCounty == elemFipsCode
-      || ![COUNTY_LEVEL, POSTCODE_LEVEL].every(level => displayLevels.includes(level))) {
+      || (selectedCountryCode == "CA" && (elemFipsCode.match(/\w\d\w/) != null))
+      || (![COUNTY_LEVEL, POSTCODE_LEVEL].every(level => displayLevels.includes(level)) && (["IE"].indexOf(selectedCountryCode) > -1 ))) {
     d3.select("#map-callout-drilldown-msg").style("display", "none");
   } else {
     d3.select("#map-callout-drilldown-msg").style("display", null);
@@ -954,6 +998,21 @@ function handleZipMapTimeout(event, d) {
   if (d3.select("#map-callout").style("display") == "none") {
     showMapCallout(latestZipData, event, d);
   }
+}
+
+function handleCountyMapTimeout(event, d) {
+  mapTimeoutRef = "";
+  if (d3.select("#map-callout").style("display") == "none") {
+    showMapCallout(latestCountyData, event, d);
+  }
+}
+
+function inCountyMovementHandler(event, d) {
+  if (mapTimeoutRef) {
+    clearTimeout(mapTimeoutRef);
+    mapTimeoutRef = "";
+  }
+  mapTimeoutRef = setTimeout(handleCountyMapTimeout, 200, event, d);
 }
 
 function handleMapTimeout(data) {

@@ -30,15 +30,15 @@ export interface CaseStudy {
  */
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    title: "PGP: The Public Good Projects",
-    description: "Using Google’s Vaccine Search Insights to increase vaccine confidence among BIPOC communities",
+    title: "pgp_title",
+    description: "pgp_desc",
     logoImgSrc: 'https://gstatic.com/vsi/images/pgp-logo.png',
     logoImgSrc2x: 'https://gstatic.com/vsi/images/pgp-logo_2x.png',
     caseStudyHref:  'https://gstatic.com/vsi/pdf/pgp-case-study.pdf',
   },
   {
-    title: "Grapevine Health",
-    description: "Augmenting intelligence about high yield locations for vaccination outreach",
+    title: "grapevine_title",
+    description: "grapevine_desc",
     logoImgSrc: 'https://gstatic.com/vsi/images/grapevine-health-logo.png',
     logoImgSrc2x: 'https://gstatic.com/vsi/images/grapevine-health-logo_2x.png',
     caseStudyHref:  'https://gstatic.com/vsi/pdf/grapevine-health-case-study.pdf',
