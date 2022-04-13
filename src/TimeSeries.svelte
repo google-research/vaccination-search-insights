@@ -585,6 +585,7 @@
         }
         return 1;
       })
+      .attr("stroke-linecap", "round")
       .attr("id", (d) => d.place_id)
       .attr("class", (regionalTrend) => {
         if (regionalTrend.place_id === selectedRegion.place_id) {
