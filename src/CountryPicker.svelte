@@ -26,6 +26,8 @@
     convertStorageDate,
     getClosestDate,
   } from "./utils";
+  import { _ } from "svelte-i18n";
+  import { contourDensity } from "d3";
 
   export let trendLine: (trends: RegionalTrends) => TrendValue[];
   export let COUNTRY_LIST;
@@ -515,15 +517,15 @@
 <div bind:this={chartContainerElement}>
   <div class="world-picker">
     <div class="menu">
-      <div class="menu-title">Countries</div>
+      <div class="menu-title">{$_('content.countries')}</div>
       <div class="menu-list" id="menu"/>
-      <div class="menu-info">Select a country to see more insights</div>
+      <div class="menu-info">{$_('content.select_country')}</div>
     </div>
 
     <div class="chart">
       <div class="chart-top">
-        <div class="chart-title">COVID-19 vaccination searches</div>
-        <div class="chart-y-axis-name">Interest</div>
+        <div class="chart-title">{$_('content.COVID_19_VACCINATION_TITLE')}</div>
+        <div class="chart-y-axis-name">{$_('legend.interest')}</div>
       </div>
       <div class="chart-area-hover">
         <svg class="chart-area-container" />

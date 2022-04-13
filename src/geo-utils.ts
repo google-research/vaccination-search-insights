@@ -16,12 +16,11 @@
 
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
-import * as gb from "../public/geo/gb-counties-albers.json";
-import * as ie from "../public/geo/ie-counties-albers.json";
+import * as gb from "../public/geo/gb-albers.json";
+import * as ie from "../public/geo/ie-albers.json";
+import * as ca from "../public/geo/ca-albers.json";
 import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
-
-let regionCodesToPlaceId: Map<string, string>;
 
 export const dcStateFipsCode: string = "11";
 export const dcCountyFipsCode: string = "11001";
@@ -89,6 +88,20 @@ export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
     ["GB-SCT", "S"],
     ["GB-WLS", "W"],
     ["GB-NIR", "N"]])],
+  ['CA', new Map([
+    ["CA-BC", "59"],
+    ["CA-AB", "48"],
+    ["CA-SK", "47"],
+    ["CA-MB", "46"],
+    ["CA-ON", "35"],
+    ["CA-QC", "24"],
+    ["CA-NB", "13"],
+    ["CA-NS", "12"],
+    ["CA-PE", "11"],
+    ["CA-NL", "10"],
+    ["CA-YT", "60"],
+    ["CA-NT", "61"],
+    ["CA-NU", "62"]])],
   ['IE', new Map([
     ["IE-DL", "1"],
     ["IE-LK", "2"],
@@ -122,7 +135,7 @@ export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): st
     return countyFipsCode.slice(0, 2);
   } else if (countryCode == "GB") {
     return countyFipsCode.slice(0, 1);
-  }
+  } 
 }
 
 export function fipsCodeFromElementId(id: string): string {
@@ -134,14 +147,19 @@ export function levelNameFromElementId(id: string): string {
   return id.split("-")[0];
 }
 
-export function getAtlas(countryCode: string): UsAtlas {
-  if (countryCode == "US") {
-    return us as unknown as UsAtlas;
-  } else if (countryCode == "GB") {
-    return gb as unknown as UsAtlas;
-  } else if (countryCode == "IE") {
-    return ie as unknown as UsAtlas;
-  }
+enum countryCode {
+  US = "us",
+  GB = "gb",
+  IE = "ie",
+  CA = "ca"
+}
+
+/** Atls data indexed by countryCode */
+export const ATLAS_BY_COUNTRY_CODE: Record<countryCode, UsAtlas> = {
+  US: us,
+  GB: gb,
+  IE: ie,
+  CA: ca
 }
 
 export function getGbPostalCentroids(geoid: string) {
