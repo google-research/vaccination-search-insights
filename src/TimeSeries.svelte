@@ -490,6 +490,74 @@
       }
     });
 
+    // add NaNs to the regional data in order to make the time series "break" on gaps in weeks.
+    addNans(data)
+
+    /*  A function to add NaNs to the data in order to force breaks in the time series
+    *   when there are gaps in the weeks.
+    */ 
+    /* Older way much slower delete when no longer needed 
+    function OLDaddNans(trend) {
+      cdata.forEach((trend) => {
+        const trends = trend.trends;
+        console.log(trends)
+        Object.entries(trends).forEach(([k, v]) =>  {
+          const datesLength = v.length;
+          console.log(`datesLength is ${datesLength}`);
+          console.log(k)
+          console.log(v)
+          let datesToAdd: TrendValue[] = [];
+          v.forEach((trendVal) => {
+            let thisDate = new Date(trendVal.date);
+            let tempDate = thisDate;
+            let nextDate = new Date(tempDate.setDate(tempDate.getDate() + 7));
+            let currentIndex = v.findIndex((d) => d.date == trendVal.date)
+            if (currentIndex < (datesLength-1)) {
+              let nextIndex = v.findIndex((d) => new Date(d.date).toDateString() == nextDate.toDateString())
+              if (nextIndex == -1) {
+                datesToAdd.push({
+                  date: nextDate.toISOString().slice(0, 10),
+                  value: NaN
+                })
+              }
+            }
+          });
+          v.push(...datesToAdd)
+          v.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        });
+      });
+    }
+    */
+
+    /*  A function to add NaNs to the data in order to force breaks in the time series
+    *   when there are gaps in the weeks.
+    */ 
+    function addNans(data) {
+      data.forEach((trend) => {
+        const trends = trend.trends;
+        Object.entries(trends).forEach(([k, v]) =>  {
+          const datesLength = v.length;
+          let datesToAdd: TrendValue[] = [];
+          v.forEach((trendVal: TrendValue, currentIndex: number) => {
+            let thisDate = convertStorageDate(trendVal.date);
+            let tempDate = thisDate;
+            let nextExpectedDate = new Date(tempDate.setDate(tempDate.getDate() + 7.000001));
+            if (currentIndex < (datesLength-1)) {
+              const nextActualDate = v[currentIndex+1].date
+              if (nextActualDate != nextExpectedDate.toISOString().slice(0, 10)) {
+                datesToAdd.push({
+                  date: nextExpectedDate.toISOString().slice(0, 10),
+                  value: NaN
+                })
+              }
+            }
+          });
+          v.push(...datesToAdd)
+          v.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        });
+      });
+    }
+
     // A superset of dates for shown trendlines.
     // TODO(patankar): Efficiency.
     const dates: Date[] = [];
@@ -498,7 +566,7 @@
 
       regionalTrendValues.forEach((regionalTrendValue) => {
         const date = convertStorageDate(regionalTrendValue.date);
-
+        
         if (!dates.includes(date)) {
           dates.push(date);
         }

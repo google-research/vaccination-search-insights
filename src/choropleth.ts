@@ -829,7 +829,7 @@ function drawMapCalloutInfo(data, fipsCode) {
   const width = 12;
   const margin = 10;
 
-  let trends;
+  let trends: RegionalTrendAggregate;
   // Need to special case Washington D.C.
   if (fipsCode == dcCountyFipsCode) {
     trends = latestStateData.get(stateFipsCodeFromCounty(dcCountyFipsCode, selectedCountryCode));
@@ -838,6 +838,14 @@ function drawMapCalloutInfo(data, fipsCode) {
   }
 
   if (typeof trends == "undefined") {
+    trends = {
+      sni_covid19_vaccination: 0.0,
+      sni_vaccination_intent: 0.0,
+      sni_safety_side_effects: 0.0,
+    };
+  }
+  // potential fix for map issue that doesn't show "not enough data" message for NaNs
+  else if (typeof trends != "undefined" && isNaN(trends.sni_covid19_vaccination) && isNaN(trends.sni_safety_side_effects) && isNaN(trends.sni_vaccination_intent)) {
     trends = {
       sni_covid19_vaccination: 0.0,
       sni_vaccination_intent: 0.0,
