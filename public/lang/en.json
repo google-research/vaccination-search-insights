@@ -1,0 +1,114 @@
+{
+    "project_title": "COVID-19 Vaccination Search Insights",
+    "content": {
+        "COVID_19_VACCINATION_TITLE": "COVID-19 vaccination searches",
+        "SAFETY_SIDE_EFFECTS_TITLE": "Safety and side effect searches",
+        "VACCINATION_INTENT_TITLE": "Vaccination intent searches",
+        "select_country": "Select a country to see more insights",
+        "countries": "Countries",
+        "region_name": "Region Name",
+        "app_overview": "Explore searches for COVID-19 vaccination topics by region. This aggregated and anonymized data helps you understand and compare communities' information needs. We’re releasing this data to inform public health vaccine-confidence efforts.  <a href=\"{aboutUrl}\">Learn more</a>",
+        "about_data_title": "About this data",
+        "about_data_content": "You can use this data to compare search interest between topics related to COVID-19 vaccination and see what topics are popular or rising. The value for search interest isn't an absolute number of searches—it's a value representing relative interest which we scale to make it easier to compare regions with one another, or the same region over time. If you'd like to know more about our calculation and process, see our <a href=\"{aboutDataUrl}\">technical docs.</a>",
+        "best_use_title": "How to best use this data",
+        "best_use_content": "<p>We used the same normalization and scaling everywhere so that you can make these comparisons:</p><ul><li>Compare a region with others to see where you might focus effort.</li><li>Compare a region over time to see how your community's information needs have changed or see the impact of your communication efforts and news events.</li></ul><p>Remember, the data shows people's interest—not opinions or actual events. You can't conclude that a community is suffering from many side effects because there's increased interest in the safety and side effects category.</p>",
+        "protecting_privacy_title": "Protecting privacy",
+        "proctecting_privacy_content": "<p>We developed the Vaccine Search Insights to be helpful while adhering to our stringent privacy protocols for search data. No individual search queries or other personally identifiable information are made available at any point. For this data, we use <a href=\"{diffPrivacyUrl}\"> differential privacy,</a> which adds artificial noise to our data while enabling high quality results without identifying any individual person. Additionally, we don't show data for regions that are smaller than 3 km<sup>2</sup>.</p><p>To learn more about the privacy methods used to generate the data, read the <a href=\"{anonymizationUrl}\">anonymization process description</a>.</p>",
+        "case_studies_title": "Case studies",
+        "availability_title": "Availability and updates",
+        "availability_content": "<p>To download or use the data or insights, you must agree to the <a href=\"{tosUrl\"}>Google Terms of Service</a>.</p><p>We'll update the data each week. You can check the dates in the charts to see the most recent day in the data. If you download the CSV, remember to get an updated version each week.</p><p>We'll continue to update this product while public health experts find it useful in their COVID-19 vaccination efforts. Our published data will remain publicly available to support long-term research and evaluation.</p>",
+        "next_steps": {
+            "query_dataset_title": "Query the dataset with SQL",
+            "query_dataset_content": "Get insights using Google Cloud’s BigQuery. Analyze with SQL, generate reports, or call the API from your code.",
+            "query_dataset_link": "<a href=\"{bigQueryUrl}\">Bigquery public dataset</a>",
+            "analyze_covariate_title": "Analyze with covariate data",
+            "analyze_covariate_content": "Analyze this data alongside other covariates in the COVID-19 Open-Data repository.",
+            "analyze_covariate_link": "<a href=\"{gitHubUrl}\">Github repository</a>",
+            "feedback_title": "Tell us about your project",
+            "feedback_content": "We'd love to hear more about how you're using the data. Send feedback using our form.",
+            "feedback_link": "<a href=\"{feedBackUrl}\">Feedback</a>"
+        },
+        "download_popup": {
+            "terms": "In order to download or use the data or insights, you must agree to the Google <a href=\"{toDownloadsUrl}\">Terms of Service.</a>",
+            "download_dataset": "DOWNLOAD DATASET",
+            "countries": {
+                "canada": "Canada",
+                "uk": "United Kingdom",
+                "usa": "United States",
+                "ireland": "Ireland"
+            }
+        },
+        "top_queries": {
+            "top_searches": "Top Searches",
+            "info": "info",
+            "done": "done",
+            "rising": "Rising",
+            "related": "Related Queries"
+        },
+        "case_studies": {
+            "title": "Case studies",
+            "pgp_title": "The Public Good Projects",
+            "grapevine_title": "Grapevine Health",
+            "pgp_desc": "Using Google's Vaccine Search Insights to increase vaccine confidence among BIPOC communities",
+            "grapevine_desc": "Augmenting intelligence about high yield locations for vaccination outreach"
+        }
+    },
+    "navigation": {
+        "download_data": "Download Data",
+        "documentation": "Documentation",
+        "country_picker": "Select a country",
+        "map_interest": "Interest",
+        "footer": {
+            "about": "About Google",
+            "products": "Google Products",
+            "privacy": "Privacy",
+            "terms": "Terms",
+            "third_party_notices": "3rd Parties"
+        }
+    },
+    "hints": {
+        "country_selector": "Select a country to see more insights",
+        "loading_data": "Loading data...",
+        "click_to_drill": "Click to drill down"
+    },
+    "tooltips": {
+        "learn_more": "Learn more",
+        "parent_tooltip": "This parent category includes searches from the other two subcategories.",
+        "vaccine_preamble": "Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or ",
+        "intent_preamble": "Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or ",
+        "vaccine_country_example": {
+            "CA": "vaccine tracker",
+            "IE": "HSE covid vaccine",
+            "GB": "NHS covid vaccine",
+            "US": "cdc vaccine tracker"
+        },
+        "intent_country_example": {
+            "CA": "covid vaccine ontario",
+            "IE": "book HSE covid vaccine",
+            "GB": "book NHS covid vaccine",
+            "US": "safeway covid vaccine"
+        },
+        "scaled_tooltip": "A scaled value that you can compare across regions, times, or topics.",
+        "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, \"is the covid vaccine safe\" or \"pfizer vaccine side effects\". A scaled value that you can compare across regions, times, or topics.",
+        "vaccine_top_query": "Most common searches related to any aspect of COVID-19 vaccination, listed in order of frequency.",
+        "safety_top_query": "Most common searches related to the safety and side effects of COVID-19 vaccines, listed in order of frequency.",
+        "intent_top_query": "Most common searches related to the eligibility, availability, and accessibility of COVID-19 vaccines, listed in order of frequency."
+    },
+    "legend": {
+        "no_data": "Not enough data",
+        "interest": "Interest",
+        "hi": "High",
+        "lo": "Low",
+        "change": "Change"
+    },
+    "quote": {
+        "start": "\"",
+        "end": "\""
+    },
+    "map_license": {
+        "us": "Chart includes data from the US Census Bureau",
+        "gb": "Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
+        "ie": "Chart includes data from Ordnance Survey Ireland licensed under CC:BY 4.0",
+        "ca": "Chart includes data adapted from Statistics Canada, Boundary Files 2016. This does not constitute an endorsement by Statistics Canada of this product."
+    }
+}

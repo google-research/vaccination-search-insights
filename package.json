@@ -1,6 +1,6 @@
 {
   "name": "vaccination-search-insights",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
@@ -51,7 +51,8 @@
   "dependencies": {
     "ansi-regex": "^6.0.1",
     "license-checker": "^25.0.1",
-    "sirv-cli": "^1.0.0"
+    "sirv-cli": "^1.0.0",
+    "svelte-i18n": "^3.3.13"
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
