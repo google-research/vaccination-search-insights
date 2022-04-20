@@ -1,15 +1,20 @@
 // Since zip codes can span over multiple counties, this provides a poper taxonomy mapping
 // For the US, converted CSV at
 // http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_county_rel_10.txt
-import zctaCounty from "../public/geo/zcta-county-us.json";
+import usZctaCounty from "../public/geo/zcta-county-us.json";
+import auZctaCounty from "../public/geo/zcta-county-au.json";
 import gbCountryFipsCode from "../public/geo/gb-counties-fips.json";
 import auCountryFipsCode from "../public/geo/au-counties-fips.json";
 
-const countyZctaMap = zctaCounty.reduce((acc,r)=> {
+const usCountyZctaMap = usZctaCounty.reduce((acc,r)=> {
     acc.set(r.geoid,r.zcta)
     return acc;
 }, new Map<string, Array<string>>());
 
+const auCountyZctaMap = auZctaCounty.reduce((acc, r) => {
+    acc.set(r.geoid, r.zcta)
+    return acc;
+}, new Map<string, Array<string>>());
 
 /**
  * Mapping of county names as appear in data CSV file to county IDs as they appear in 
@@ -48,6 +53,10 @@ export function getCountyFipsCode(county_name: string, country_code: string) {
     }
 }
 
-export function getCountyZctas(fipsCode: string){
-    return countyZctaMap.get(fipsCode);
+export function getCountyZctas(fipsCode: string, country_code: string) {
+    if (country_code == "US") {
+        return usCountyZctaMap.get(fipsCode);
+    } else if (country_code == "AU") {
+        return auCountyZctaMap.get(fipsCode);
+    }
 }

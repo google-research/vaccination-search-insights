@@ -25,7 +25,8 @@ import {
   levelNameFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
-  ATLAS_BY_COUNTRY_CODE,
+  getAtlas,
+  getUSAtlas,
   getGbPostalCentroids,
 } from "./geo-utils";
 import * as d3 from "d3";
@@ -44,6 +45,7 @@ import {
 } from "./data";
 import { getCountyZctas } from "./zcta-county";
 import { mapData } from "./stores";
+import type { UsAtlas } from "topojson";
 
 enum GeoLevel {
   Country = 1,
@@ -122,7 +124,7 @@ const gbPostalPath = d3.geoPath()
   .projection(getGBprojection().rotate([7.145, -45.78, -3.95]));
 
 
-export function createMap(
+export async function createMap(
   trend: string,
   regions,
   selectionFn,
@@ -148,7 +150,7 @@ export function createMap(
                                                          selectedCountryCode);
   selectionCallback = selectionFn;
 
-  initializeMap();
+  await initializeMap();
   colorizeMap();
 }
 
@@ -302,7 +304,16 @@ function getGBprojection(): d3.GeoConicProjection {
 //
 // Map drawing routines
 //
-function initializeMap() {
+async function initializeMap() {
+  let topology: UsAtlas;
+  if (selectedCountryCode == "US") {
+    topology = getUSAtlas()
+  } else {
+    topology = await getAtlas(selectedCountryCode);
+  }
+  // check to ensure country is valid ATLAS
+  if (!topology) { console.log("Country atlas not found") };
+
   mapSvg = d3
     .select("#map")
     .append("svg")
@@ -340,10 +351,6 @@ function initializeMap() {
       console.log("Projection not specified");
       break;
   }
-
-  const topology = ATLAS_BY_COUNTRY_CODE[selectedCountryCode]
-  // check to ensure country is valid ATLAS
-  if ( !topology ) { console.log("Country atlas not found")};
 
   const nationFeatures = feature(
     topology,
@@ -708,8 +715,8 @@ function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];  
   setLastSelectedCounty = fipsCode;
   
-  if (selectedCountryCode == "US") {
-    const zipsForCounty = new Set(getCountyZctas(fipsCode));
+  if (["US", "AU"].includes(selectedCountryCode)) {
+    const zipsForCounty = new Set(getCountyZctas(fipsCode, selectedCountryCode));
     const zipTrends: Map<String, RegionalTrendLine> = trendData
       .filter(
         (t) =>
@@ -1069,5 +1076,4 @@ export function updateMap() {
   mapSvg.enter();
   console.log("updating map")
   initializeMap();
-
 }

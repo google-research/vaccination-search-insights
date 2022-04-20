@@ -137,6 +137,9 @@
 
     // runs after component is first rendered to the DOM
     onMount(async () => {
+        if (["AU", "CA"].includes(selectedCountryCode)){
+            return;
+        }
         topLevelData = await fetchTopLevelQueries(selectedCountryCode);
         dateList = createDateList([...topLevelData.keys()]);
         selectedDateIndex = dateList.length - 1;

@@ -16,10 +16,6 @@
 
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
-import * as au from "../public/geo/au-albers.json";
-import * as gb from "../public/geo/gb-albers.json";
-import * as ie from "../public/geo/ie-albers.json";
-import * as ca from "../public/geo/ca-albers.json";
 import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
 
@@ -162,21 +158,15 @@ export function levelNameFromElementId(id: string): string {
   return id.split("-")[0];
 }
 
-enum countryCode {
-  US = "us",
-  GB = "gb",
-  IE = "ie",
-  CA = "ca",
-  AU = "au"
+export function getUSAtlas(): UsAtlas {
+  return us as unknown as UsAtlas;
 }
 
-/** Atls data indexed by countryCode */
-export const ATLAS_BY_COUNTRY_CODE: Record<countryCode, UsAtlas> = {
-  US: us,
-  GB: gb,
-  IE: ie,
-  CA: ca,
-  AU: au
+export function getAtlas(countryCode: string): Promise<UsAtlas> {
+  return fetch("./geo/" + countryCode.toLocaleLowerCase() + "-albers.json"
+    ).then((response) =>
+      response.json()
+    );
 }
 
 export function getGbPostalCentroids(geoid: string) {
