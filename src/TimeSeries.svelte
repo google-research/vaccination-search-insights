@@ -539,15 +539,17 @@
           const datesLength = v.length;
           let datesToAdd: TrendValue[] = [];
           v.forEach((trendVal: TrendValue, currentIndex: number) => {
-            let thisDate = trendVal.date;
+            const thisDate = trendVal.date;
             let tempDate = convertStorageDate(thisDate);
-            const nextExpectedDateString = new Date(tempDate.setUTCDate(tempDate.getUTCDate() + 7)).toUTCString();
-            let nextExpectedDate = convertStorageDate(nextExpectedDateString);
+            // const nextExpectedDateString = new Date(thisDate.setUTCDate(thisDate.getUTCDate() + 7)).toUTCString();
+            // let nextExpectedDate = convertStorageDate(nextExpectedDateString);
+            let nextExpectedDate = new Date(tempDate.setUTCDate(tempDate.getUTCDate() + 7));
+            const nextExpectedDateString = nextExpectedDate.toISOString().slice(0, 10);
             if (currentIndex < (datesLength-1)) {
               const nextActualDate = v[currentIndex+1].date
-              if (nextActualDate != formatDateForStorage(nextExpectedDate)) {
+              if (nextActualDate != nextExpectedDateString) {
                 datesToAdd.push({
-                  date: formatDateForStorage(nextExpectedDate),
+                  date: nextExpectedDateString,
                   value: NaN
                 })
               }
