@@ -129,11 +129,12 @@
           regions,
           onMapSelection,
           selectedCountryMetadata
-        );
-        isMapInitialized = true;
-        if (selectedRegion) {
-          setMapSelection(selectedRegion);
-        }
+        ).then(() => {
+          isMapInitialized = true;
+          if (selectedRegion) {
+            setMapSelection(selectedRegion);
+          }
+        })
       });
 
       $regionalTrends = await fetchRegionalTrendsData(fetchRegTrendLine_result);

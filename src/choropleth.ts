@@ -717,56 +717,59 @@ function drawZipData(fipsCode) {
   
   if (["US", "AU"].includes(selectedCountryCode)) {
     const zipsForCounty = new Set(getCountyZctas(fipsCode, selectedCountryCode));
-    const zipTrends: Map<String, RegionalTrendLine> = trendData
-      .filter(
-        (t) =>
-          zipsForCounty.has(t.sub_region_3_code) &&
-          t.date == currentDate &&
-          getTrendValue(selectedTrend, t) != 0
-      )
-      .reduce((acc, trend) => {
-        acc.set(trend.sub_region_3_code, trend);
-        return acc;
-      }, new Map<string, RegionalTrendLine>());
-    
-    d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
 
-    fetchZipData(fipsCode)
-      .then((zipData) => {
-        zipData.features.forEach((f) => {
-          f.properties.name = `Zip code ${f.properties.GEOID10}`;
+    if (zipsForCounty.size > 0) {
+      const zipTrends: Map<String, RegionalTrendLine> = trendData
+        .filter(
+          (t) =>
+            zipsForCounty.has(t.sub_region_3_code) &&
+            t.date == currentDate &&
+            getTrendValue(selectedTrend, t) != 0
+        )
+        .reduce((acc, trend) => {
+          acc.set(trend.sub_region_3_code, trend);
+          return acc;
+        }, new Map<string, RegionalTrendLine>());
+      
+      d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
+
+      fetchZipData(fipsCode)
+        .then((zipData) => {
+          zipData.features.forEach((f) => {
+            f.properties.name = `Zip code ${f.properties.GEOID10}`;
+          });
+
+          d3.select("#zip")
+            .selectAll("path")
+            .data(zipData.features)
+            .join("path")
+            .attr("class", "sub-region-3")
+            .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
+            .attr("d", path)
+            .attr("fill", (d: any) => {
+              const colorScale = colorScales.get(selectedTrend as TrendValueType);
+              const trend = zipTrends.get(d.properties.GEOID10);
+              const trendValue = getTrendValue(selectedTrend, trend);
+              if (trendValue && trendValue != 0) {
+                return colorScale(trendValue);
+              } else {
+                return unknownColor;
+              }
+            })
+            .attr("stroke", "white")
+            .attr("stroke-width", 1)
+            .attr("vector-effect", "non-scaling-stroke")
+            .on("mouseenter", enterCountyBoundsHandler)
+            .on("mouseleave", leaveCountyBoundsHandler)
+            .on("mousemove", movementHandler(zipTrends));
+        })
+        .catch((err) => {
+          console.log(
+            `No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`
+          );
+          removeZipData();
         });
-
-        d3.select("#zip")
-          .selectAll("path")
-          .data(zipData.features)
-          .join("path")
-          .attr("class", "sub-region-3")
-          .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
-          .attr("d", path)
-          .attr("fill", (d: any) => {
-            const colorScale = colorScales.get(selectedTrend as TrendValueType);
-            const trend = zipTrends.get(d.properties.GEOID10);
-            const trendValue = getTrendValue(selectedTrend, trend);
-            if (trendValue && trendValue != 0) {
-              return colorScale(trendValue);
-            } else {
-              return unknownColor;
-            }
-          })
-          .attr("stroke", "white")
-          .attr("stroke-width", 1)
-          .attr("vector-effect", "non-scaling-stroke")
-          .on("mouseenter", enterCountyBoundsHandler)
-          .on("mouseleave", leaveCountyBoundsHandler)
-          .on("mousemove", movementHandler(zipTrends));
-      })
-      .catch((err) => {
-        console.log(
-          `No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`
-        );
-        removeZipData();
-      });
+    }
   } else if (selectedCountryCode == "GB") {
     drawGbPostalCodes(getGbPostalCentroids(fipsCode), currentDate);
   }

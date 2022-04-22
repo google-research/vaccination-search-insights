@@ -43,11 +43,7 @@ export function getCountyFipsCode(county_name: string, country_code: string) {
         case "GB":
             return gbCountyFipsCodeMap.get(county_name);
         case "AU":
-            if (auCountyFipsCodeMap.get(county_name)) {
-                return auCountyFipsCodeMap.get(county_name);
-            } else {
-                console.log(county_name)
-            }
+            return auCountyFipsCodeMap.get(county_name);
         default:
             return ""
     }

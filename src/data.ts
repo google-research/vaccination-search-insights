@@ -94,6 +94,11 @@ export interface RegionalTrends {
 
 const GLOBAL_TRENDS_FILENAME = "Global_l0_vaccination_search_insights.csv";
 
+const AU_CAMBELLTOWN_CITY_COUNCIL_CODE = {
+  "AU-NSW": "11500",
+  "AU-SA": "40910",
+};
+
 let regions: Map<string, Region>;
 let regionalTrends: Map<string, RegionalTrends>;
 let regionalTrendLines: RegionalTrendLine[];
@@ -268,8 +273,8 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
 
 export function fetchZipData(geoid): Promise<any> {
   var baseUrl =
-    "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo";
-  return fetch(`${baseUrl}/${geoid}.geo.json`).then((response) =>
+    "./geo/counties";
+  return fetch(`${baseUrl}/${geoid}.json`).then((response) =>
     response.json()
   );
 }
@@ -371,8 +376,13 @@ export function subRegionTwoCode(region: RegionalTrendLine): string {
   if (region.sub_region_2_code != "") {
     return region.sub_region_2_code
   } else {
-    // Get the code from lookup table, if not found, return empty string
-    return getCountyFipsCode(region.sub_region_2, region.country_region_code) || "";
+    if (region.country_region_code == "AU" &&
+      region.sub_region_2 == "Campbelltown City Council") {
+      return AU_CAMBELLTOWN_CITY_COUNCIL_CODE["AU-NSW"]
+    } else {
+      // Get the code from lookup table, if not found, return empty string
+      return getCountyFipsCode(region.sub_region_2, region.country_region_code) || "";
+    }
   }
 }
 
