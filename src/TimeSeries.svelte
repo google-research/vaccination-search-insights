@@ -21,7 +21,7 @@
     TrendValue,
   } from "./data";
   import { onMount } from "svelte";
-  import { params, regionalTrends} from "./stores";
+  import { dateRange, params, regionalTrends} from "./stores";
   import { 
     getRegionName,
     handleInfoPopup,
@@ -33,6 +33,8 @@
 
   import * as d3 from "d3";
   import { _ } from "svelte-i18n";
+import { addScalarDependencies } from "mathjs";
+import { set } from "d3-collection";
 
   export let id: string;
   export let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
@@ -532,6 +534,7 @@
     /*  A function to add NaNs to the data in order to force breaks in the time series
     *   when there are gaps in the weeks.
     */ 
+   /*
     function addNans(data) {
       data.forEach((trend) => {
         const trends = trend.trends;
@@ -560,6 +563,39 @@
         });
       });
     }
+    */
+    function addNans(data) {
+      console.log(data)
+      //console.log($dateRange)
+      const allDatesSet = new Set($dateRange);
+      //console.log(allDatesSet);
+      data.forEach((trend) => {
+        const trends = trend.trends;
+        const trendVals = Object.values(trends);
+        //console.log("trend values are:")
+        //console.log(trendVals);
+        trendVals.forEach((trendVal: any[]) => {
+          let datesToAdd: TrendValue[] = [];
+          const dateVals = trendVal.map((vals) => vals.date);
+          //console.log(dateVals);
+          const dateSet = new Set(dateVals);
+          //console.log(dateSet);
+          let missingDates = new Set([...allDatesSet].filter(x => !dateSet.has(x)));
+          //console.log(missingDates);
+          missingDates.forEach((missingDate) => {
+            datesToAdd.push({
+              date: missingDate,
+              value: NaN
+            })
+          });
+          trendVal.push(...datesToAdd)
+          trendVal.sort((a: TrendValue,b: TrendValue) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        });
+      });
+    }
+
+    
+
 
     // A superset of dates for shown trendlines.
     // TODO(patankar): Efficiency.
@@ -718,7 +754,7 @@
       placeId = param.placeId;
       if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
-      
+        
         generateChart();
       }
     });

@@ -18,10 +18,12 @@
  * @fileoverview The state of the application persisted to query parameters
  */
 
+import { parse, ParseResult } from "papaparse";
 import { writable } from "svelte/store";
 import type { RegionalTrends } from "./data";
 
 let rt = new Map<string, RegionalTrends>();
+let allDates: string[]
 
 type Params = {
   placeId: string;
@@ -71,4 +73,28 @@ export const regionalTrends = writable(rt);
 // A parameter to track whether the zipcodes file has been downloaded.
 // This helps prevent repeatedly fetching the large file.
 export const isZipsDownloaded = writable(false);
+
+/** 
+ * A store to contain an array of all valid dates
+ */
+export const dateRange = writable<string[]>(fetchDateData());
+/**
+ * A method to read in the ALL_dates.csv file into an array of dates strings.
+ * @returns an array of date string values
+ */
+ function fetchDateData() {
+  parse("./data/All_dates.csv", {
+    download: true,
+    header: false,
+    complete: function (results: ParseResult<string>) {
+      console.log(`Recieved date data with: ${results.data.length} rows`);
+      const dates = results.data.map((dates) => dates[0]);
+      dates.pop();
+      dateRange.set(dates)
+      //return dates;
+    }
+  })
+  return ['']
+}
+
 
