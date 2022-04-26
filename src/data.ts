@@ -271,12 +271,21 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
 }
 
 
-export function fetchZipData(geoid): Promise<any> {
+export function fetchZipData(geoid, selectedCountryCode): Promise<any> {
   var baseUrl =
     "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo"
-  return fetch(`${baseUrl}/${geoid}.geo.json`).then((response) =>
-    response.json()
-  );
+  if (selectedCountryCode == "US") {
+    return fetch(`${baseUrl}/${geoid}.geo.json`).then((response) =>
+      response.json()
+    );
+  }
+  else {
+    baseUrl =
+      "./geo/counties";
+    return fetch(`${baseUrl}/${geoid}.json`).then((response) =>
+      response.json()
+    );
+  }
 }
 
 export function fetchRegionalTrendsData(trendLines: Promise<RegionalTrendLine[]>): Promise<

@@ -733,7 +733,7 @@ function drawZipData(fipsCode) {
       
       d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
 
-      fetchZipData(fipsCode)
+      fetchZipData(fipsCode, selectedCountryCode)
         .then((zipData) => {
           // drawAUPostalCodes(zipData, zipTrends);
           if (selectedCountryCode == "US") {
