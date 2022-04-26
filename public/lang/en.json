@@ -82,14 +82,14 @@
             "IE": "HSE covid vaccine",
             "GB": "NHS covid vaccine",
             "US": "cdc vaccine tracker",
-            "AU": "REPLACE"
+            "AU": "covid vaccine"
         },
         "intent_country_example": {
             "CA": "covid vaccine ontario",
             "IE": "book HSE covid vaccine",
             "GB": "book NHS covid vaccine",
             "US": "safeway covid vaccine",
-            "AU": "REPLACE"
+            "AU": "pfizer vaccine melbourne"
         },
         "scaled_tooltip": "A scaled value that you can compare across regions, times, or topics.",
         "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, \"is the covid vaccine safe\" or \"pfizer vaccine side effects\". A scaled value that you can compare across regions, times, or topics.",

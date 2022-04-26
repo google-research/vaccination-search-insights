@@ -273,8 +273,8 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
 
 export function fetchZipData(geoid): Promise<any> {
   var baseUrl =
-    "./geo/counties";
-  return fetch(`${baseUrl}/${geoid}.json`).then((response) =>
+    "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo"
+  return fetch(`${baseUrl}/${geoid}.geo.json`).then((response) =>
     response.json()
   );
 }

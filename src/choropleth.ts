@@ -735,9 +735,19 @@ function drawZipData(fipsCode) {
 
       fetchZipData(fipsCode)
         .then((zipData) => {
-          zipData.features.forEach((f) => {
-            f.properties.name = `Zip code ${f.properties.GEOID10}`;
-          });
+          // drawAUPostalCodes(zipData, zipTrends);
+          if (selectedCountryCode == "US") {
+            zipData.features.forEach((f) => {
+              f.properties.name = `Zip code ${f.properties.GEOID10}`;
+            });
+          } else {
+            for (const geometries of Object.values(zipData.objects)) {
+              zipData = feature(
+                zipData,
+                geometries as GeometryCollection
+              );
+            }
+          }
 
           d3.select("#zip")
             .selectAll("path")
