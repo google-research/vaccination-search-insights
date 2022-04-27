@@ -781,13 +781,13 @@ function drawZipData(fipsCode) {
         });
     }
   } else if (selectedCountryCode == "GB") {
-    drawGbPostalCodes(getGbPostalCentroids(fipsCode), currentDate);
+    drawGbPostalCodes(getGbPostalCentroids(), currentDate);
   }
 }
 
 
 // Draw postal code centroids for the UK
-function drawGbPostalCodes(postalCentroits, currentDate) {
+function drawGbPostalCodes(postalCentroids, currentDate) {
   const postalTrends: Map<String, RegionalTrendLine> = trendData
     .filter(
       (t) =>
@@ -799,34 +799,36 @@ function drawGbPostalCodes(postalCentroits, currentDate) {
       return acc;
     }, new Map<string, RegionalTrendLine>());
   
-  const postalFeatures = feature(
-    postalCentroits,
-    postalCentroits.objects.postal as GeometryCollection
-  );
+  postalCentroids.then(postalCentroids => {
+    const postalFeatures = feature(
+      postalCentroids,
+      postalCentroids.objects.postal as GeometryCollection
+    );
 
-  d3.select("#gbPostalCentroids")
-    .selectAll("path")
-    .data(postalFeatures.features)
-    .join("path")
-    .attr("class", "postcode")
-    .attr("id", (z: any) => `postcode-${z.properties.name}`)
-    .attr("d", gbPostalPath)
-    .attr("fill", (d: any) => {
-      const colorScale = colorScales.get(selectedTrend as TrendValueType);
-      const trend = postalTrends.get(d.properties.name);
-      const trendValue = getTrendValue(selectedTrend, trend);
-      if (trendValue && trendValue != 0) {
-        return colorScale(trendValue);
-      } else {
-        return unknownColor;
-      }
-    })
-    .attr("stroke", "white")
-    .attr("stroke-width", 1.7)
-    .attr("vector-effect", "non-scaling-stroke")
-    .on("mouseenter", enterCountyBoundsHandler)
-    .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(postalTrends));
+    d3.select("#gbPostalCentroids")
+      .selectAll("path")
+      .data(postalFeatures.features)
+      .join("path")
+      .attr("class", "postcode")
+      .attr("id", (z: any) => `postcode-${z.properties.name}`)
+      .attr("d", gbPostalPath)
+      .attr("fill", (d: any) => {
+        const colorScale = colorScales.get(selectedTrend as TrendValueType);
+        const trend = postalTrends.get(d.properties.name);
+        const trendValue = getTrendValue(selectedTrend, trend);
+        if (trendValue && trendValue != 0) {
+          return colorScale(trendValue);
+        } else {
+          return unknownColor;
+        }
+      })
+      .attr("stroke", "white")
+      .attr("stroke-width", 1.7)
+      .attr("vector-effect", "non-scaling-stroke")
+      .on("mouseenter", enterCountyBoundsHandler)
+      .on("mouseleave", leaveCountyBoundsHandler)
+      .on("mousemove", movementHandler(postalTrends));
+  })
 }
 
 

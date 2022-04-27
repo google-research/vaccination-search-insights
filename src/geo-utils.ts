@@ -16,11 +16,13 @@
 
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
-import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
 
 export const dcStateFipsCode: string = "11";
 export const dcCountyFipsCode: string = "11001";
+
+// Used to make sure we don't fetch GB postal code centroids once it was already loaded
+let gb_postal_centroids;
 
 export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
   ['US', new Map([
@@ -169,8 +171,15 @@ export function getAtlas(countryCode: string): Promise<UsAtlas> {
     );
 }
 
-export function getGbPostalCentroids(geoid: string) {
-  return gb_postal_albers;
+export function getGbPostalCentroids() {
+  if (gb_postal_centroids) {
+    return gb_postal_centroids;
+  } else {
+    gb_postal_centroids = fetch("./geo/gb-postal-albers.json").then((response) =>
+      response.json()
+    );
+    return gb_postal_centroids;
+  }
 }
 
 export function buildRegionCodeToPlaceIdMapping(

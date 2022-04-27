@@ -140,7 +140,7 @@ export function fetchRegionData(): Promise<Map<string, Region>> {
             if (region.sub_region_3_code) {
               region.region_type = RegionType.SubRegionThree;
               region.parent_region_type = RegionType.SubRegionTwo;
-            } else if (region.sub_region_2) {
+            } else if (region.sub_region_2_code) {
               region.region_type = RegionType.SubRegionTwo;
               region.parent_region_type = RegionType.SubRegionOne;
             } else if (region.sub_region_1_code) {
@@ -379,14 +379,17 @@ export function subRegionOneCode(region: RegionalTrendLine): string {
 export function subRegionTwoCode(region: RegionalTrendLine): string {
   if (region.sub_region_2_code != "") {
     return region.sub_region_2_code
-  } else {
+  } else if (["AU", "GB"].includes(region.country_region_code)) {
+    // GB and AU don't have sub_region_2_code in the data CSV, therefore use lookup table
     if (region.country_region_code == "AU" &&
       region.sub_region_2 == "Campbelltown City Council") {
-      return AU_CAMBELLTOWN_CITY_COUNCIL_CODE["AU-NSW"]
+      return AU_CAMBELLTOWN_CITY_COUNCIL_CODE[region.sub_region_1_code]
     } else {
       // Get the code from lookup table, if not found, return empty string
       return getCountyFipsCode(region.sub_region_2, region.country_region_code) || "";
     }
+  } else {
+    return "";
   }
 }
 
