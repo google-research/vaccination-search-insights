@@ -99,6 +99,11 @@ const AU_CAMBELLTOWN_CITY_COUNCIL_CODE = {
   "AU-SA": "40910",
 };
 
+const ZIP_FILENAME_STRUCTURE = {
+  "US": geoid => `${geoid}.geo.json`,
+  "AU": geoid => `AU/${geoid}.topo.json`,
+};
+
 let regions: Map<string, Region>;
 let regionalTrends: Map<string, RegionalTrends>;
 let regionalTrendLines: RegionalTrendLine[];
@@ -270,22 +275,12 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
   }
 }
 
-
-export function fetchZipData(geoid, selectedCountryCode): Promise<any> {
+export function fetchZipData(geoid: string, selectedCountryCode: string): Promise<any> {
   var baseUrl =
     "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo"
-  if (selectedCountryCode == "US") {
-    return fetch(`${baseUrl}/${geoid}.geo.json`).then((response) =>
-      response.json()
-    );
-  }
-  else {
-    baseUrl =
-      "./geo/counties";
-    return fetch(`${baseUrl}/${geoid}.json`).then((response) =>
-      response.json()
-    );
-  }
+  return fetch(`${baseUrl}/${ZIP_FILENAME_STRUCTURE[selectedCountryCode](geoid)}`).then((response) =>
+    response.json()
+  );
 }
 
 export function fetchRegionalTrendsData(trendLines: Promise<RegionalTrendLine[]>): Promise<
