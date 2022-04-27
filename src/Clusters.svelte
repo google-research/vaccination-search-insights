@@ -17,7 +17,7 @@
 
     import { onMount } from "svelte";
     import {
-        fetchTopLevelQueries,
+        fetchTopLevelClusterFiles,
         createDateList,
         createSerialisedQueryKey,
         fetchClustersFile,
@@ -166,15 +166,8 @@
 
     // runs after component is first rendered to the DOM
     onMount(async () => {
-        // Currently don't have topLevelData, uncomment below when it is ready
-        // topLevelData = await fetchTopLevelQueries(selectedCountryCode);
-        // dateList = createDateList([...topLevelData.keys()]);
-        // selectedDateIndex = dateList.length - 1;
-        // setDate(selectedDateIndex);
-        
-        // temporarily grab dates from county clusters
-        const temporaryData = await fetchClustersFile("US_California_l2_vaccination_trending_searches.csv");
-        dateList = createDateList([...temporaryData.keys()]);
+        topLevelData = await fetchTopLevelClusterFiles(selectedCountryCode);
+        dateList = createDateList([...topLevelData.keys()]);
         selectedDateIndex = dateList.length - 1;
         setDate(selectedDateIndex);
 
@@ -198,7 +191,7 @@
                 // if placeId is not county level
                 countyData = null;
                 currentSubRegion = null;
-                // updateQueries();
+                updateQueries();
                 // Currently, L0 and L1 data are not available for clusters
             } else if (newSubRegion !== currentSubRegion) {
                 // if county in a new subregion

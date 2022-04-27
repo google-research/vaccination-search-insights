@@ -570,7 +570,7 @@ function removeDuplicate(clusterQuery: string, members: string[]): string[] {
 }
 
 function calculateChange(history: number[], current: number) {
-  if(history.length === 0) {
+  if (history.length === 0) {
     return null
   }
   const previous = history[history.length - 1];
@@ -589,7 +589,7 @@ function createCluster(clusterRow: ClusterRow): Cluster {
  * based on the location, date, query type, and category of an associated list of 
  * queries.
  */
- export function fetchClustersFile(file: string): Promise<Map<string, Cluster[]>> {
+export function fetchClustersFile(file: string): Promise<Map<string, Cluster[]>> {
   let clustersPromise: Promise<Map<string, Cluster[]>> = new Promise<Map<string, Cluster[]>>(
     (resolve, reject) => {
       parse(`./data/${file}`, {
@@ -613,4 +613,24 @@ function createCluster(clusterRow: ClusterRow): Cluster {
       });
     });
   return clustersPromise;
+}
+
+/**
+ * Reads all L0 and L1 Clusters csv files and merges them into a single map.
+ */
+export function fetchTopLevelClusterFiles(selectedCountryCode): Promise<Map<string, Cluster[]>> {
+  let clusterFiles = [selectedCountryCode + "_l0_vaccination_trending_searches.csv",
+                      selectedCountryCode + "_l1_vaccination_trending_searches.csv"];
+  let clustersMap: Promise<Map<string, Cluster[]>> =
+    Promise.all(clusterFiles.map((file) =>
+      fetchClustersFile(file)
+      )
+    ).then(
+      (results) => {
+        return results.reduce((combinedMap, currentMap) => {
+          return new Map([...combinedMap, ...currentMap]);
+        }, new Map<string, Cluster[]>());
+      }
+    );
+  return clustersMap;
 }
