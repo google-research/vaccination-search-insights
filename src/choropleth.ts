@@ -1002,8 +1002,13 @@ function inStateMovementHandler(event, d) {
 // County level event handlers
 //
 function countySelectionOnClickHandler(event, d) {
-  activateSelectedCounty(fipsCodeFromElementId(this.id));
-  selectionCallback(regionCodesToPlaceId.get(fipsCodeFromElementId(this.id)));
+  var fipsCode = fipsCodeFromElementId(this.id)
+  if (regionCodesToPlaceId.get(fipsCode)) {
+    activateSelectedCounty(fipsCode);
+    selectionCallback(regionCodesToPlaceId.get(fipsCode));
+  } else {
+    console.log(`No place id for map region code ${fipsCode}`)
+  }
 }
 
 function enterCountyBoundsHandler(event, d) {
