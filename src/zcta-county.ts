@@ -1,10 +1,10 @@
 // Since zip codes can span over multiple counties, this provides a poper taxonomy mapping
 // For the US, converted CSV at
 // http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_county_rel_10.txt
-import * as usZctaCounty from "../public/geo/zcta-county-us.json";
-import * as auZctaCounty from "../public/geo/zcta-county-au.json";
-import * as gbCountyFipsCode from "../public/geo/gb-counties-fips.json";
-import * as auCountyFipsCode from "../public/geo/au-counties-fips.json";
+import usZctaCounty from "../public/geo/zcta-county-us.json";
+import auZctaCounty from "../public/geo/zcta-county-au.json";
+import gbCountyFipsCode from "../public/geo/gb-counties-fips.json";
+import auCountyFipsCode from "../public/geo/au-counties-fips.json";
 
 const usCountyZctaMap = usZctaCounty.reduce((acc,r)=> {
     acc.set(r.geoid,r.zcta)
