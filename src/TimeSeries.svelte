@@ -33,9 +33,7 @@
 
   import * as d3 from "d3";
   import { _ } from "svelte-i18n";
-import { addScalarDependencies } from "mathjs";
-import { set } from "d3-collection";
-
+  
   export let id: string;
   export let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   export let regionalTrendsByPlaceId: Map<string, RegionalTrends>;
@@ -495,93 +493,16 @@ import { set } from "d3-collection";
     // add NaNs to the regional data in order to make the time series "break" on gaps in weeks.
     addNans(data)
 
-    /*  A function to add NaNs to the data in order to force breaks in the time series
-    *   when there are gaps in the weeks.
-    */ 
-    /* Older way much slower delete when no longer needed 
-    function OLDaddNans(trend) {
-      cdata.forEach((trend) => {
-        const trends = trend.trends;
-        console.log(trends)
-        Object.entries(trends).forEach(([k, v]) =>  {
-          const datesLength = v.length;
-          console.log(`datesLength is ${datesLength}`);
-          console.log(k)
-          console.log(v)
-          let datesToAdd: TrendValue[] = [];
-          v.forEach((trendVal) => {
-            let thisDate = new Date(trendVal.date);
-            let tempDate = thisDate;
-            let nextDate = new Date(tempDate.setDate(tempDate.getDate() + 7));
-            let currentIndex = v.findIndex((d) => d.date == trendVal.date)
-            if (currentIndex < (datesLength-1)) {
-              let nextIndex = v.findIndex((d) => new Date(d.date).toDateString() == nextDate.toDateString())
-              if (nextIndex == -1) {
-                datesToAdd.push({
-                  date: nextDate.toISOString().slice(0, 10),
-                  value: NaN
-                })
-              }
-            }
-          });
-          v.push(...datesToAdd)
-          v.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        });
-      });
-    }
-    */
-
-    /*  A function to add NaNs to the data in order to force breaks in the time series
-    *   when there are gaps in the weeks.
-    */ 
-   /*
     function addNans(data) {
-      data.forEach((trend) => {
-        const trends = trend.trends;
-        Object.entries(trends).forEach(([k, v]) =>  {
-          const datesLength = v.length;
-          let datesToAdd: TrendValue[] = [];
-          v.forEach((trendVal: TrendValue, currentIndex: number) => {
-            const thisDate = trendVal.date;
-            let tempDate = convertStorageDate(thisDate);
-            // const nextExpectedDateString = new Date(thisDate.setUTCDate(thisDate.getUTCDate() + 7)).toUTCString();
-            // let nextExpectedDate = convertStorageDate(nextExpectedDateString);
-            let nextExpectedDate = new Date(tempDate.setUTCDate(tempDate.getUTCDate() + 7));
-            const nextExpectedDateString = nextExpectedDate.toISOString().slice(0, 10);
-            if (currentIndex < (datesLength-1)) {
-              const nextActualDate = v[currentIndex+1].date
-              if (nextActualDate != nextExpectedDateString) {
-                datesToAdd.push({
-                  date: nextExpectedDateString,
-                  value: NaN
-                })
-              }
-            }
-          });
-          v.push(...datesToAdd)
-          v.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        });
-      });
-    }
-    */
-    function addNans(data) {
-      console.log(data)
-      //console.log($dateRange)
       const allDatesSet = new Set($dateRange);
-      //console.log(allDatesSet);
       data.forEach((trend) => {
         const trends = trend.trends;
         const trendVals = Object.values(trends);
-        //console.log("trend values are:")
-        //console.log(trendVals);
         trendVals.forEach((trendVal: any[]) => {
           let datesToAdd: TrendValue[] = [];
           const dateVals = trendVal.map((vals) => vals.date);
-          //console.log(dateVals);
           const dateSet = new Set(dateVals);
-          //console.log(dateSet);
           let missingDates = new Set([...allDatesSet].filter(x => !dateSet.has(x)));
-          //console.log(missingDates);
           missingDates.forEach((missingDate) => {
             datesToAdd.push({
               date: missingDate,
@@ -589,13 +510,10 @@ import { set } from "d3-collection";
             })
           });
           trendVal.push(...datesToAdd)
-          trendVal.sort((a: TrendValue,b: TrendValue) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          trendVal.sort((a: TrendValue,b: TrendValue) => a.date > b.date ? 1 : -1);
         });
       });
     }
-
-    
-
 
     // A superset of dates for shown trendlines.
     // TODO(patankar): Efficiency.
