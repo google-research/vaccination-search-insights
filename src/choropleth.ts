@@ -735,18 +735,20 @@ function drawZipData(fipsCode) {
 
       fetchZipData(fipsCode, selectedCountryCode)
         .then((zipData) => {
-          // drawAUPostalCodes(zipData, zipTrends);
           if (selectedCountryCode == "US") {
             zipData.features.forEach((f) => {
               f.properties.name = `Zip code ${f.properties.GEOID10}`;
             });
-          } else {
+          } else if (selectedCountryCode == "AU") {
             for (const geometries of Object.values(zipData.objects)) {
               zipData = feature(
                 zipData,
                 geometries as GeometryCollection
               );
             }
+            zipData.features.forEach((f) => {
+              f.properties.name = `Postcode ${f.properties.GEOID10}`;
+            });
           }
 
           d3.select("#zip")
@@ -860,7 +862,7 @@ function drawMapCalloutInfo(data, fipsCode) {
   const width = 12;
   const margin = 10;
 
-  let trends;
+  let trends: RegionalTrendAggregate;
   // Need to special case Washington D.C.
   if (fipsCode == dcCountyFipsCode) {
     trends = latestStateData.get(stateFipsCodeFromCounty(dcCountyFipsCode, selectedCountryCode));
@@ -868,14 +870,14 @@ function drawMapCalloutInfo(data, fipsCode) {
     trends = data.get(fipsCode);
   }
 
-  if (typeof trends == "undefined") {
+  if ((typeof trends == "undefined") || (typeof trends != "undefined" && isNaN(trends.sni_covid19_vaccination) && isNaN(trends.sni_safety_side_effects) && isNaN(trends.sni_vaccination_intent))) {
     trends = {
       sni_covid19_vaccination: 0.0,
       sni_vaccination_intent: 0.0,
       sni_safety_side_effects: 0.0,
     };
   }
-
+  
   const renderValue = (value: number): string => {
     //TODO(tilchris): Add more robust NaN handling
     //It should be the cases where any 0 value should be interpreted

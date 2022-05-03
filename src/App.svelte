@@ -26,11 +26,9 @@
   import en from "../public/lang/en.json";
   import fr from "../public/lang/fr.json";
 
-import { set, values } from "d3-collection";
-import { e } from "mathjs";
-
   addMessages("en", en);
   addMessages("fr", fr);
+  addMessages("fr-CA", fr);
 
   import {
     _,
@@ -46,7 +44,10 @@ import { e } from "mathjs";
   });
 
   // Interacting with the locale
-  locale.subscribe((newLocale) => {console.log("Locale Subscribed")});
+  locale.subscribe((newLocale) => {
+    console.log(`Locale Subscribed -> ${newLocale}`);
+    locale.set(newLocale.match(/\w{2}/)[0])
+  });
 
   let COVID_19_VACCINATION_TITLE = $_('content.COVID_19_VACCINATION_TITLE'); //"COVID-19 vaccination searches";
   let VACCINATION_INTENT_TITLE = $_('content.VACCINATION_INTENT_TITLE'); //"Vaccination intent searches";

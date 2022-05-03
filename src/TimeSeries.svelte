@@ -21,7 +21,7 @@
     TrendValue,
   } from "./data";
   import { onMount } from "svelte";
-  import { params, regionalTrends} from "./stores";
+  import { dateRange, params, regionalTrends} from "./stores";
   import { 
     getRegionName,
     handleInfoPopup,
@@ -33,7 +33,7 @@
 
   import * as d3 from "d3";
   import { _ } from "svelte-i18n";
-
+  
   export let id: string;
   export let regionsByPlaceId: Map<string, Region> = new Map<string, Region>();
   export let regionalTrendsByPlaceId: Map<string, RegionalTrends>;
@@ -490,6 +490,31 @@
       }
     });
 
+    // add NaNs to the regional data in order to make the time series "break" on gaps in weeks.
+    addNans(data)
+
+    function addNans(data) {
+      const allDatesSet = new Set($dateRange);
+      data.forEach((trend) => {
+        const trends = trend.trends;
+        const trendVals = Object.values(trends);
+        trendVals.forEach((trendVal: any[]) => {
+          let datesToAdd: TrendValue[] = [];
+          const dateVals = trendVal.map((vals) => vals.date);
+          const dateSet = new Set(dateVals);
+          let missingDates = new Set([...allDatesSet].filter(x => !dateSet.has(x)));
+          missingDates.forEach((missingDate) => {
+            datesToAdd.push({
+              date: missingDate,
+              value: NaN
+            })
+          });
+          trendVal.push(...datesToAdd)
+          trendVal.sort((a: TrendValue,b: TrendValue) => a.date > b.date ? 1 : -1);
+        });
+      });
+    }
+
     // A superset of dates for shown trendlines.
     // TODO(patankar): Efficiency.
     const dates: Date[] = [];
@@ -498,7 +523,7 @@
 
       regionalTrendValues.forEach((regionalTrendValue) => {
         const date = convertStorageDate(regionalTrendValue.date);
-
+        
         if (!dates.includes(date)) {
           dates.push(date);
         }
@@ -647,7 +672,7 @@
       placeId = param.placeId;
       if (placeId && regionsByPlaceId.size > 0 && regionalTrendsByPlaceId.size > 0 && chartContainerElement) {
         selectedRegion = regionsByPlaceId.get(placeId);
-      
+        
         generateChart();
       }
     });

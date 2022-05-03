@@ -18,6 +18,7 @@ import { parse, ParseResult } from "papaparse";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
 import { getCountyFipsCode } from "./zcta-county";
+import { dateRange } from "./stores";
 
 export interface Region {
   country_region: string;
@@ -281,6 +282,25 @@ export function fetchZipData(geoid: string, selectedCountryCode: string): Promis
   return fetch(`${baseUrl}/${ZIP_FILENAME_STRUCTURE[selectedCountryCode](geoid)}`).then((response) =>
     response.json()
   );
+}
+
+/**
+ * A method to read in the ALL_dates.csv file into an array of dates strings.
+ * @returns an array of date string values
+ */
+ export function fetchDateData() {
+  parse("./data/All_dates.csv", {
+    download: true,
+    header: false,
+    complete: function (results: ParseResult<string>) {
+      console.log(`Recieved date data with: ${results.data.length} rows`);
+      const dates = results.data.map((dates) => dates[0]);
+      dates.pop();
+      dateRange.set(dates)
+      //return output;
+    }
+  })
+  return ['']
 }
 
 export function fetchRegionalTrendsData(trendLines: Promise<RegionalTrendLine[]>): Promise<
