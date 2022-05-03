@@ -101,7 +101,7 @@ const AU_CAMBELLTOWN_CITY_COUNCIL_CODE = {
 
 const ZIP_FILENAME_STRUCTURE = {
   "US": geoid => `${geoid}.geo.json`,
-  "AU": geoid => `AU/${geoid}.topo.json`,
+  "AU": geoid => `AU/${geoid}.json`,
 };
 
 let regions: Map<string, Region>;
@@ -378,12 +378,12 @@ export function subRegionOneCode(region: RegionalTrendLine): string {
 
 export function subRegionTwoCode(region: RegionalTrendLine): string {
   if (region.sub_region_2_code != "") {
-    return region.sub_region_2_code
+    return region.sub_region_2_code;
   } else if (["AU", "GB"].includes(region.country_region_code)) {
     // GB and AU don't have sub_region_2_code in the data CSV, therefore use lookup table
     if (region.country_region_code == "AU" &&
       region.sub_region_2 == "Campbelltown City Council") {
-      return AU_CAMBELLTOWN_CITY_COUNCIL_CODE[region.sub_region_1_code]
+      return AU_CAMBELLTOWN_CITY_COUNCIL_CODE[region.sub_region_1_code];
     } else {
       // Get the code from lookup table, if not found, return empty string
       return getCountyFipsCode(region.sub_region_2, region.country_region_code) || "";
