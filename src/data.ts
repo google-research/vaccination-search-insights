@@ -239,8 +239,7 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
             console.log(
               `Load global trend data with ${results.data.length} rows`
             );
-            //TODO: remove CA filter once it's ready for launch
-            const mappedData = results.data.filter(d => d.country_region != "Canada").map((d) => {
+            const mappedData = results.data.map((d) => {
               const parsedRow: CountryTrendLine = {
                 date: d.date,
                 country_region: d.country_region,

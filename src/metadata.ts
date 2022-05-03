@@ -18,34 +18,10 @@
 import metadata from '../public/data/VSI_metadata.json';
  
 export function fetchCountryMetaData(countryNameString: string) {
-    //const countryData = metadata;
     return metadata.filter(c => c.countryName === countryNameString);
 }
 
 export function fetchCountryNames() {
     // TODO: we can add some logic here and in the metadata.json to filter for a valid country tag.
-    var countryList = [];
-    metadata.forEach((country) => countryList.push(country.countryName));
-    // TODO: remove filter CA or IE when it is ready for launch
-    return countryList.filter(c => c != "Canada");
+    return metadata.map(({countryName}) => countryName)
 }
-
-// TODO: Remove these tests once we are satisfied this component does its job.
-/*
-function _testCountryMetaData(){
-    const countries = ["Canada", "United Kingdom", "United States"]
-    countries.forEach(country => {
-       console.log("testing "+country);
-       console.log(fetchCountryMetaData(country))
-       console.log("done with "+country)
-       
-   });
-}
-
-function _testCountryList(){
-    var myCountries = fetchCountryNames();
-    console.log(myCountries);
-}
- _testCountryMetaData();
- _testCountryList();
- */

@@ -98,6 +98,10 @@ footer {
   background-color: g.$footer-background-color;
 }
 
+.footer-items {
+  display: inline-flex;
+}
+
 /* Prevent sup from adding to line-height */
 sup {
   line-height: 0;
@@ -277,7 +281,7 @@ sup {
 
 .link-item {
   display: inline;
-  margin-right: 40px;
+  margin-right: 20px;
 
   font-size: 16px;
   line-height: 24px;
@@ -329,13 +333,13 @@ sup {
   font-family: Google Sans;
   font-weight: 500;
   font-size: 14px;
-  line-height: 30px;
+  line-height: 20px;
   color: g.$grey-600;
   background: white;
   border-radius: 8px;
   border: 1px solid g.$grey-300;
   margin-right: 8px;
-  padding: 0 15px;
+  padding: 5px 15px;
   cursor: pointer;
 }
 
@@ -593,6 +597,14 @@ p.info-text + p.info-text {
   color: g.$grey-900;
 }
 
+.map-callout-metrics-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  grid-auto-flow: row;
+  grid-gap: 6px 10px;
+}
+
 .map-callout-color svg {
   position: relative;
   top: -3px;
@@ -601,7 +613,7 @@ p.info-text + p.info-text {
 
 .map-callout-metric-label {
   text-align: left;
-  width: 180px;
+ //width: 180px;
   overflow: hidden;
 }
 
@@ -906,17 +918,87 @@ div.next-steps-item > h3 {
   .menu {
     display: none;
   }
+
+  .footer-referencebar {
+    max-width: g.$media-breakpoint;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 50% 30%;
+    align-items: center;
+    margin: 0 5px;
+    align-content: space-evenly;
+    justify-items: start;
+  }
+
+  .footer-referencebar-logo-container {
+    margin: 0 5px;
+  }
+
+  .footer-items {
+    display: grid;
+    grid-template: repeat(4, 1fr)/ repeat(1 1fr);
+    grid-gap: 5px 5px;
+    grid-auto-flow: rows;
+    padding: 5px;
+  }
 }
 
 @media (max-width: 442px) {
   .container-header {
-    top: 90px;
+    top: 110px;
   }
 
   .info-button-top-queries {
     right: 21px;
     margin-top: -155px;
     position: absolute;
+  }
+
+  .footer-referencebar {
+    max-width: 442px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 50% 30%;
+    align-items: center;
+    margin: 0 5px;
+    align-content: space-evenly;
+    justify-items: start;
+  }
+
+  .footer-referencebar-logo-container {
+    margin: 0 5px;
+  }
+
+  .footer-items {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: 1fr;
+    grid-gap: 5px 5px;
+    grid-auto-flow: rows;
+    padding: 5px;
+  }
+
+  .header-topbar-menu {
+    margin-left: 5px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .header-topbar {
+    margin-top: 20px;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: self-start;
+  }
+
+  header {
+    font-size: 1.20rem;
+  }
+
+  .header-topbar-glue-logo {
+    margin-right: 8px;
+    margin-left: 8px
   }
 }
 
@@ -1139,4 +1221,81 @@ div.next-steps-item > h3 {
   .rising-searches .date-nav-control {
     visibility: hidden;
   }
+}
+
+// Card Styles
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+
+  @include g.mobileMaxMediaQuery {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.card {
+  border: 1px solid g.$grey-300;
+  border-radius: 8px;
+  font-size: 14px;
+
+  &:active {
+    border-color: g.$blue-600;
+  }
+}
+
+a.card {
+  outline: none;
+
+  &:hover {
+    border-color: g.$blue-600;
+  }
+
+  &:focus {
+    border-color: g.$blue-600;
+  }
+}
+
+.card-title {
+  color: g.$grey-700;
+  font-size: 14px;
+  line-height: 24px;
+  margin: 0;
+  padding: 12px;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding: 0 12px 12px;
+}
+
+.card-logo {
+  height: 64px;
+  flex-shrink: 0;
+  width: 64px;
+}
+
+.card-description {
+  color: g.$grey-900;
+  flex-grow: 1;
+  font-size: 14px;
+  margin: 0;
+}
+
+.language-picker {
+  align-items: center;
+  display: inline-block;
+  right: 10px;
+  font-size: 16px;
+  background-color: transparent;
+  color: #80868b;
+}
+
+select.language-picker {
+  background: transparent;
+  background-color: transparent;
+  color: #80868b;
+  border-color: transparent;
 }

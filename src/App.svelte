@@ -15,22 +15,55 @@
    * limitations under the License.
    */
   import AutoComplete from "simple-svelte-autocomplete";
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import { params } from "./stores";
   import { fetchCountryMetaData, fetchCountryNames } from "./metadata";
 
   import TrendsOverview from "./TrendsOverview.svelte";
   import CountryPicker from "./CountryPicker.svelte";
+  import {CASE_STUDIES} from './case-studies';
 
-  const COVID_19_VACCINATION_TITLE = "COVID-19 vaccination searches";
-  const VACCINATION_INTENT_TITLE = "Vaccination intent searches";
-  const SAFETY_SIDE_EFFECTS_TITLE = "Safety and side effect searches";
+  import en from "../public/lang/en.json";
+  import fr from "../public/lang/fr.json";
+
+import { set, values } from "d3-collection";
+import { e } from "mathjs";
+
+  addMessages("en", en);
+  addMessages("fr", fr);
+
+  import {
+    _,
+    addMessages,
+    init,
+    locale,
+    getLocaleFromNavigator
+  } from "svelte-i18n";
+
+  init({
+    initialLocale: getLocaleFromNavigator(),
+    fallbackLocale: "en",
+  });
+
+  // Interacting with the locale
+  locale.subscribe((newLocale) => {console.log("Locale Subscribed")});
+
+  let COVID_19_VACCINATION_TITLE = $_('content.COVID_19_VACCINATION_TITLE'); //"COVID-19 vaccination searches";
+  let VACCINATION_INTENT_TITLE = $_('content.VACCINATION_INTENT_TITLE'); //"Vaccination intent searches";
+  let SAFETY_SIDE_EFFECTS_TITLE = $_('content.SAFETY_SIDE_EFFECTS_TITLE'); //"Safety and side effect searches";
 
   const COUNTRY_LIST = fetchCountryNames();
 
   let selectedCountryID: string;
   let placeId: string;
   let selectedCountryMetadata;
+
+  const handleLocaleChange = e => {
+    e.preventDefault();
+    locale.set(e.target.value);
+    console.log(`locale is now ${$locale}`)
+    params.update((p) => { return p});
+  };
 
   onMount(async () => {
     document.addEventListener("scroll", handleDocumentScroll);
@@ -46,6 +79,14 @@
       selectedCountryID = placeId;
     }
   });
+
+  /** Returns a srcset used for Img elements that contains source images for regular and high-density screens. */
+  function getSrcSet(
+    imageSrc1x: string, 
+    imageSrc2x: string,
+  ): string {
+    return `${imageSrc1x} 1x, ${imageSrc2x} 2x`;
+  }
 
   function handleDownloadPopup(event): void {
     const downloadRect: DOMRect = document
@@ -121,7 +162,7 @@
 </script>
 
 <svelte:head>
-  <title>COVID-19 Vaccination Search Insights</title>
+  <title>{$_('project_title')}</title>
 </svelte:head>
 
 <main>
@@ -134,7 +175,7 @@
           </svg>
         </a>
         <a href="?" class="header-topbar-text">
-          COVID-19 Vaccination Search Insights
+          {$_('project_title')}
         </a>
       </div>
       <div class="header-topbar-menu">
@@ -142,38 +183,59 @@
           <span class="material-icons-outlined header-download-icon"
             >file_download</span
           >
-          Download data
+          {$_('navigation.download_data')}
         </div>
         <div class="link-item">
           <a
             class="link-item-anchor"
             href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
-            >Documentation</a
+            >{$_('navigation.documentation')}</a
           >
         </div>
       </div>
     </div>
     <div id="header-download-popup" class="header-download-popup">
       <h3 class="header-downlod-popup-title">
-        Covid-19 Vaccination Search Insights
+        {$_('project_title')}
       </h3>
       <p class="header-download-popup-body">
-        In order to download or use the data or insights, you must agree to the
-        Google
-        <a href="https://policies.google.com/terms">Terms of Service</a>.
+        {@html $_('content.download_popup.terms', {values: {
+          toDownloadsUrl: "https://policies.google.com/terms"}})}
       </p>
-      <h4 class="header-download-popup-subtitle">Download dataset</h4>
+      <h4 class="header-download-popup-subtitle">{$_('content.download_popup.download_dataset')}</h4>
       <p class="header-download-popup-link-list">
-        {#each COUNTRY_LIST as countryName}
-          <a
-            class="header-download-popup-link"
-            href={"https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/" +
-              fetchCountryMetaData(countryName)[0].countryCode + "_vaccination_search_insights.csv"}
-            on:click={(e) => closeDownloadPopup()}
-            ><span class="material-icons-outlined header-download-popup-icon">file_download</span>
-            {countryName}
-          </a>
-        {/each}
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon"
+            >file_download</span
+          >{$_('content.download_popup.countries.canada')}</a
+        >
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/IE_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon"
+            >file_download</span
+          >{$_('content.download_popup.countries.ireland')}</a
+        >
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon"
+            >file_download</span
+          >{$_('content.download_popup.countries.uk')}</a
+        >
+        <a
+          class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/US_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon"
+            >file_download</span
+          >{$_('content.download_popup.countries.usa')}</a
+        >
       </p>
     </div>
     {#if !placeId}
@@ -182,7 +244,7 @@
           <div class="header-search-container">
             <AutoComplete
               items={fetchCountryNames()}
-              placeholder={"Select a country"}
+              placeholder={$_('navigation.country_picker')}
               onChange={onCountrySelectHandler}
               inputClassName={"header-search-box"}
               className={"header-search-container"}
@@ -196,21 +258,19 @@
 
   <div class="content-area">
     <div class="content-body">
-      <h1>COVID-19 Vaccination Search Insights</h1>
+      <h1>{$_('project_title')}</h1>
       <p>
-        Explore searches for COVID-19 vaccination topics by region. This
-        aggregated and anonymized data helps you understand and compare
-        communities&apos; information needs. We’re releasing this data to inform
-        public health vaccine-confidence efforts.
-        <a href="#about">Learn more</a>
+        { @html $_('content.app_overview', {values: {
+          aboutUrl: "#about"
+        }})}
       </p>
 
       {#if placeId}
         <TrendsOverview
           {selectedCountryMetadata}
-          covid_vaccination_title={COVID_19_VACCINATION_TITLE}
-          vaccination_intent_title={VACCINATION_INTENT_TITLE}
-          safety_side_effects_title={SAFETY_SIDE_EFFECTS_TITLE}
+          covid_vaccination_title={$_('content.COVID_19_VACCINATION_TITLE')}
+          vaccination_intent_title={$_('content.VACCINATION_INTENT_TITLE')}
+          safety_side_effects_title={$_('content.SAFETY_SIDE_EFFECTS_TITLE')}
         />
       {:else}
         <CountryPicker
@@ -221,112 +281,71 @@
         />
       {/if}
 
-      <h2 class="first-section-header">About this data</h2>
+      <h2 class="first-section-header">{$_('content.about_data_title')}</h2>
       <p>
-        You can use this data to compare search interest between topics related
-        to COVID-19 vaccination and see what topics are popular or rising. The
-        value for search interest isn’t an absolute number of searches—it’s a
-        value representing relative interest which we scale to make it easier to
-        compare regions with one another, or the same region over time. If you’d
-        like to know more about our calculation and process, see our <a
-          href="https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
-          >technical docs</a
-        >.
+        {@html $_('content.about_data_content', {values: {
+          aboutDataUrl: "https://storage.googleapis.com/gcs-public-datasets/COVID-19%20Vaccination%20Search%20Insights%20documentation.pdf"
+        }})}
       </p>
-      <h2>How to best use this data</h2>
-      <p>
-        We used the same normalization and scaling everywhere so that you can
-        make these comparisons:
-      </p>
-      <ul>
-        <li>
-          Compare a region with others to see where you might focus effort.
-        </li>
-        <li>
-          Compare a region over time to see how your community’s information
-          needs have changed or see the impact of your communication efforts and
-          news events.
-        </li>
-      </ul>
-      <p>
-        Remember, the data shows people’s interest—not opinions or actual
-        events. You can’t conclude that a community is suffering from many side
-        effects because there’s increased interest in the safety and side
-        effects category.
-      </p>
-      <h2>Protecting privacy</h2>
-      <p>
-        We developed the Vaccine Search Insights to be helpful while adhering to
-        our stringent privacy protocols for search data. No individual search
-        queries or other personally identifiable information are made available
-        at any point. For this data, we use <a
-          href="https://www.youtube.com/watch?v=FfAdemDkLsc&feature=youtu.be&hl=en"
-          >differential privacy,
-        </a>
-        which adds artificial noise to our data while enabling high quality results
-        without identifying any individual person. Additionally, we don’t show data
-        for regions that are smaller than 3 km<sup>2</sup>.
-      </p>
-      <p>
-        To learn more about the privacy methods used to generate the data, read
-        the
-        <a href="https://arxiv.org/abs/2107.01179"
-          >anonymization process description</a
-        >.
-      </p>
-      <h2>Availability and updates</h2>
-      <p>
-        To download or use the data or insights, you must agree to the
-        <a href="https://policies.google.com/terms">Google Terms of Service</a>.
-      </p>
-      <p>
-        We’ll update the data each week. You can check the dates in the charts
-        to see the most recent day in the data. If you download the CSV,
-        remember to get an updated version each week.
-      </p>
-      <p>
-        We'll continue to update this product while public health experts find
-        it useful in their COVID-19 vaccination efforts. Our published data will
-        remain publicly available to support long-term research and evaluation.
-      </p>
+      <h2>{$_('content.best_use_title')}</h2>
+      {@html $_('content.best_use_content')}
+      <h2>{$_('content.case_studies_title')}</h2>
+
+      <div class="card-container">
+        {#each CASE_STUDIES as caseStudy}
+          <a 
+            class="card"
+            href="{caseStudy.caseStudyHref}"
+            target="_blank"
+          >
+            <h3 class="card-title">
+              {$_(`content.case_studies.${caseStudy.title}`)}
+            </h3>
+
+            <div class="card-content">
+              <img 
+                class="card-logo" 
+                srcset="{getSrcSet(caseStudy.logoImgSrc, caseStudy.logoImgSrc2x)}" 
+                alt="" 
+              />
+              <p class="card-description">
+                {$_(`content.case_studies.${caseStudy.description}`)}
+              </p>
+            </div>
+          </a>
+        {/each}
+      </div>
+
+      <h2>{$_('content.protecting_privacy_title')}</h2>
+      {@html $_('content.proctecting_privacy_content', {values: {
+        diffPrivacyUrl: "https://www.youtube.com/watch?v=FfAdemDkLsc&feature=youtu.be&hl=en",
+        anonymizationUrl: "https://arxiv.org/abs/2107.01179"}})}
+      <h2>{$_('content.availability_title')}</h2>
+      {@html $_('content.availability_content', {values: {tosUrl: "https://policies.google.com/terms"}})}
       <div id="next-steps" class="next-steps-container">
         <div class="next-steps-item">
-          <h3>Query the dataset with SQL</h3>
+          <h3>{$_('content.next_steps.query_dataset_title')}</h3>
           <p>
-            Get insights using Google Cloud’s BigQuery. Analyze with SQL,
-            generate reports, or call the API from your code.
+            {$_('content.next_steps.query_dataset_content')}
           </p>
           <p />
-          <p>
-            <a
-              href="http://console.cloud.google.com/marketplace/product/bigquery-public-datasets/covid19-vaccination-search-insights"
-              >Bigquery public dataset</a
-            >
+          <p>{@html $_('content.next_steps.query_dataset_link', {values: {bigQueryUrl: "http://console.cloud.google.com/marketplace/product/bigquery-public-datasets/covid19-vaccination-search-insights"}})}
           </p>
         </div>
         <div class="next-steps-item">
-          <h3>Analyze with covariate data</h3>
+          <h3>{$_('content.next_steps.analyze_covariate_title')}</h3>
           <p>
-            Analyze this data alongside other covariates in the COVID-19
-            Open-Data repository.
+            {$_('content.next_steps.analyze_covariate_content')}
           </p>
-          <p>
-            <a href="https://github.com/GoogleCloudPlatform/covid-19-open-data"
-              >Github repository</a
-            >
+          <p>{@html $_('content.next_steps.analyze_covariate_link', {values: {gitHubUrl: "https://github.com/GoogleCloudPlatform/covid-19-open-data"}})}
           </p>
         </div>
         <div class="next-steps-item">
-          <h3>Tell us about your project</h3>
+          <h3>{$_('content.next_steps.feedback_title')}</h3>
           <p>
-            We’d love to hear more about how you’re using the data. Send
-            feedback using our form.
+            {$_('content.next_steps.feedback_content')}
           </p>
-          <p>
-            <a
-              href="https://google-health.force.com/s/form?type=VSIFeedbackForm"
-              >Feedback
-            </a>
+          <p>{@html $_('content.next_steps.feedback_link', {values: {feedBackUrl: "https://google-health.force.com/s/form?type=VSIFeedbackForm"}})}
           </p>
         </div>
       </div>
@@ -347,32 +366,37 @@
       </div>
       <ul class="footer-items">
         <li class="link-item">
-          <a class="link-item-anchor" href="https://www.google.com/about"
-            >About Google</a
+          <a class="link-item-anchor" 
+          href="https://www.google.com/about"
+            >{$_('navigation.footer.about')}</a
           >
         </li>
         <li class="link-item">
-          <a
-            class="link-item-anchor"
-            href="https://www.google.com/about/products">Google Products</a
+          <a class="link-item-anchor" 
+          href="https://policies.google.com/privacy"
+            >{$_('navigation.footer.privacy')}</a
           >
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="https://policies.google.com/privacy"
-            >Privacy</a
+          <a class="link-item-anchor"
+          href="https://policies.google.com/terms"
+            >{$_('navigation.footer.terms')}</a
           >
         </li>
         <li class="link-item">
-          <a class="link-item-anchor" href="https://policies.google.com/terms"
-            >Terms</a
-          >
-        </li>
-        <li class="link-item">
-          <a class="link-item-anchor" href="license_report.html"
-            >Third Party Notices</a
+          <a class="link-item-anchor"
+          href="license_report.html"
+            >{$_('navigation.footer.third_party_notices')}</a
           >
         </li>
       </ul>
+      <div>
+        <!-- svelte-ignore a11y-no-onchange -->
+        <select bind:value={$locale} on:change={handleLocaleChange} class="language-picker">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
     </div>
   </footer>
 </main>

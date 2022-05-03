@@ -22,7 +22,7 @@
     fetchRegionalTrendLines,
   } from "./data";
   import { onMount } from "svelte";
-  import { params, mapData, regionalTrends, isZipsDownloaded} from "./stores";
+  import { params, mapData, regionalTrends, isZipsDownloaded } from "./stores";
   import { getRegionName, getCountryName, handleInfoPopup } from "./utils";
   import * as d3 from "d3";
   import {
@@ -34,11 +34,12 @@
     setSelectedCounty,
     setSelectedState,
   } from "./choropleth.js";
-  import { updateWithZipsData } from "./zip_data"
+  import { updateWithZipsData } from "./zip_data";
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
   import Clusters from "./Clusters.svelte";
+  import { _, locale } from "svelte-i18n";
 
   let selectedRegion: Region;
   let regions: Region[];
@@ -47,19 +48,14 @@
   let selectedCountryName: string;
   let selectedMapTrendId: string = "vaccination";
 
-  let vaccineTooltip: string = `
+  let intentTooltip: string = `
     Search interest in the eligibility, availability, and accessibility of
     COVID-19 vaccines. `;
-  let intentTooltip: string = `
+  let vaccineTooltip: string = `
     Search interest in any aspect of COVID-19 vaccination. `;
-  const safetyTooltip: string = `
-    Search interest in the safety and side effects of COVID-19 vaccines. For
-    example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A
-    scaled value that you can compare across regions, times, or topics.
-  `;
+  let safetyTooltip: string = $_("tooltips.safety_tooltip");
 
   let isMapInitialized: boolean = false;
-
 
   export let covid_vaccination_title: string;
   export let vaccination_intent_title: string;
@@ -71,6 +67,9 @@
   let vaccinationIntentChartContainer: HTMLElement;
   let safetySideEffectsChartContainer: HTMLElement;
 
+  let countryLegal: string;
+  let vaccineTooltipConcat: string;
+  let intentTooltipConcat: string;
 
   function onChangeMapTrend(): void {
     selectedMapTrendId = this.id;
@@ -93,14 +92,19 @@
     regions = Array.from(regionsByPlaceId.values());
 
     params.subscribe((param) => {
+      changeTooltips();
+
       placeId = param.placeId;
       if (placeId) {
         selectedRegion = regionsByPlaceId.get(placeId);
+
         // avoid fetching country metadata if country name didn't change
         let newCountryName = getCountryName(selectedRegion);
-        if (selectedCountryName !== newCountryName){
+
+        if (selectedCountryName !== newCountryName) {
           selectedCountryName = newCountryName;
-          selectedCountryMetadata = fetchCountryMetaData(selectedCountryName)[0];
+          selectedCountryMetadata =
+            fetchCountryMetaData(selectedCountryName)[0];
           $isZipsDownloaded = false;
         }
       }
@@ -115,11 +119,18 @@
     setParentRegionButton();
 
     if (selectedCountryMetadata) {
-      let fetchRegTrendLine_result = fetchRegionalTrendLines(selectedCountryMetadata);
+      let fetchRegTrendLine_result = fetchRegionalTrendLines(
+        selectedCountryMetadata
+      );
 
       fetchRegTrendLine_result.then((mD) => {
         $mapData = mD;
-        createMap(selectedMapTrendId, regions, onMapSelection, selectedCountryMetadata);
+        createMap(
+          selectedMapTrendId,
+          regions,
+          onMapSelection,
+          selectedCountryMetadata
+        );
         isMapInitialized = true;
         if (selectedRegion) {
           setMapSelection(selectedRegion);
@@ -127,20 +138,18 @@
       });
 
       $regionalTrends = await fetchRegionalTrendsData(fetchRegTrendLine_result);
-      
-      vaccineTooltip = `${vaccineTooltip}
-        For example, “when can i get the covid vaccine” or 
-        “${selectedCountryMetadata.vaccineTooltipExample}”. A scaled
-        value that you can compare across regions, times, or topics.
-      `;
-
-      intentTooltip = `${intentTooltip}
-        For example, “covid vaccine near me” or 
-        “${selectedCountryMetadata.intentTooltipExample}”. A scaled value that 
-        you can compare across regions,times, or topics.
-      `;
     }
   });
+
+  export function changeTooltips(): void {
+    if (selectedCountryMetadata) {
+      vaccineTooltip = `${$_("tooltips.vaccine_preamble")}${$_("quote.start")}${$_(`tooltips.vaccine_country_example.${selectedCountryMetadata.countryCode}`)}${$_("quote.end")}. ${$_("tooltips.scaled_tooltip")}`;
+
+      intentTooltip = `${$_("tooltips.intent_preamble")}${$_("quote.start")}${$_(`tooltips.intent_country_example.${selectedCountryMetadata.countryCode}`)}${$_("quote.end")}. ${$_("tooltips.scaled_tooltip")}`;
+
+      safetyTooltip = $_("tooltips.safety_tooltip");
+    }
+  }
 
   function onChangeHandler(selectedRegion: Region): void {
     if (selectedRegion != undefined) {
@@ -162,21 +171,19 @@
   function setMapSelection(selectedRegion: Region): void {
     if (selectedRegion.sub_region_2_code) {
       setSelectedCounty(selectedRegion.sub_region_2_code);
-      if(!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
+      if (!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
         $isZipsDownloaded = true;
-        console.log("looking at state county level now!")
+        console.log("looking at state county level now!");
         let zipData = updateWithZipsData();
-        zipData.then((zD) => {
-        }).then(() => setMapSelection(selectedRegion));
+        zipData.then((zD) => {}).then(() => setMapSelection(selectedRegion));
       }
     } else if (selectedRegion.sub_region_1_code) {
       setSelectedState(selectedRegion.sub_region_1_code);
-      if(!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
+      if (!$isZipsDownloaded && selectedCountryMetadata.countryCode == "US") {
         $isZipsDownloaded = true;
-        console.log("looking at state level now!")
+        console.log("looking at state level now!");
         let zipData = updateWithZipsData();
-        zipData.then((zD) => {
-        }).then(() => setMapSelection(selectedRegion));
+        zipData.then((zD) => {}).then(() => setMapSelection(selectedRegion));
       }
     } else {
       resetToCountryLevel();
@@ -237,7 +244,7 @@
         <AutoComplete
           items={filterDropdownItems(regions)}
           bind:selectedItem={selectedRegion}
-          placeholder={"United States"}
+          placeholder={selectedCountryName}
           labelFunction={getRegionName}
           onChange={onChangeHandler}
           inputClassName={"header-search-box"}
@@ -256,7 +263,7 @@
           ? "map-trend-selector-button map-trend-selector-selected"
           : "map-trend-selector-button"}
         on:click={onChangeMapTrend}
-        title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
+        title={vaccineTooltip}
       >
         {#if selectedMapTrendId == "vaccination"}
           <div class="map-trend-icon-container">
@@ -271,7 +278,7 @@
           ? "map-trend-selector-button map-trend-selector-selected"
           : "map-trend-selector-button"}
         on:click={onChangeMapTrend}
-        title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
+        title={intentTooltip}
       >
         {#if selectedMapTrendId == "intent"}
           <div class="map-trend-icon-container">
@@ -286,7 +293,7 @@
           ? "map-trend-selector-button map-trend-selector-selected"
           : "map-trend-selector-button"}
         on:click={onChangeMapTrend}
-        title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
+        title={safetyTooltip}
       >
         {#if selectedMapTrendId == "safety"}
           <div class="map-trend-icon-container">
@@ -299,8 +306,8 @@
     <!-- map header/legend -->
     <div id="map-callout" class="map-callout">
       <div id="map-callout-title" class="map-callout-title">Region Name</div>
-      <div class="map-callout-metric-header">Interest</div>
-      <div>
+      <div class="map-callout-metric-header">{$_("legend.interest")}</div>
+      <div class="map-callout-metrics-grid">
         <div class="map-callout-metric-column map-callout-color">
           <svg id="callout-vaccine" width="12" height="12">
             <rect width="12" height="12" stroke="none" />
@@ -313,8 +320,6 @@
           id="callout-vaccine-value"
           class="map-callout-metric-column map-callout-metric-value"
         />
-      </div>
-      <div>
         <div class="map-callout-metric-column map-callout-color">
           <svg id="callout-intent" width="12" height="12">
             <rect width="12" height="12" stroke="none" />
@@ -327,8 +332,6 @@
           id="callout-intent-value"
           class="map-callout-metric-column map-callout-metric-value"
         />
-      </div>
-      <div>
         <div class="map-callout-metric-column map-callout-color">
           <svg id="callout-safety" width="12" height="12">
             <rect width="12" height="12" stroke="none" />
@@ -344,9 +347,9 @@
       </div>
       <div class="map-callout-tip">
         <span id="not-enough-data-message" style="display: none;"
-          >* Not enough data</span
+          >* {$_("legend.no_data")}</span
         >
-        <span id="map-callout-drilldown-msg">Click to drill down</span>
+        <span id="map-callout-drilldown-msg">{$_("hints.click_to_drill")}</span>
       </div>
     </div>
 
@@ -355,7 +358,7 @@
     <!-- Map header section with controls and legend -->
     <div class="map-header-container">
       <div class="map-legend">
-        <div class="map-legend-label">Interest</div>
+        <div class="map-legend-label">{$_("legend.interest")}</div>
         <div class="map-legend-scale">
           <div id="map-legend-scale-breaks" class="map-legend-scale-top">
             <!-- breaks added by drawLegend routine -->
@@ -367,7 +370,7 @@
           </div>
         </div>
         <div class="map-legend-label map-legend-no-data-label">
-          Not enough data
+          {$_("legend.no_data")}
         </div>
         <div style="display:flex">
           <div class="map-legend-scale">
@@ -415,13 +418,13 @@
     <!-- Map body -->
     <div id="map" />
     {#if !isMapInitialized}
-      <div class="map-loading">Loading data...</div>
+      <div class="map-loading">{$_("hints.loading_data")}.</div>
     {/if}
     <!-- Map attribution line -->
     <div class="map-attribution">
       <p class="map-attribution-text">
         {#if selectedCountryMetadata}
-          {selectedCountryMetadata.shapeFileLegal}
+          {$_(`map_license.${selectedCountryMetadata.shapeFileLegal}`)}
         {/if}
       </p>
     </div>
@@ -436,10 +439,10 @@
       {vaccineTooltip}
     </p>
     <p class="info-text">
-      This parent category includes searches from the other two subcategories.
+      {$_("tooltips.parent_tooltip")}
     </p>
     <p>
-      <a href="#about" class="info-link">Learn more</a>
+      <a href="#about" class="info-link">{$_("tooltips.learn_more")}</a>
     </p>
   </div>
   <div id="info-popup-intent" class="info-popup">
@@ -450,7 +453,7 @@
       {intentTooltip}
     </p>
     <p>
-      <a href="#about" class="info-link">Learn more</a>
+      <a href="#about" class="info-link">{$_("tooltips.learn_more")}</a>
     </p>
   </div>
   <div id="info-popup-safety" class="info-popup">
@@ -461,10 +464,10 @@
       {safetyTooltip}
     </p>
     <p>
-      <a href="#about" class="info-link">Learn more</a>
+      <a href="#about" class="info-link">{$_("tooltips.learn_more")}</a>
     </p>
   </div>
-  {#if $regionalTrends.size > 0  }
+  {#if $regionalTrends.size > 0}
     <TimeSeries
       id="covid-19-vaccination"
       {regionsByPlaceId}
@@ -473,14 +476,14 @@
         return t.trends.covid19_vaccination;
       }}
       title={covid_vaccination_title}
-      selectedCountryMetadata={selectedCountryMetadata}
+      {selectedCountryMetadata}
     >
-    <p class="info-text">
-      {vaccineTooltip}
-    </p>
-    <p class="info-text">
-      This parent category includes searches from the other two subcategories.
-    </p>
+      <p class="info-text">
+        {vaccineTooltip}
+      </p>
+      <p class="info-text">
+        {$_("tooltips.parent_tooltip")}
+      </p>
     </TimeSeries>
     <TimeSeries
       id="vaccination-intent"
@@ -490,11 +493,11 @@
         return t.trends.vaccination_intent;
       }}
       title={vaccination_intent_title}
-      selectedCountryMetadata={selectedCountryMetadata}
+      {selectedCountryMetadata}
     >
-    <p class="info-text">
-      {intentTooltip}
-    </p>
+      <p class="info-text">
+        {intentTooltip}
+      </p>
     </TimeSeries>
     <TimeSeries
       id="safety-side-effects"
@@ -504,30 +507,26 @@
         return t.trends.safety_side_effects;
       }}
       title={safety_side_effects_title}
-      selectedCountryMetadata={selectedCountryMetadata}
+      {selectedCountryMetadata}
     >
-    <p class="info-text">
-      {safetyTooltip}
-    </p>
+      <p class="info-text">
+        {safetyTooltip}
+      </p>
     </TimeSeries>
   {/if}
 
   {#if selectedCountryMetadata}
-    {#if selectedCountryMetadata.countryCode == "US"}
-      <Clusters
-        {regionsByPlaceId}
-        covid_vaccination_button_title={covid_vaccination_title}
-        vaccination_intent_button_title={vaccination_intent_title}
-        safety_side_effects_button_title={safety_side_effects_title}
-        selectedCountryCode={selectedCountryMetadata.countryCode}
-      />
-    {:else}
+  <!-- TODO include logic for other countries for clusters vs top queries -->
+    {#if selectedCountryName != "Canada"} 
       <TopQueries
         {regionsByPlaceId}
         covid_vaccination_button_title={covid_vaccination_title}
         vaccination_intent_button_title={vaccination_intent_title}
         safety_side_effects_button_title={safety_side_effects_title}
         selectedCountryCode={selectedCountryMetadata.countryCode}
+        intentTooltip={intentTooltip}
+        vaccineTooltip={vaccineTooltip}
+        safetypTooltip={safetyTooltip}
       />
     {/if}
   {/if}
