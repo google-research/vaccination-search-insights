@@ -79,17 +79,17 @@
         "intent_preamble": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. Par exemple, « vaccin covid près de chez moi » ou ",
         "vaccine_country_example": {
             "CA": "traqueur de vaccins",
-            "IE": "Vaccin covid HSE",
-            "GB": "Vaccin covid NHS",
-            "US": "traqueur de vaccins cdc",
-            "AU": "vaccin contre la covid"
+            "IE": "HSE covid vaccine",
+            "GB": "NHS covid vaccine",
+            "US": "cdc vaccine tracker",
+            "AU": "covid vaccine"
         },
         "intent_country_example": {
             "CA": "vaccin covid québec",
-            "IE": "réserver vaccin HSE covid",
-            "GB": "réserver vaccin NHS covid",
-            "US": "vaccin covid safeway",
-            "AU": "vaccin pfizer melbourne"
+            "IE": "book HSE covid vaccine",
+            "GB": "book NHS covid vaccine",
+            "US": "safeway covid vaccine",
+            "AU": "pfizer vaccine melbourne"
         },
         "scaled_tooltip": "Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
         "safety_tooltip": "Popularité des recherches sur l'innocuité et les effets secondaires des vaccins contre la COVID-19. Par exemple, « le vaccin contre la covid est-il sûr » ou « effets secondaires du vaccin pfizer ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes.",
