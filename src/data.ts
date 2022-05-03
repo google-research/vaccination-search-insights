@@ -603,6 +603,8 @@ function createCluster(clusterRow: ClusterRow): Cluster {
   return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, change: clusterChange, members: membersList };
 }
 
+let clustersStoragePrefix: string = "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/top_clusters/";
+
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created
  * based on the location, date, query type, and category of an associated list of 
@@ -611,7 +613,7 @@ function createCluster(clusterRow: ClusterRow): Cluster {
 export function fetchClustersFile(file: string): Promise<Map<string, Cluster[]>> {
   let clustersPromise: Promise<Map<string, Cluster[]>> = new Promise<Map<string, Cluster[]>>(
     (resolve, reject) => {
-      parse(`./data/${file}`, {
+      parse(`${clustersStoragePrefix}${file}`, {
         download: true,
         header: true,
         skipEmptyLines: true,
