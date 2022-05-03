@@ -20,8 +20,10 @@
 
 import { writable } from "svelte/store";
 import type { RegionalTrends } from "./data";
+import { fetchDateData } from "./data";
 
 let rt = new Map<string, RegionalTrends>();
+let allDates: string[]
 
 type Params = {
   placeId: string;
@@ -71,4 +73,10 @@ export const regionalTrends = writable(rt);
 // A parameter to track whether the zipcodes file has been downloaded.
 // This helps prevent repeatedly fetching the large file.
 export const isZipsDownloaded = writable(false);
+
+/** 
+ * A store to contain an array of all valid dates
+ */
+export const dateRange = writable<string[]>(fetchDateData());
+
 
