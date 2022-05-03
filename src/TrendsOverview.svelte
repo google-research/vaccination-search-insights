@@ -517,7 +517,15 @@
 
   {#if selectedCountryMetadata}
   <!-- TODO include logic for other countries for clusters vs top queries -->
-    {#if selectedCountryName != "Canada"} 
+    {#if selectedCountryMetadata.countryCode == "US"}
+      <Clusters
+        {regionsByPlaceId}
+        covid_vaccination_button_title={covid_vaccination_title}
+        vaccination_intent_button_title={vaccination_intent_title}
+        safety_side_effects_button_title={safety_side_effects_title}
+        selectedCountryCode={selectedCountryMetadata.countryCode}
+      />
+    {:else if selectedCountryName != "Canada"} 
       <TopQueries
         {regionsByPlaceId}
         covid_vaccination_button_title={covid_vaccination_title}
