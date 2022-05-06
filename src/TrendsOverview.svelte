@@ -524,6 +524,9 @@
         vaccination_intent_button_title={vaccination_intent_title}
         safety_side_effects_button_title={safety_side_effects_title}
         selectedCountryCode={selectedCountryMetadata.countryCode}
+        intentTooltip={intentTooltip}
+        vaccineTooltip={vaccineTooltip}
+        safetypTooltip={safetyTooltip}
       />
     {:else if selectedCountryName != "Canada"} 
       <TopQueries

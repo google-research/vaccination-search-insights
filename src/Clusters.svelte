@@ -47,6 +47,12 @@
     let risingQueriesList = [];
     let currentSubRegion: string = "";
 
+    /* Export tooltips to be available in trendsOverview for modifcation */
+    export let vaccineTooltip: string = "";
+    export let intentTooltip = "";
+    export let safetypTooltip: string = "";
+
+
     function capitaliseFirstLetter(str: string): string {
         return str[0].toUpperCase() + str.slice(1);
     }
@@ -229,7 +235,7 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title="Search interest in any aspect of COVID-19 vaccination. For example, “when can i get the covid vaccine” or “cdc vaccine tracker”. A scaled value that you can compare across regions and times. This parent category includes searches from the other two subcategories."
+                title={vaccineTooltip}
             >
                 {#if selectedListId == "covid19_vaccination"}
                     <div class="map-trend-icon-container">
@@ -246,7 +252,7 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title="Search interest in the eligibility, availability, and accessibility of COVID-19 vaccines. For example, “covid vaccine near me” or “safeway covid vaccine”. A scaled value that you can compare across regions and times."
+                title={intentTooltip}
             >
                 {#if selectedListId == "vaccination_intent"}
                     <div class="map-trend-icon-container">
@@ -263,7 +269,7 @@
                     ? "map-trend-selector-button map-trend-selector-selected"
                     : "map-trend-selector-button"}
                 on:click={changeCategory}
-                title="Search interest in the safety and side effects of COVID-19 vaccines. For example, “is the covid vaccine safe” or “pfizer vaccine side effects”. A scaled value that you can compare across regions and times."
+                title={safetypTooltip}
             >
                 {#if selectedListId == "safety_side_effects"}
                     <div class="map-trend-icon-container">
