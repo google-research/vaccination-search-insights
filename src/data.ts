@@ -603,7 +603,7 @@ function createCluster(clusterRow: ClusterRow): Cluster {
   return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, change: clusterChange, members: membersList };
 }
 
-let clustersStoragePrefix: string = "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/top_clusters/";
+let clustersStoragePrefix: string = "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/top_clusters/";
 
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created
