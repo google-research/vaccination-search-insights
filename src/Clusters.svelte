@@ -71,7 +71,7 @@
             return "-";
         }
         if (change === Infinity) {
-            return "NEW";
+            return "NEW"; //TODO(meganshum): Add translation for this!
         }
         var changeStr = change.toLocaleString("en", {
             notation: "compact",
