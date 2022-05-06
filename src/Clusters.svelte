@@ -17,20 +17,22 @@
 
     import { onMount } from "svelte";
     import {
-        fetchTopLevelQueries,
+        fetchTopLevelClusterFiles,
         createDateList,
         createSerialisedQueryKey,
-        fetchQueriesFile,
+        fetchClustersFile,
     } from "./data";
-    import type { Region, Query } from "./data";
+    import type { Region, Cluster } from "./data";
     import { params } from "./stores";
     import { getCountryCode, handleInfoPopup } from "./utils";
     import { dateRangeString } from "./choropleth";
-    import { _ } from "svelte-i18n";
 
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
     const RISING_QUERY_TYPE = "rising";
+    const NO_CHANGE_COLOR = "#202124";
+    const POSITIVE_CHANGE_COLOR = "#1e8e3e";
+    const NEGATIVE_CHANGE_COLOR = "#d93025";
 
     let loading: boolean = true;
     let selectedListId: string = "covid19_vaccination";
@@ -38,8 +40,8 @@
     let selectedDateIndex: number = dateList.length - 1;
     let dateKey: string = "";
     let dateRange: string = "";
-    let topLevelData: Map<string, Query[]> = new Map<string, Query[]>();
-    let countyData: Map<string, Query[]>;
+    let topLevelData: Map<string, Cluster[]> = new Map<string, Cluster[]>();
+    let countyData: Map<string, Cluster[]>;
     let placeId: string;
     let topQueriesList = [];
     let risingQueriesList = [];
@@ -50,6 +52,39 @@
     export let intentTooltip = "";
     export let safetypTooltip: string = "";
 
+
+    function capitaliseFirstLetter(str: string): string {
+        return str[0].toUpperCase() + str.slice(1);
+    }
+
+    function formatMembersList(stringArray: string[]): string {
+        if (stringArray.length === 0) {
+            return "";
+        }
+        return stringArray
+            .map((member) => capitaliseFirstLetter(member))
+            .join(", ");
+    }
+
+    function formatChange(change: number): string {
+        if (change === null) {
+            return "-";
+        }
+        if (change === Infinity) {
+            return "NEW"; //TODO(meganshum): Add translation for this!
+        }
+        var changeStr = change.toLocaleString("en", {
+            notation: "compact",
+            compactDisplay: "short"
+        });
+        if (change > 0) {
+            return `+${changeStr}%`;
+        } else if (change < 0) {
+            return `${changeStr}%`;
+        } else {
+            return "0";
+        }
+    }
 
     /**
      * Changes selectedListId so that the selected button becomes active and
@@ -137,10 +172,11 @@
 
     // runs after component is first rendered to the DOM
     onMount(async () => {
-        topLevelData = await fetchTopLevelQueries(selectedCountryCode);
+        topLevelData = await fetchTopLevelClusterFiles(selectedCountryCode);
         dateList = createDateList([...topLevelData.keys()]);
         selectedDateIndex = dateList.length - 1;
         setDate(selectedDateIndex);
+
         // subscribe to 'params' so any placeId (location changes) made by the user
         // will update the queries displayed in the TopQueries component.
         params.subscribe((newParams) => {
@@ -157,25 +193,34 @@
              * County Level in a New Subregion: fetch new county data
              * County Level in the Same Subregion: update using existing county data
              */
-            if (newRegion.sub_region_2 === "") { // if placeId is not county level
-                countyData = null; 
+            if (newRegion.sub_region_2 === "") {
+                // if placeId is not county level
+                countyData = null;
                 currentSubRegion = null;
                 updateQueries();
-            } else if (newSubRegion !== currentSubRegion) { // if county in a new subregion
-                currentSubRegion = newSubRegion; 
+                // Currently, L0 and L1 data are not available for clusters
+            } else if (newSubRegion !== currentSubRegion) {
+                // if county in a new subregion
+                currentSubRegion = newSubRegion;
                 loading = true;
                 Promise.resolve(
-                    fetchQueriesFile(
-                        `${getCountryCode(newRegion)}_${currentSubRegion.replaceAll(" ", "_")}_l2_vaccination_trending_searches.csv`
+                    fetchClustersFile(
+                        `${getCountryCode(
+                            newRegion
+                        )}_${currentSubRegion.replaceAll(
+                            " ",
+                            "_"
+                        )}_l2_vaccination_trending_searches.csv`
                     )
                 ).then(function (newCountyData) {
                     countyData = newCountyData;
-                    loading = false;
                     updateQueries();
+                    loading = false;
                 });
-            } else { // county within the same subregion
+            } else {
+                // county within the same subregion
                 updateQueries();
-            } 
+            }
         });
         loading = false;
     });
@@ -246,7 +291,7 @@
     </div>
     <div class="queries-lists">
         <div class="top-searches">
-            <div class="query-list-title">{$_('content.top_queries.top_searches')}</div>
+            <div class="query-list-title">Top searches</div>
             <div class="date-nav-control">
                 <div id="map-legend-date" class="date-nav-display">
                     {dateRange}
@@ -272,20 +317,48 @@
                     >
                 </div>
             </div>
-            <ul class="bullet-list">
-                {#if loading}
-                    <div class="no-queries">{$_('hints.loading_data')}</div>
-                {:else}
-                    {#each topQueriesList as query}
-                        <li class="bullet-list-text">{query.query}</li>
-                    {:else}
-                        <div class="no-queries">{$_('legend.no_data')}</div>
-                    {/each}
+            {#if loading}
+                <div class="no-queries">Loading data...</div>
+            {:else}
+                {#if topQueriesList.length !== 0}
+                    <div class="clusters-sub-header">
+                        <div class="related-queries-header">Related Queries</div>
+                        <div class="interest-header">Interest</div>
+                        <div class="change-header">Change</div>
+                    </div>
                 {/if}
-            </ul>
+                {#each topQueriesList as query}
+                    <div class="cluster">
+                        <div class="cluster-text-box">
+                            <div class="cluster-text">
+                                <span class="cluster-emphasis">
+                                    {query.members.length === 0 ? query.query: query.query + ","}
+                                </span>
+                                {formatMembersList(query.members)}
+                            </div>
+                        </div>
+                        <div class="sni">
+                            {(Math.round(query.sni * 100) / 100).toFixed(2)}
+                        </div>
+                        {#if query.change === null || query.change === 0}
+                            <div class="change" style="color:{NO_CHANGE_COLOR}">{formatChange(query.change)}</div>
+                        {:else if query.change > 0}
+                            <div class="change"style="color:{POSITIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
+                            </div>
+                        {:else}
+                            <div class="change" style="color:{NEGATIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
+                            </div>
+                        {/if}
+                    </div>
+                {:else}
+                    <div class="no-queries">Not enough data</div>
+                {/each}
+            {/if}
         </div>
         <div class="rising-searches">
-            <div class="query-list-title">{$_('content.top_queries.rising')}</div>
+            <div class="query-list-title">Rising</div>
             <div class="date-nav-control">
                 <div id="map-legend-date" class="date-nav-display">
                     {dateRange}
@@ -311,17 +384,46 @@
                     >
                 </div>
             </div>
-            <ul class="bullet-list">
-                {#if loading}
-                    <div class="no-queries">{$_('hints.loading_data')}</div>
-                {:else}
-                    {#each risingQueriesList as query}
-                        <li class="bullet-list-text">{query.query}</li>
-                    {:else}
-                        <div class="no-queries">{$_('legend.no_data')}</div>
-                    {/each}
+            
+            {#if loading}
+                <div class="no-queries">Loading data...</div>
+            {:else}
+                {#if risingQueriesList.length !== 0}
+                    <div class="clusters-sub-header">
+                        <div class="related-queries-header">Related Queries</div>
+                        <div class="interest-header">Interest</div>
+                        <div class="change-header">Change</div>
+                    </div>
                 {/if}
-            </ul>
+                {#each risingQueriesList as query}
+                    <div class="cluster">
+                        <div class="cluster-text-box">
+                            <div class="cluster-text">
+                                <span class="cluster-emphasis">
+                                    {query.members.length === 0 ? query.query: query.query + ","}
+                                </span>
+                                {formatMembersList(query.members)}
+                            </div>
+                        </div>
+                        <div class="sni">
+                            {(Math.round(query.sni * 100) / 100).toFixed(2)}
+                        </div>
+                        {#if query.change === null || query.change === 0}
+                            <div class="change" style="color:{NO_CHANGE_COLOR}">{formatChange(query.change)}</div>
+                        {:else if query.change > 0}
+                            <div class="change"style="color:{POSITIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
+                            </div>
+                        {:else}
+                            <div class="change" style="color:{NEGATIVE_CHANGE_COLOR}">
+                                {formatChange(query.change)}
+                            </div>
+                        {/if}
+                    </div>
+                {:else}
+                    <div class="no-queries">Not enough data</div>
+                {/each}
+            {/if}
         </div>
     </div>
 </div>
@@ -332,13 +434,14 @@
         {covid_vaccination_button_title}
     </h3>
     <p class="info-text">
-        {$_('tooltips.vaccine_top_query')}
+        Most common searches related to any aspect of COVID-19 vaccination,
+        listed in order of frequency.
     </p>
     <p class="info-text">
-        {$_('tooltips.parent_tooltip')}
+        This parent category includes searches from the other two subcategories.
     </p>
     <p>
-        <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
+        <a href="#about" class="info-link">Learn more</a>
     </p>
 </div>
 <div id="info-popup-vaccination_intent" class="info-popup">
@@ -346,10 +449,11 @@
         {vaccination_intent_button_title}
     </h3>
     <p class="info-text">
-        {$_('tooltips.intent_top_query')}
+        Most common searches related to the eligibility, availability, and
+        accessibility of COVID-19 vaccines, listed in order of frequency.
     </p>
     <p>
-        <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
+        <a href="#about" class="info-link">Learn more</a>
     </p>
 </div>
 <div id="info-popup-safety_side_effects" class="info-popup">
@@ -357,9 +461,10 @@
         {safety_side_effects_button_title}
     </h3>
     <p class="info-text">
-        {$_('tooltips.intent_top_query')}
+        Most common searches related to the safety and side effects of COVID-19
+        vaccines, listed in order of frequency.
     </p>
     <p>
-        <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
+        <a href="#about" class="info-link">Learn more</a>
     </p>
 </div>
