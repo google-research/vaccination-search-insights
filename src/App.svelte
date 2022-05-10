@@ -37,7 +37,6 @@
     locale,
     getLocaleFromNavigator
   } from "svelte-i18n";
-  import { gaComment, gaScript, gtagUrl } from "./GA_script";
 
   init({
     initialLocale: getLocaleFromNavigator(),
@@ -165,10 +164,6 @@
 
 <svelte:head>
   <title>{$_('project_title')}</title>
-  <!-- Remove the following three lines to disable GA4 -->
-  {@html gaComment}
-  {@html gtagUrl}
-  {@html gaScript}
 </svelte:head>
 
 <main>
