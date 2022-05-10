@@ -38,6 +38,7 @@
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
   import TopQueries from "./TopQueries.svelte";
+  import Clusters from "./Clusters.svelte";
   import { _, locale } from "svelte-i18n";
 
   let selectedRegion: Region;
@@ -517,7 +518,18 @@
 
   {#if selectedCountryMetadata}
   <!-- TODO include logic for other countries for clusters vs top queries -->
-    {#if !["Canada","Australia"].includes(selectedCountryName)} 
+    {#if selectedCountryMetadata.countryCode == "US"}
+      <Clusters
+        {regionsByPlaceId}
+        covid_vaccination_button_title={covid_vaccination_title}
+        vaccination_intent_button_title={vaccination_intent_title}
+        safety_side_effects_button_title={safety_side_effects_title}
+        selectedCountryCode={selectedCountryMetadata.countryCode}
+        intentTooltip={intentTooltip}
+        vaccineTooltip={vaccineTooltip}
+        safetypTooltip={safetyTooltip}
+      />
+    {:else if !["Canada","Australia"].includes(selectedCountryName)} 
       <TopQueries
         {regionsByPlaceId}
         covid_vaccination_button_title={covid_vaccination_title}

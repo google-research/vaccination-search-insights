@@ -94,6 +94,7 @@ export interface RegionalTrends {
 }
 
 const GLOBAL_TRENDS_FILENAME = "Global_l0_vaccination_search_insights.csv";
+const PERCENTAGE: number = 100;
 
 const AU_CAMBELLTOWN_CITY_COUNCIL_CODE = {
   "AU-NSW": "11500",
@@ -569,4 +570,105 @@ export function fetchTopLevelQueries(selectedCountryCode): Promise<Map<string, Q
       }
     );
   return topQueriesData;
+}
+
+export interface ClusterRow {
+  date: string;
+  country_region: string;
+  country_region_code: string;
+  sub_region_1: string;
+  sub_region_1_code: string;
+  sub_region_2: string;
+  sub_region_2_code: string;
+  sub_region_3: string;
+  sub_region_3_code: string;
+  place_id: string;
+  query_type: string;
+  query: string;
+  rank: number;
+  sni: number;
+  history: string;
+  members: string;
+  num_members: number;
+  category: string;
+}
+
+export interface Cluster {
+  query: string;
+  sni: number;
+  rank: number;
+  change: number;
+  members: string[];
+}
+
+function removeDuplicate(clusterQuery: string, members: string[]): string[] {
+  return members.filter(member => member != clusterQuery)
+}
+
+function calculateChange(history: number[], current: number) {
+  if (history.length === 0) {
+    return null
+  }
+  const previous = history[history.length - 1];
+  return Math.round(((current - previous) / previous) * PERCENTAGE);
+}
+
+function createCluster(clusterRow: ClusterRow): Cluster {
+  const historyList = clusterRow.history === "" ? [] : clusterRow.history.split("|").map(value => Number(value));
+  const membersList = clusterRow.members === "" ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
+  const clusterChange = calculateChange(historyList, clusterRow.sni);
+  return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, change: clusterChange, members: membersList };
+}
+
+let clustersStoragePrefix: string = "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/top_clusters/";
+
+/**
+ * Reads a given csv file and returns a Promise that holds a map that has keys created
+ * based on the location, date, query type, and category of an associated list of 
+ * queries.
+ */
+export function fetchClustersFile(file: string): Promise<Map<string, Cluster[]>> {
+  let clustersPromise: Promise<Map<string, Cluster[]>> = new Promise<Map<string, Cluster[]>>(
+    (resolve, reject) => {
+      parse(`${clustersStoragePrefix}${file}`, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results: ParseResult<ClusterRow>) {
+          console.log(`Received top queries data with ${results.data.length} rows`);
+          const clusters = results.data.reduce((accMap, row) => {
+            topQueriesDates.add(row.date);
+            let key = createSerialisedQueryKey(row.place_id, row.date, row.query_type, row.category);
+            let query = createCluster(row);
+            if (!accMap.has(key)) {
+              accMap.set(key, []);
+            }
+            accMap.set(key, [...accMap.get(key), query]);
+            return accMap;
+          }, new Map<string, Cluster[]>());
+          resolve(clusters);
+        },
+      });
+    });
+  return clustersPromise;
+}
+
+/**
+ * Reads all L0 and L1 Clusters csv files and merges them into a single map.
+ */
+export function fetchTopLevelClusterFiles(selectedCountryCode): Promise<Map<string, Cluster[]>> {
+  let clusterFiles = [selectedCountryCode + "_l0_vaccination_trending_searches.csv",
+                      selectedCountryCode + "_l1_vaccination_trending_searches.csv"];
+  let clustersMap: Promise<Map<string, Cluster[]>> =
+    Promise.all(clusterFiles.map((file) =>
+      fetchClustersFile(file)
+      )
+    ).then(
+      (results) => {
+        return results.reduce((combinedMap, currentMap) => {
+          return new Map([...combinedMap, ...currentMap]);
+        }, new Map<string, Cluster[]>());
+      }
+    );
+  return clustersMap;
 }
