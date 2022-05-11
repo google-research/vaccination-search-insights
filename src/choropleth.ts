@@ -257,10 +257,10 @@ export function resetToCountryLevel() {
     .attr("stroke-width", 0)
     .on("click", null)
     .on("mouseenter", enterCountyBoundsHandler)
-    .on("mouseleave", leaveCountyBoundsHandler)
+    .on("mouseleave", leaveCountyBoundsHandler) 
     .on("mousemove", inCountyMovementHandler);
   if (displayLevels.includes(COUNTY_LEVEL)) {
-    mapSvg.select("#state").selectAll("path").attr("fill", (d) => (canadianTerritories.includes(d.id as string) ? getFillColor(d.id): "transparent"));
+    mapSvg.select("#state").selectAll("path").attr("fill", (d: HTMLHtmlElement) => (canadianTerritories.includes(d.id as string) ? getFillColor(d.id): "transparent"));
   }
   resetZoom();
   selectionCallback(resetNavigationPlaceId);
@@ -449,7 +449,7 @@ function colorizeMap() {
   if(selectedCountryCode == "CA") {
     d3.select(displayLevels.includes(STATE_LEVEL) ? "#state" : null)
     .selectAll("path")
-    .filter(function(p) {
+    .filter(function(p: HTMLHtmlElement) {
       let result = canadianTerritories.includes(p.id as string) 
       return result
       })
