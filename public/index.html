@@ -19,11 +19,13 @@
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z469MW8V6G"></script>
 	<script>
+	    if (window.location.hostname == 'google-research.github.io') {
 		window.dataLayer = window.dataLayer || [];
 		function gtag() { dataLayer.push(arguments); }
 		gtag('js', new Date());
 
 		gtag('config', 'G-Z469MW8V6G');
+	    }
 	</script>
 </head>
 
