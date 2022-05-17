@@ -96,11 +96,6 @@ export interface RegionalTrends {
 const GLOBAL_TRENDS_FILENAME = "Global_l0_vaccination_search_insights.csv";
 const PERCENTAGE: number = 100;
 
-const AU_CAMBELLTOWN_CITY_COUNCIL_CODE = {
-  "AU-NSW": "11500",
-  "AU-SA": "40910",
-};
-
 const ZIP_FILENAME_STRUCTURE = {
   "US": geoid => `${geoid}.geo.json`,
   "AU": geoid => `AU/${geoid}.json`,
@@ -400,15 +395,9 @@ export function subRegionOneCode(region: RegionalTrendLine): string {
 export function subRegionTwoCode(region: RegionalTrendLine): string {
   if (region.sub_region_2_code != "") {
     return region.sub_region_2_code;
-  } else if (["AU", "GB"].includes(region.country_region_code)) {
+  } else if (["AU", "GB"].includes(region.country_region_code) && region.sub_region_2 != "") {
     // GB and AU don't have sub_region_2_code in the data CSV, therefore use lookup table
-    if (region.country_region_code == "AU" &&
-      region.sub_region_2 == "Campbelltown City Council") {
-      return AU_CAMBELLTOWN_CITY_COUNCIL_CODE[region.sub_region_1_code];
-    } else {
-      // Get the code from lookup table, if not found, return empty string
-      return getCountyFipsCode(region.sub_region_2, region.country_region_code) || "";
-    }
+    return getCountyFipsCode(region.sub_region_2, region.sub_region_1, region.country_region_code);
   } else {
     return "";
   }

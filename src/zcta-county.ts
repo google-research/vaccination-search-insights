@@ -6,6 +6,11 @@ import auZctaCounty from "../public/geo/zcta-county-au.json";
 import gbCountyFipsCode from "../public/geo/gb-counties-fips.json";
 import auCountyFipsCode from "../public/geo/au-counties-fips.json";
 
+const AU_CAMBELLTOWN_CITY_COUNCIL_CODE = {
+    "AU-NSW": "11500",
+    "AU-SA": "40910",
+};
+
 const usCountyZctaMap = usZctaCounty.reduce((acc,r)=> {
     acc.set(r.geoid,r.zcta)
     return acc;
@@ -38,10 +43,15 @@ const auCountyFipsCodeMap = auCountyFipsCode.reduce((acc, r) => {
  * In case sub_region_2_code is missing in the data file (currently only relevant for AU and GB),
  * use the lookup table to match county name with the map shape ID of that county. 
  */
-export function getCountyFipsCode(county_name: string, country_code: string) {
+export function getCountyFipsCode(county_name: string, state_name: string, country_code: string) {
     switch (country_code) {
         case "AU":
-            return auCountyFipsCodeMap.get(county_name);
+            // Region with the same county name, but located in different states
+            if (county_name == "Campbelltown City Council") {
+                return AU_CAMBELLTOWN_CITY_COUNCIL_CODE[state_name];
+            } else {
+                return auCountyFipsCodeMap.get(county_name);
+            }
         case "GB":
             return gbCountyFipsCodeMap.get(county_name);
         default:
