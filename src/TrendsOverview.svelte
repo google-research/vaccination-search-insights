@@ -37,7 +37,6 @@
   import { updateWithZipsData } from "./zip_data";
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
-  import TopQueries from "./TopQueries.svelte";
   import Clusters from "./Clusters.svelte";
   import { _, locale } from "svelte-i18n";
 
@@ -518,19 +517,8 @@
 
   {#if selectedCountryMetadata}
   <!-- TODO include logic for other countries for clusters vs top queries -->
-    {#if selectedCountryMetadata.countryCode == "US"}
+    {#if ["US", "AU", "GB", "IE"].includes(selectedCountryMetadata.countryCode) }
       <Clusters
-        {regionsByPlaceId}
-        covid_vaccination_button_title={covid_vaccination_title}
-        vaccination_intent_button_title={vaccination_intent_title}
-        safety_side_effects_button_title={safety_side_effects_title}
-        selectedCountryCode={selectedCountryMetadata.countryCode}
-        intentTooltip={intentTooltip}
-        vaccineTooltip={vaccineTooltip}
-        safetypTooltip={safetyTooltip}
-      />
-    {:else if !["Canada","Australia"].includes(selectedCountryName)} 
-      <TopQueries
         {regionsByPlaceId}
         covid_vaccination_button_title={covid_vaccination_title}
         vaccination_intent_button_title={vaccination_intent_title}
