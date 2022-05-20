@@ -597,8 +597,8 @@ function calculateChange(history: number[], current: number) {
 }
 
 function createCluster(clusterRow: ClusterRow): Cluster {
-  const historyList = clusterRow.history === "" ? [] : clusterRow.history.split("|").map(value => Number(value));
-  const membersList = clusterRow.members === "" ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
+  const historyList = !clusterRow.history ? [] : clusterRow.history.split("|").map(value => Number(value));
+  const membersList = !clusterRow.members ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
   const clusterChange = calculateChange(historyList, clusterRow.sni);
   return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, change: clusterChange, members: membersList };
 }
@@ -617,7 +617,7 @@ export function fetchClustersFile(file: string, selectedCountryCode: string): Pr
   }
   let clustersPromise: Promise<Map<string, Cluster[]>> = new Promise<Map<string, Cluster[]>>(
     (resolve, reject) => {
-      parse(`${clustersStoragePrefix}${file}`, {
+      parse(`${storagePrefix}${file}`, {
         download: true,
         header: true,
         skipEmptyLines: true,
@@ -648,7 +648,7 @@ export function fetchTopLevelClusterFiles(selectedCountryCode): Promise<Map<stri
                       selectedCountryCode + "_l1_vaccination_trending_searches.csv"];
   let clustersMap: Promise<Map<string, Cluster[]>> =
     Promise.all(clusterFiles.map((file) =>
-      fetchClustersFile(file)
+      fetchClustersFile(file, selectedCountryCode)
       )
     ).then(
       (results) => {

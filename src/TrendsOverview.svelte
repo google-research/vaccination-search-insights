@@ -37,7 +37,6 @@
   import { updateWithZipsData } from "./zip_data";
   import { fetchCountryMetaData } from "./metadata";
   import TimeSeries from "./TimeSeries.svelte";
-  import TopQueries from "./TopQueries.svelte";
   import Clusters from "./Clusters.svelte";
   import { _, locale } from "svelte-i18n";
 
