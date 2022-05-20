@@ -198,7 +198,6 @@
                 countyData = null;
                 currentSubRegion = null;
                 updateQueries();
-                // Currently, L0 and L1 data are not available for clusters
             } else if (newSubRegion !== currentSubRegion) {
                 // if county in a new subregion
                 currentSubRegion = newSubRegion;
@@ -210,7 +209,8 @@
                         )}_${currentSubRegion.replaceAll(
                             " ",
                             "_"
-                        )}_l2_vaccination_trending_searches.csv`
+                        )}_l2_vaccination_trending_searches.csv`,
+                        getCountryCode(newRegion)
                     )
                 ).then(function (newCountyData) {
                     countyData = newCountyData;
