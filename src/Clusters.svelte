@@ -26,6 +26,7 @@
     import { params } from "./stores";
     import { getCountryCode, handleInfoPopup } from "./utils";
     import { dateRangeString } from "./choropleth";
+    import { _ } from "svelte-i18n"
 
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
@@ -291,7 +292,7 @@
     </div>
     <div class="queries-lists">
         <div class="top-searches">
-            <div class="query-list-title">Top searches</div>
+            <div class="query-list-title">{$_('content.top_queries.top_searches')}</div>
             <div class="date-nav-control">
                 <div id="map-legend-date" class="date-nav-display">
                     {dateRange}
@@ -318,13 +319,13 @@
                 </div>
             </div>
             {#if loading}
-                <div class="no-queries">Loading data...</div>
+                <div class="no-queries">{$_('hints.loading_data')}</div>
             {:else}
                 {#if topQueriesList.length !== 0}
                     <div class="clusters-sub-header">
-                        <div class="related-queries-header">Related Queries</div>
-                        <div class="interest-header">Interest</div>
-                        <div class="change-header">Change</div>
+                        <div class="related-queries-header">{$_('content.top_queries.related')}</div>
+                        <div class="interest-header">{$_('legend.interest')}</div>
+                        <div class="change-header">{$_('legend.change')}</div>
                     </div>
                 {/if}
                 {#each topQueriesList as query}
@@ -353,12 +354,12 @@
                         {/if}
                     </div>
                 {:else}
-                    <div class="no-queries">Not enough data</div>
+                    <div class="no-queries">{$_('legend.no_data')}</div>
                 {/each}
             {/if}
         </div>
         <div class="rising-searches">
-            <div class="query-list-title">Rising</div>
+            <div class="query-list-title">{$_('content.top_queries.rising')}</div>
             <div class="date-nav-control">
                 <div id="map-legend-date" class="date-nav-display">
                     {dateRange}
@@ -386,13 +387,13 @@
             </div>
             
             {#if loading}
-                <div class="no-queries">Loading data...</div>
+                <div class="no-queries">{$_('hints.loading_data')}</div>
             {:else}
                 {#if risingQueriesList.length !== 0}
                     <div class="clusters-sub-header">
-                        <div class="related-queries-header">Related Queries</div>
-                        <div class="interest-header">Interest</div>
-                        <div class="change-header">Change</div>
+                        <div class="related-queries-header">{$_('content.top_queries.related')}</div>
+                        <div class="interest-header">{$_('legend.interest')}</div>
+                        <div class="change-header">{$_('legend.change')}</div>
                     </div>
                 {/if}
                 {#each risingQueriesList as query}
@@ -421,7 +422,7 @@
                         {/if}
                     </div>
                 {:else}
-                    <div class="no-queries">Not enough data</div>
+                    <div class="no-queries">{$_('legend.no_data')}</div>
                 {/each}
             {/if}
         </div>
@@ -434,14 +435,13 @@
         {covid_vaccination_button_title}
     </h3>
     <p class="info-text">
-        Most common searches related to any aspect of COVID-19 vaccination,
-        listed in order of frequency.
+        {$_('tooltips.vaccine_top_query')}
     </p>
     <p class="info-text">
-        This parent category includes searches from the other two subcategories.
+        {$_('tooltips.parent_tooltip')}
     </p>
     <p>
-        <a href="#about" class="info-link">Learn more</a>
+        <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
     </p>
 </div>
 <div id="info-popup-vaccination_intent" class="info-popup">
@@ -449,11 +449,10 @@
         {vaccination_intent_button_title}
     </h3>
     <p class="info-text">
-        Most common searches related to the eligibility, availability, and
-        accessibility of COVID-19 vaccines, listed in order of frequency.
+        {$_('tooltips.intent_top_query')}
     </p>
     <p>
-        <a href="#about" class="info-link">Learn more</a>
+        <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
     </p>
 </div>
 <div id="info-popup-safety_side_effects" class="info-popup">
@@ -461,10 +460,9 @@
         {safety_side_effects_button_title}
     </h3>
     <p class="info-text">
-        Most common searches related to the safety and side effects of COVID-19
-        vaccines, listed in order of frequency.
+        {$_('tooltips.intent_top_query')}
     </p>
     <p>
-        <a href="#about" class="info-link">Learn more</a>
+        <a href="#about" class="info-link">{$_('tooltips.learn_more')}</a>
     </p>
 </div>
