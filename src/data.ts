@@ -505,7 +505,7 @@ let topQueriesStoragePrefix: string = "https://storage.googleapis.com/covid19-op
 
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created
- * based on the location, date, query type, and category of an associated list of 
+ * based on the location, date, query type, and category of an associated list of
  * queries.
  */
 export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
@@ -597,8 +597,8 @@ function calculateChange(history: number[], current: number) {
 }
 
 function createCluster(clusterRow: ClusterRow): Cluster {
-  const historyList = clusterRow.history === "" ? [] : clusterRow.history.split("|").map(value => Number(value));
-  const membersList = clusterRow.members === "" ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
+  const historyList = !clusterRow.history ? [] : clusterRow.history.split("|").map(value => Number(value));
+  const membersList = !clusterRow.members ? [] : removeDuplicate(clusterRow.query, clusterRow.members.split("|"));
   const clusterChange = calculateChange(historyList, clusterRow.sni);
   return { query: clusterRow.query, sni: clusterRow.sni, rank: clusterRow.rank, change: clusterChange, members: membersList };
 }
@@ -607,13 +607,17 @@ let clustersStoragePrefix: string = "https://storage.googleapis.com/covid19-open
 
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created
- * based on the location, date, query type, and category of an associated list of 
+ * based on the location, date, query type, and category of an associated list of
  * queries.
  */
-export function fetchClustersFile(file: string): Promise<Map<string, Cluster[]>> {
+export function fetchClustersFile(file: string, selectedCountryCode: string): Promise<Map<string, Cluster[]>> {
+  let storagePrefix: string = selectedCountryCode == 'US' ? clustersStoragePrefix : topQueriesStoragePrefix;
+  if (selectedCountryCode == 'CA') {
+    file = file.replace('_l2_', '_l3_');
+  }
   let clustersPromise: Promise<Map<string, Cluster[]>> = new Promise<Map<string, Cluster[]>>(
     (resolve, reject) => {
-      parse(`${clustersStoragePrefix}${file}`, {
+      parse(`${storagePrefix}${file}`, {
         download: true,
         header: true,
         skipEmptyLines: true,
@@ -644,7 +648,7 @@ export function fetchTopLevelClusterFiles(selectedCountryCode): Promise<Map<stri
                       selectedCountryCode + "_l1_vaccination_trending_searches.csv"];
   let clustersMap: Promise<Map<string, Cluster[]>> =
     Promise.all(clusterFiles.map((file) =>
-      fetchClustersFile(file)
+      fetchClustersFile(file, selectedCountryCode)
       )
     ).then(
       (results) => {
