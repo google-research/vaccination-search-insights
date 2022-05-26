@@ -293,31 +293,6 @@
     <div class="queries-lists">
         <div class="top-searches">
             <div class="query-list-title">{$_('content.top_queries.top_searches')}</div>
-            <div class="date-nav-control">
-                <div id="map-legend-date" class="date-nav-display">
-                    {dateRange}
-                </div>
-                <div
-                    id="date-nav-button-back"
-                    class={selectedDateIndex <= MINIMUM_DATE_INDEX
-                        ? "date-nav-button date-nav-button-inactive"
-                        : "date-nav-button date-nav-button-active"}
-                    on:click={decrementDate}
-                >
-                    <span class="material-icons-outlined">arrow_back_ios</span>
-                </div>
-                <div
-                    id="date-nav-button-forward"
-                    class={selectedDateIndex === dateList.length - 1
-                        ? "date-nav-button date-nav-button-inactive"
-                        : "date-nav-button date-nav-button-active"}
-                    on:click={incrementDate}
-                >
-                    <span class="material-icons-outlined"
-                        >arrow_forward_ios</span
-                    >
-                </div>
-            </div>
             {#if loading}
                 <div class="no-queries">{$_('hints.loading_data')}</div>
             {:else}
