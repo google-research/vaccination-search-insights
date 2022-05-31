@@ -30,7 +30,7 @@
         },
         "download_popup": {
             "terms": "In order to download or use the data or insights, you must agree to the Google <a href=\"{toDownloadsUrl}\">Terms of Service.</a>",
-            "download_dataset": "DOWNLOAD DATASET",
+            "download_dataset": "DOWNLOAD DATASETS",
             "countries": {
                 "canada": "Canada",
                 "uk": "United Kingdom",

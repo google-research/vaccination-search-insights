@@ -135,7 +135,9 @@ export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): st
     return countyFipsCode.slice(0, 2);
   } else if (countryCode == "GB") {
     return countyFipsCode.slice(0, 1);
-  } 
+  } else if (countryCode == "CA") {
+    return countyFipsCode.slice(0, 2);
+  }
 }
 
 export function fipsCodeFromElementId(id: string): string {
@@ -154,7 +156,7 @@ enum countryCode {
   CA = "ca"
 }
 
-/** Atls data indexed by countryCode */
+/** Atlas data indexed by countryCode */
 export const ATLAS_BY_COUNTRY_CODE: Record<countryCode, UsAtlas> = {
   US: us,
   GB: gb,

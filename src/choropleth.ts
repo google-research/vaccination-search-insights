@@ -649,6 +649,32 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", inCountyMovementHandler);
 
+  //special case for Canada.
+  if (selectedCountryCode == "CA") {
+    const FSA_Pattern: RegExp = /\w\d\w/;
+
+    mapSvg
+    .select("#county")
+    .selectAll("path")
+    .attr("stroke-width", 0)
+    .on("click", null)
+    .on("mouseenter", enterCountyBoundsHandler)
+    .on("mouseleave", leaveCountyBoundsHandler)
+    .on("mousemove", inCountyMovementHandler);
+    
+    mapSvg
+    .select("#county")
+    .selectAll("path")
+    .filter(function(d: any){
+      return (d.properties.prID == fipsCode && d.id.match(FSA_Pattern));
+    })
+    .attr("stroke-width", 1)
+    .on("click", countySelectionOnClickHandler)
+    .on("mouseenter", enterCountyBoundsHandler)
+    .on("mouseleave", leaveCountyBoundsHandler)
+    .on("mousemove", inCountyMovementHandler);
+  }
+
   if (displayLevels.includes(COUNTY_LEVEL)) {
     // disable any active state selection, then activate
     mapSvg.select("#state").selectAll("path").attr("fill", "transparent");
@@ -666,6 +692,7 @@ function activateSelectedState(fipsCode, zoom = true) {
   if (fipsCode == dcStateFipsCode && selectedCountryCode == 'US') {
     activateSelectedCounty(dcCountyFipsCode, zoom);
   }
+  
 }
 
 function activateSelectedCounty(fipsCode, zoom = true) {
@@ -903,6 +930,7 @@ function showMapCallout(data, event, d): void {
   if ((["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1)
       || setLastSelectedCounty == elemFipsCode
       || (selectedCountryCode == "CA" && (elemFipsCode.match(/\w\d\w/) != null))
+      //|| (![POSTCODE_LEVEL].every(level => displayLevels.includes(level)) && (["CA"].indexOf(selectedCountryCode) > -1 ))
       || (![COUNTY_LEVEL, POSTCODE_LEVEL].every(level => displayLevels.includes(level)) && (["IE"].indexOf(selectedCountryCode) > -1 ))) {
     d3.select("#map-callout-drilldown-msg").style("display", "none");
   } else {
@@ -971,6 +999,7 @@ function inStateMovementHandler(event, d) {
 // County level event handlers
 //
 function countySelectionOnClickHandler(event, d) {
+  console.log("here here")
   activateSelectedCounty(fipsCodeFromElementId(this.id));
   selectionCallback(regionCodesToPlaceId.get(fipsCodeFromElementId(this.id)));
 }
