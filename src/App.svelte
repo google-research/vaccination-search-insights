@@ -207,6 +207,14 @@
       <p class="header-download-popup-link-list">
         <a
           class="header-download-popup-link"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/AU_vaccination_search_insights.csv"
+          on:click={(e) => closeDownloadPopup()}
+          ><span class="material-icons-outlined header-download-popup-icon"
+            >file_download</span
+          >{$_('content.download_popup.countries.australia')}</a
+        >
+        <a
+          class="header-download-popup-link"
           href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.csv"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"

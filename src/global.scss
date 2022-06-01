@@ -943,8 +943,18 @@ div.next-steps-item > h3 {
   }
 }
 
+@media (max-width: 600px) {
+  html[lang="fr"] .container-header {
+    top: 90px;
+  }
+}
+
 @media (max-width: 442px) {
-  .container-header {
+  .bullet-list-text {
+    max-width: 350px;
+  }
+
+  html[lang="fr"] .container-header {
     top: 110px;
   }
 
@@ -988,7 +998,6 @@ div.next-steps-item > h3 {
   .header-topbar {
     margin-top: 20px;
     display: grid;
-    grid-template-rows: 1fr 1fr;
     align-items: self-start;
   }
 
@@ -999,6 +1008,12 @@ div.next-steps-item > h3 {
   .header-topbar-glue-logo {
     margin-right: 8px;
     margin-left: 8px
+  }
+}
+
+@media (max-width: 403px) {
+  html[lang="en"] .container-header {
+    top: 90px;
   }
 }
 

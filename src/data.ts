@@ -17,7 +17,7 @@
 import { parse, ParseResult } from "papaparse";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
-import { getCountyFipsCodeGb } from "./zcta-county";
+import { getCountyFipsCode } from "./zcta-county";
 import { dateRange } from "./stores";
 
 export interface Region {
@@ -95,6 +95,11 @@ export interface RegionalTrends {
 
 const GLOBAL_TRENDS_FILENAME = "Global_l0_vaccination_search_insights.csv";
 const PERCENTAGE: number = 100;
+
+const ZIP_FILENAME_STRUCTURE = {
+  "US": geoid => `${geoid}.geo.json`,
+  "AU": geoid => `AU/${geoid}.json`,
+};
 
 let regions: Map<string, Region>;
 let regionalTrends: Map<string, RegionalTrends>;
@@ -267,11 +272,10 @@ function _fetchGlobalTrendLines(): Promise<CountryTrendLine[]> {
   }
 }
 
-
-export function fetchZipData(geoid): Promise<any> {
+export function fetchZipData(geoid: string, selectedCountryCode: string): Promise<any> {
   var baseUrl =
-    "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo";
-  return fetch(`${baseUrl}/${geoid}.geo.json`).then((response) =>
+    "https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/staging/geo"
+  return fetch(`${baseUrl}/${ZIP_FILENAME_STRUCTURE[selectedCountryCode](geoid)}`).then((response) =>
     response.json()
   );
 }
@@ -390,10 +394,12 @@ export function subRegionOneCode(region: RegionalTrendLine): string {
 
 export function subRegionTwoCode(region: RegionalTrendLine): string {
   if (region.sub_region_2_code != "") {
-    return region.sub_region_2_code
+    return region.sub_region_2_code;
+  } else if (["AU", "GB"].includes(region.country_region_code) && region.sub_region_2 != "") {
+    // GB and AU don't have sub_region_2_code in the data CSV, therefore use lookup table
+    return getCountyFipsCode(region.sub_region_2, region.sub_region_1, region.country_region_code);
   } else {
-    // Get the code from lookup table, if not found, return empty string
-    return getCountyFipsCodeGb(region.sub_region_2) || "";
+    return "";
   }
 }
 

@@ -32,6 +32,7 @@
             "terms": "In order to download or use the data or insights, you must agree to the Google <a href=\"{toDownloadsUrl}\">Terms of Service.</a>",
             "download_dataset": "DOWNLOAD DATASET",
             "countries": {
+                "australia": "Australia",
                 "canada": "Canada",
                 "uk": "United Kingdom",
                 "usa": "United States",
@@ -80,13 +81,15 @@
             "CA": "vaccine tracker",
             "IE": "HSE covid vaccine",
             "GB": "NHS covid vaccine",
-            "US": "cdc vaccine tracker"
+            "US": "cdc vaccine tracker",
+            "AU": "covid vaccine"
         },
         "intent_country_example": {
             "CA": "covid vaccine ontario",
             "IE": "book HSE covid vaccine",
             "GB": "book NHS covid vaccine",
-            "US": "safeway covid vaccine"
+            "US": "safeway covid vaccine",
+            "AU": "pfizer vaccine melbourne"
         },
         "scaled_tooltip": "A scaled value that you can compare across regions, times, or topics.",
         "safety_tooltip": "Search interest in the safety and side effects of COVID-19 vaccines. For example, \"is the covid vaccine safe\" or \"pfizer vaccine side effects\". A scaled value that you can compare across regions, times, or topics.",
@@ -109,6 +112,7 @@
         "us": "Chart includes data from the US Census Bureau",
         "gb": "Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
         "ie": "Chart includes data from Ordnance Survey Ireland licensed under CC:BY 4.0",
-        "ca": "Chart includes data adapted from Statistics Canada, Boundary Files 2016. This does not constitute an endorsement by Statistics Canada of this product."
+        "ca": "Chart includes data adapted from Statistics Canada, Boundary Files 2016. This does not constitute an endorsement by Statistics Canada of this product.",
+        "au": "Chart includes Administrative Boundaries from the Australian Bureau of Statistics licensed under Creative Commons Attribution 4.0 International license (CC BY 4.0) accessed March 31, 2022."
     }
 }
