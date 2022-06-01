@@ -32,6 +32,7 @@
             "terms": "Pour télécharger ou utiliser les données ou les statistiques, vous devez accepter les <a href=\"{toDownloadsUrl}\">conditions d'utilisationde</a> Google.",
                 "download_dataset": "TÉLÉCHARGER L'ENSEMBLE DE DONNÉES",
                 "countries": {
+                    "australia": "Australie",
                     "canada": "Canada",
                     "uk": "Royaume-Uni",
                     "usa": "États-Unis",
@@ -78,15 +79,17 @@
         "intent_preamble": "Popularité des recherches sur l'admissibilité, la disponibilité et l'accessibilité en ce qui concerne les vaccins contre la COVID-19. Par exemple, « vaccin covid près de chez moi » ou ",
         "vaccine_country_example": {
             "CA": "traqueur de vaccins",
-            "IE": "Vaccin covid HSE",
-            "GB": "Vaccin covid NHS",
-            "US": "traqueur de vaccins cdc"
+            "IE": "HSE covid vaccine",
+            "GB": "NHS covid vaccine",
+            "US": "cdc vaccine tracker",
+            "AU": "covid vaccine"
         },
         "intent_country_example": {
             "CA": "vaccin covid québec",
-            "IE": "réserver vaccin HSE covid",
-            "GB": "réserver vaccin NHS covid",
-            "US": "vaccin covid safeway"
+            "IE": "book HSE covid vaccine",
+            "GB": "book NHS covid vaccine",
+            "US": "safeway covid vaccine",
+            "AU": "pfizer vaccine melbourne"
         },
         "scaled_tooltip": "Une valeur mise à l'échelle que vous pouvez comparer entre les régions, les périodes ou les sujets.",
         "safety_tooltip": "Popularité des recherches sur l'innocuité et les effets secondaires des vaccins contre la COVID-19. Par exemple, « le vaccin contre la covid est-il sûr » ou « effets secondaires du vaccin pfizer ». Une valeur mise à l'échelle que vous pouvez comparer entre les régions et les périodes.",
@@ -109,6 +112,7 @@
         "us": "Chart includes data from the US Census Bureau",
         "gb": "Chart includes data from the Office for National Statistics licensed under the Open Government Licence v.3.0",
         "ie": "Chart includes data from Ordnance Survey Ireland licensed under CC:BY 4.0",
-        "ca": "Le graphique comprend des données adaptées à partir des fichiers de limites de 2016 de Statistique Canada. Cette utilisation ne constitue pas une approbation de ce produit par Statistique Canada."
+        "ca": "Le graphique comprend des données adaptées à partir des fichiers de limites de 2016 de Statistique Canada. Cette utilisation ne constitue pas une approbation de ce produit par Statistique Canada.",
+        "au": "Chart includes Administrative Boundaries from the Australian Bureau of Statistics licensed under Creative Commons Attribution 4.0 International license (CC BY 4.0) accessed March 31, 2022."
     }
 }
