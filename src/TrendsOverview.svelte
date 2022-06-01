@@ -517,7 +517,7 @@
 
   {#if selectedCountryMetadata}
   <!-- TODO include logic for other countries for clusters vs top queries -->
-    {#if ["US", "AU", "GB", "IE"].includes(selectedCountryMetadata.countryCode) }
+    {#if ["US", "AU", "GB", "IE", "CA"].includes(selectedCountryMetadata.countryCode) }
       <Clusters
         {regionsByPlaceId}
         covid_vaccination_button_title={covid_vaccination_title}

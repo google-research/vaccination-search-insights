@@ -511,7 +511,7 @@ let topQueriesStoragePrefix: string = "https://storage.googleapis.com/covid19-op
 
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created
- * based on the location, date, query type, and category of an associated list of 
+ * based on the location, date, query type, and category of an associated list of
  * queries.
  */
 export function fetchQueriesFile(file: string): Promise<Map<string, Query[]>> {
@@ -613,11 +613,14 @@ let clustersStoragePrefix: string = "https://storage.googleapis.com/covid19-open
 
 /**
  * Reads a given csv file and returns a Promise that holds a map that has keys created
- * based on the location, date, query type, and category of an associated list of 
+ * based on the location, date, query type, and category of an associated list of
  * queries.
  */
 export function fetchClustersFile(file: string, selectedCountryCode: string): Promise<Map<string, Cluster[]>> {
-  let storagePrefix: string = selectedCountryCode == 'US' ? clustersStoragePrefix : topQueriesStoragePrefix
+  let storagePrefix: string = selectedCountryCode == 'US' ? clustersStoragePrefix : topQueriesStoragePrefix;
+  if (selectedCountryCode == 'CA') {
+    file = file.replace('_l2_', '_l3_');
+  }
   let clustersPromise: Promise<Map<string, Cluster[]>> = new Promise<Map<string, Cluster[]>>(
     (resolve, reject) => {
       parse(`${storagePrefix}${file}`, {
