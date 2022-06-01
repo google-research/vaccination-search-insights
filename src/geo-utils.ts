@@ -16,14 +16,13 @@
 
 import type { UsAtlas } from "topojson";
 import * as us from "us-atlas/counties-albers-10m.json";
-import * as gb from "../public/geo/gb-albers.json";
-import * as ie from "../public/geo/ie-albers.json";
-import * as ca from "../public/geo/ca-albers.json";
-import * as gb_postal_albers from "../public/geo/gb-postal-albers.json";
 import type { Region } from "./data";
 
 export const dcStateFipsCode: string = "11";
 export const dcCountyFipsCode: string = "11001";
+
+// Used to make sure we don't fetch GB postal code centroids once it was already loaded
+let gb_postal_centroids;
 
 export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
   ['US', new Map([
@@ -128,14 +127,28 @@ export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
     ["IE-LS", "23"],
     ["IE-G", "24"],
     ["IE-TA", "25"],
-    ["IE-CE", "26"]])]]);
+    ["IE-CE", "26"]])],
+  ['AU', new Map([
+    ["AU-NSW", "1"],
+    ["AU-VIC", "2"],
+    ["AU-QLD", "3"],
+    ["AU-SA", "4"],
+    ["AU-WA", "5"],
+    ["AU-TAS", "6"],
+    ["AU-NT", "7"],
+    ["AU-ACT", "8"],
+    ["AU-OT", "9"]
+  ])]
+]);
 
 export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
   if (countryCode == "US") {
     return countyFipsCode.slice(0, 2);
   } else if (countryCode == "GB") {
     return countyFipsCode.slice(0, 1);
-  } 
+  } else if (countryCode == "AU") {
+    return countyFipsCode.slice(0, 1);
+  }
 }
 
 export function fipsCodeFromElementId(id: string): string {
@@ -147,23 +160,26 @@ export function levelNameFromElementId(id: string): string {
   return id.split("-")[0];
 }
 
-enum countryCode {
-  US = "us",
-  GB = "gb",
-  IE = "ie",
-  CA = "ca"
+export function getUSAtlas(): UsAtlas {
+  return us as unknown as UsAtlas;
 }
 
-/** Atls data indexed by countryCode */
-export const ATLAS_BY_COUNTRY_CODE: Record<countryCode, UsAtlas> = {
-  US: us,
-  GB: gb,
-  IE: ie,
-  CA: ca
+export function getAtlas(countryCode: string): Promise<UsAtlas> {
+  return fetch("./geo/" + countryCode.toLocaleLowerCase() + "-albers.json"
+    ).then((response) =>
+      response.json()
+    );
 }
 
-export function getGbPostalCentroids(geoid: string) {
-  return gb_postal_albers;
+export function getGbPostalCentroids() {
+  if (gb_postal_centroids) {
+    return gb_postal_centroids;
+  } else {
+    gb_postal_centroids = fetch("./geo/gb-postal-albers.json").then((response) =>
+      response.json()
+    );
+    return gb_postal_centroids;
+  }
 }
 
 export function buildRegionCodeToPlaceIdMapping(

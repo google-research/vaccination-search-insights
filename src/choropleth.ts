@@ -25,7 +25,8 @@ import {
   levelNameFromElementId,
   regionOneToFipsCode,
   stateFipsCodeFromCounty,
-  ATLAS_BY_COUNTRY_CODE,
+  getAtlas,
+  getUSAtlas,
   getGbPostalCentroids,
 } from "./geo-utils";
 import * as d3 from "d3";
@@ -44,6 +45,7 @@ import {
 } from "./data";
 import { getCountyZctas } from "./zcta-county";
 import { mapData } from "./stores";
+import type { UsAtlas } from "topojson";
 
 enum GeoLevel {
   Country = 1,
@@ -97,6 +99,12 @@ export const mapBounds = {
   margin: 30,
 };
 
+const AU_PROJECTION = d3.geoAlbers()
+  .scale(1000)
+  .rotate([-133, 50])
+  .center([0, 25])
+  .translate([mapBounds.width / 2, mapBounds.height / 2])
+
 const IE_PROJECTION = d3.geoAlbers()
   .center([-4, 53.4])
   .rotate([4.4, 0])
@@ -110,13 +118,13 @@ const CA_PROJECTION = d3.geoAlbers()
   .center([87, 37])
   .translate([mapBounds.width / 2, mapBounds.height / 2])
   .scale(840);
-  
+
 // GB postal code geo path with projection
 const gbPostalPath = d3.geoPath()
   .projection(getGBprojection().rotate([7.145, -45.78, -3.95]));
 
 
-export function createMap(
+export async function createMap(
   trend: string,
   regions,
   selectionFn,
@@ -142,7 +150,7 @@ export function createMap(
                                                          selectedCountryCode);
   selectionCallback = selectionFn;
 
-  initializeMap();
+  await initializeMap();
   colorizeMap();
 }
 
@@ -296,7 +304,16 @@ function getGBprojection(): d3.GeoConicProjection {
 //
 // Map drawing routines
 //
-function initializeMap() {
+async function initializeMap() {
+  let topology: UsAtlas;
+  if (selectedCountryCode == "US") {
+    topology = getUSAtlas()
+  } else {
+    topology = await getAtlas(selectedCountryCode);
+  }
+  // check to ensure country is valid ATLAS
+  if (!topology) { console.log("Country atlas not found") };
+
   mapSvg = d3
     .select("#map")
     .append("svg")
@@ -315,6 +332,9 @@ function initializeMap() {
   g.append("g").attr("id", "gbPostalCentroids");
 
   switch (selectedCountryCode) {
+    case "AU":
+      path = path.projection(AU_PROJECTION);
+      break;
     case "GB":
       path = path.projection(getGBprojection());
       break;
@@ -331,10 +351,6 @@ function initializeMap() {
       console.log("Projection not specified");
       break;
   }
-
-  const topology = ATLAS_BY_COUNTRY_CODE[selectedCountryCode]
-  // check to ensure country is valid ATLAS
-  if ( !topology ) { console.log("Country atlas not found")};
 
   const nationFeatures = feature(
     topology,
@@ -699,66 +715,81 @@ function drawZipData(fipsCode) {
   const currentDate = dateList[selectedDateIndex];  
   setLastSelectedCounty = fipsCode;
   
-  if (selectedCountryCode == "US") {
-    const zipsForCounty = new Set(getCountyZctas(fipsCode));
-    const zipTrends: Map<String, RegionalTrendLine> = trendData
-      .filter(
-        (t) =>
-          zipsForCounty.has(t.sub_region_3_code) &&
-          t.date == currentDate &&
-          getTrendValue(selectedTrend, t) != 0
-      )
-      .reduce((acc, trend) => {
-        acc.set(trend.sub_region_3_code, trend);
-        return acc;
-      }, new Map<string, RegionalTrendLine>());
-    
-    d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
+  if (["US", "AU"].includes(selectedCountryCode)) {
+    const zipsForCounty = new Set(getCountyZctas(fipsCode, selectedCountryCode));
 
-    fetchZipData(fipsCode)
-      .then((zipData) => {
-        zipData.features.forEach((f) => {
-          f.properties.name = `Zip code ${f.properties.GEOID10}`;
-        });
+    if (zipsForCounty.size > 0) {
+      const zipTrends: Map<String, RegionalTrendLine> = trendData
+        .filter(
+          (t) =>
+            zipsForCounty.has(t.sub_region_3_code) &&
+            t.date == currentDate &&
+            getTrendValue(selectedTrend, t) != 0
+        )
+        .reduce((acc, trend) => {
+          acc.set(trend.sub_region_3_code, trend);
+          return acc;
+        }, new Map<string, RegionalTrendLine>());
+      
+      d3.selectAll(`#fips-${fipsCode}`).attr("fill", "none");
 
-        d3.select("#zip")
-          .selectAll("path")
-          .data(zipData.features)
-          .join("path")
-          .attr("class", "sub-region-3")
-          .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
-          .attr("d", path)
-          .attr("fill", (d: any) => {
-            const colorScale = colorScales.get(selectedTrend as TrendValueType);
-            const trend = zipTrends.get(d.properties.GEOID10);
-            const trendValue = getTrendValue(selectedTrend, trend);
-            if (trendValue && trendValue != 0) {
-              return colorScale(trendValue);
-            } else {
-              return unknownColor;
+      fetchZipData(fipsCode, selectedCountryCode)
+        .then((zipData) => {
+          if (selectedCountryCode == "US") {
+            zipData.features.forEach((f) => {
+              f.properties.name = `Zip code ${f.properties.GEOID10}`;
+            });
+          } else if (selectedCountryCode == "AU") {
+            for (const geometries of Object.values(zipData.objects)) {
+              zipData = feature(
+                zipData,
+                geometries as GeometryCollection
+              );
             }
-          })
-          .attr("stroke", "white")
-          .attr("stroke-width", 1)
-          .attr("vector-effect", "non-scaling-stroke")
-          .on("mouseenter", enterCountyBoundsHandler)
-          .on("mouseleave", leaveCountyBoundsHandler)
-          .on("mousemove", movementHandler(zipTrends));
-      })
-      .catch((err) => {
-        console.log(
-          `No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`
-        );
-        removeZipData();
-      });
+            zipData.features.forEach((f) => {
+              f.properties.name = `Postcode ${f.properties.GEOID10}`;
+            });
+          }
+
+          d3.select("#zip")
+            .selectAll("path")
+            .data(zipData.features)
+            .join("path")
+            .attr("class", "sub-region-3")
+            .attr("id", (z: any) => `zcta-${z.properties.GEOID10}`)
+            .attr("d", path)
+            .attr("fill", (d: any) => {
+              const colorScale = colorScales.get(selectedTrend as TrendValueType);
+              const trend = zipTrends.get(d.properties.GEOID10);
+              const trendValue = getTrendValue(selectedTrend, trend);
+              if (trendValue && trendValue != 0) {
+                return colorScale(trendValue);
+              } else {
+                return unknownColor;
+              }
+            })
+            .attr("stroke", "white")
+            .attr("stroke-width", 1)
+            .attr("vector-effect", "non-scaling-stroke")
+            .on("mouseenter", enterCountyBoundsHandler)
+            .on("mouseleave", leaveCountyBoundsHandler)
+            .on("mousemove", movementHandler(zipTrends));
+        })
+        .catch((err) => {
+          console.log(
+            `No ZIP data available for ${fipsCode}:${JSON.stringify(err)}`
+          );
+          removeZipData();
+        });
+    }
   } else if (selectedCountryCode == "GB") {
-    drawGbPostalCodes(getGbPostalCentroids(fipsCode), currentDate);
+    drawGbPostalCodes(getGbPostalCentroids(), currentDate);
   }
 }
 
 
 // Draw postal code centroids for the UK
-function drawGbPostalCodes(postalCentroits, currentDate) {
+function drawGbPostalCodes(postalCentroids, currentDate) {
   const postalTrends: Map<String, RegionalTrendLine> = trendData
     .filter(
       (t) =>
@@ -770,34 +801,36 @@ function drawGbPostalCodes(postalCentroits, currentDate) {
       return acc;
     }, new Map<string, RegionalTrendLine>());
   
-  const postalFeatures = feature(
-    postalCentroits,
-    postalCentroits.objects.postal as GeometryCollection
-  );
+  postalCentroids.then(postalCentroids => {
+    const postalFeatures = feature(
+      postalCentroids,
+      postalCentroids.objects.postal as GeometryCollection
+    );
 
-  d3.select("#gbPostalCentroids")
-    .selectAll("path")
-    .data(postalFeatures.features)
-    .join("path")
-    .attr("class", "postcode")
-    .attr("id", (z: any) => `postcode-${z.properties.name}`)
-    .attr("d", gbPostalPath)
-    .attr("fill", (d: any) => {
-      const colorScale = colorScales.get(selectedTrend as TrendValueType);
-      const trend = postalTrends.get(d.properties.name);
-      const trendValue = getTrendValue(selectedTrend, trend);
-      if (trendValue && trendValue != 0) {
-        return colorScale(trendValue);
-      } else {
-        return unknownColor;
-      }
-    })
-    .attr("stroke", "white")
-    .attr("stroke-width", 1.7)
-    .attr("vector-effect", "non-scaling-stroke")
-    .on("mouseenter", enterCountyBoundsHandler)
-    .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", movementHandler(postalTrends));
+    d3.select("#gbPostalCentroids")
+      .selectAll("path")
+      .data(postalFeatures.features)
+      .join("path")
+      .attr("class", "postcode")
+      .attr("id", (z: any) => `postcode-${z.properties.name}`)
+      .attr("d", gbPostalPath)
+      .attr("fill", (d: any) => {
+        const colorScale = colorScales.get(selectedTrend as TrendValueType);
+        const trend = postalTrends.get(d.properties.name);
+        const trendValue = getTrendValue(selectedTrend, trend);
+        if (trendValue && trendValue != 0) {
+          return colorScale(trendValue);
+        } else {
+          return unknownColor;
+        }
+      })
+      .attr("stroke", "white")
+      .attr("stroke-width", 1.7)
+      .attr("vector-effect", "non-scaling-stroke")
+      .on("mouseenter", enterCountyBoundsHandler)
+      .on("mouseleave", leaveCountyBoundsHandler)
+      .on("mousemove", movementHandler(postalTrends));
+  })
 }
 
 
@@ -971,8 +1004,13 @@ function inStateMovementHandler(event, d) {
 // County level event handlers
 //
 function countySelectionOnClickHandler(event, d) {
-  activateSelectedCounty(fipsCodeFromElementId(this.id));
-  selectionCallback(regionCodesToPlaceId.get(fipsCodeFromElementId(this.id)));
+  var fipsCode = fipsCodeFromElementId(this.id)
+  if (regionCodesToPlaceId.get(fipsCode)) {
+    activateSelectedCounty(fipsCode);
+    selectionCallback(regionCodesToPlaceId.get(fipsCode));
+  } else {
+    console.log(`No place id for map region code ${fipsCode}`)
+  }
 }
 
 function enterCountyBoundsHandler(event, d) {
@@ -1060,5 +1098,4 @@ export function updateMap() {
   mapSvg.enter();
   console.log("updating map")
   initializeMap();
-
 }

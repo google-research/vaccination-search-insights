@@ -44,10 +44,11 @@
 
   // Please follow the colouring sequance from go/chart-spectrum
   const COUNTRY_COLOR_MAP = {
-    "Canada": "#1a73e8",
-    "Ireland": "#12b5cb",
-    "United Kingdom": "#e52592",
-    "United States": "#e8710a"
+    "Australia": "#1a73e8",
+    "Canada": "#12b5cb",
+    "Ireland": "#e52592",
+    "United Kingdom": "#e8710a",
+    "United States": "#f9ab00"
   }
 
   //https://observablehq.com/@d3/margin-convention?collection=@d3/d3-axis
