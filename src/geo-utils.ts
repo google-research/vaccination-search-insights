@@ -148,6 +148,8 @@ export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): st
     return countyFipsCode.slice(0, 1);
   } else if (countryCode == "AU") {
     return countyFipsCode.slice(0, 1);
+  } else if (countryCode == "CA") {
+    return countyFipsCode.slice(0, 2);
   }
 }
 

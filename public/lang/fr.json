@@ -30,7 +30,7 @@
         },
         "download_popup": {
             "terms": "Pour télécharger ou utiliser les données ou les statistiques, vous devez accepter les <a href=\"{toDownloadsUrl}\">conditions d'utilisationde</a> Google.",
-                "download_dataset": "TÉLÉCHARGER L'ENSEMBLE DE DONNÉES",
+                "download_dataset": "TÉLÉCHARGER DES ENSEMBLES DE DONNÉES",
                 "countries": {
                     "australia": "Australie",
                     "canada": "Canada",
