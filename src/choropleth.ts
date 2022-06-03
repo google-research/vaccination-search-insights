@@ -930,7 +930,6 @@ function showMapCallout(data, event, d): void {
   if ((["zcta", "postcode"].indexOf(levelNameFromElementId(event.target.id)) > -1)
       || setLastSelectedCounty == elemFipsCode
       || (selectedCountryCode == "CA" && (elemFipsCode.match(/\w\d\w/) != null))
-      //|| (![POSTCODE_LEVEL].every(level => displayLevels.includes(level)) && (["CA"].indexOf(selectedCountryCode) > -1 ))
       || (![COUNTY_LEVEL, POSTCODE_LEVEL].every(level => displayLevels.includes(level)) && (["IE"].indexOf(selectedCountryCode) > -1 ))) {
     d3.select("#map-callout-drilldown-msg").style("display", "none");
   } else {
@@ -999,7 +998,6 @@ function inStateMovementHandler(event, d) {
 // County level event handlers
 //
 function countySelectionOnClickHandler(event, d) {
-  console.log("here here")
   activateSelectedCounty(fipsCodeFromElementId(this.id));
   selectionCallback(regionCodesToPlaceId.get(fipsCodeFromElementId(this.id)));
 }
