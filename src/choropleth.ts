@@ -446,22 +446,6 @@ function colorizeMap() {
       return getFillColor(id);
     });
 
-  if(selectedCountryCode == "CA") {
-    d3.select(displayLevels.includes(STATE_LEVEL) ? "#state" : null)
-    .selectAll("path")
-    .filter(function(p: HTMLHtmlElement) {
-      let result = canadianTerritories.includes(p.id as string) 
-      return result
-      })
-    .join("path")
-    .attr("fill", function (d) {
-
-      let id = fipsCodeFromElementId((this as Element).id);
-      return getFillColor(id);
-    });
-
-  }
-
   drawLegend(colorScale);
   if (currentGeoLevel == GeoLevel.SubRegion2) {
     drawZipData(currentGeoId);
@@ -682,6 +666,7 @@ function activateSelectedState(fipsCode, zoom = true) {
   if (fipsCode == dcStateFipsCode && selectedCountryCode == 'US') {
     activateSelectedCounty(dcCountyFipsCode, zoom);
   }
+  
 }
 
 function activateSelectedCounty(fipsCode, zoom = true) {
