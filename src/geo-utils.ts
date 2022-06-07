@@ -141,6 +141,28 @@ export const regionOneToFipsCode: Map<string, Map<string, string>> = new Map([
   ])]
 ]);
 
+const CA_STATE_IDS: Map<string, string> = new Map([
+  ["V", "59"],
+  ["T", "48"],
+  ["S", "47"],
+  ["R", "46"],
+
+  ["K", "35"],
+  ["L", "35"],
+  ["M", "35"],
+  ["N", "35"],
+  ["P", "35"],
+
+  ["G", "24"],
+  ["H", "24"],
+  ["J", "24"],
+
+  ["E", "13"],
+  ["B", "12"],
+  ["C", "11"],
+  ["A", "10"]
+])
+
 export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): string {
   if (countryCode == "US") {
     return countyFipsCode.slice(0, 2);
@@ -149,7 +171,7 @@ export function stateFipsCodeFromCounty(countyFipsCode: string, countryCode): st
   } else if (countryCode == "AU") {
     return countyFipsCode.slice(0, 1);
   } else if (countryCode == "CA") {
-    return countyFipsCode.slice(0, 2);
+    return CA_STATE_IDS.get(countyFipsCode.slice(0, 1));
   }
 }
 

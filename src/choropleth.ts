@@ -446,22 +446,6 @@ function colorizeMap() {
       return getFillColor(id);
     });
 
-  if(selectedCountryCode == "CA") {
-    d3.select(displayLevels.includes(STATE_LEVEL) ? "#state" : null)
-    .selectAll("path")
-    .filter(function(p: HTMLHtmlElement) {
-      let result = canadianTerritories.includes(p.id as string) 
-      return result
-      })
-    .join("path")
-    .attr("fill", function (d) {
-
-      let id = fipsCodeFromElementId((this as Element).id);
-      return getFillColor(id);
-    });
-
-  }
-
   drawLegend(colorScale);
   if (currentGeoLevel == GeoLevel.SubRegion2) {
     drawZipData(currentGeoId);
@@ -664,32 +648,6 @@ function activateSelectedState(fipsCode, zoom = true) {
     .on("mouseenter", enterCountyBoundsHandler)
     .on("mouseleave", leaveCountyBoundsHandler)
     .on("mousemove", inCountyMovementHandler);
-
-  //special case for Canada.
-  if (selectedCountryCode == "CA") {
-    const FSA_Pattern: RegExp = /\w\d\w/;
-
-    mapSvg
-    .select("#county")
-    .selectAll("path")
-    .attr("stroke-width", 0)
-    .on("click", null)
-    .on("mouseenter", enterCountyBoundsHandler)
-    .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", inCountyMovementHandler);
-    
-    mapSvg
-    .select("#county")
-    .selectAll("path")
-    .filter(function(d: any){
-      return (d.properties.prID == fipsCode && d.id.match(FSA_Pattern));
-    })
-    .attr("stroke-width", 1)
-    .on("click", countySelectionOnClickHandler)
-    .on("mouseenter", enterCountyBoundsHandler)
-    .on("mouseleave", leaveCountyBoundsHandler)
-    .on("mousemove", inCountyMovementHandler);
-  }
 
   if (displayLevels.includes(COUNTY_LEVEL)) {
     // disable any active state selection, then activate
