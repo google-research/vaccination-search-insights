@@ -27,13 +27,11 @@
     import { getCountryCode, handleInfoPopup } from "./utils";
     import { dateRangeString } from "./choropleth";
     import { _ } from "svelte-i18n"
+    import ClusterHoverCard from "./ClusterHoverCard.svelte";
 
     const MINIMUM_DATE_INDEX = 0;
     const TOP_QUERY_TYPE = "top";
     const RISING_QUERY_TYPE = "rising";
-    const NO_CHANGE_COLOR = "#202124";
-    const POSITIVE_CHANGE_COLOR = "#1e8e3e";
-    const NEGATIVE_CHANGE_COLOR = "#d93025";
 
     let loading: boolean = true;
     let selectedListId: string = "covid19_vaccination";
@@ -52,40 +50,6 @@
     export let vaccineTooltip: string = "";
     export let intentTooltip = "";
     export let safetypTooltip: string = "";
-
-
-    function capitaliseFirstLetter(str: string): string {
-        return str[0].toUpperCase() + str.slice(1);
-    }
-
-    function formatMembersList(stringArray: string[]): string {
-        if (stringArray.length === 0) {
-            return "";
-        }
-        return stringArray
-            .map((member) => capitaliseFirstLetter(member))
-            .join(", ");
-    }
-
-    function formatChange(change: number): string {
-        if (change === null) {
-            return "-";
-        }
-        if (change === Infinity) {
-            return "NEW"; //TODO(meganshum): Add translation for this!
-        }
-        var changeStr = change.toLocaleString("en", {
-            notation: "compact",
-            compactDisplay: "short"
-        });
-        if (change > 0) {
-            return `+${changeStr}%`;
-        } else if (change < 0) {
-            return `${changeStr}%`;
-        } else {
-            return "0";
-        }
-    }
 
     /**
      * Changes selectedListId so that the selected button becomes active and
@@ -120,7 +84,7 @@
 
     function setDate(index: number): void {
         if (dateList.length != MINIMUM_DATE_INDEX) {
-            dateKey = dateList[selectedDateIndex];
+            dateKey = dateList[index];
             dateRange = dateRangeString(dateKey);
         } else {
             dateKey = "";
@@ -304,30 +268,7 @@
                     </div>
                 {/if}
                 {#each topQueriesList as query}
-                    <div class="cluster">
-                        <div class="cluster-text-box">
-                            <div class="cluster-text">
-                                <span class="cluster-emphasis">
-                                    {query.members.length === 0 ? query.query: query.query + ","}
-                                </span>
-                                {formatMembersList(query.members)}
-                            </div>
-                        </div>
-                        <div class="sni">
-                            {(Math.round(query.sni * 100) / 100).toFixed(2)}
-                        </div>
-                        {#if query.change === null || query.change === 0}
-                            <div class="change" style="color:{NO_CHANGE_COLOR}">{formatChange(query.change)}</div>
-                        {:else if query.change > 0}
-                            <div class="change"style="color:{POSITIVE_CHANGE_COLOR}">
-                                {formatChange(query.change)}
-                            </div>
-                        {:else}
-                            <div class="change" style="color:{NEGATIVE_CHANGE_COLOR}">
-                                {formatChange(query.change)}
-                            </div>
-                        {/if}
-                    </div>
+                    <ClusterHoverCard {query}/>
                 {:else}
                     <div class="no-queries">{$_('legend.no_data')}</div>
                 {/each}
@@ -372,30 +313,7 @@
                     </div>
                 {/if}
                 {#each risingQueriesList as query}
-                    <div class="cluster">
-                        <div class="cluster-text-box">
-                            <div class="cluster-text">
-                                <span class="cluster-emphasis">
-                                    {query.members.length === 0 ? query.query: query.query + ","}
-                                </span>
-                                {formatMembersList(query.members)}
-                            </div>
-                        </div>
-                        <div class="sni">
-                            {(Math.round(query.sni * 100) / 100).toFixed(2)}
-                        </div>
-                        {#if query.change === null || query.change === 0}
-                            <div class="change" style="color:{NO_CHANGE_COLOR}">{formatChange(query.change)}</div>
-                        {:else if query.change > 0}
-                            <div class="change"style="color:{POSITIVE_CHANGE_COLOR}">
-                                {formatChange(query.change)}
-                            </div>
-                        {:else}
-                            <div class="change" style="color:{NEGATIVE_CHANGE_COLOR}">
-                                {formatChange(query.change)}
-                            </div>
-                        {/if}
-                    </div>
+                    <ClusterHoverCard {query}/>
                 {:else}
                     <div class="no-queries">{$_('legend.no_data')}</div>
                 {/each}

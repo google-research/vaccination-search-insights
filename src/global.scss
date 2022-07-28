@@ -1049,7 +1049,6 @@ div.next-steps-item > h3 {
   flex: 1;
   flex-wrap: wrap;
   justify-content: space-between;
-  overflow: hidden;
 }
 
 .top-searches .date-nav-control {
@@ -1063,7 +1062,6 @@ div.next-steps-item > h3 {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  overflow: hidden;
 }
 
 .rising-searches .date-nav-control {
@@ -1144,6 +1142,11 @@ div.next-steps-item > h3 {
   text-align: right;
 }
 
+.cluster-container {
+  position: relative;
+  width: 100%
+}
+
 .cluster {
   display: flex;
   width: 100%;
@@ -1199,6 +1202,41 @@ div.next-steps-item > h3 {
   font-size: 14px;
   font-weight: 500;
   text-align: right;
+}
+
+.cluster-hover-card {
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.2);
+  padding: 16px 20px 14px 20px;
+  position: absolute;
+  transform: translate(50%, -10%);
+  z-index: 500;
+}
+
+.hover-query-color {
+  background-color: #4285f4;
+  border-radius: 2px;
+  height: 10px;
+  position: relative;
+  top: 5px;
+  width: 10px;
+}
+
+.hover-queries {
+  display: grid;
+  font-size: 14px;
+  grid-template-columns: 14px max-content;
+  grid-template-rows: min-content;
+  grid-gap: 0;
+  line-height: 20px;
+}
+
+.hover-query-text {
+  color: #202124;
+  font-weight: 400;
+  margin-left: 8px;
 }
 
 @media (max-width: 800px) {
