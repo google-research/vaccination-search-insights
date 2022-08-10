@@ -207,7 +207,7 @@
       <p class="header-download-popup-link-list">
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/AU_vaccination_search_insights.zip"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/zip/AU_vaccination_search_insights.zip"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
@@ -215,7 +215,7 @@
         >
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/CA_vaccination_search_insights.zip"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/zip/CA_vaccination_search_insights.zip"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
@@ -223,7 +223,7 @@
         >
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/IE_vaccination_search_insights.zip"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/zip/IE_vaccination_search_insights.zip"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
@@ -231,7 +231,7 @@
         >
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/GB_vaccination_search_insights.zip"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/zip/GB_vaccination_search_insights.zip"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
@@ -239,7 +239,7 @@
         >
         <a
           class="header-download-popup-link"
-          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/US_vaccination_search_insights.zip"
+          href="https://storage.googleapis.com/covid19-open-data/covid19-vaccination-search-insights/zip/US_vaccination_search_insights.zip"
           on:click={(e) => closeDownloadPopup()}
           ><span class="material-icons-outlined header-download-popup-icon"
             >file_download</span
