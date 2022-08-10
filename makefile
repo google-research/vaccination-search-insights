@@ -43,12 +43,16 @@ regions.csv: US_vaccination_search_insights.csv gb_regions.csv au_regions.csv CA
 US_initial.csv: US_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) != "postal_code"' > $(SRC_DIR)/$@
 
-US_zips.csv: US_vaccination_search_insights.csv
+US_zips_2021.csv: US_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk 'NR==1' > $(SRC_DIR)/$@
-	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) == "postal_code"' >> $(SRC_DIR)/$@
+	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) == "postal_code" && index($$1, "2021")' >> $(SRC_DIR)/$@
+
+US_zips_2022.csv: US_vaccination_search_insights.csv
+	cat $(SRC_DIR)/$(word 1,$^) | awk 'NR==1' > $(SRC_DIR)/$@
+	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) == "postal_code" && index($$1, "2022")' >> $(SRC_DIR)/$@
 	rm -f $(SRC_DIR)/$(word 1,$^)
 
 All_dates.csv: Global_l0_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' 'NR>1 { print $$1 }' | sort -u | uniq >> $(SRC_DIR)/$@
 
-data: Global_l0_vaccination_search_insights.csv AU_vaccination_search_insights.csv GB_vaccination_search_insights.csv regions.csv IE_vaccination_search_insights.csv CA_vaccination_search_insights.csv US_initial.csv US_zips.csv All_dates.csv
+data: Global_l0_vaccination_search_insights.csv AU_vaccination_search_insights.csv GB_vaccination_search_insights.csv regions.csv IE_vaccination_search_insights.csv CA_vaccination_search_insights.csv US_initial.csv US_zips_2021.csv US_zips_2022.csv All_dates.csv
