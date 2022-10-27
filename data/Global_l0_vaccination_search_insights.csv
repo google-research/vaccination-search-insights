@@ -92,6 +92,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-09-26,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,9.628,1.652,1.125
 2022-10-03,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,9.792,1.809,1.171
 2022-10-10,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,10.861,1.896,1.316
+2022-10-17,United States,US,,,,,,,ChIJCzYy5IS16lQRQrfeQ5K5Oxw,10.543,1.777,1.261
 2021-01-04,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,67.078,8.562,8.871
 2021-01-11,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,60.296,9.536,8.327
 2021-01-18,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,54.432,8.003,7.847
@@ -185,6 +186,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-09-26,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,25.057,11.491,2.238
 2022-10-03,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,23.608,10.149,2.314
 2022-10-10,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,28.589,12.612,2.492
+2022-10-17,United Kingdom,GB,,,,,,,ChIJqZHHQhE7WgIReiWIMkOg-MQ,20.258,7.890,2.318
 2021-01-04,Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk,33.963,4.520,5.881
 2021-01-11,Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk,30.924,5.686,5.593
 2021-01-18,Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk,22.555,4.829,3.897
@@ -278,6 +280,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-09-26,Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk,18.775,5.683,2.629
 2022-10-03,Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk,16.878,5.147,2.736
 2022-10-10,Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk,20.421,6.707,3.265
+2022-10-17,Canada,CA,,,,,,,ChIJ2WrMN9MDDUsRpY9Doiq3aJk,19.859,6.798,3.562
 2021-01-04,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,59.158,2.887,8.731
 2021-01-11,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,57.181,3.162,6.252
 2021-01-18,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,36.133,2.568,4.408
@@ -371,6 +374,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-09-26,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,9.910,2.768,0.781
 2022-10-03,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,15.600,4.836,1.167
 2022-10-10,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,16.680,4.825,1.212
+2022-10-17,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,12.924,3.757,1.116
 2021-01-04,Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM,14.715,4.173,1.494
 2021-01-11,Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM,12.916,3.738,1.136
 2021-01-18,Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM,9.884,2.936,0.831
@@ -464,3 +468,4 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-09-26,Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM,7.149,3.739,0.544
 2022-10-03,Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM,7.785,4.107,0.517
 2022-10-10,Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM,9.251,4.423,0.622
+2022-10-17,Australia,AU,,,,,,,ChIJ38WHZwf9KysRUhNblaFnglM,7.392,3.666,0.561
