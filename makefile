@@ -50,7 +50,6 @@ US_zips_2021.csv: US_vaccination_search_insights.csv
 US_zips_2022.csv: US_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk 'NR==1' > $(SRC_DIR)/$@
 	cat $(SRC_DIR)/$(word 1,$^) | awk -vFPAT='[^,]*|"[^"]*"' -v OFS=',' '($$8) == "postal_code" && index($$1, "2022")' >> $(SRC_DIR)/$@
-	rm -f $(SRC_DIR)/$(word 1,$^)
 	
 US_zips_2023.csv: US_vaccination_search_insights.csv
 	cat $(SRC_DIR)/$(word 1,$^) | awk 'NR==1' > $(SRC_DIR)/$@
