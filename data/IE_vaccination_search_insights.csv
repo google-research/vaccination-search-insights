@@ -105,6 +105,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Carlow,IE-CW,,,,,ChIJZ7N-axJaXUgRMAGA8azHABg,15.488,5.070,1.064
 2023-01-02,Ireland,IE,County Carlow,IE-CW,,,,,ChIJZ7N-axJaXUgRMAGA8azHABg,11.856,3.782,1.006
 2023-01-09,Ireland,IE,County Carlow,IE-CW,,,,,ChIJZ7N-axJaXUgRMAGA8azHABg,10.418,2.799,1.106
+2023-01-16,Ireland,IE,County Carlow,IE-CW,,,,,ChIJZ7N-axJaXUgRMAGA8azHABg,6.803,1.375,0.847
 2021-01-04,Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg,52.326,2.358,8.126
 2021-01-11,Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg,47.217,2.476,6.063
 2021-01-18,Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg,30.739,1.891,3.969
@@ -211,6 +212,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg,11.363,3.386,0.751
 2023-01-02,Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg,9.605,3.061,0.744
 2023-01-09,Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg,8.255,2.217,0.843
+2023-01-16,Ireland,IE,County Cavan,IE-CN,,,,,ChIJLZ_1NnkSXkgRQAGA8azHABg,6.366,1.674,0.869
 2021-01-04,Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg,58.111,2.420,8.127
 2021-01-11,Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg,53.497,2.740,5.594
 2021-01-18,Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg,35.653,2.772,4.076
@@ -317,6 +319,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg,15.839,4.594,1.138
 2023-01-02,Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg,12.938,3.735,1.380
 2023-01-09,Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg,11.225,2.985,1.165
+2023-01-16,Ireland,IE,County Clare,IE-CE,,,,,ChIJGU6CyPkRW0gR8AGA8azHABg,7.737,1.777,0.759
 2021-01-04,Ireland,IE,County Cork,IE-CO,,,,,ChIJSR2jCZLjREgRoAKA8azHABg,64.304,3.255,10.228
 2021-01-11,Ireland,IE,County Cork,IE-CO,,,,,ChIJSR2jCZLjREgRoAKA8azHABg,59.769,3.341,6.606
 2021-01-18,Ireland,IE,County Cork,IE-CO,,,,,ChIJSR2jCZLjREgRoAKA8azHABg,38.272,2.796,4.989
@@ -423,6 +426,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Cork,IE-CO,,,,,ChIJSR2jCZLjREgRoAKA8azHABg,17.932,6.221,1.045
 2023-01-02,Ireland,IE,County Cork,IE-CO,,,,,ChIJSR2jCZLjREgRoAKA8azHABg,14.837,5.300,1.172
 2023-01-09,Ireland,IE,County Cork,IE-CO,,,,,ChIJSR2jCZLjREgRoAKA8azHABg,12.096,3.852,1.207
+2023-01-16,Ireland,IE,County Cork,IE-CO,,,,,ChIJSR2jCZLjREgRoAKA8azHABg,8.413,2.433,0.933
 2021-01-04,Ireland,IE,County Donegal,IE-DL,,,,,ChIJs7A6kGSWX0gRACCY8azHABg,51.649,2.601,9.069
 2021-01-11,Ireland,IE,County Donegal,IE-DL,,,,,ChIJs7A6kGSWX0gRACCY8azHABg,46.612,2.519,6.737
 2021-01-18,Ireland,IE,County Donegal,IE-DL,,,,,ChIJs7A6kGSWX0gRACCY8azHABg,31.572,2.095,4.389
@@ -529,6 +533,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Donegal,IE-DL,,,,,ChIJs7A6kGSWX0gRACCY8azHABg,10.817,3.107,0.753
 2023-01-02,Ireland,IE,County Donegal,IE-DL,,,,,ChIJs7A6kGSWX0gRACCY8azHABg,10.589,3.022,0.877
 2023-01-09,Ireland,IE,County Donegal,IE-DL,,,,,ChIJs7A6kGSWX0gRACCY8azHABg,8.410,2.166,1.033
+2023-01-16,Ireland,IE,County Donegal,IE-DL,,,,,ChIJs7A6kGSWX0gRACCY8azHABg,5.969,1.505,0.707
 2021-01-04,Ireland,IE,County Dublin,IE-D,,,,,ChIJv2RI7foRZ0gRwAKA8azHABg,62.682,3.160,8.671
 2021-01-11,Ireland,IE,County Dublin,IE-D,,,,,ChIJv2RI7foRZ0gRwAKA8azHABg,61.824,3.697,6.063
 2021-01-18,Ireland,IE,County Dublin,IE-D,,,,,ChIJv2RI7foRZ0gRwAKA8azHABg,38.382,2.931,4.176
@@ -635,6 +640,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Dublin,IE-D,,,,,ChIJv2RI7foRZ0gRwAKA8azHABg,20.431,6.511,1.051
 2023-01-02,Ireland,IE,County Dublin,IE-D,,,,,ChIJv2RI7foRZ0gRwAKA8azHABg,17.850,5.900,1.400
 2023-01-09,Ireland,IE,County Dublin,IE-D,,,,,ChIJv2RI7foRZ0gRwAKA8azHABg,13.973,4.211,1.311
+2023-01-16,Ireland,IE,County Dublin,IE-D,,,,,ChIJv2RI7foRZ0gRwAKA8azHABg,9.847,2.751,0.977
 2021-01-04,Ireland,IE,County Galway,IE-G,,,,,ChIJrx2gLKaVW0gR0AKA8azHABg,59.771,2.679,9.194
 2021-01-11,Ireland,IE,County Galway,IE-G,,,,,ChIJrx2gLKaVW0gR0AKA8azHABg,60.597,3.399,7.531
 2021-01-18,Ireland,IE,County Galway,IE-G,,,,,ChIJrx2gLKaVW0gR0AKA8azHABg,38.104,2.702,5.033
@@ -741,6 +747,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Galway,IE-G,,,,,ChIJrx2gLKaVW0gR0AKA8azHABg,14.799,4.539,0.873
 2023-01-02,Ireland,IE,County Galway,IE-G,,,,,ChIJrx2gLKaVW0gR0AKA8azHABg,12.718,3.805,1.107
 2023-01-09,Ireland,IE,County Galway,IE-G,,,,,ChIJrx2gLKaVW0gR0AKA8azHABg,10.756,2.972,1.111
+2023-01-16,Ireland,IE,County Galway,IE-G,,,,,ChIJrx2gLKaVW0gR0AKA8azHABg,7.904,2.060,0.770
 2021-01-04,Ireland,IE,County Kerry,IE-KY,,,,,ChIJRy3pzLhPRUgRAB6Y8azHABg,67.922,3.207,11.984
 2021-01-11,Ireland,IE,County Kerry,IE-KY,,,,,ChIJRy3pzLhPRUgRAB6Y8azHABg,57.848,3.017,6.717
 2021-01-18,Ireland,IE,County Kerry,IE-KY,,,,,ChIJRy3pzLhPRUgRAB6Y8azHABg,35.127,2.312,4.287
@@ -847,6 +854,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Kerry,IE-KY,,,,,ChIJRy3pzLhPRUgRAB6Y8azHABg,13.976,4.331,0.951
 2023-01-02,Ireland,IE,County Kerry,IE-KY,,,,,ChIJRy3pzLhPRUgRAB6Y8azHABg,11.471,3.250,1.132
 2023-01-09,Ireland,IE,County Kerry,IE-KY,,,,,ChIJRy3pzLhPRUgRAB6Y8azHABg,10.290,2.614,1.170
+2023-01-16,Ireland,IE,County Kerry,IE-KY,,,,,ChIJRy3pzLhPRUgRAB6Y8azHABg,7.015,1.549,1.037
 2021-01-04,Ireland,IE,County Kildare,IE-KE,,,,,ChIJR3HKcbV_XUgR8AKA8azHABg,56.211,2.676,7.843
 2021-01-11,Ireland,IE,County Kildare,IE-KE,,,,,ChIJR3HKcbV_XUgR8AKA8azHABg,55.203,2.860,5.785
 2021-01-18,Ireland,IE,County Kildare,IE-KE,,,,,ChIJR3HKcbV_XUgR8AKA8azHABg,36.316,2.448,4.437
@@ -953,6 +961,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Kildare,IE-KE,,,,,ChIJR3HKcbV_XUgR8AKA8azHABg,20.813,6.977,1.021
 2023-01-02,Ireland,IE,County Kildare,IE-KE,,,,,ChIJR3HKcbV_XUgR8AKA8azHABg,16.473,5.467,1.313
 2023-01-09,Ireland,IE,County Kildare,IE-KE,,,,,ChIJR3HKcbV_XUgR8AKA8azHABg,11.965,3.522,1.133
+2023-01-16,Ireland,IE,County Kildare,IE-KE,,,,,ChIJR3HKcbV_XUgR8AKA8azHABg,8.591,2.341,0.841
 2021-01-04,Ireland,IE,County Kilkenny,IE-KK,,,,,ChIJ4XFVRPcxXUgRAAOA8azHABg,56.878,2.663,8.715
 2021-01-11,Ireland,IE,County Kilkenny,IE-KK,,,,,ChIJ4XFVRPcxXUgRAAOA8azHABg,54.351,2.403,6.725
 2021-01-18,Ireland,IE,County Kilkenny,IE-KK,,,,,ChIJ4XFVRPcxXUgRAAOA8azHABg,33.279,2.077,4.449
@@ -1059,6 +1068,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Kilkenny,IE-KK,,,,,ChIJ4XFVRPcxXUgRAAOA8azHABg,16.008,5.656,0.839
 2023-01-02,Ireland,IE,County Kilkenny,IE-KK,,,,,ChIJ4XFVRPcxXUgRAAOA8azHABg,12.085,4.093,1.049
 2023-01-09,Ireland,IE,County Kilkenny,IE-KK,,,,,ChIJ4XFVRPcxXUgRAAOA8azHABg,9.682,3.099,0.964
+2023-01-16,Ireland,IE,County Kilkenny,IE-KK,,,,,ChIJ4XFVRPcxXUgRAAOA8azHABg,7.598,2.197,0.740
 2021-01-04,Ireland,IE,County Laois,IE-LS,,,,,ChIJ6Rl2UhkOXUgRUAGA8azHABg,50.627,2.506,7.449
 2021-01-11,Ireland,IE,County Laois,IE-LS,,,,,ChIJ6Rl2UhkOXUgRUAGA8azHABg,52.871,3.004,6.268
 2021-01-18,Ireland,IE,County Laois,IE-LS,,,,,ChIJ6Rl2UhkOXUgRUAGA8azHABg,33.128,2.053,4.331
@@ -1165,6 +1175,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Laois,IE-LS,,,,,ChIJ6Rl2UhkOXUgRUAGA8azHABg,14.099,4.364,0.759
 2023-01-02,Ireland,IE,County Laois,IE-LS,,,,,ChIJ6Rl2UhkOXUgRUAGA8azHABg,11.866,3.838,1.013
 2023-01-09,Ireland,IE,County Laois,IE-LS,,,,,ChIJ6Rl2UhkOXUgRUAGA8azHABg,9.548,2.918,1.053
+2023-01-16,Ireland,IE,County Laois,IE-LS,,,,,ChIJ6Rl2UhkOXUgRUAGA8azHABg,6.554,1.709,0.917
 2021-01-04,Ireland,IE,County Leitrim,IE-LM,,,,,ChIJdeoGgpOKXkgRYAGA8azHABg,57.291,3.123,8.154
 2021-01-11,Ireland,IE,County Leitrim,IE-LM,,,,,ChIJdeoGgpOKXkgRYAGA8azHABg,54.716,2.935,6.680
 2021-01-18,Ireland,IE,County Leitrim,IE-LM,,,,,ChIJdeoGgpOKXkgRYAGA8azHABg,37.784,2.306,5.424
@@ -1271,6 +1282,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Leitrim,IE-LM,,,,,ChIJdeoGgpOKXkgRYAGA8azHABg,13.948,4.305,
 2023-01-02,Ireland,IE,County Leitrim,IE-LM,,,,,ChIJdeoGgpOKXkgRYAGA8azHABg,11.404,3.201,1.101
 2023-01-09,Ireland,IE,County Leitrim,IE-LM,,,,,ChIJdeoGgpOKXkgRYAGA8azHABg,9.594,2.333,1.269
+2023-01-16,Ireland,IE,County Leitrim,IE-LM,,,,,ChIJdeoGgpOKXkgRYAGA8azHABg,7.610,1.468,
 2021-01-04,Ireland,IE,County Limerick,IE-LK,,,,,ChIJOwx_mjJPW0gRcAGA8azHABg,59.043,3.057,8.860
 2021-01-11,Ireland,IE,County Limerick,IE-LK,,,,,ChIJOwx_mjJPW0gRcAGA8azHABg,57.744,3.261,6.255
 2021-01-18,Ireland,IE,County Limerick,IE-LK,,,,,ChIJOwx_mjJPW0gRcAGA8azHABg,36.900,3.034,4.424
@@ -1377,6 +1389,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Limerick,IE-LK,,,,,ChIJOwx_mjJPW0gRcAGA8azHABg,16.465,5.243,1.031
 2023-01-02,Ireland,IE,County Limerick,IE-LK,,,,,ChIJOwx_mjJPW0gRcAGA8azHABg,13.433,4.440,1.303
 2023-01-09,Ireland,IE,County Limerick,IE-LK,,,,,ChIJOwx_mjJPW0gRcAGA8azHABg,10.364,3.264,1.077
+2023-01-16,Ireland,IE,County Limerick,IE-LK,,,,,ChIJOwx_mjJPW0gRcAGA8azHABg,7.553,2.026,0.849
 2021-01-04,Ireland,IE,County Longford,IE-LD,,,,,ChIJyeQcLjzRXUgRgAGA8azHABg,49.269,2.374,7.513
 2021-01-11,Ireland,IE,County Longford,IE-LD,,,,,ChIJyeQcLjzRXUgRgAGA8azHABg,47.898,2.333,6.173
 2021-01-18,Ireland,IE,County Longford,IE-LD,,,,,ChIJyeQcLjzRXUgRgAGA8azHABg,31.256,1.849,3.871
@@ -1483,6 +1496,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Longford,IE-LD,,,,,ChIJyeQcLjzRXUgRgAGA8azHABg,11.930,4.000,0.915
 2023-01-02,Ireland,IE,County Longford,IE-LD,,,,,ChIJyeQcLjzRXUgRgAGA8azHABg,9.879,3.046,0.812
 2023-01-09,Ireland,IE,County Longford,IE-LD,,,,,ChIJyeQcLjzRXUgRgAGA8azHABg,8.537,2.211,0.805
+2023-01-16,Ireland,IE,County Longford,IE-LD,,,,,ChIJyeQcLjzRXUgRgAGA8azHABg,6.605,1.541,
 2021-01-04,Ireland,IE,County Louth,IE-LH,,,,,ChIJ_XrvrlczZ0gR8B-Y8azHABg,49.107,2.291,6.988
 2021-01-11,Ireland,IE,County Louth,IE-LH,,,,,ChIJ_XrvrlczZ0gR8B-Y8azHABg,48.656,2.632,5.867
 2021-01-18,Ireland,IE,County Louth,IE-LH,,,,,ChIJ_XrvrlczZ0gR8B-Y8azHABg,29.516,1.727,3.864
@@ -1589,6 +1603,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Louth,IE-LH,,,,,ChIJ_XrvrlczZ0gR8B-Y8azHABg,13.599,4.344,0.700
 2023-01-02,Ireland,IE,County Louth,IE-LH,,,,,ChIJ_XrvrlczZ0gR8B-Y8azHABg,12.140,3.882,1.041
 2023-01-09,Ireland,IE,County Louth,IE-LH,,,,,ChIJ_XrvrlczZ0gR8B-Y8azHABg,9.259,2.401,0.929
+2023-01-16,Ireland,IE,County Louth,IE-LH,,,,,ChIJ_XrvrlczZ0gR8B-Y8azHABg,7.142,1.908,0.793
 2021-01-04,Ireland,IE,County Mayo,IE-MO,,,,,ChIJJ1YLjJJoWUgRoAGA8azHABg,57.544,2.958,8.654
 2021-01-11,Ireland,IE,County Mayo,IE-MO,,,,,ChIJJ1YLjJJoWUgRoAGA8azHABg,54.603,2.925,7.155
 2021-01-18,Ireland,IE,County Mayo,IE-MO,,,,,ChIJJ1YLjJJoWUgRoAGA8azHABg,37.077,2.441,5.065
@@ -1695,6 +1710,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Mayo,IE-MO,,,,,ChIJJ1YLjJJoWUgRoAGA8azHABg,12.640,3.904,0.872
 2023-01-02,Ireland,IE,County Mayo,IE-MO,,,,,ChIJJ1YLjJJoWUgRoAGA8azHABg,10.147,2.483,1.126
 2023-01-09,Ireland,IE,County Mayo,IE-MO,,,,,ChIJJ1YLjJJoWUgRoAGA8azHABg,8.845,1.823,1.046
+2023-01-16,Ireland,IE,County Mayo,IE-MO,,,,,ChIJJ1YLjJJoWUgRoAGA8azHABg,6.089,1.337,0.756
 2021-01-04,Ireland,IE,County Meath,IE-MH,,,,,ChIJv1cLaulbZ0gRsAGA8azHABg,53.162,2.528,7.457
 2021-01-11,Ireland,IE,County Meath,IE-MH,,,,,ChIJv1cLaulbZ0gRsAGA8azHABg,53.157,2.566,5.618
 2021-01-18,Ireland,IE,County Meath,IE-MH,,,,,ChIJv1cLaulbZ0gRsAGA8azHABg,32.098,2.066,4.067
@@ -1801,6 +1817,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Meath,IE-MH,,,,,ChIJv1cLaulbZ0gRsAGA8azHABg,17.090,5.952,0.887
 2023-01-02,Ireland,IE,County Meath,IE-MH,,,,,ChIJv1cLaulbZ0gRsAGA8azHABg,14.332,4.928,1.087
 2023-01-09,Ireland,IE,County Meath,IE-MH,,,,,ChIJv1cLaulbZ0gRsAGA8azHABg,11.315,3.397,1.113
+2023-01-16,Ireland,IE,County Meath,IE-MH,,,,,ChIJv1cLaulbZ0gRsAGA8azHABg,8.020,2.256,0.846
 2021-01-04,Ireland,IE,County Monaghan,IE-MN,,,,,ChIJR6rlR0ShYEgRwAGA8azHABg,50.048,2.344,7.532
 2021-01-11,Ireland,IE,County Monaghan,IE-MN,,,,,ChIJR6rlR0ShYEgRwAGA8azHABg,46.541,2.034,6.615
 2021-01-18,Ireland,IE,County Monaghan,IE-MN,,,,,ChIJR6rlR0ShYEgRwAGA8azHABg,31.446,1.999,4.527
@@ -1907,6 +1924,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Monaghan,IE-MN,,,,,ChIJR6rlR0ShYEgRwAGA8azHABg,9.728,2.773,0.828
 2023-01-02,Ireland,IE,County Monaghan,IE-MN,,,,,ChIJR6rlR0ShYEgRwAGA8azHABg,7.618,2.111,0.708
 2023-01-09,Ireland,IE,County Monaghan,IE-MN,,,,,ChIJR6rlR0ShYEgRwAGA8azHABg,7.072,1.522,0.901
+2023-01-16,Ireland,IE,County Monaghan,IE-MN,,,,,ChIJR6rlR0ShYEgRwAGA8azHABg,5.641,1.409,
 2021-01-04,Ireland,IE,County Offaly,IE-OY,,,,,ChIJ9efdiXEHXUgR0AGA8azHABg,55.136,2.618,9.248
 2021-01-11,Ireland,IE,County Offaly,IE-OY,,,,,ChIJ9efdiXEHXUgR0AGA8azHABg,51.817,2.336,6.092
 2021-01-18,Ireland,IE,County Offaly,IE-OY,,,,,ChIJ9efdiXEHXUgR0AGA8azHABg,31.189,2.105,4.248
@@ -2013,6 +2031,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Offaly,IE-OY,,,,,ChIJ9efdiXEHXUgR0AGA8azHABg,12.656,4.218,0.834
 2023-01-02,Ireland,IE,County Offaly,IE-OY,,,,,ChIJ9efdiXEHXUgR0AGA8azHABg,11.243,3.999,0.858
 2023-01-09,Ireland,IE,County Offaly,IE-OY,,,,,ChIJ9efdiXEHXUgR0AGA8azHABg,8.872,2.803,0.788
+2023-01-16,Ireland,IE,County Offaly,IE-OY,,,,,ChIJ9efdiXEHXUgR0AGA8azHABg,6.461,1.682,0.734
 2021-01-04,Ireland,IE,County Roscommon,IE-RN,,,,,ChIJf3lhIcgYXEgR4AGA8azHABg,59.135,2.683,9.483
 2021-01-11,Ireland,IE,County Roscommon,IE-RN,,,,,ChIJf3lhIcgYXEgR4AGA8azHABg,54.537,2.810,6.632
 2021-01-18,Ireland,IE,County Roscommon,IE-RN,,,,,ChIJf3lhIcgYXEgR4AGA8azHABg,38.946,2.717,5.685
@@ -2119,6 +2138,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Roscommon,IE-RN,,,,,ChIJf3lhIcgYXEgR4AGA8azHABg,12.839,3.956,0.956
 2023-01-02,Ireland,IE,County Roscommon,IE-RN,,,,,ChIJf3lhIcgYXEgR4AGA8azHABg,10.387,3.049,0.856
 2023-01-09,Ireland,IE,County Roscommon,IE-RN,,,,,ChIJf3lhIcgYXEgR4AGA8azHABg,8.280,1.843,0.941
+2023-01-16,Ireland,IE,County Roscommon,IE-RN,,,,,ChIJf3lhIcgYXEgR4AGA8azHABg,6.144,1.331,0.703
 2021-01-04,Ireland,IE,County Sligo,IE-SO,,,,,ChIJm6HiaIzGXkgRAAKA8azHABg,61.710,3.055,10.194
 2021-01-11,Ireland,IE,County Sligo,IE-SO,,,,,ChIJm6HiaIzGXkgRAAKA8azHABg,55.323,3.029,7.052
 2021-01-18,Ireland,IE,County Sligo,IE-SO,,,,,ChIJm6HiaIzGXkgRAAKA8azHABg,36.873,2.389,5.238
@@ -2225,6 +2245,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Sligo,IE-SO,,,,,ChIJm6HiaIzGXkgRAAKA8azHABg,14.434,4.595,0.856
 2023-01-02,Ireland,IE,County Sligo,IE-SO,,,,,ChIJm6HiaIzGXkgRAAKA8azHABg,12.310,3.853,1.017
 2023-01-09,Ireland,IE,County Sligo,IE-SO,,,,,ChIJm6HiaIzGXkgRAAKA8azHABg,9.486,3.041,0.912
+2023-01-16,Ireland,IE,County Sligo,IE-SO,,,,,ChIJm6HiaIzGXkgRAAKA8azHABg,7.336,1.920,0.971
 2021-01-04,Ireland,IE,County Tipperary,IE-TA,,,,,ChIJX7R4YLfGXEgR0B2Y8azHABg,54.937,2.630,8.237
 2021-01-11,Ireland,IE,County Tipperary,IE-TA,,,,,ChIJX7R4YLfGXEgR0B2Y8azHABg,52.410,2.932,6.402
 2021-01-18,Ireland,IE,County Tipperary,IE-TA,,,,,ChIJX7R4YLfGXEgR0B2Y8azHABg,32.981,2.147,4.517
@@ -2331,6 +2352,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Tipperary,IE-TA,,,,,ChIJX7R4YLfGXEgR0B2Y8azHABg,13.028,3.948,0.764
 2023-01-02,Ireland,IE,County Tipperary,IE-TA,,,,,ChIJX7R4YLfGXEgR0B2Y8azHABg,10.544,3.338,0.837
 2023-01-09,Ireland,IE,County Tipperary,IE-TA,,,,,ChIJX7R4YLfGXEgR0B2Y8azHABg,9.121,2.546,1.095
+2023-01-16,Ireland,IE,County Tipperary,IE-TA,,,,,ChIJX7R4YLfGXEgR0B2Y8azHABg,6.869,1.602,0.796
 2021-01-04,Ireland,IE,County Waterford,IE-WD,,,,,ChIJS14ZGTgiQ0gRIAKA8azHABg,59.626,2.959,10.135
 2021-01-11,Ireland,IE,County Waterford,IE-WD,,,,,ChIJS14ZGTgiQ0gRIAKA8azHABg,55.492,2.799,6.640
 2021-01-18,Ireland,IE,County Waterford,IE-WD,,,,,ChIJS14ZGTgiQ0gRIAKA8azHABg,32.713,2.100,4.253
@@ -2437,6 +2459,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Waterford,IE-WD,,,,,ChIJS14ZGTgiQ0gRIAKA8azHABg,14.425,4.741,0.954
 2023-01-02,Ireland,IE,County Waterford,IE-WD,,,,,ChIJS14ZGTgiQ0gRIAKA8azHABg,12.218,3.973,1.145
 2023-01-09,Ireland,IE,County Waterford,IE-WD,,,,,ChIJS14ZGTgiQ0gRIAKA8azHABg,9.621,2.811,0.994
+2023-01-16,Ireland,IE,County Waterford,IE-WD,,,,,ChIJS14ZGTgiQ0gRIAKA8azHABg,7.272,1.910,0.768
 2021-01-04,Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg,58.848,2.479,9.659
 2021-01-11,Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg,53.649,2.662,6.464
 2021-01-18,Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg,33.893,2.083,4.621
@@ -2543,6 +2566,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg,13.785,4.452,0.946
 2023-01-02,Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg,12.153,3.658,1.081
 2023-01-09,Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg,10.352,2.876,1.006
+2023-01-16,Ireland,IE,County Westmeath,IE-WH,,,,,ChIJt7ZDotLGXUgRMAKA8azHABg,7.166,1.785,0.658
 2021-01-04,Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg,51.820,2.366,7.349
 2021-01-11,Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg,49.408,2.285,5.633
 2021-01-18,Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg,32.938,2.023,4.445
@@ -2649,6 +2673,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg,14.476,4.517,0.984
 2023-01-02,Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg,12.155,3.778,1.018
 2023-01-09,Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg,9.570,2.494,1.060
+2023-01-16,Ireland,IE,County Wexford,IE-WX,,,,,ChIJ8QOaQbwBaEgRQAKA8azHABg,7.015,1.844,0.751
 2021-01-04,Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg,52.710,2.354,6.770
 2021-01-11,Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg,54.873,2.855,5.383
 2021-01-18,Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg,34.476,2.302,3.990
@@ -2755,6 +2780,7 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg,20.359,6.531,1.057
 2023-01-02,Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg,17.066,5.208,1.574
 2023-01-09,Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg,12.630,3.589,1.308
+2023-01-16,Ireland,IE,County Wicklow,IE-WW,,,,,ChIJ67NZKAKUZ0gRUAKA8azHABg,8.989,2.428,0.976
 2021-01-04,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,59.158,2.887,8.731
 2021-01-11,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,57.181,3.162,6.252
 2021-01-18,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,36.133,2.568,4.408
@@ -2861,3 +2887,4 @@ date,country_region,country_region_code,sub_region_1,sub_region_1_code,sub_regio
 2022-12-26,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,17.120,5.516,0.969
 2023-01-02,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,14.627,4.758,1.211
 2023-01-09,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,11.680,3.422,1.165
+2023-01-16,Ireland,IE,,,,,,,ChIJ-ydAXOS6WUgRCPTbzjQSfM8,8.341,2.250,0.879
