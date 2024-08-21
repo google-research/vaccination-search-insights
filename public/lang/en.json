@@ -7,7 +7,7 @@
         "select_country": "Select a country to see more insights",
         "countries": "Countries",
         "region_name": "Region Name",
-        "app_overview": "<br><b>The COVID-19 Vaccination Search Insights are no longer being updated as of 2024-02-05. All historical data will remain publicly available.</b><br>Explore searches for COVID-19 vaccination topics by region. This aggregated and anonymized data helps you understand and compare communities' information needs. We’re releasing this data to inform public health vaccine-confidence efforts.  <a href=\"{aboutUrl}\">Learn more</a>",
+        "app_overview": "<br><b>The COVID-19 Vaccination Search Insights are no longer being updated as of 2024-02-05. All historical data will remain publicly available.</b><br><br>Explore searches for COVID-19 vaccination topics by region. This aggregated and anonymized data helps you understand and compare communities' information needs. We’re releasing this data to inform public health vaccine-confidence efforts.  <a href=\"{aboutUrl}\">Learn more</a>",
         "about_data_title": "About this data",
         "about_data_content": "You can use this data to compare search interest between topics related to COVID-19 vaccination and see what topics are popular or rising. The value for search interest isn't an absolute number of searches—it's a value representing relative interest which we scale to make it easier to compare regions with one another, or the same region over time. If you'd like to know more about our calculation and process, see our <a href=\"{aboutDataUrl}\">technical docs.</a>",
         "best_use_title": "How to best use this data",
