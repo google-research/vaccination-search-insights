@@ -2,7 +2,7 @@ import { parse, ParseResult } from "papaparse";
 import { fetchRegionalTrendsData, RegionalTrendLine, RegionalTrends } from "./data";
 import { mapData, regionalTrends } from "./stores";
 
-const US_ZIP_FILENAMES = ["./data/US_zips_2022.csv"]
+const US_ZIP_FILENAMES = ["./data/US_zips_2022.csv", "./data/US_zips_2023.csv"];
 
 function coerceNumber(u: unknown) {
   if (u === "") {
